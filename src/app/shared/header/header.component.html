@@ -1,0 +1,112 @@
+<header class="sidebar-container" [class.collapsed]="isCollapsed">
+  <nav class="sidebar">
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      <i
+        class="bi"
+        [class.bi-chevron-left]="!isCollapsed"
+        [class.bi-chevron-right]="isCollapsed"
+      ></i>
+    </button>
+
+    <div class="logo-container my-4" [class.collapsed]="isCollapsed">
+      <a class="navbar-brand" routerLink="/dashboard">
+        <img
+          src="./assets/The Minaret Agency.png"
+          class="mx-auto d-block"
+          width="50%"
+          alt=""
+        />
+      </a>
+    </div>
+
+    <div class="sidebar-nav">
+      <ul class="navbar-nav text-white">
+        <li class="nav-item me-2">
+          <a
+            class="nav-link active"
+            aria-current="page"
+            routerLink="/dashboard"
+          >
+            <i class="bi bi-house-door ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed">الرئيسية</span>
+          </a>
+        </li>
+        <li class="nav-item me-2">
+          <a class="nav-link" routerLink="/tasks">
+            <i class="bi bi-list-task ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed">التاسكات</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <button class="text-white menu-toggler" (click)="toggleMenu('users')">
+            <i class="bi bi-people-fill ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed"
+              >المستخدمين</span
+            >
+          </button>
+          <ul
+            class="submenu users-menu"
+            [class.open]="openMenu === 'users'"
+            [class.hidden]="isCollapsed"
+          >
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/users">قائمة المستخدمين</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/users/add">إضافة مستخدم</a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <button
+            class="text-white menu-toggler"
+            (click)="toggleMenu('services')"
+          >
+            <i class="bi bi-gear-fill ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed">الخدمات</span>
+          </button>
+          <ul
+            class="submenu services-menu"
+            [class.open]="openMenu === 'services'"
+            [class.hidden]="isCollapsed"
+          >
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/services">قائمة الخدمات</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/services/add">إضافة خدمة</a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <button
+            class="text-white menu-toggler"
+            (click)="toggleMenu('clients')"
+          >
+            <i class="bi bi-person-badge-fill ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed">العملاء</span>
+          </button>
+          <ul
+            class="submenu clients-menu"
+            [class.open]="openMenu === 'clients'"
+            [class.hidden]="isCollapsed"
+          >
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/clients">قائمة العملاء</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/clients/add">إضافة عميل</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="sidebar-account text-white" [class.collapsed]="isCollapsed">
+      <a class="nav-link" [routerLink]="['/users/my-account', userId]">
+        <i class="bi bi-person-circle ms-3"></i>
+        <span class="nav-text" [class.hidden]="isCollapsed">حسابي</span>
+      </a>
+    </div>
+  </nav>
+</header>

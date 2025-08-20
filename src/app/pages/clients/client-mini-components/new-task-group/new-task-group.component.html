@@ -1,0 +1,176 @@
+<!-- Add New Month -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="taskModalLabel">اضافة شهر جديد</h5>
+        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" aria-label="Close">X</button>
+      </div>
+      <div class="modal-body">
+        <!-- Success Message -->
+        @if (successMessage) {
+        <div class="alert alert-success mt-3" role="alert">
+          <i class="bi bi-check-circle me-2"></i>
+          {{ successMessage }}
+        </div>
+        }
+
+        <!-- Error Message -->
+        @if (errorMessage) {
+        <div class="alert alert-danger mt-3" role="alert">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          {{ errorMessage }}
+        </div>
+        }
+
+        <form [formGroup]="taskGroupForm" (ngSubmit)="onSubmit()">
+          <div class="me-2 mb-3">
+            <h6>
+              <i class="bi bi-gear"></i>
+              الخدمات والمهام
+            </h6>
+          </div>
+
+          <div formArrayName="clientServices">
+            @for (clientService of clientServicesArray.controls; track $index; let serviceIndex = $index) {
+            <div [formGroupName]="serviceIndex" class="border rounded p-3 mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6>الخدمة {{ serviceIndex + 1 }}</h6>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  (click)="removeClientService(serviceIndex)"
+                >
+                  - إزالة الخدمة
+                </button>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">اختر الخدمة</label>
+                <select class="form-select" formControlName="serviceId">
+                  <option value="" disabled selected>اختر الخدمة</option>
+                  @for(service of availableServices; track service.id) {
+                  <option [value]="service.id">{{ service.title }}</option>
+                  }
+                </select>
+              </div>
+
+              <!-- Tasks -->
+              <div formArrayName="tasks">
+                @for (task of getTasksArray(serviceIndex).controls; track $index; let taskIndex = $index) {
+                <div [formGroupName]="taskIndex" class="border rounded p-2 mb-2">
+                  <!-- Task Header - Always Visible -->
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex align-items-center">
+                      <h6 class="mb-0 me-2">المهمة {{ taskIndex + 1 }}</h6>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary me-2"
+                        (click)="toggleTaskCollapse(serviceIndex, taskIndex)"
+                        [attr.aria-expanded]="!isTaskCollapsed(serviceIndex, taskIndex)"
+                      >
+                        <i class="bi" [class.bi-chevron-down]="!isTaskCollapsed(serviceIndex, taskIndex)" [class.bi-chevron-up]="isTaskCollapsed(serviceIndex, taskIndex)"></i>
+                        {{ isTaskCollapsed(serviceIndex, taskIndex) ? 'عرض التفاصيل' : 'إخفاء التفاصيل' }}
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger btn-sm"
+                      (click)="removeTask(serviceIndex, taskIndex)"
+                    >
+                      - إزالة المهمة
+                    </button>
+                  </div>
+
+                  <!-- Task Details - Collapsible -->
+                  <div 
+                    id="task-{{ serviceIndex }}-{{ taskIndex }}"
+                    class="task-details"
+                    [class.collapsed]="isTaskCollapsed(serviceIndex, taskIndex)"
+                    [@slideInOut]="isTaskCollapsed(serviceIndex, taskIndex) ? 'collapsed' : 'expanded'"
+                  >
+                    <div class="mb-2">
+                      <label class="form-label">عنوان المهمة</label>
+                      <input type="text" class="form-control" formControlName="title" placeholder="ادخل عنوان المهمة" />
+                    </div>
+                    <div class="mb-2">
+                      <label class="form-label">وصف المهمة</label>
+                      <textarea class="form-control" rows="2" formControlName="description" placeholder="اكتب وصفا مفصلا للمهمة"></textarea>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-md-6">
+                        <label class="form-label">الموظف</label>
+                        <select class="form-select" formControlName="employeeId">
+                          <option value="" disabled selected>اختر موظف</option>
+                          @for (emp of employees; track emp.id) {
+                          <option [value]="emp.id">{{ emp.firstName + ' ' + emp.lastName }}</option>
+                          }
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">موعد التسليم</label>
+                        <input type="date" class="form-control" formControlName="deadline" />
+                      </div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-md-6">
+                        <label class="form-label">الأولوية</label>
+                        <select class="form-select" formControlName="priority">
+                          <option value="عادي">عادي</option>
+                          <option value="مهم">مهم</option>
+                          <option value="مستعجل">مستعجل</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">المرجع (اختياري)</label>
+                        <input type="text" class="form-control" formControlName="refrence" placeholder="أدخل مرجع للمهمة" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                }
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm mb-2"
+                (click)="addTask(serviceIndex)"
+              >
+                + إضافة مهمة
+              </button>
+            </div>
+            }
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-outline-success mb-3"
+            (click)="addClientService()"
+          >
+            + إضافة خدمة جديدة
+          </button>
+
+          <!-- Submit Button -->
+          <div class="row">
+            <div class="col-12">
+              <div class="d-flex justify-content-start gap-2">
+                <button type="submit" class="add-btn">
+                  @if (isLoading) {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    جاري اضافة الشهر الجديد...
+                  } @else {
+                    إضافة الشهر الجديد
+                  }
+                </button>
+                <button type="button" class="reset-btn" (click)="resetForm()">
+                  <i class="bi bi-arrow-clockwise me-2"></i>
+                  إعادة تعيين
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

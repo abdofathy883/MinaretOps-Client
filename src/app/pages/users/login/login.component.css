@@ -1,0 +1,10 @@
+section {
+    background-image: url('../../../../../public/assets/background.png');
+    background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.login-card {
+    background-color: rgba(255, 255, 255, 0.226);
+    width: 30%;
+}

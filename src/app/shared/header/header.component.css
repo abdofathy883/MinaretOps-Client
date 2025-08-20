@@ -1,0 +1,158 @@
+.show {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+.sidebar-container {
+  height: 100vh;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+}
+
+.sidebar-container.collapsed {
+  width: 80px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  background: #fff;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+  background-color: var(--mov-color);
+  transition: all 0.3s ease;
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  background: var(--orange-color);
+  border: none;
+  border-radius: 15px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.toggle-btn:hover {
+  transform: scale(1.1);
+}
+
+.logo-container {
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.logo-container.collapsed {
+  padding: 0;
+}
+
+.logo-container.collapsed img {
+  width: 40px !important;
+  margin-top: 20px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.sidebar-account {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.sidebar-account.collapsed {
+  justify-content: center;
+}
+
+.nav-text {
+  transition: opacity 0.3s ease;
+}
+
+.nav-text.hidden {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+i {
+    font-size: 20px;
+}
+
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4,0,0.2,1);
+  background: #f8f9fa42;
+  padding-left: 2rem;
+  margin-bottom: 0;
+}
+
+.submenu.open {
+  max-height: 200px;
+  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+.submenu.hidden {
+  display: none;
+}
+
+.btn-link {
+  width: 100%;
+  text-align: left;
+}
+
+.me-2 {
+  margin-right: 0.5rem;
+}
+
+.ms-auto {
+  margin-left: auto;
+}
+
+.menu-toggler {
+    background-color: transparent;
+    border: none;
+    width: 100%;
+    text-align: right;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.menu-toggler:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link {
+    padding: 10px 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Center icons when collapsed */
+.sidebar-container.collapsed .nav-link,
+.sidebar-container.collapsed .menu-toggler {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.sidebar-container.collapsed .me-2 {
+    margin-right: 0;
+}

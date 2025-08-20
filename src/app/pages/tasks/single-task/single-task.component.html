@@ -1,0 +1,153 @@
+<div class="task-container">
+  <!-- Header Section -->
+  <div class="task-header">
+    <div class="task-title-section">
+      <h1 class="task-title">{{ task.title }}</h1>
+      <div class="task-meta">
+        <span class="task-id">#{{ task.id }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-6 mb-md-3">
+      <div class="task-details-card">
+
+        <div class="card-header">
+          <h3><i class="bi bi-info-circle"></i> تفاصيل المهمة</h3>
+        </div>
+  
+        <div class="detail-item">
+          <label>الوصف:</label>
+          <p class="description">{{ task.description }}</p>
+        </div>
+  
+        <div class="detail-item">
+          <label>العميل:</label>
+          <span class="client-name">{{ task.clientName }}</span>
+        </div>
+  
+        <div class="detail-item">
+          <label>الخدمة:</label>
+          <span class="service-name">{{ task.serviceName }}</span>
+        </div>
+  
+        <div class="detail-item">
+          <label>الموظف المسؤول:</label>
+          <span class="employee-name">{{ task.employeeName }}</span>
+        </div>
+  
+        <div class="detail-item">
+          <label>المرجع:</label>
+          <span class="reference" *ngIf="task.refrence; else noReference">
+            {{ task.refrence }}
+          </span>
+          <ng-template #noReference>
+            <span class="no-reference">لا يوجد مرجع</span>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="task-status-card">
+        <div class="card-header">
+          <h3><i class="bi bi-list-task"></i> حالة المهمة</h3>
+        </div>
+
+        <!-- Current Status Display -->
+        <div class="current-status">
+          <label>الحالة الحالية:</label>
+          <div
+            class="status-badge me-3"
+            [ngClass]="getStatusClass(task.status)"
+          >
+            {{ getStatusLabel(task.status) }}
+          </div>
+        </div>
+
+        <!-- Priority Display -->
+        <div class="priority-section">
+          <label>الأولوية:</label>
+          <div
+            class="priority-badge me-3"
+            [ngClass]="getPriorityClass(task.priority)"
+          >
+            {{ task.priority }}
+          </div>
+        </div>
+
+        <!-- Deadline Section -->
+        <div class="deadline-section">
+          <label>الموعد النهائي:</label>
+          <div class="deadline-info mt-2" [ngClass]="{ overdue: isOverdue() }">
+            <i class="fas fa-calendar-alt"></i>
+            <span>{{ task.deadline | date : "dd/MM/yyyy" }}</span>
+            <span class="overdue-warning" *ngIf="isOverdue()">
+              <i class="fas fa-exclamation-triangle"></i>
+              متأخر
+            </span>
+          </div>
+        </div>
+
+        <!-- Completion Date -->
+        <div class="completion-section" *ngIf="task.completedAt">
+          <label>تاريخ الإنجاز:</label>
+          <span class="completion-date">
+            {{ task.completedAt | date : "dd/MM/yyyy" }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <label>تم الإنجاز في الموعد:</label>
+          <span
+            class="on-time-status"
+            [ngClass]="{
+              'on-time': task.isCompletedOnDeadline,
+              late: !task.isCompletedOnDeadline
+            }"
+          >
+            <i
+              [class]="
+                task.isCompletedOnDeadline
+                  ? 'fas fa-check-circle'
+                  : 'fas fa-times-circle'
+              "
+            ></i>
+            {{ task.isCompletedOnDeadline ? "نعم" : "لا" }}
+          </span>
+        </div>
+
+        <!-- Status Update Section -->
+        <div class="status-update-section">
+          <h4>تحديث الحالة</h4>
+          <div class="status-options">
+            <button
+              *ngFor="let status of availableStatuses"
+              class="status-option-btn"
+              [ngClass]="{
+                active: task.status === status.value,
+                disabled: updatingStatus
+              }"
+              (click)="updateTaskStatus(status.value)"
+              [disabled]="updatingStatus || task.status === status.value"
+            >
+              <i [class]="status.icon"></i>
+              {{ status.label }}
+            </button>
+          </div>
+
+          <div class="update-feedback" *ngIf="updatingStatus">
+            <div class="spinner"></div>
+            <span>جاري التحديث...</span>
+          </div>
+
+          <!-- <div class="error-message" *ngIf="error">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ error }}
+        </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

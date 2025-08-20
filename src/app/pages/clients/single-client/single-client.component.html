@@ -1,0 +1,39 @@
+<div class="container-fluid py-4">
+  <!-- Error Message -->
+  <div
+    *ngIf="errorMessage"
+    class="alert alert-danger alert-dismissible fade show"
+    role="alert"
+  >
+    {{ errorMessage }}
+    <button
+      type="button"
+      class="btn-close"
+      (click)="errorMessage = ''"
+    ></button>
+  </div>
+
+  <!-- Success Message -->
+  <div
+    *ngIf="successMessage"
+    class="alert alert-success alert-dismissible fade show"
+    role="alert"
+  >
+    {{ successMessage }}
+    <button
+      type="button"
+      class="btn-close"
+      (click)="successMessage = ''"
+    ></button>
+  </div>
+
+  <!-- Client Information -->
+  <app-client-info [client]="client"></app-client-info>
+
+  @if (client != null) {
+  <app-task-groups
+    [clientServices]="client.clientServices"
+    [clientId]="client.id"
+  ></app-task-groups>
+  }
+</div>

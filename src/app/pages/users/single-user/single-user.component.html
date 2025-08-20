@@ -1,0 +1,302 @@
+<section class="container my-4">
+  <!-- Header Section -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-person-circle me-2"></i>
+      تفاصيل المستخدم
+    </h2>
+    <div>
+      @if (!isEditMode) {
+      <button class="reset-btn" (click)="toggleEditMode()">
+        <i class="bi bi-pencil me-1"></i>
+        تعديل
+      </button>
+      } @if (isEditMode) {
+      <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
+        <i class="bi bi-x-circle me-1"></i>
+        إلغاء
+      </button>
+      }
+    </div>
+  </div>
+
+  <!-- Error State -->
+  @if (errorMessage) {
+  <div class="alert alert-danger mt-3" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ errorMessage }}
+  </div>
+  }
+
+  <!-- Success Message -->
+  @if (successMessage) {
+  <div class="alert alert-success mt-3" role="alert">
+    <i class="bi bi-check-circle me-2"></i>
+    {{ successMessage }}
+  </div>
+  }
+
+  <!-- User Data Section -->
+  @if (!isEditMode) {
+  <!-- View Mode -->
+  <div>
+    <div class="card shadow-sm">
+      <div class="card-header form-header">
+        <h5 class="mb-0">
+          <i class="bi bi-person-badge me-2"></i>
+          المعلومات الشخصية
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">الاسم الأول:</label>
+            <p class="form-control-plaintext">{{ user?.firstName }}</p>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">الاسم الأخير:</label>
+            <p class="form-control-plaintext">{{ user?.lastName }}</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">البريد الإلكتروني:</label>
+            <p class="form-control-plaintext">{{ user?.email }}</p>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">رقم الهاتف:</label>
+            <p class="form-control-plaintext">
+              {{ user?.phoneNumber || "غير محدد" }}
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">الرقم القومي:</label>
+            <p class="form-control-plaintext">{{ user?.nid }}</p>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">رقم المحفظة او انستاباي:</label>
+            <p class="form-control-plaintext">{{ user?.paymentNumber }}</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">الدور:</label>
+            <p class="form-control-plaintext">
+              <span class="badge bg-info">{{ user?.roles || "غير محدد" }}</span>
+            </p>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">تاريخ بداية العمل:</label>
+            <p class="form-control-plaintext">{{ user?.dateOfHiring }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">المدينة:</label>
+            <p class="form-control-plaintext">{{ user?.city }}</p>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-bold">العنوان:</label>
+            <p class="form-control-plaintext">{{ user?.street }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  } @if (isEditMode) {
+  <!-- Edit Mode -->
+  <div>
+    <form [formGroup]="editUserForm" (ngSubmit)="saveUser()">
+      <div class="card shadow-sm">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0">
+            <i class="bi bi-pencil-square me-2"></i>
+            تعديل بيانات المستخدم
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="editFirstName" class="form-label">الاسم الأول</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editFirstName"
+                formControlName="firstName"
+                [class.is-invalid]="
+                  editUserForm.get('firstName')?.invalid &&
+                  editUserForm.get('firstName')?.touched
+                "
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  editUserForm.get('firstName')?.invalid &&
+                  editUserForm.get('firstName')?.touched
+                "
+              >
+                <span
+                  *ngIf="editUserForm.get('firstName')?.errors?.['required']"
+                  >الاسم الأول مطلوب</span
+                >
+                <span
+                  *ngIf="editUserForm.get('firstName')?.errors?.['minlength']"
+                  >الاسم الأول يجب أن يكون 3 أحرف على الأقل</span
+                >
+                <span
+                  *ngIf="editUserForm.get('firstName')?.errors?.['maxlength']"
+                  >الاسم الأول يجب أن يكون 30 حرف على الأكثر</span
+                >
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editLastName" class="form-label">الاسم الأخير</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editLastName"
+                formControlName="lastName"
+                [class.is-invalid]="
+                  editUserForm.get('lastName')?.invalid &&
+                  editUserForm.get('lastName')?.touched
+                "
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  editUserForm.get('lastName')?.invalid &&
+                  editUserForm.get('lastName')?.touched
+                "
+              >
+                <span *ngIf="editUserForm.get('lastName')?.errors?.['required']"
+                  >الاسم الأخير مطلوب</span
+                >
+                <span
+                  *ngIf="editUserForm.get('lastName')?.errors?.['minlength']"
+                  >الاسم الأخير يجب أن يكون 3 أحرف على الأقل</span
+                >
+                <span
+                  *ngIf="editUserForm.get('lastName')?.errors?.['maxlength']"
+                  >الاسم الأخير يجب أن يكون 30 حرف على الأكثر</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="editEmail" class="form-label"
+                >البريد الإلكتروني</label
+              >
+              <input
+                type="email"
+                class="form-control"
+                id="editEmail"
+                formControlName="email"
+                [class.is-invalid]="
+                  editUserForm.get('email')?.invalid &&
+                  editUserForm.get('email')?.touched
+                "
+                required
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  editUserForm.get('email')?.invalid &&
+                  editUserForm.get('email')?.touched
+                "
+              >
+                <span *ngIf="editUserForm.get('email')?.errors?.['required']"
+                  >البريد الإلكتروني مطلوب</span
+                >
+                <span *ngIf="editUserForm.get('email')?.errors?.['email']"
+                  >صيغة البريد الإلكتروني غير صحيحة</span
+                >
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editPhone" class="form-label">رقم الهاتف</label>
+              <input
+                type="tel"
+                class="form-control"
+                id="editPhone"
+                formControlName="phoneNumber"
+                [class.is-invalid]="
+                  editUserForm.get('phoneNumber')?.invalid &&
+                  editUserForm.get('phoneNumber')?.touched
+                "
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  editUserForm.get('phoneNumber')?.invalid &&
+                  editUserForm.get('phoneNumber')?.touched
+                "
+              >
+                <span
+                  *ngIf="editUserForm.get('phoneNumber')?.errors?.['pattern']"
+                  >صيغة رقم الهاتف غير صحيحة</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="editRole" class="form-label">الدور</label>
+              <select
+                class="form-select"
+                id="editRole"
+                formControlName="role"
+                [class.is-invalid]="
+                  editUserForm.get('role')?.invalid &&
+                  editUserForm.get('role')?.touched
+                "
+                required
+              >
+                <option value="" disabled>اختر الدور</option>
+                <option value="1">مدير</option>
+                <option value="2">موظف</option>
+              </select>
+              <div
+                class="invalid-feedback"
+                *ngIf="
+                  editUserForm.get('role')?.invalid &&
+                  editUserForm.get('role')?.touched
+                "
+              >
+                <span *ngIf="editUserForm.get('role')?.errors?.['required']"
+                  >الدور مطلوب</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <button
+            class="add-btn"
+            (click)="saveUser()"
+            *ngIf="isEditMode"
+          >
+          @if (isLoading) {
+            <span
+              class="spinner-border spinner-border-sm me-1"
+            ></span>
+          } @else {
+            <i class="bi bi-check-circle me-1"></i>
+            حفظ التغييرات
+          }
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  }
+</section>

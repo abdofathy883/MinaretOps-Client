@@ -1,0 +1,284 @@
+<section class="container my-3">
+  <!-- header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-person-circle me-2"></i>
+      التاسكات الشهرية
+    </h2>
+    <div>
+      @if (!isEditMode) {
+      <button class="reset-btn" (click)="toggleEditMode()">
+        <i class="bi bi-pencil me-1"></i>
+        تعديل
+      </button>
+      } @if (isEditMode) {
+      <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
+        <i class="bi bi-x-circle me-1"></i>
+        إلغاء
+      </button>
+      }
+    </div>
+  </div>
+
+  @if (!isEditMode) {
+  <div class="card shadow-sm">
+    @for (clientService of clientServices; track clientService.id) { @if
+    (clientService.taskGroups && clientService.taskGroups.length > 0) { @for
+    (taskGroup of clientService.taskGroups; track taskGroup.id) {
+    <div class="card-header form-header">
+      <h4 class="mb-0">{{ taskGroup.monthLabel }}</h4>
+    </div>
+    <div class="card-body">
+      <h4>{{ clientService.serviceTitle }}</h4>
+      @if (taskGroup.tasks && taskGroup.tasks.length > 0) {
+      <table class="table table-responsive">
+        <thead>
+          <tr>
+            <th>التاسك</th>
+            <th>الموظف</th>
+            <th>الاولوية</th>
+            <th>موعد التسليم</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (task of taskGroup.tasks; track task.id) {
+          <tr (click)="goToTask(task.id)" style="cursor: pointer">
+            <td>{{ task.title }}</td>
+            <td>{{ task.employeeName || "غير محدد" }}</td>
+            <td>
+              <span class="badge" [ngClass]="getPriorityClass(task.priority)">
+                {{ task.priority }}
+              </span>
+            </td>
+            <td>{{ task.deadline | date : "dd/MM/yyyy" }}</td>
+            <td>
+              <span class="badge" [ngClass]="getStatusClass(task.status)">
+                {{ getStatusText(task.status) }}
+              </span>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      } @else {
+      <p class="text-muted text-center">لا توجد مهام لهذه المجموعة</p>
+      }
+    </div>
+    } } @else {
+    <div class="card-body">
+      <p class="text-muted text-center">لا توجد مجموعات مهام لهذه الخدمة</p>
+    </div>
+    } }
+  </div>
+  } @if (isEditMode) {
+  <div class="card shadow-sm">
+    @for (clientService of clientServices; track clientService.id) { @if
+    (clientService.taskGroups && clientService.taskGroups.length > 0) { @for
+    (taskGroup of clientService.taskGroups; track taskGroup.id) {
+    <div class="card-header form-header">
+      <h4 class="mb-0">{{ taskGroup.monthLabel }}</h4>
+    </div>
+    <div class="card-body">
+      <h4>{{ clientService.serviceTitle }}</h4>
+      @if (taskGroup.tasks && taskGroup.tasks.length > 0) {
+      <table class="table table-responsive">
+        <thead>
+          <tr>
+            <th>التاسك</th>
+            <th>الموظف</th>
+            <th>الاولوية</th>
+            <th>موعد التسليم</th>
+            <th>الحالة</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (task of taskGroup.tasks; track task.id) {
+          <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.employeeName || "غير محدد" }}</td>
+            <td>
+              <span class="badge" [ngClass]="getPriorityClass(task.priority)">
+                {{ task.priority }}
+              </span>
+            </td>
+            <td>{{ task.deadline | date : "dd/MM/yyyy" }}</td>
+            <td>
+              <span class="badge" [ngClass]="getStatusClass(task.status)">
+                {{ getStatusText(task.status) }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-outline-warning btn-sm" (click)="openEditTaskModal(task)" title="تعديل">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      <button class="btn btn-outline-success" (click)="openAddTaskModal(taskGroup.id)">
+        + اضافة تاسك
+      </button>
+      } @else {
+      <p class="text-muted text-center">لا توجد مهام لهذه المجموعة</p>
+      <button class="btn btn-outline-success" (click)="openAddTaskModal(taskGroup.id)">
+        + اضافة تاسك
+      </button>
+      }
+    </div>
+  } } @else {
+    <div class="card-body">
+        <p class="text-muted text-center">لا توجد مجموعات مهام لهذه الخدمة</p>
+    </div>
+} }
+</div>
+}
+<button class="btn btn-outline-success mt-3" (click)="openNewTaskGroupModal()">+ اضافة شهر جديد</button>
+</section>
+
+<!-- New Task Group Modal -->
+<app-new-task-group 
+  #newTaskGroupModal
+  [clientId]="clientId"
+  (taskGroupCreated)="onTaskGroupCreated($event)">
+</app-new-task-group>
+
+<!-- Single Task Modal for both Add and Edit -->
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="taskModalLabel">
+          {{ modalMode === 'edit' ? 'تعديل التاسك' : 'إضافة تاسك جديد' }}
+        </h5>
+        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" aria-label="Close">X</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editTaskForm" (ngSubmit)="saveTask()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="title" class="form-label">عنوان التاسك</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="title" 
+                formControlName="title"
+                [class.is-invalid]="hasError('title')"
+                placeholder="أدخل عنوان المهمة">
+                @if (hasError('title')) {
+                    <div class="invalid-feedback">
+                      {{ getErrorMessage('title') }}
+                    </div>
+                }
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label for="priority" class="form-label">الأولوية</label>
+              <select 
+                class="form-select" 
+                id="priority" 
+                formControlName="priority"
+                [class.is-invalid]="hasError('priority')">
+                <option value="">اختر الأولوية</option>
+                <option value="عالية">عالية</option>
+                <option value="متوسطة">متوسطة</option>
+                <option value="منخفضة">منخفضة</option>
+                <option value="عادي">عادي</option>
+              </select>
+              @if (hasError('priority')) {}
+              <div class="invalid-feedback">
+                {{ getErrorMessage('priority') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="deadline" class="form-label">موعد التسليم</label>
+              <input 
+                type="date" 
+                class="form-control" 
+                id="deadline" 
+                formControlName="deadline"
+                [class.is-invalid]="hasError('deadline')">
+                @if (hasError('deadline')) {
+                    <div class="invalid-feedback">
+                      {{ getErrorMessage('deadline') }}
+                    </div>
+                }
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label for="status" class="form-label">الحالة</label>
+              <select 
+                class="form-select" 
+                id="status" 
+                formControlName="status"
+                [class.is-invalid]="hasError('status')">
+                <option value="">اختر الحالة</option>
+                <option [value]="0">لم يبدأ</option>
+                <option [value]="1">قيد التنفيذ</option>
+                <option [value]="2">تم التسليم</option>
+                <option [value]="3">مكتمل</option>
+              </select>
+              @if (hasError('status')) {
+                  <div class="invalid-feedback" *ngIf="">
+                    {{ getErrorMessage('status') }}
+                  </div>
+              }
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="employee" class="form-label">الموظف</label>
+              <select 
+                class="form-select" 
+                id="employee" 
+                formControlName="employeeId">
+                <option value="">اختر الموظف</option>
+                @for (employee of employees; track employee.id) {
+                  <option [value]="employee.id">{{ employee.firstName }} {{ employee.lastName }}</option>
+                }
+              </select>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+              <label for="reference" class="form-label">ريفرنس</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="reference" 
+                formControlName="refrence"
+                placeholder="أدخل المرجع">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label">وصف المهمة</label>
+            <textarea 
+              class="form-control" 
+              id="description" 
+              rows="3"
+              formControlName="description"
+              placeholder="أدخل وصف المهمة"></textarea>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">إلغاء</button>
+            <button type="submit" class="add-btn" [disabled]="editTaskForm.invalid || isSaving">
+              @if (isSaving) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ modalMode === 'edit' ? 'حفظ...' : 'إضافة...' }}
+              } @else {
+                {{ modalMode === 'edit' ? 'حفظ التغييرات' : 'إضافة المهمة' }}
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

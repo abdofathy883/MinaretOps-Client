@@ -1,1 +1,107 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --orange-color: #f36e36;
+  --mov-color: #451c44;
+}
+
+.form-header {
+    background-color: var(--orange-color);
+    color: var(--mov-color);
+}
+
+.add-btn {
+  background-color: var(--orange-color);
+  color: var(--mov-color);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  &:hover {
+    background-color: #f36f36d5;
+  }
+}
+
+.reset-btn {
+  background-color: transparent;
+  color: var(--mov-color);
+  border: 2px solid var(--mov-color);
+  border-radius: 8px;
+  padding: 8px 20px;
+  &:hover{
+    background-color: var(--orange-color);
+    border: 2px solid var(--orange-color);
+    color: white;
+  }
+}
+
+.form-btn {
+  background-color: #2f4f4e;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 20px;
+}
+
+body {
+  font-family: "Noto Sans Arabic", sans-serif !important;
+  font-weight: 400 !important;
+}
+
+.form-button:hover {
+  background-color: #0056b3;
+}
+
+.content-table {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 18px;
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.content-table thead tr {
+  background-color: var(--orange-color);
+  color: white;
+  text-align: right;
+  font-weight: 400;
+}
+.content-table th,
+.content-table td {
+  padding: 12px 15px;
+}
+
+.content-table tbody tr {
+  border-bottom: 1px solid gray;
+  &:hover {
+    background-color: rgb(231, 231, 231);
+  }
+}
+
+.content-table tbody tr:nth-of-type(even) {
+  background-color: #0c6cfd33;
+  &:hover {
+    background-color: rgb(231, 231, 231);
+  }
+}
+
+.content-table tbody tr:last-of-type {
+  border-bottom: 4px solid var(--orange-color);
+}
+
+@media (max-width: 750px) {
+  th {
+    display: none;
+  }
+  td {
+    display: block;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  td::before {
+    content: attr(data-cell) ": ";
+    font-weight: bold;
+  }
+}

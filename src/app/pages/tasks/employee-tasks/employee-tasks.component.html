@@ -1,0 +1,65 @@
+<section class="container my-4">
+    <div>
+      <form [formGroup]="filterForm">
+        <p>تصفية حسب:</p>
+        <div class="row">
+            <div class="col-sm-12 col-md-5 col-lg-2 mb-md-2 mb-0">
+                <label for="client" class="form-label">العميل</label>
+                <select name="client" id="client" class="form-select" formControlName="clientId">
+                  <option disabled selected>اختر العميل</option>
+                  @for (client of clients; track $index) {
+                    <option [value]="client.id">{{ client.name }}</option>
+                  }
+                </select>
+            </div>
+            <div class="col-sm-12 col-md-5 col-lg-2 mb-md-2 mb-0">
+                <label for="priority" class="form-label">الاولوية</label>
+                <select name="priority" id="priority" class="form-select" formControlName="priority">
+                  <option value="" disabled selected>اختر الاولوية</option>
+                  <option value="عادي">عادي</option>
+                  <option value="مهم">مهم</option>
+                  <option value="مستعجل">مستعجل</option>
+                </select>
+            </div>
+            <div class="col-sm-12 col-md-2">
+                <br>
+                <button class="add-btn w-100 mt-1" (click)="applyFilters()">تصفية</button>
+            </div>
+        </div>
+      </form>
+    </div>
+</section>
+
+
+<section class="container mb-4">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+  @for (task of filteredTasks; track $index) {
+      <div class="col">
+      <div class="card h-100" (click)="goToTask(task.id)" style="cursor: pointer;">
+        <div class="card-body">
+          <span class="badge text-bg-warning">{{ task.priority }}</span>
+          <h5 class="card-title text-center">{{ task.title }}</h5>
+          <p class="card-text text-center">{{ task.description }}</p>
+          <p class="card-text">العميل: {{ task.clientName }}</p>
+          <p class="card-text">الخدمة: {{ task.serviceName }}</p>
+          <p class="card-text">الموظف: {{ task.employeeName }}</p>
+          <p class="card-text">الحالة: {{ getStatusText(task.status) }}</p>
+        </div>
+        <div class="card-footer">
+          <small class="text-body-secondary">وقت التسليم: {{ task.deadline }}</small>
+        </div>
+      </div>
+    </div>
+    }
+    @if (filteredTasks.length === 0) {
+      <div class="col-12 text-center">
+        <div class="empty-state">
+          <h3>لا توجد مهام تطابق الفلاتر المحددة</h3>
+          <p>جرب تغيير معايير البحث أو مسح الفلاتر</p>
+        </div>
+      </div>
+    }
+  
+  
+</div>
+</section>

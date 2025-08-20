@@ -1,0 +1,9 @@
+i {
+    color: var(--orange-color);
+    font-size: 28px;
+}
+
+.card:hover{
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+}

@@ -1,0 +1,46 @@
+<div class="clients-container">
+  <div class="clients-header">
+    <h1>عملاؤنا</h1>
+    <p class="subtitle">ادارة العملاء بامتياز</p>
+  </div>
+
+  <div class="clients-grid">
+    @for (client of clients; track client.id) {
+      <div class="client-card" (click)="goToClient(client.id)" style="cursor: pointer;">
+        <div class="client-header">
+          <div class="client-avatar">
+            <span class="avatar-text">{{ client.name.charAt(0).toUpperCase() }}</span>
+          </div>
+          <div class="client-info">
+            <h3 class="client-name">{{ client.name }}</h3>
+            <p class="company-name">{{ client.companyName }}</p>
+          </div>
+          <div class="status-badge" [ngClass]="'status-' + getStatusClass(client.status)">
+            {{ getStatusText(client.status) }}
+          </div>
+        </div>
+        
+        <div class="client-details">
+          <div class="service-info">
+            <span class="service-label">Service:</span>
+            <span class="service-title">{{ client.serviceTitle }}</span>
+          </div>
+        </div>
+        
+        <!-- <div class="card-actions">
+          <button class="btn btn-primary">View Details</button>
+          <button class="btn btn-secondary">Edit</button>
+        </div> -->
+      </div>
+    }
+  </div>
+
+  @if (clients.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon"></div>
+      <h3>No clients found</h3>
+      <p>Start by adding your first client to get organized.</p>
+      <button class="btn btn-primary">Add Client</button>
+    </div>
+  }
+</div>

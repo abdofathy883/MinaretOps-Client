@@ -1,0 +1,20 @@
+<section class="container my-4">
+  <table class="content-table">
+    <thead>
+      <tr>
+        <th>الاسم</th>
+        <th>رقم الهاتف</th>
+        <th>الدور</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (user of users; track $index) {
+      <tr (click)="goToUser(user.id)" style="cursor: pointer">
+        <td data-cell="الاسم">{{ user.firstName + " " + user.lastName }}</td>
+        <td data-cell="رقم الهاتف">{{ user.phoneNumber }}</td>
+        <td data-cell="الدور">{{ user.roles[0] }}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</section>
