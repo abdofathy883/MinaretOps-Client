@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit{
   isLoading: boolean = false;
   loginForm!: FormGroup;
+  errorMessage: string = '';
   constructor(
     private authService: AuthService,
     private fb: FormBuilder,
@@ -38,12 +39,12 @@ export class LoginComponent implements OnInit{
       password: this.loginForm.value.password
     }
     this.authService.login(user).subscribe({
-      next: (response) => {
+      next: () => {
         this.isLoading = false;
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
-        console.log('error login: ', error);
+        this.errorMessage = error.message || 'حدث خطأ أثناء تسجيل الدخول';
       }
     })
   }

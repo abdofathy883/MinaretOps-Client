@@ -1,31 +1,54 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ClientService } from '../../../../services/clients/client.service';
-import { ClientDTO, UpdateClientDTO } from '../../../../model/client/client';
+import { ClientDTO, ClientStatus, UpdateClientDTO } from '../../../../model/client/client';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-client-info',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './client-info.component.html',
   styleUrl: './client-info.component.css',
 })
-export class ClientInfoComponent implements OnInit {
+export class ClientInfoComponent implements OnInit, OnChanges {
   @Input() client: ClientDTO | null = null;
   isLoading: boolean = false;
   isEditMode: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
   clientForm!: FormGroup;
+  isUserAdmin: boolean = false;
+  isUserAccountManager: boolean = false;
 
-  constructor(private clientService: ClientService, private fb: FormBuilder) {}
+  constructor(
+    private clientService: ClientService, 
+    private authService: AuthService,
+    private fb: FormBuilder) {}
   ngOnInit(): void {
-    console.log('client: ', this.client)
     this.initializeForm();
     if (this.client) {
       this.populateForm();
     }
+
+    this.authService.isAdmin().subscribe((isAdmin) => {
+      if (isAdmin) {
+        this.isUserAdmin = true;
+      }
+    });
+    this.authService.isAccountManager().subscribe((isAccountManager) => {
+      if (isAccountManager) {
+        this.isUserAccountManager = true;
+      }
+    });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['client'] && changes['client'].currentValue && !changes['client'].firstChange) {
+      this.populateForm();
+    }
+  }
+  
   private initializeForm(): void {
     this.clientForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -39,8 +62,35 @@ export class ClientInfoComponent implements OnInit {
     });
   }
 
+  getStatusText(status?: ClientStatus): string {
+      switch (status) {
+        case ClientStatus.Active:
+          return 'نشط';
+        case ClientStatus.OnHold:
+          return 'متوقف مؤقتا';
+        case ClientStatus.Cancelled:
+          return 'الغى التعاقد';
+        default:
+          return 'غير معروف';
+      }
+    }
+  
+    getStatusClass(status?: ClientStatus): string {
+      switch (status) {
+        case ClientStatus.Active:
+          return 'active';
+        case ClientStatus.OnHold:
+          return 'onhold';
+        case ClientStatus.Cancelled:
+          return 'cancelled';
+        default:
+          return 'unknown';
+      }
+    }
+
   private populateForm(): void {
     if (this.client) {
+
       this.clientForm.patchValue({
         name: this.client.name,
         personalPhoneNumber: this.client.personalPhoneNumber,

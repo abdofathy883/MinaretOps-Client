@@ -94,8 +94,14 @@ export class AddUserComponent implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
+
+    // Get the payment number value properly, even if the field is disabled
+  let paymentNumberValue = this.newUser.get('paymentNumber')?.value;
+  
+  // If the field is disabled and useSameAsPhone is checked, get the phone number value
+  if (this.newUser.get('paymentNumber')?.disabled && this.newUser.get('useSameAsPhone')?.value) {
+    paymentNumberValue = this.newUser.get('phoneNumber')?.value;
+  }
 
     const userData: RegisterUser = {
       firstName: this.newUser.value.firstName,
@@ -107,7 +113,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
       city: this.newUser.value.city,
       street: this.newUser.value.street,
       nid: this.newUser.value.nid,
-      paymentNumber: this.newUser.value.paymentNumber,
+      paymentNumber: paymentNumberValue,
       dateOfHiring: this.newUser.value.dateOfHiring
     };
 
@@ -122,19 +128,19 @@ export class AddUserComponent implements OnInit, OnDestroy {
           this.resetForm();
           
           // Clear success message after 3 seconds and redirect
-          // setTimeout(() => {
-          //   this.successMessage = '';
-          //   this.router.navigate(['/users']);
-          // }, 3000);
+          setTimeout(() => {
+            this.successMessage = '';
+            this.router.navigate(['/users']);
+          }, 3000);
         },
         error: (error) => {
           this.isLoading = false;
           this.errorMessage = error.message || 'حدث خطأ أثناء إضافة المستخدم';
           
           // Clear error message after 5 seconds
-          // setTimeout(() => {
-          //   this.errorMessage = '';
-          // }, 5000);
+          setTimeout(() => {
+            this.errorMessage = '';
+          }, 5000);
         }
       });
   }

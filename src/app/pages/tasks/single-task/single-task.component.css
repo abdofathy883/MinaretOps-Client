@@ -144,16 +144,28 @@
   border: 1px solid #ffeaa7;
 }
 
+.status-acknowledged {
+  background: #e9f7ef;
+  color: #1e8449;
+  border: 1px solid #c8e6c9;
+}
+
 .status-in-progress {
   background: #d1ecf1;
   color: #0c5460;
   border: 1px solid #bee5eb;
 }
 
-.status-delivered {
-  background: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+.status-under-review {
+  background: #e8eaf6;
+  color: #3f51b5;
+  border: 1px solid #c5cae9;
+}
+
+.status-needs-edits {
+  background: #fff0f0;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
 }
 
 .status-completed {

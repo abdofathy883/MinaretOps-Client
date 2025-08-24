@@ -11,6 +11,8 @@ import { AuthService } from '../../../services/auth/auth.service';
 })
 export class AllUsersComponent implements OnInit{
   users: User[] = [];
+  errorMessage: string = '';
+
 
   constructor(
     private authService: AuthService,
@@ -21,10 +23,9 @@ export class AllUsersComponent implements OnInit{
     this.authService.getAll().subscribe({
       next: (response) => {
         this.users = response;
-        console.log(response);
       },
       error: (error) => {
-        console.log(error);
+        this.errorMessage = error;
       }
     })
   }

@@ -22,7 +22,6 @@ export class AllClientsComponent implements OnInit{
     this.clientService.getAll().subscribe({
       next: (response) => {
         this.clients = response;
-        console.log(response);
       }
     })
   }
@@ -30,13 +29,13 @@ export class AllClientsComponent implements OnInit{
   getStatusText(status: ClientStatus): string {
     switch (status) {
       case ClientStatus.Active:
-        return 'Active';
+        return 'نشط';
       case ClientStatus.OnHold:
-        return 'On Hold';
+        return 'متوقف مؤقتا';
       case ClientStatus.Cancelled:
-        return 'Cancelled';
+        return 'الغى التعاقد';
       default:
-        return 'Unknown';
+        return 'غير معروف';
     }
   }
 

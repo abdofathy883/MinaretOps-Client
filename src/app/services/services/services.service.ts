@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api-service/api.service';
 import { Observable } from 'rxjs';
-import { CreateServiceRequest, Service } from '../../model/service/service';
+import { CreateServiceRequest, Service, UpdateServiceRequest } from '../../model/service/service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,15 +22,15 @@ export class ServicesService {
     return this.api.post(`${this.endpoint}`, data);
   }
 
-  update(id: number, data: CreateServiceRequest): Observable<Service> {
-    return this.api.put(`${this.endpoint}/${id}`, data);
+  update(updateService: UpdateServiceRequest): Observable<Service> {
+    return this.api.patch(`${this.endpoint}/update`, updateService);
   }
 
   delete(id: number): Observable<void> {
-    return this.api.delete(`${this.endpoint}/${id}`);
+    return this.api.delete(`${this.endpoint}//${id}`);
   }
 
   toggleVisibility(id: number): Observable<Service> {
-    return this.api.patch(`${this.endpoint}/${id}`, {});
+    return this.api.patch(`${this.endpoint}/toggle-visibility/${id}`, null);
   }
 }

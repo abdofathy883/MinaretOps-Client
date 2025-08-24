@@ -1,12 +1,29 @@
-<section class="d-flex align-items-center justify-content-center flex-column min-vh-100">
+<section
+  class="d-flex align-items-center justify-content-center flex-column min-vh-100"
+>
   <div class="border rounded p-3 shadow login-card">
     <div>
-      <img src="./assets/The Minaret Agency Logo.png" class="d-block mx-auto" width="30%" alt="Minaret Agency Logo">
+      <img
+        src="./assets/The Minaret Agency Logo.png"
+        class="d-block mx-auto"
+        width="30%"
+        alt="Minaret Agency Logo"
+      />
       <h2 class="text-center text-white">اهلا بيك</h2>
     </div>
+
+    <!-- Error Message -->
+    @if (errorMessage) {
+    <div class="alert alert-danger mt-3" role="alert">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      {{ errorMessage }}
+    </div>
+    }
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="mb-3">
-        <label for="phoneNumber" class="form-label text-white">رقم الموبايل</label>
+        <label for="phoneNumber" class="form-label text-white"
+          >رقم الموبايل</label
+        >
         <input
           type="tel"
           class="form-control"
@@ -29,17 +46,16 @@
       </div>
       <button class="add-btn w-100">
         @if (isLoading) {
-          <span
-            class="spinner-border spinner-border-sm ms-2"
-            role="status"
-            aria-hidden="true"
-          ></span>
+        <span
+          class="spinner-border spinner-border-sm ms-2"
+          role="status"
+          aria-hidden="true"
+        ></span>
         <span>جاري تسجيل الدخول...</span>
         } @else {
         <span>تسجيل الدخول</span>
         }
       </button>
     </form>
-
   </div>
 </section>

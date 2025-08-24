@@ -1,12 +1,12 @@
+import { ClientServiceDTO } from "../client/client";
+
 export interface Service {
     id: number;
     title: string;
     description: string;
     createdAt: Date;
-}
-
-export interface TaskItem {
-
+    isDeleted: boolean;
+    clientServices: ClientServiceDTO[];
 }
 
 export interface CreateServiceRequest {
@@ -14,5 +14,8 @@ export interface CreateServiceRequest {
     description: string;
 }
 
-export interface CreateTaskItemRequest {
+export interface UpdateServiceRequest {
+    id: number;
+    title: string;
+    description: string;
 }

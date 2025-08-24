@@ -37,29 +37,42 @@
       <div class="col">
       <div class="card h-100" (click)="goToTask(task.id)" style="cursor: pointer;">
         <div class="card-body">
-          <span class="badge text-bg-warning">{{ task.priority }}</span>
+          <div
+            class="priority-badge"
+            [ngClass]="getPriorityClass(task.priority)"
+          >
+            {{ task.priority }}
+          </div>
           <h5 class="card-title text-center">{{ task.title }}</h5>
           <p class="card-text text-center">{{ task.description }}</p>
           <p class="card-text">العميل: {{ task.clientName }}</p>
           <p class="card-text">الخدمة: {{ task.serviceName }}</p>
           <p class="card-text">الموظف: {{ task.employeeName }}</p>
-          <p class="card-text">الحالة: {{ getStatusText(task.status) }}</p>
+          <div>
+            الحالة:
+            <div
+              class="status-badge me-3"
+              [ngClass]="getStatusClass(task.status)"
+            >
+              {{ getStatusLabel(task.status) }}
+            </div>
+          </div>
         </div>
         <div class="card-footer">
-          <small class="text-body-secondary">وقت التسليم: {{ task.deadline }}</small>
+          <small>وقت التسليم: {{ task.deadline | date}}</small>
         </div>
       </div>
     </div>
     }
-    @if (filteredTasks.length === 0) {
-      <div class="col-12 text-center">
-        <div class="empty-state">
-          <h3>لا توجد مهام تطابق الفلاتر المحددة</h3>
-          <p>جرب تغيير معايير البحث أو مسح الفلاتر</p>
-        </div>
+    
+    
+  </div>
+  @if (filteredTasks.length === 0) {
+    <div class="text-center mt-3">
+      <div class="empty-state">
+        <h3>لا توجد مهام تطابق الفلاتر المحددة</h3>
+        <p>جرب تغيير معايير البحث أو مسح الفلاتر</p>
       </div>
-    }
-  
-  
-</div>
+    </div>
+  }
 </section>

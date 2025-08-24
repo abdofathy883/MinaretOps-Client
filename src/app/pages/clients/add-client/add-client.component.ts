@@ -76,7 +76,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
     const task = this.fb.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
-      status: [CustomTaskStatus.NotStarted],
+      status: [CustomTaskStatus.Open],
       clientServiceId: [0],
       deadline: ['', Validators.required],
       priority: ['عادي'],
@@ -235,10 +235,6 @@ export class AddClientComponent implements OnInit, OnDestroy {
         console.log('error response adding client: ', error);
       }
     })
-    // Simulate API call
-    // this.simulateAddClient(clientData);
-
-
   }
 
   resetForm(): void {

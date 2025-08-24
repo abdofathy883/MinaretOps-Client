@@ -101,7 +101,7 @@
         <div class="info-item">
           <label>تم الإنجاز في الموعد:</label>
           <span
-            class="on-time-status"
+            class="on-time-status mt-2"
             [ngClass]="{
               'on-time': task.isCompletedOnDeadline,
               late: !task.isCompletedOnDeadline
@@ -110,8 +110,8 @@
             <i
               [class]="
                 task.isCompletedOnDeadline
-                  ? 'fas fa-check-circle'
-                  : 'fas fa-times-circle'
+                  ? 'bi bi-check-circle'
+                  : 'bi bi-x-circle'
               "
             ></i>
             {{ task.isCompletedOnDeadline ? "نعم" : "لا" }}
@@ -122,19 +122,23 @@
         <div class="status-update-section">
           <h4>تحديث الحالة</h4>
           <div class="status-options">
-            <button
-              *ngFor="let status of availableStatuses"
-              class="status-option-btn"
-              [ngClass]="{
-                active: task.status === status.value,
-                disabled: updatingStatus
-              }"
-              (click)="updateTaskStatus(status.value)"
-              [disabled]="updatingStatus || task.status === status.value"
-            >
-              <i [class]="status.icon"></i>
-              {{ status.label }}
-            </button>
+            @for (status of availableStatuses; track $index) {
+              <button
+                class="status-option-btn"
+                [ngClass]="{
+                  active: task.status === status.value,
+                  disabled: updatingStatus
+                }"
+                (click)="updateTaskStatus(status.value)"
+                [disabled]="updatingStatus || task.status === status.value ||
+                (status.value === CustomTaskStatus.Open && task.status !== CustomTaskStatus.Open)"
+              >
+                <i [class]="status.icon"></i>
+                {{ status.label }}
+              </button>
+
+              
+            }
           </div>
 
           <div class="update-feedback" *ngIf="updatingStatus">

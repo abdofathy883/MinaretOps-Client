@@ -223,7 +223,7 @@ export class NewTaskGroupComponent implements OnInit {
   }
 
   private initializeModal() {
-    const modalElement = document.getElementById('taskModal');
+    const modalElement = document.getElementById('newTaskGroupModal');
     if (modalElement) {
       // @ts-ignore - Bootstrap types might not be available
       this.modal = new bootstrap.Modal(modalElement);

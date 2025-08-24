@@ -1,0 +1,29 @@
+import { Injectable } from '@angular/core';
+import { ApiService } from '../api-service/api.service';
+import { Observable } from 'rxjs';
+import { CreateInternalTask, InternalTask } from '../../model/internal-task/internal-task';
+import { CustomTaskStatus } from '../../model/client/client';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class InternalTaskService {
+  private endpoint = 'internaltask';
+  constructor(private api: ApiService) { }
+
+  getAll(): Observable<InternalTask[]> {
+    return this.api.get<InternalTask[]>(this.endpoint);
+  }
+
+  getById(id: number): Observable<InternalTask> {
+    return this.api.get<InternalTask>(`${this.endpoint}/${id}`);
+  }
+
+  add(task: CreateInternalTask): Observable<InternalTask> {
+    return this.api.post<InternalTask>(this.endpoint, task);
+  }
+
+  changeTaskStatus(id: number, status: CustomTaskStatus): Observable<boolean> {
+    return this.api.patch<boolean>(`${this.endpoint}/${id}`, status);
+  }
+}

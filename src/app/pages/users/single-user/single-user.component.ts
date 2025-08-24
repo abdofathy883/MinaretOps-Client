@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { User } from '../../../model/auth/user';
+import { UpdateUser, User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
@@ -19,6 +19,9 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   isEditMode = false;
   errorMessage = '';
   successMessage = '';
+  currentLoggedInUserId: string = '';
+  isUserAdmin: boolean = false;
+  isUserAccountManager: boolean = false;
   
   editUserForm: FormGroup;
   
@@ -27,20 +30,34 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
+    private router: Router,
     private fb: FormBuilder
   ) {
     this.editUserForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
-      lastName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
-      email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', [Validators.required]],
-      role: ['', [Validators.required]],
-      password: [''],
+      firstName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
+      lastName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
+      email: ['', [Validators.email]],
+      phoneNumber: [''],
+      role: [''],
+      paymentNumber: [''],
+      city: [''],
+      street: ['']
     });
   }
 
   ngOnInit(): void {
     this.loadUser();
+    this.currentLoggedInUserId = this.authService.getCurrentUserId();
+    this.authService.isAdmin().subscribe((isAdmin) => {
+      if (isAdmin) {
+        this.isUserAdmin = true;
+      }
+    });
+    this.authService.isAccountManager().subscribe((isAccountManager) => {
+      if (isAccountManager) {
+        this.isUserAccountManager = true;
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -76,10 +93,10 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       lastName: user.lastName,
       email: user.email,
       phoneNumber: user.phoneNumber,
-      // userName: user.userna, // Using userId as userName since it's not in the User interface
       role: this.getRoleValue(user.roles?.[0]),
-      password: '',
-      confirmPassword: ''
+      paymentNumber: user.paymentNumber,
+      city: user.city,
+      street: user.street
     });
   }
 
@@ -87,14 +104,28 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     if (!role) return '';
     
     switch (role.toLowerCase()) {
-      case 'admin':
-      case 'مدير':
-        return '1';
-      case 'user':
-      case 'موظف':
-        return '2';
+      case '1':
+        return 'Admin';
+      case '2':
+        return 'Account Manager';
+      case '3':
+        return 'Graphic Designer';
+      case '4':
+        return 'Graphic Designer Team Leader';
+      case '5':
+        return 'Content Creator';
+      case '6':
+        return 'Content Creator Team Leader';
+      case '7':
+        return 'Ads Specialist';
+      case '8':
+        return 'SEO Specialist';
+      case '9':
+        return 'Web Developer';
+        case '10':
+          return 'Video Editor';
       default:
-        return '';
+        return 'اختر الدور';
     }
   }
 
@@ -133,42 +164,51 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     this.successMessage = '';
 
     const formValue = this.editUserForm.value;
-    const updateData = {
-      userId: this.user?.id,
+
+    const updateUser: UpdateUser = {
+      id: this.user?.id,
       firstName: formValue.firstName,
       lastName: formValue.lastName,
       email: formValue.email,
       phoneNumber: formValue.phoneNumber,
-      role: parseInt(formValue.role),
-      password: formValue.password || undefined
+      city: formValue.city,
+      street: formValue.street,
+      paymentNumber: formValue.paymentNumber
     };
 
-    // Since there's no update method in AuthService, we'll need to add it
-    // For now, we'll simulate the update
-    this.simulateUpdate(updateData);
+    this.authService.update(updateUser).subscribe({
+      next: (response) => {
+        this.user = response;
+        this.successMessage = 'تم تحديث بيانات المستخدم بنجاح';
+      },
+      error: (error) => {
+        console.log(error);
+        this.errorMessage = 'حدث خطأ أثناء تحديث بيانات المستخدم';
+      }
+    })
+
+
   }
 
-  private simulateUpdate(updateData: any): void {
-    // Simulate API call delay
-    setTimeout(() => {
-      // Update local user object
-      if (this.user) {
-        this.user.firstName = updateData.firstName;
-        this.user.lastName = updateData.lastName;
-        this.user.email = updateData.email;
-        this.user.phoneNumber = updateData.phoneNumber;
-        this.user.roles = [this.getRoleDisplayName(updateData.role.toString())];
+  deleteUser() {
+    if (this.user?.id == this.currentLoggedInUserId) {
+      this.errorMessage = "لا يمكن حذف حسابك";
+      return;
+    }
+    this.authService.delete(this.user?.id || '').subscribe({
+      next: (response) => {
+        if (response) {
+          this.successMessage = 'تم حذف المستخدم بنجاح';
+          this.router.navigate(['/users']);
+        } else {
+          this.errorMessage = 'حدث خطأ أثناء حذف المستخدم';
+        }
+      },
+      error: (error) => {
+        console.log(error);
+        this.errorMessage = 'حدث خطأ أثناء حذف المستخدم';
       }
-
-      this.isLoading = false;
-      this.isEditMode = false;
-      this.successMessage = 'تم تحديث بيانات المستخدم بنجاح';
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        this.successMessage = '';
-      }, 3000);
-    }, 1000);
+    });
   }
 
   private passwordMatchValidator(form: FormGroup): { [key: string]: any } | null {

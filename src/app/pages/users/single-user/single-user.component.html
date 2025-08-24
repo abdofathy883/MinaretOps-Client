@@ -5,19 +5,21 @@
       <i class="bi bi-person-circle me-2"></i>
       تفاصيل المستخدم
     </h2>
-    <div>
-      @if (!isEditMode) {
-      <button class="reset-btn" (click)="toggleEditMode()">
-        <i class="bi bi-pencil me-1"></i>
-        تعديل
-      </button>
-      } @if (isEditMode) {
-      <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
-        <i class="bi bi-x-circle me-1"></i>
-        إلغاء
-      </button>
-      }
-    </div>
+    @if (isUserAdmin || isUserAccountManager) {
+      <div>
+        @if (!isEditMode) {
+        <button class="reset-btn" (click)="toggleEditMode()">
+          <i class="bi bi-pencil me-1"></i>
+          تعديل
+        </button>
+        } @if (isEditMode) {
+        <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
+          <i class="bi bi-x-circle me-1"></i>
+          إلغاء
+        </button>
+        }
+      </div>
+    }
   </div>
 
   <!-- Error State -->
@@ -133,7 +135,6 @@
                   editUserForm.get('firstName')?.invalid &&
                   editUserForm.get('firstName')?.touched
                 "
-                required
               />
               <div
                 class="invalid-feedback"
@@ -142,10 +143,6 @@
                   editUserForm.get('firstName')?.touched
                 "
               >
-                <span
-                  *ngIf="editUserForm.get('firstName')?.errors?.['required']"
-                  >الاسم الأول مطلوب</span
-                >
                 <span
                   *ngIf="editUserForm.get('firstName')?.errors?.['minlength']"
                   >الاسم الأول يجب أن يكون 3 أحرف على الأقل</span
@@ -176,9 +173,6 @@
                   editUserForm.get('lastName')?.touched
                 "
               >
-                <span *ngIf="editUserForm.get('lastName')?.errors?.['required']"
-                  >الاسم الأخير مطلوب</span
-                >
                 <span
                   *ngIf="editUserForm.get('lastName')?.errors?.['minlength']"
                   >الاسم الأخير يجب أن يكون 3 أحرف على الأقل</span
@@ -214,9 +208,6 @@
                   editUserForm.get('email')?.touched
                 "
               >
-                <span *ngIf="editUserForm.get('email')?.errors?.['required']"
-                  >البريد الإلكتروني مطلوب</span
-                >
                 <span *ngIf="editUserForm.get('email')?.errors?.['email']"
                   >صيغة البريد الإلكتروني غير صحيحة</span
                 >
@@ -241,10 +232,6 @@
                   editUserForm.get('phoneNumber')?.touched
                 "
               >
-                <span
-                  *ngIf="editUserForm.get('phoneNumber')?.errors?.['pattern']"
-                  >صيغة رقم الهاتف غير صحيحة</span
-                >
               </div>
             </div>
           </div>
@@ -263,8 +250,16 @@
                 required
               >
                 <option value="" disabled>اختر الدور</option>
-                <option value="1">مدير</option>
-                <option value="2">موظف</option>
+                <option value="1">Admin</option>
+              <option value="2">Account Manager</option>
+              <option value="3">Graphic Designer</option>
+              <option value="4">Graphic Designer Team Leader</option>
+              <option value="5">Content Creator</option>
+              <option value="6">Content Creator Team Leader</option>
+              <option value="7">Ads Specialist</option>
+              <option value="8">SEO Specialist</option>
+              <option value="9">Web Developer</option>
+              <option value="10">Video Editor</option>
               </select>
               <div
                 class="invalid-feedback"
@@ -273,10 +268,22 @@
                   editUserForm.get('role')?.touched
                 "
               >
-                <span *ngIf="editUserForm.get('role')?.errors?.['required']"
-                  >الدور مطلوب</span
-                >
               </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="paymentNumber" class="form-label">رقم المحفظة / انستاباي</label>
+              <input type="tel" class="form-control" id="paymentNumber" formControlName="paymentNumber" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="city" class="form-label">المدينة</label>
+              <input type="text" class="form-control" id="city" formControlName="city" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="street" class="form-label">العنوان التفصيلي</label>
+              <input type="text" class="form-control" id="street" formControlName="street" />
             </div>
           </div>
 
@@ -289,6 +296,7 @@
             <span
               class="spinner-border spinner-border-sm me-1"
             ></span>
+            جار حفظ التغييرات...
           } @else {
             <i class="bi bi-check-circle me-1"></i>
             حفظ التغييرات
@@ -297,6 +305,10 @@
         </div>
       </div>
     </form>
+  </div>
+
+  <div class="mt-4">
+    <button class="btn btn-danger" (click)="deleteUser()">حذف المستخدم</button>
   </div>
   }
 </section>

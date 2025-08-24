@@ -14,11 +14,14 @@ export class SingleTaskComponent implements OnInit{
   task!: TaskDTO;
   updatingStatus = false;
   availableStatuses = [
-    { value: CustomTaskStatus.NotStarted, label: 'لم تبدأ', icon: 'fas fa-clock' },
-    { value: CustomTaskStatus.InProgress, label: 'قيد التنفيذ', icon: 'fas fa-play-circle' },
-    { value: CustomTaskStatus.Delivered, label: 'تم التسليم', icon: 'fas fa-paper-plane' },
-    { value: CustomTaskStatus.Completed, label: 'مكتمل', icon: 'fas fa-check-circle' }
+    { value: CustomTaskStatus.Open, label: 'لم تبدأ', icon: 'bi bi-clock' },
+    { value: CustomTaskStatus.Acknowledged, label: 'تم الإقرار', icon: 'bi bi-hand-thumbs-up' },
+    { value: CustomTaskStatus.InProgress, label: 'قيد التنفيذ', icon: 'bi bi-play-circle' },
+    { value: CustomTaskStatus.UnderReview, label: 'قيد المراجعة', icon: 'bi bi-eye' },
+    { value: CustomTaskStatus.NeedsEdits, label: 'تحتاج إلى تعديلات', icon: 'bi bi-pencil-fill' },
+    { value: CustomTaskStatus.Completed, label: 'مكتمل', icon: 'bi bi-rocket-takeoff-fill' }
   ];
+  CustomTaskStatus = CustomTaskStatus;
   constructor(
     private taskService: TaskService,
     private route: ActivatedRoute
@@ -37,9 +40,11 @@ export class SingleTaskComponent implements OnInit{
 
   getStatusLabel(status: CustomTaskStatus): string {
     switch (status) {
-      case CustomTaskStatus.NotStarted: return 'لم تبدأ';
-      case CustomTaskStatus.Delivered: return 'تم التسليم';
+      case CustomTaskStatus.Open: return 'لم تبدأ';
+      case CustomTaskStatus.Acknowledged: return 'تم الإقرار';
       case CustomTaskStatus.InProgress: return 'قيد التنفيذ';
+      case CustomTaskStatus.UnderReview: return 'قيد المراجعة';
+      case CustomTaskStatus.NeedsEdits: return 'تحتاج إلى تعديلات';
       case CustomTaskStatus.Completed: return 'مكتمل';
       default: return 'غير محدد';
     }
@@ -47,9 +52,11 @@ export class SingleTaskComponent implements OnInit{
 
   getStatusClass(status: CustomTaskStatus): string {
     switch (status) {
-      case CustomTaskStatus.NotStarted: return 'status-not-started';
-      case CustomTaskStatus.Delivered: return 'status-delivered';
+      case CustomTaskStatus.Open: return 'status-not-started';
+      case CustomTaskStatus.Acknowledged: return 'status-acknowledged';
       case CustomTaskStatus.InProgress: return 'status-in-progress';
+      case CustomTaskStatus.UnderReview: return 'status-under-review';
+      case CustomTaskStatus.NeedsEdits: return 'status-needs-edits';
       case CustomTaskStatus.Completed: return 'status-completed';
       default: return 'status-unknown';
     }
@@ -60,12 +67,7 @@ export class SingleTaskComponent implements OnInit{
 
     this.updatingStatus = true;
 
-    const updateData = {
-      status: newStatus,
-      completedAt: newStatus === CustomTaskStatus.Completed ? new Date() : undefined
-    };
-
-    this.taskService.update(this.task.id, updateData).subscribe({
+    this.taskService.changeStatus(this.task.id, newStatus).subscribe({
       next: () => {
         if (this.task) {
           this.task.status = newStatus;

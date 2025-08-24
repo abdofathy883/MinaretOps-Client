@@ -1,0 +1,138 @@
+<section class="container my-4">
+    @if (internalTask) {
+        <div class="task-container">
+  <!-- Header Section -->
+  <div class="task-header">
+    <div class="task-title-section">
+      <h1 class="task-title">{{ internalTask.title }}</h1>
+      <div class="task-meta">
+        <span class="task-id">#{{ internalTask.id }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-6 mb-md-3">
+      <div class="task-details-card">
+
+        <div class="card-header">
+          <h3><i class="bi bi-info-circle"></i> تفاصيل المهمة</h3>
+        </div>
+  
+        <div class="detail-item">
+          <label>الوصف:</label>
+          <p class="description">{{ internalTask.description }}</p>
+        </div>
+  
+        
+  
+        <!-- <div class="detail-item">
+          <label>الموظف المسؤول:</label>
+          <span class="employee-name">{{ task.employeeName }}</span>
+        </div> -->
+  
+        
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="task-status-card">
+        <div class="card-header">
+          <h3><i class="bi bi-list-task"></i> حالة المهمة</h3>
+        </div>
+
+        <!-- Current Status Display -->
+        <div class="current-status">
+          <label>الحالة الحالية:</label>
+          <div
+            class="status-badge me-3"
+            [ngClass]="getStatusClass(internalTask.status)"
+          >
+            {{ getStatusLabel(internalTask.status) }}
+          </div>
+        </div>
+
+        <!-- Priority Display -->
+        <div class="priority-section">
+          <label>الأولوية:</label>
+          <div
+            class="priority-badge me-3"
+            [ngClass]="getPriorityClass(internalTask.priority)"
+          >
+            {{ internalTask.priority }}
+          </div>
+        </div>
+
+        <!-- Deadline Section -->
+        <div class="deadline-section">
+          <label>الموعد النهائي:</label>
+          <div class="deadline-info mt-2" [ngClass]="{ overdue: isOverdue() }">
+            <i class="fas fa-calendar-alt"></i>
+            <span>{{ internalTask.deadline | date : "dd/MM/yyyy" }}</span>
+            <span class="overdue-warning" *ngIf="isOverdue()">
+              <i class="fas fa-exclamation-triangle"></i>
+              متأخر
+            </span>
+          </div>
+        </div>
+
+        <!-- Completion Date -->
+        <div class="completion-section" *ngIf="internalTask.completedAt">
+          <label>تاريخ الإنجاز:</label>
+          <span class="completion-date">
+            {{ internalTask.completedAt | date : "dd/MM/yyyy" }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <label>تم الإنجاز في الموعد:</label>
+          <span
+            class="on-time-status mt-2"
+            [ngClass]="{
+              'on-time': internalTask.isCompletedOnDeadline,
+              late: !internalTask.isCompletedOnDeadline
+            }"
+          >
+            <i
+              [class]="
+                internalTask.isCompletedOnDeadline
+                  ? 'bi bi-check-circle'
+                  : 'bi bi-x-circle'
+              "
+            ></i>
+            {{ internalTask.isCompletedOnDeadline ? "نعم" : "لا" }}
+          </span>
+        </div>
+
+        <!-- Status Update Section -->
+        <div class="status-update-section">
+          <h4>تحديث الحالة</h4>
+          <div class="status-options">
+            @for (status of availableStatuses; track $index) {
+              <button
+                class="status-option-btn"
+                [ngClass]="{
+                  active: internalTask.status === status.value,
+                  disabled: updatingStatus
+                }"
+                (click)="updateTaskStatus(status.value)"
+                [disabled]="updatingStatus || internalTask.status === status.value ||
+                (status.value === CustomTaskStatus.Open && internalTask.status !== CustomTaskStatus.Open)"
+              >
+                <i [class]="status.icon"></i>
+                {{ status.label }}
+              </button>
+
+              
+            }
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    }
+</section>
+

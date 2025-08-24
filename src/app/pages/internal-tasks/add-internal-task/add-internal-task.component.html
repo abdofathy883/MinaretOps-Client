@@ -1,0 +1,145 @@
+<div class="container my-4">
+  <div class="mb-4">
+    <h2>
+      <i class="bi bi-gear me-2"></i>
+      إضافة تاسك جديد
+    </h2>
+  </div>
+
+  <!-- Success Message -->
+  @if (successMessage) {
+  <div class="alert alert-success mt-3" role="alert">
+    <i class="bi bi-check-circle me-2"></i>
+    {{ successMessage }}
+  </div>
+  }
+
+  <!-- Error Message -->
+  @if (errorMessage) {
+  <div class="alert alert-danger mt-3" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ errorMessage }}
+  </div>
+  }
+
+  <div class="card shadow-sm">
+    <div class="card-header form-header">
+      <h5 class="mb-0">
+        <i class="bi bi-gear me-2"></i>
+        معلومات التاسك
+      </h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="internalTaskForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="title" class="form-label">عنوان التاسك</label>
+          <span class="text-danger me-2">*</span>
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            required
+            name="title"
+            formControlName="title"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">الوصف</label>
+          <span class="text-danger me-2">*</span>
+          <textarea
+            id="description"
+            class="form-control"
+            rows="4"
+            required
+            name="description"
+            formControlName="description"
+          ></textarea>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="deadline" class="form-label">موعد التسليم</label>
+                <span class="text-danger me-2">*</span>
+                <input
+                    type="date"
+                    class="form-control"
+                    id="deadline"
+                    required
+                    name="deadline"
+                    formControlName="deadline"
+                />
+            </div>
+            <div class="col-md-6">
+                <label for="priority" class="form-label">الاولوية</label>
+                <span class="text-danger me-2">*</span>
+                <select
+                    class="form-select"
+                    id="priority"
+                    required
+                    name="priority"
+                    formControlName="priority"
+                >
+                    <option value="" disabled selected>اختر أولوية</option>
+                    <option value="low">عادي</option>
+                    <option value="medium">مهم</option>
+                    <option value="high">مستعجل</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Leader Selection -->
+        <div class="mb-3">
+            <label for="leader" class="form-label">قائد التاسك</label>
+            <span class="text-danger me-2">*</span>
+            <select
+                class="form-select"
+                id="leader"
+                required
+                name="leader"
+                formControlName="leader"
+            >
+                <option value="" disabled selected>اختر قائد الفريق</option>
+                @for (employee of employees; track $index) {
+                    <option [value]="employee.id">{{ employee.firstName + ' ' + employee.lastName }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- Team Members Selection -->
+        <div class="mb-3">
+            <label for="employees" class="form-label">الموظفين</label>
+            <span class="text-danger me-2">*</span>
+            <select
+                class="form-select"
+                id="employees"
+                required
+                name="employees"
+                formControlName="employees"
+                multiple
+            >
+                <option value="" disabled>اختر الموظفين</option>
+                @for (employee of employees; track $index) {
+                    <option [value]="employee.id">{{ employee.firstName + ' ' + employee.lastName }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- Submit Button Section -->
+        <div class="d-flex justify-content-start flex-wrap gap-3">
+          <button type="submit" class="add-btn">
+            @if (isLoading) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              جاري إضافة التاسك...
+            } @else {
+              <i class="bi bi-check-circle me-2"></i>
+              إضافة تاسك
+            }
+          </button>
+          <button type="button" class="reset-btn" (click)="resetForm()">
+            <i class="bi bi-arrow-clockwise me-2"></i>
+            إعادة تعيين
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

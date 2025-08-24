@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api-service/api.service';
 import { Observable } from 'rxjs';
-import { CreateTaskDTO, CreateTaskGroupDTO, TaskDTO, TaskGroupDTO } from '../../model/client/client';
+import { CreateTaskDTO, CreateTaskGroupDTO, CustomTaskStatus, TaskDTO, TaskGroupDTO } from '../../model/client/client';
 import { UpdateTaskDTO } from '../../model/task/task';
 
 @Injectable({
@@ -19,15 +19,23 @@ export class TaskService {
     return this.api.get<TaskDTO>(`${this.endpoint}/task/${taskId}`);
   }
 
-  update(taskId: number, updateTask: UpdateTaskDTO): Observable<any> {
-    return this.api.put<any>(`${this.endpoint}/update-task/${taskId}`, updateTask)
+  getTasksByEmployee(employeeId: string): Observable<TaskDTO[]> {
+    return this.api.get<TaskDTO[]>(`${this.endpoint}/emp-tasks/${employeeId}`);
   }
 
-  createTask(createTask: CreateTaskDTO): Observable<TaskDTO> {
+  update(taskId: number, updateTask: UpdateTaskDTO): Observable<any> {
+    return this.api.put<any>(`${this.endpoint}/update-task/${taskId}`, updateTask);
+  }
+
+  changeStatus(taskId: number, status: CustomTaskStatus): Observable<any> {
+    return this.api.patch<any>(`${this.endpoint}/change-status/${taskId}`, status);
+  }
+
+  addTask(createTask: CreateTaskDTO): Observable<TaskDTO> {
     return this.api.post<TaskDTO>(`${this.endpoint}/create-task`, createTask);
   }
 
-  createTaskGroup(createTaskGroup: CreateTaskGroupDTO): Observable<TaskGroupDTO> {
+  addTaskGroup(createTaskGroup: CreateTaskGroupDTO): Observable<TaskGroupDTO> {
     return this.api.post<TaskGroupDTO>(`${this.endpoint}/create-task-group`, createTaskGroup);
   }
 

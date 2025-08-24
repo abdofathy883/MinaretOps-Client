@@ -52,9 +52,9 @@ export class AuthService {
     return this.hasRole('Admin');
   }
 
-  // isAccountManager(): boolean {
-  //   return this.hasRole('AccountManager');
-  // }
+  isAccountManager(): Observable<boolean> {
+    return this.hasRole('AccountManager');
+  }
 
   login(user: LoginUser): Observable<User> {
     return this.api.post<User>(`${this.endpoint}/login`, user)
@@ -84,6 +84,10 @@ export class AuthService {
     return this.api.patch<User>(`${this.endpoint}/set-password`, changePassword);
   }
 
+  delete(userId: string): Observable<boolean> {
+    return this.api.delete<boolean>(`${this.endpoint}/${userId}`);
+  }
+
   getAuthorizationToken(): string | null {
     return this.getStoredToken();
   }
@@ -105,7 +109,6 @@ export class AuthService {
   private handleSuccessfulAuth(user: User): void {
     if (user.token) {
       this.storeToken(user.token);
-      console.log(user, 'user from auth service')
       this.storeUserId(user.id)
       if (user.refreshToken) {
         this.storeRefreshToken(user.refreshToken);
@@ -138,13 +141,7 @@ export class AuthService {
   private storeUserId(userId: string): void {
     localStorage.setItem(this.userIdKey, userId);
   }
-  // private storeUser(user: User): void {
-  //   localStorage.setItem(this.userKey, JSON.stringify(user));
-  // }
 
-  // private getStoredToken(): string | null {
-  //   return localStorage.getItem('user_Id');
-  // }
   private getStoredToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
@@ -153,10 +150,6 @@ export class AuthService {
     let userId = localStorage.getItem(this.userIdKey);
     return userId || '';
   }
-  // private getStoredUser(): User | null {
-  //   const userData = localStorage.getItem(this.userKey);
-  //   return userData ? JSON.parse(userData) : null;
-  // }
 
   private isTokenValid(token: string): boolean {
     try {

@@ -5,6 +5,8 @@ import { ClientServiceDTO, TaskDTO, CustomTaskStatus, CreateTaskDTO } from '../.
 import { User } from '../../../../model/auth/user';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { NewTaskGroupComponent } from '../new-task-group/new-task-group.component';
+import { TaskService } from '../../../../services/tasks/task.service';
+import { UpdateTaskDTO } from '../../../../model/task/task';
 
 @Component({
   selector: 'app-task-groups',
@@ -24,6 +26,8 @@ export class TaskGroupsComponent implements OnInit {
   isSaving: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
+  isUserAdmin: boolean = false;
+  isUserAccountManager: boolean = false;
   
   // Modal and form related
   editTaskForm: FormGroup;
@@ -37,7 +41,8 @@ export class TaskGroupsComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private taskService: TaskService
   ) {
     this.editTaskForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
@@ -62,6 +67,49 @@ export class TaskGroupsComponent implements OnInit {
   ngOnInit() {
     this.loadEmployees();
     this.initializeModal();
+    this.authService.isAdmin().subscribe((isAdmin) => {
+      if (isAdmin) {
+        this.isUserAdmin = true;
+      }
+    });
+    this.authService.isAccountManager().subscribe((isAccountManager) => {
+      if (isAccountManager) {
+        this.isUserAccountManager = true;
+      }
+    });
+  }
+
+  getStatusLabel(status: CustomTaskStatus): string {
+    switch (status) {
+      case CustomTaskStatus.Open: return 'لم تبدأ';
+      case CustomTaskStatus.Acknowledged: return 'تم الإقرار';
+      case CustomTaskStatus.InProgress: return 'قيد التنفيذ';
+      case CustomTaskStatus.UnderReview: return 'قيد المراجعة';
+      case CustomTaskStatus.NeedsEdits: return 'تحتاج إلى تعديلات';
+      case CustomTaskStatus.Completed: return 'مكتمل';
+      default: return 'غير محدد';
+    }
+  }
+
+  getStatusClass(status: CustomTaskStatus): string {
+    switch (status) {
+      case CustomTaskStatus.Open: return 'status-not-started';
+      case CustomTaskStatus.Acknowledged: return 'status-acknowledged';
+      case CustomTaskStatus.InProgress: return 'status-in-progress';
+      case CustomTaskStatus.UnderReview: return 'status-under-review';
+      case CustomTaskStatus.NeedsEdits: return 'status-needs-edits';
+      case CustomTaskStatus.Completed: return 'status-completed';
+      default: return 'status-unknown';
+    }
+  }
+
+  getPriorityClass(priority: string): string {
+    switch (priority.toLowerCase()) {
+      case 'مستعجل': return 'priority-high';
+      case 'مهم': return 'priority-medium';
+      case 'عادي': return 'priority-normal';
+      default: return 'priority-normal';
+    }
   }
 
   private initializeModal() {
@@ -77,8 +125,7 @@ export class TaskGroupsComponent implements OnInit {
       next: (users) => {
         this.employees = users;
       },
-      error: (error) => {
-        console.error('Error loading employees:', error);
+      error: () => {
         this.employees = [];
       }
     });
@@ -133,7 +180,7 @@ export class TaskGroupsComponent implements OnInit {
       priority: '',
       deadline: '',
       employeeId: '',
-      status: CustomTaskStatus.NotStarted,
+      status: CustomTaskStatus.Open,
       refrence: ''
     });
   }
@@ -143,9 +190,7 @@ export class TaskGroupsComponent implements OnInit {
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
-    const hours = String(d.getHours()).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+    return `${year}-${month}-${day}`;
   }
 
   private showModal(): void {
@@ -161,6 +206,7 @@ export class TaskGroupsComponent implements OnInit {
   }
 
   saveTask(): void {
+    debugger;
     if (this.editTaskForm.invalid || !this.selectedTaskGroupId) {
       return;
     }
@@ -178,8 +224,7 @@ export class TaskGroupsComponent implements OnInit {
   private updateExistingTask(formValue: any): void {
     if (!this.selectedTask) return;
 
-    const updatedTask: Partial<TaskDTO> = {
-      id: this.selectedTask.id,
+    const updatedTask: UpdateTaskDTO = {
       title: formValue.title,
       description: formValue.description,
       priority: formValue.priority,
@@ -190,12 +235,18 @@ export class TaskGroupsComponent implements OnInit {
     };
 
     // Update local data
-    this.updateLocalTask(updatedTask);
-    
-    this.isSaving = false;
-    this.hideModal();
-    this.successMessage = 'تم تحديث المهمة بنجاح';
-    this.showSuccessMessage();
+    this.taskService.update(this.selectedTask.id, updatedTask).subscribe({
+      next: (response) => {
+        this.isSaving = false;
+        this.hideModal();
+        this.successMessage = 'تم تحديث المهمة بنجاح';
+      },
+      error: (error) => {
+        this.isSaving = false;
+        console.log(error);
+        this.errorMessage = 'حدث خطأ في تحديث المهمة';
+      }
+    });
   }
 
   private createNewTask(formValue: any): void {
@@ -212,12 +263,17 @@ export class TaskGroupsComponent implements OnInit {
     };
 
     // Add to local data
-    this.addLocalTask(newTask);
-    
     this.isSaving = false;
-    this.hideModal();
-    this.successMessage = 'تم إضافة المهمة بنجاح';
-    this.showSuccessMessage();
+    this.taskService.addTask(newTask).subscribe({
+      next: (response) => {
+        this.hideModal();
+        this.successMessage = 'تم إضافة المهمة بنجاح';  
+
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    })
   }
 
   private getClientServiceIdFromTaskGroup(taskGroupId: number): number {
@@ -231,84 +287,7 @@ export class TaskGroupsComponent implements OnInit {
     return 0;
   }
 
-  private updateLocalTask(updatedTask: Partial<TaskDTO>): void {
-    for (const clientService of this.clientServices) {
-      for (const taskGroup of clientService.taskGroups) {
-        const taskIndex = taskGroup.tasks.findIndex(t => t.id === updatedTask.id);
-        if (taskIndex !== -1) {
-          taskGroup.tasks[taskIndex] = { ...taskGroup.tasks[taskIndex], ...updatedTask };
-          return;
-        }
-      }
-    }
-  }
-
-  private addLocalTask(newTask: CreateTaskDTO): void {
-    // Create a new TaskDTO from CreateTaskDTO
-    const taskDTO: TaskDTO = {
-      ...newTask,
-      id: this.generateTempId(), // Temporary ID for local display
-      isCompletedOnDeadline: false,
-      clientName: '',
-      serviceName: '',
-      employeeName: this.getEmployeeName(newTask.employeeId),
-      serviceId: 0,
-      clientId: 0
-    };
-
-    // Find the task group and add the new task
-    for (const clientService of this.clientServices) {
-      for (const taskGroup of clientService.taskGroups) {
-        if (taskGroup.id === newTask.taskGroupId) {
-          taskGroup.tasks.push(taskDTO);
-          return;
-        }
-      }
-    }
-  }
-
-  private generateTempId(): number {
-    // Generate a temporary negative ID for new tasks
-    return -Math.floor(Math.random() * 1000000);
-  }
-
-  private getEmployeeName(employeeId: string): string {
-    const employee = this.employees.find(emp => emp.id === employeeId);
-    return employee ? `${employee.firstName} ${employee.lastName}` : 'غير محدد';
-  }
-
-  private showSuccessMessage(): void {
-    setTimeout(() => {
-      this.successMessage = '';
-    }, 3000);
-  }
-
-  getPriorityClass(priority: string): string {
-    switch (priority.toLowerCase()) {
-      case 'عالية':
-        return 'bg-danger';
-      case 'متوسطة':
-        return 'bg-warning';
-      case 'منخفضة':
-        return 'bg-info';
-      default:
-        return 'bg-secondary';
-    }
-  }
-
-  getStatusClass(status: CustomTaskStatus): string {
-    switch (status) {
-      case CustomTaskStatus.Completed:
-        return 'bg-success';
-      case CustomTaskStatus.InProgress:
-        return 'bg-primary';
-      case CustomTaskStatus.Delivered:
-        return 'bg-info';
-      case CustomTaskStatus.NotStarted:
-      default:
-        return 'bg-secondary';
-    }
-  }
+  
 
   getStatusText(status: CustomTaskStatus): string {
     switch (status) {
@@ -316,16 +295,12 @@ export class TaskGroupsComponent implements OnInit {
         return 'مكتمل';
       case CustomTaskStatus.InProgress:
         return 'قيد التنفيذ';
-      case CustomTaskStatus.Delivered:
-        return 'تم التسليم';
-      case CustomTaskStatus.NotStarted:
+      case CustomTaskStatus.Acknowledged:
+        return 'تم الإقرار';
+      case CustomTaskStatus.Open:
       default:
         return 'لم يبدأ';
     }
-  }
-
-  goToTask(taskId: number) {
-    
   }
 
   hasError(controlName: string): boolean {

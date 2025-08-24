@@ -15,6 +15,9 @@ import { AllTasksComponent } from './pages/tasks/all-tasks/all-tasks.component';
 import { SingleTaskComponent } from './pages/tasks/single-task/single-task.component';
 import { authGuard } from './core/guards/auth.guard';
 import { noauthGuard } from './core/guards/noauth.guard';
+import { AllInternalTasksComponent } from './pages/internal-tasks/all-internal-tasks/all-internal-tasks.component';
+import { AddInternalTaskComponent } from './pages/internal-tasks/add-internal-task/add-internal-task.component';
+import { SingleInternalTaskComponent } from './pages/internal-tasks/single-internal-task/single-internal-task.component';
 
 export const routes: Routes = [
     {
@@ -90,6 +93,21 @@ export const routes: Routes = [
     {
         path: 'tasks/:id',
         component: SingleTaskComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'internal-tasks',
+        component: AllInternalTasksComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'internal-tasks/add',
+        component: AddInternalTaskComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'internal-tasks/:id',
+        component: SingleInternalTaskComponent,
         canActivate: [noauthGuard]
     }
 ];

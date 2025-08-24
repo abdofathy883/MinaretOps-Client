@@ -29,18 +29,7 @@ import { TaskGroupsComponent } from "../client-mini-components/task-groups/task-
   styleUrl: './single-client.component.css',
 })
 export class SingleClientComponent implements OnInit {
-  client: ClientDTO | null = null
-  // client: ClientDTO = {
-  //   id: 0,
-  //   name: '',
-  //   personalPhoneNumber: '',
-  //   companyName: '',
-  //   companyNumber: '',
-  //   businessDescription: '',
-  //   status: 0,
-  //   createdAt: new Date,
-  //   clientServices: ''
-  // };
+  client: ClientDTO | null = null;
   employees: User[] = [];
   errorMessage: string = '';
   successMessage: string = '';
@@ -120,7 +109,7 @@ export class SingleClientComponent implements OnInit {
   onTaskCreated(createTask: CreateTaskDTO): void {
     this.loading = true;
 
-    this.taskService.createTask(createTask).subscribe({
+    this.taskService.addTask(createTask).subscribe({
       next: (response) => {
         // Add the new task to local data
         this.addTaskToLocalData(response);
@@ -138,7 +127,7 @@ export class SingleClientComponent implements OnInit {
   onTaskGroupCreated(createTaskGroup: CreateTaskGroupDTO): void {
     this.loading = true;
 
-    this.taskService.createTaskGroup(createTaskGroup).subscribe({
+    this.taskService.addTaskGroup(createTaskGroup).subscribe({
       next: (response) => {
         // Add the new task group to local data
         this.addTaskGroupToLocalData(response);

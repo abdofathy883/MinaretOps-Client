@@ -5,23 +5,25 @@
       <i class="bi bi-person-circle me-2"></i>
       التاسكات الشهرية
     </h2>
-    <div>
-      @if (!isEditMode) {
-      <button class="reset-btn" (click)="toggleEditMode()">
-        <i class="bi bi-pencil me-1"></i>
-        تعديل
-      </button>
-      } @if (isEditMode) {
-      <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
-        <i class="bi bi-x-circle me-1"></i>
-        إلغاء
-      </button>
-      }
-    </div>
+    @if (isUserAdmin || isUserAccountManager) {
+      <div>
+        @if (!isEditMode) {
+        <button class="reset-btn" (click)="toggleEditMode()">
+          <i class="bi bi-pencil me-1"></i>
+          تعديل
+        </button>
+        } @if (isEditMode) {
+        <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
+          <i class="bi bi-x-circle me-1"></i>
+          إلغاء
+        </button>
+        }
+      </div>
+    }
   </div>
 
   @if (!isEditMode) {
-  <div class="card shadow-sm">
+  <div class="card shadow-sm mt-2">
     @for (clientService of clientServices; track clientService.id) { @if
     (clientService.taskGroups && clientService.taskGroups.length > 0) { @for
     (taskGroup of clientService.taskGroups; track taskGroup.id) {
@@ -43,7 +45,7 @@
         </thead>
         <tbody>
           @for (task of taskGroup.tasks; track task.id) {
-          <tr (click)="goToTask(task.id)" style="cursor: pointer">
+          <tr>
             <td>{{ task.title }}</td>
             <td>{{ task.employeeName || "غير محدد" }}</td>
             <td>
@@ -121,12 +123,7 @@
       <button class="btn btn-outline-success" (click)="openAddTaskModal(taskGroup.id)">
         + اضافة تاسك
       </button>
-      } @else {
-      <p class="text-muted text-center">لا توجد مهام لهذه المجموعة</p>
-      <button class="btn btn-outline-success" (click)="openAddTaskModal(taskGroup.id)">
-        + اضافة تاسك
-      </button>
-      }
+    }
     </div>
   } } @else {
     <div class="card-body">
@@ -182,10 +179,9 @@
                 formControlName="priority"
                 [class.is-invalid]="hasError('priority')">
                 <option value="">اختر الأولوية</option>
-                <option value="عالية">عالية</option>
-                <option value="متوسطة">متوسطة</option>
-                <option value="منخفضة">منخفضة</option>
                 <option value="عادي">عادي</option>
+                <option value="مهم">مهم</option>
+                <option value="مستعجل">مستعجل</option>
               </select>
               @if (hasError('priority')) {}
               <div class="invalid-feedback">

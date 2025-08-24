@@ -5,20 +5,23 @@
       <i class="bi bi-person-circle me-2"></i>
       معلومات العميل
     </h2>
-    <div>
-      @if (!isEditMode) {
-      <button class="reset-btn" (click)="toggleEditMode()">
-        <i class="bi bi-pencil me-1"></i>
-        تعديل
-      </button>
-      } @if (isEditMode) {
-      <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
-        <i class="bi bi-x-circle me-1"></i>
-        إلغاء
-      </button>
-      }
-    </div>
+    @if (isUserAdmin || isUserAccountManager) {
+      <div>
+        @if (!isEditMode) {
+        <button class="reset-btn" (click)="toggleEditMode()">
+          <i class="bi bi-pencil me-1"></i>
+          تعديل
+        </button>
+        } @if (isEditMode) {
+        <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
+          <i class="bi bi-x-circle me-1"></i>
+          إلغاء
+        </button>
+        }
+      </div>
+    }
   </div>
+
   @if (isEditMode) {
   <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
     <div class="card shadow-sm">
@@ -200,7 +203,7 @@
           <p>
             <strong>رابط Drive:</strong>
             @if (client?.driveLink) {
-            <a [href]="client?.driveLink" target="_blank">عرض</a>
+            <a [href]="client?.driveLink" target="_blank" class="me-2">عرض</a>
             } @if (!client?.driveLink) {
             <span>غير محدد</span>
             }
@@ -218,9 +221,10 @@
         <div class="col-md-6">
           <p>
             <strong>الحالة:</strong>
-            <!-- <span class="badge" [ngClass]="getStatusClass(client?.status)">
+            <br>
+            <span class="badge" [ngClass]="'status-' + getStatusClass(client?.status)">
                     {{ getStatusText(client?.status) }}
-                  </span> -->
+                  </span>
           </p>
         </div>
         <div class="col-md-6">

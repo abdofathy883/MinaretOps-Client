@@ -38,6 +38,26 @@
           </a>
         </li>
         <li class="nav-item">
+          <button class="text-white menu-toggler" (click)="toggleMenu('internalTasks')">
+            <i class="bi bi-list-task ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed">المهام الداخلية</span>
+          </button>
+          <ul
+            class="submenu internal-tasks-menu"
+            [class.open]="openMenu === 'internalTasks'"
+            [class.hidden]="isCollapsed"
+          >
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/internal-tasks">قائمة المهام الداخلية</a>
+            </li>
+            @if (isUserAdmin || isUserAccountManager) {
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks/add">إضافة مهمة داخلية</a>
+              </li>
+            }
+          </ul>
+        </li>
+        <li class="nav-item">
           <button class="text-white menu-toggler" (click)="toggleMenu('users')">
             <i class="bi bi-people-fill ms-3"></i>
             <span class="nav-text" [class.hidden]="isCollapsed"
@@ -52,9 +72,12 @@
             <li class="nav-item">
               <a class="nav-link" routerLink="/users">قائمة المستخدمين</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/users/add">إضافة مستخدم</a>
-            </li>
+            @if (isUserAdmin || isUserAccountManager) {
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/users/add">إضافة مستخدم</a>
+              </li>
+
+            }
           </ul>
         </li>
         <li class="nav-item">
@@ -73,9 +96,11 @@
             <li class="nav-item">
               <a class="nav-link" routerLink="/services">قائمة الخدمات</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/services/add">إضافة خدمة</a>
-            </li>
+            @if (isUserAdmin || isUserAccountManager) {
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/services/add">إضافة خدمة</a>
+              </li>
+            }
           </ul>
         </li>
         <li class="nav-item">
@@ -94,9 +119,11 @@
             <li class="nav-item">
               <a class="nav-link" routerLink="/clients">قائمة العملاء</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/clients/add">إضافة عميل</a>
-            </li>
+            @if (isUserAdmin || isUserAccountManager) {
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/clients/add">إضافة عميل</a>
+              </li>
+            }
           </ul>
         </li>
       </ul>

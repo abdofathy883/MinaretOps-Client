@@ -17,10 +17,11 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin-tasks',
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule],
   templateUrl: './admin-tasks.component.html',
   styleUrl: './admin-tasks.component.css',
 })
@@ -88,18 +89,36 @@ export class AdminTasksComponent implements OnInit {
     });
   }
 
-  getStatusText(status: CustomTaskStatus): string {
+  getStatusLabel(status: CustomTaskStatus): string {
     switch (status) {
-      case CustomTaskStatus.NotStarted:
-        return 'Not Started';
-      case CustomTaskStatus.Delivered:
-        return 'Delivered';
-      case CustomTaskStatus.InProgress:
-        return 'In Progress';
-      case CustomTaskStatus.Completed:
-        return 'Completed';
-      default:
-        return 'Unknown';
+      case CustomTaskStatus.Open: return 'لم تبدأ';
+      case CustomTaskStatus.Acknowledged: return 'تم الإقرار';
+      case CustomTaskStatus.InProgress: return 'قيد التنفيذ';
+      case CustomTaskStatus.UnderReview: return 'قيد المراجعة';
+      case CustomTaskStatus.NeedsEdits: return 'تحتاج إلى تعديلات';
+      case CustomTaskStatus.Completed: return 'مكتمل';
+      default: return 'غير محدد';
+    }
+  }
+
+  getStatusClass(status: CustomTaskStatus): string {
+    switch (status) {
+      case CustomTaskStatus.Open: return 'status-not-started';
+      case CustomTaskStatus.Acknowledged: return 'status-acknowledged';
+      case CustomTaskStatus.InProgress: return 'status-in-progress';
+      case CustomTaskStatus.UnderReview: return 'status-under-review';
+      case CustomTaskStatus.NeedsEdits: return 'status-needs-edits';
+      case CustomTaskStatus.Completed: return 'status-completed';
+      default: return 'status-unknown';
+    }
+  }
+
+  getPriorityClass(priority: string): string {
+    switch (priority.toLowerCase()) {
+      case 'مستعجل': return 'priority-high';
+      case 'مهم': return 'priority-medium';
+      case 'عادي': return 'priority-normal';
+      default: return 'priority-normal';
     }
   }
 
