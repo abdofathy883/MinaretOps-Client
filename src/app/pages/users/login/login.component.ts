@@ -44,6 +44,8 @@ export class LoginComponent implements OnInit{
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
+        this.isLoading = false;
+        console.log('error', error);
         this.errorMessage = error.message || 'حدث خطأ أثناء تسجيل الدخول';
       }
     })

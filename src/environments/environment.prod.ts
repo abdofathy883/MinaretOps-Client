@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://domain.com/api'
+  apiBaseUrl: 'https://internal-api.theminaretagency.com/api'
 };
