@@ -7,16 +7,18 @@
 .sidebar-wrapper {
   flex-shrink: 0;
   transition: width 0.3s ease;
+  width: 260px; /* Default width */
 }
 
 .sidebar-wrapper.collapsed {
-  width: 60px;
+  width: 80px; /* Collapsed width - match header component */
 }
 
 .content-wrapper {
   flex: 1;
   transition: margin-left 0.3s ease;
   overflow-x: auto;
+  min-width: 0; /* Prevent content from overflowing */
 }
 
 .content-wrapper.collapsed {

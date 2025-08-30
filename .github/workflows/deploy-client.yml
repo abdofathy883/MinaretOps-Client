@@ -1,0 +1,55 @@
+name: Deploy Angular Client
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - '**'
+
+jobs:
+  deploy-client:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+        
+    - name: Build application
+      run: npm run build --configuration=production
+        
+    - name: Deploy to VPS
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT }}
+        source: "dist/agency-ops-client/browser/**"
+        target: "/var/www/angular-app"
+        strip_components: 1
+        
+    - name: Restart Nginx
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT }}
+        script: |
+          # Set proper permissions
+          sudo chown -R www-data:www-data /var/www/angular-app
+          sudo chmod -R 755 /var/www/angular-app
+          
+          # Restart nginx
+          sudo systemctl restart nginx
+          
+          echo "Angular client deployed successfully!"

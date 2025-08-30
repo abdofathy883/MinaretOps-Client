@@ -15,7 +15,7 @@
 }
 
 .sidebar-container.collapsed {
-  width: 80px;
+  width: 50px;
 }
 
 .sidebar {
@@ -154,5 +154,5 @@ i {
 }
 
 .sidebar-container.collapsed .me-2 {
-    margin-right: 0;
+    margin-right: 0px;
 }

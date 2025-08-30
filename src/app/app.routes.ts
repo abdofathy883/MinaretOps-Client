@@ -23,7 +23,7 @@ export const routes: Routes = [
     {
         path: 'dashboard',
         component: DashboardComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'login',
@@ -38,47 +38,47 @@ export const routes: Routes = [
     {
         path: 'users/add',
         component: AddUserComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'users',
         component: AllUsersComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'users/:id',
         component: SingleUserComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'users/my-account/:id',
         component: MyAccountComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'services/add',
         component: AddServiceComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'services',
         component: AllServicesComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'services/:id',
         component: SingleServiceComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'clients/add',
         component: AddClientComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'clients',
         component: AllClientsComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'clients/:id',
@@ -88,26 +88,26 @@ export const routes: Routes = [
     {
         path: 'tasks',
         component: AllTasksComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'tasks/:id',
         component: SingleTaskComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'internal-tasks',
         component: AllInternalTasksComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'internal-tasks/add',
         component: AddInternalTaskComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     },
     {
         path: 'internal-tasks/:id',
         component: SingleInternalTaskComponent,
-        canActivate: [noauthGuard]
+        // canActivate: [noauthGuard]
     }
 ];

@@ -60,7 +60,7 @@
             }
           </div>
 
-          <div class="col-md-6 mb-3">
+          <div class="col-md-6">
             <label for="personalPhone" class="form-label">رقم الهاتف الشخصي</label>
             <span class="text-danger me-2">*</span>
             <input
@@ -87,7 +87,7 @@
             معلومات الشركة
           </h6>
         </div>
-        <div class="row mb-4">
+        <div class="row mb-3">
           <div class="col-md-6 mb-3">
             <label for="companyName" class="form-label">اسم الشركة</label>
             <input
@@ -99,7 +99,7 @@
             />
           </div>
 
-          <div class="col-md-6 mb-3">
+          <div class="col-md-6">
             <label for="companyPhone" class="form-label">رقم هاتف الشركة</label>
             <input
               type="tel"
@@ -111,7 +111,7 @@
           </div>
         </div>
 
-        <div class="row me-2 mb-3">
+        <div class="mb-3">
           <label for="driveLink" class="form-label">لينك الدرايف</label>
           <input
             type="text"
@@ -187,19 +187,17 @@
               @for (task of getTasksArray(serviceIndex).controls; track $index; let taskIndex = $index) {
               <div [formGroupName]="taskIndex" class="border rounded p-2 mb-2">
                 <!-- Task Header - Always Visible -->
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                  <div class="d-flex align-items-center">
-                    <h6 class="mb-0 me-2">المهمة {{ taskIndex + 1 }}</h6>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-secondary me-2"
-                      (click)="toggleTaskCollapse(serviceIndex, taskIndex)"
-                      [attr.aria-expanded]="!isTaskCollapsed(serviceIndex, taskIndex)"
-                    >
-                      <i class="bi" [class.bi-chevron-down]="!isTaskCollapsed(serviceIndex, taskIndex)" [class.bi-chevron-up]="isTaskCollapsed(serviceIndex, taskIndex)"></i>
-                      {{ isTaskCollapsed(serviceIndex, taskIndex) ? 'عرض التفاصيل' : 'إخفاء التفاصيل' }}
-                    </button>
-                  </div>
+                <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    (click)="toggleTaskCollapse(serviceIndex, taskIndex)"
+                    [attr.aria-expanded]="!isTaskCollapsed(serviceIndex, taskIndex)"
+                  >
+                    <i class="bi" [class.bi-chevron-down]="!isTaskCollapsed(serviceIndex, taskIndex)" [class.bi-chevron-up]="isTaskCollapsed(serviceIndex, taskIndex)"></i>
+                  <span class="mb-0 me-2">المهمة {{ taskIndex + 1 }}</span>
+                    
+                  </button>
                   <button
                     type="button"
                     class="btn btn-outline-danger btn-sm"
@@ -225,7 +223,7 @@
                     <textarea class="form-control" rows="2" formControlName="description" placeholder="اكتب وصفا مفصلا للمهمة"></textarea>
                   </div>
                   <div class="row mb-2">
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-3 mb-md-0">
                       <label class="form-label">الموظف</label>
                       <select class="form-select" formControlName="employeeId">
                         <option value="" disabled selected>اختر موظف</option>
@@ -234,13 +232,13 @@
                         }
                       </select>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-1 mb-md-0">
                       <label class="form-label">موعد التسليم</label>
                       <input type="date" class="form-control" formControlName="deadline" />
                     </div>
                   </div>
                   <div class="row mb-2">
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-3 mb-md-0">
                       <label class="form-label">الأولوية</label>
                       <select class="form-select" formControlName="priority">
                         <option value="عادي">عادي</option>

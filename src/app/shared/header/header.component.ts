@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { User } from '../../model/auth/user';
 import { AuthService } from '../../services/auth/auth.service';
@@ -10,13 +10,14 @@ import { AuthService } from '../../services/auth/auth.service';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnChanges {
   openMenu: string | null = null;
   userId: string = '';
   isCollapsed: boolean = false;
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
 
+  @Input() isSidebarCollapsed: boolean = false;
   @Output() sidebarToggle = new EventEmitter<boolean>();
 
   constructor(private authService: AuthService) {}
@@ -33,6 +34,18 @@ export class HeaderComponent implements OnInit {
         this.isUserAccountManager = true;
       }
     });
+    
+    // Set initial collapsed state based on screen width
+    if (window.innerWidth <= 750) {
+      this.isCollapsed = true;
+      this.sidebarToggle.emit(true);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isSidebarCollapsed'] && !changes['isSidebarCollapsed'].firstChange) {
+      this.isCollapsed = this.isSidebarCollapsed;
+    }
   }
 
   toggleMenu(menu: string) {

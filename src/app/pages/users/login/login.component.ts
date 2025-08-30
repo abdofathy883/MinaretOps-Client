@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit{
       error: (error) => {
         this.isLoading = false;
         console.log('error', error);
-        this.errorMessage = error.message || 'حدث خطأ أثناء تسجيل الدخول';
+        this.errorMessage = 'حدث خطأ أثناء تسجيل الدخول';
       }
     })
   }

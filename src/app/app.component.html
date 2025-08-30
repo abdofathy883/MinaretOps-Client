@@ -1,9 +1,9 @@
 <div class="app-container">
     @if (isAuthenticated) {
-        <div class="sidebar-wrapper" [class.collapsed]="isSidebarCollapsed">
-            <app-header (sidebarToggle)="onSidebarToggle($event)"></app-header>
-        </div>
     }
+    <div class="sidebar-wrapper" [class.collapsed]="isSidebarCollapsed">
+        <app-header [isSidebarCollapsed]="isSidebarCollapsed" (sidebarToggle)="onSidebarToggle($event)"></app-header>
+    </div>
     <div class="content-wrapper" [class.collapsed]="isSidebarCollapsed">
         <router-outlet></router-outlet>
         <!-- <section class="container-fluid">
