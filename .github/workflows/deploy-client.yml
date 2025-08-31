@@ -33,7 +33,7 @@ jobs:
         username: ${{ secrets.VPS_USERNAME }}
         key: ${{ secrets.VPS_SSH_KEY }}
         port: ${{ secrets.VPS_PORT }}
-        source: "dist/agency-ops-client/**"
+        source: "dist/agency-ops-client/*"
         target: "/var/www/angular-app"
         strip_components: 0
         
