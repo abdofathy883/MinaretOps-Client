@@ -36,8 +36,6 @@ jobs:
         source: "dist/agency-ops-client/browser/**"
         target: "/var/www/angular-app"
         strip_components: 1
-        key_path: ~/.ssh/id_rsa
-        overwrite: true
         
     - name: Restart Nginx
       uses: appleboy/ssh-action@v1.0.3
