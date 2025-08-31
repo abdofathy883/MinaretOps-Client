@@ -35,7 +35,7 @@ jobs:
         port: ${{ secrets.VPS_PORT }}
         source: "dist/agency-ops-client/browser/*"
         target: "/var/www/angular-app"
-        strip_components: 0
+        strip_components: 3
         
     - name: Restart Nginx
       uses: appleboy/ssh-action@v1.0.3
