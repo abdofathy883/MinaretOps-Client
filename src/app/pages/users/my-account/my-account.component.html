@@ -1,18 +1,19 @@
-<div class="container my-4">
-
- <div class="card mb-4 px-3 py-sm-3">
+<section class="container my-4">
+  <div class="card mb-4 px-3 py-sm-3">
     <div class="row align-items-center">
       <div class="col-md-8 text-center text-md-end">
         <h5 class="mb-1">
-          اهلا يا, 
+          اهلا يا,
           {{ currentUser?.firstName + " " + currentUser?.lastName }}
         </h5>
         <p class="mb-0">تقدر تعدل بياناتك من هنا</p>
-        <p class="mb-0">ومتنساش تشوف تاسكاتك من هنا <a routerLink="/tasks">التاسكات</a></p>
+        <p class="mb-0">
+          ومتنساش تشوف تاسكاتك من هنا <a routerLink="/tasks">التاسكات</a>
+        </p>
       </div>
       <div class="col-md-4 text-center text-md-start">
         <button
-          class="mt-1  text-decoration-none text-dark btn border-0"
+          class="mt-1 text-decoration-none text-dark btn border-0"
           (click)="logout()"
         >
           <div class="">
@@ -23,8 +24,10 @@
       </div>
     </div>
   </div>
+</section>
+<app-attendance [currentUser]="currentUser"></app-attendance>
 
-
+<section class="container my-4">
   <!-- Error Message -->
   @if (errorMessage) {
   <div class="alert alert-danger">
@@ -38,7 +41,9 @@
     {{ successMessage }}
   </div>
   }
+</section>
 
+<section class="container my-4">
   <!-- User Information Section -->
   <div class="card shadow-sm mb-4">
     <div class="card-header form-header">
@@ -113,19 +118,21 @@
 
         <div class="mb-3">
           <label for="street" class="form-label">العنوان التفصيلي</label>
-          <textarea name="street" id="street" class="form-control" formControlName="street"></textarea>
+          <textarea
+            name="street"
+            id="street"
+            class="form-control"
+            formControlName="street"
+          ></textarea>
         </div>
 
         <!-- Submit Button Section -->
         <button type="submit" class="add-btn">
           @if (isLoading) {
           <span class="spinner-border spinner-border-sm me-2"></span>
-          جاري تعديل البيانات... 
-        } @else {
+          جاري تعديل البيانات... } @else {
           <i class="bi bi-check-circle me-2"></i>
-          تعديل البيانات
-
-        }
+          تعديل البيانات }
         </button>
       </form>
     </div>
@@ -214,4 +221,4 @@
       </form>
     </div>
   </div>
-</div>
+</section>

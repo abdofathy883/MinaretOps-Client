@@ -1,0 +1,51 @@
+<section class="container mb-4">
+  <div class="card">
+    <div
+      class="d-flex justify-content-between align-items-center mb-3 pt-3 px-4"
+    >
+      <h2>تسجيل الحضور</h2>
+      <p class="current-time">{{ currentTime | date : "medium" }}</p>
+    </div>
+    <div class="card-body">
+      <button
+        class="check-in-btn"
+        (click)="onCheckIn()"
+        [disabled]="isCheckingIn || hasCheckedInToday"
+      >
+        @if (isCheckingIn) {
+        <span>جاري التسجيل...</span>
+        } @if (!isCheckingIn && !hasCheckedInToday) {
+        <i class="bi bi-calendar-plus ms-3"></i>
+        <span>تسجيل الحضور</span>
+        } @if (!isCheckingIn && hasCheckedInToday) {
+        <i class="bi bi-calendar-check ms-3"></i>
+        <span>تم التسجيل اليوم</span>
+        }
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="card pt-3 px-4">
+    <h2>حالة الحضور اليوم</h2>
+    <div class="status-info">
+      <p>
+        <strong>وقت التسجيل:</strong>
+        {{ todayRecord?.checkInTime | date : "shortTime" }}
+      </p>
+      <p>
+        <strong class="ms-3">الحالة:</strong>
+        <span class="status-badge status-present">حاضر</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Alert Messages -->
+@if (alertMessage) {
+<div class="alert" [class]="'alert-' + alertType">
+  {{ alertMessage }}
+  <button class="alert-close" (click)="closeAlert()">×</button>
+</div>
+}

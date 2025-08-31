@@ -5,10 +5,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChangePassword, UpdateUser, User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AttendanceComponent } from "../../attendance/attendance.component";
 
 @Component({
   selector: 'app-my-account',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, AttendanceComponent],
+  standalone: true,
   templateUrl: './my-account.component.html',
   styleUrl: './my-account.component.css'
 })
