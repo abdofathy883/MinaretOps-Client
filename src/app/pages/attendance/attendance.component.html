@@ -1,7 +1,7 @@
 <section class="container mb-4">
   <div class="card">
     <div
-      class="d-flex justify-content-between align-items-center mb-3 pt-3 px-4"
+      class="d-flex justify-content-between align-items-center mb-3 pt-3 px-4 flex-wrap"
     >
       <h2>تسجيل الحضور</h2>
       <p class="current-time">{{ currentTime | date : "medium" }}</p>
@@ -10,14 +10,14 @@
       <button
         class="check-in-btn"
         (click)="onCheckIn()"
-        [disabled]="isCheckingIn || hasCheckedInToday"
+        [disabled]="isCheckingIn || todayRecord"
       >
         @if (isCheckingIn) {
         <span>جاري التسجيل...</span>
         } @if (!isCheckingIn && !hasCheckedInToday) {
         <i class="bi bi-calendar-plus ms-3"></i>
         <span>تسجيل الحضور</span>
-        } @if (!isCheckingIn && hasCheckedInToday) {
+        } @else {
         <i class="bi bi-calendar-check ms-3"></i>
         <span>تم التسجيل اليوم</span>
         }
@@ -26,9 +26,14 @@
   </div>
 </section>
 
-<section class="container">
+<section class="container mb-4">
   <div class="card pt-3 px-4">
     <h2>حالة الحضور اليوم</h2>
+    @if (attendanceErrorMessage) {
+      <div class="alert alert-danger">
+        {{ attendanceErrorMessage }}
+      </div>
+    }
     <div class="status-info">
       <p>
         <strong>وقت التسجيل:</strong>
@@ -36,9 +41,12 @@
       </p>
       <p>
         <strong class="ms-3">الحالة:</strong>
-        <span class="status-badge status-present">حاضر</span>
+        <span class="status-badge status-present">{{ getAttendanceStatusLabel(todayRecord?.status ?? null) }}</span>
+
       </p>
     </div>
+    @if (todayRecord) {
+    }
   </div>
 </section>
 

@@ -19,6 +19,9 @@ import { AllInternalTasksComponent } from './pages/internal-tasks/all-internal-t
 import { AddInternalTaskComponent } from './pages/internal-tasks/add-internal-task/add-internal-task.component';
 import { SingleInternalTaskComponent } from './pages/internal-tasks/single-internal-task/single-internal-task.component';
 import { AllAttendenceComponent } from './pages/all-attendence/all-attendence.component';
+import { AllAnnouncementsComponent } from './pages/announcements/all-announcements/all-announcements.component';
+import { AddAnnouncementComponent } from './pages/announcements/add-announcement/add-announcement.component';
+import { AllLeaveRequestsComponent } from './pages/leave-requests/all-leave-requests/all-leave-requests.component';
 
 export const routes: Routes = [
     {
@@ -114,6 +117,21 @@ export const routes: Routes = [
     {
         path: 'attendance',
         component: AllAttendenceComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'announcements',
+        component: AllAnnouncementsComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'announcements/add',
+        component: AddAnnouncementComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'leave-requests',
+        component: AllLeaveRequestsComponent,
         canActivate: [noauthGuard]
     }
 ];

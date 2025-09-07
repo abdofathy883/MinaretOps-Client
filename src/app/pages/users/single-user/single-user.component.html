@@ -111,6 +111,47 @@
     </div>
   </div>
 
+  <section class="container py-4">
+    <h2>سجل الحضور</h2>
+    @if (attendanceErrorMessage) {
+      <div class="alert alert-danger mt-3" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        {{ attendanceErrorMessage }}
+      </div>
+    }
+    <div class="records-table">
+      <table>
+        <thead>
+          <tr>
+            <th>الموظف</th>
+            <th>تاريخ التسجيل</th>
+            <th>وقت التسجيل</th>
+            <th>الحالة</th>
+            <th>جهاز التسجيل</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (record of attendanceRecords; track $index) {
+          <tr>
+            <td>{{ record.employeeName }}</td>
+            <td>{{ record.checkInTime | date : "shortDate" }}</td>
+            <td>{{ record.checkInTime | date : "shortTime" }}</td>
+            <td>
+              <span class="status-badge status-present">حاضر</span>
+            </td>
+            <td>{{ record.deviceId }}</td>
+          </tr>
+          } @if (attendanceRecords.length === 0) {
+          <tr>
+            <td colspan="5" class="no-records">لا توجد سجلات حضور</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+</section>
+
   } @if (isEditMode) {
   <!-- Edit Mode -->
   <div>

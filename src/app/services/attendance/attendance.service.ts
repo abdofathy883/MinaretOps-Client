@@ -24,14 +24,18 @@ export class AttendanceService {
     );
   }
 
-  getAttendanceByEmployeeId(empId: string): Observable<AttendanceRecord[]> {
+  getAttendanceByEmployeeId(employeeId: string): Observable<AttendanceRecord[]> {
     return this.api.get<AttendanceRecord[]>(
-      `${this.endpoint}/employee-attendance/${empId}`
+      `${this.endpoint}/employee-attendance/${employeeId}`
     );
   }
 
   getAllAttendance(): Observable<AttendanceRecord[]> {
     return this.api.get<AttendanceRecord[]>(`${this.endpoint}/all-attendance`);
+  }
+
+  getTodayAttendanceByEmployeeId(employeeId: string): Observable<AttendanceRecord>{
+    return this.api.get<AttendanceRecord>(`${this.endpoint}/today-attendance/${employeeId}`);
   }
 
   changeAttendanceStatus(

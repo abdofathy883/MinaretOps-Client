@@ -6,16 +6,17 @@ import { ChangePassword, UpdateUser, User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AttendanceComponent } from "../../attendance/attendance.component";
+import { SubmitLeaveRequestComponent } from '../../leave-requests/submit-leave-request/submit-leave-request.component';
 
 @Component({
   selector: 'app-my-account',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, AttendanceComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, AttendanceComponent, SubmitLeaveRequestComponent],
   standalone: true,
   templateUrl: './my-account.component.html',
   styleUrl: './my-account.component.css'
 })
 export class MyAccountComponent implements OnInit {
-  currentUser: User | null = null;
+  currentUser!: User;
   isLoading = false;
   errorMessage = '';
   successMessage = '';
@@ -59,6 +60,8 @@ export class MyAccountComponent implements OnInit {
       }
     })
   }
+
+  
 
   updateFormValues(): void {
     if (this.currentUser) {

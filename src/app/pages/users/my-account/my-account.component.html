@@ -4,7 +4,7 @@
       <div class="col-md-8 text-center text-md-end">
         <h5 class="mb-1">
           اهلا يا,
-          {{ currentUser?.firstName + " " + currentUser?.lastName }}
+          {{ currentUser.firstName + " " + currentUser.lastName }}
         </h5>
         <p class="mb-0">تقدر تعدل بياناتك من هنا</p>
         <p class="mb-0">
@@ -26,6 +26,8 @@
   </div>
 </section>
 <app-attendance [currentUser]="currentUser"></app-attendance>
+
+<app-submit-leave-request [currentUser]="currentUser"></app-submit-leave-request>
 
 <section class="container my-4">
   <!-- Error Message -->

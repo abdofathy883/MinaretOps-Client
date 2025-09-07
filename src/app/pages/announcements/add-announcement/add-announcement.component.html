@@ -1,0 +1,95 @@
+<div class="container my-4">
+  <!-- Header Section -->
+  <div class="mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-megaphone me-2"></i>
+      إضافة إعلان جديد
+    </h2>
+  </div>
+
+  <!-- Success Message -->
+  @if (successMessage) {
+  <div class="alert alert-success mt-3" role="alert">
+    <i class="bi bi-check-circle me-2"></i>
+    {{ successMessage }}
+  </div>
+  }
+
+  <!-- Error Message -->
+  @if (errorMessage) {
+  <div class="alert alert-danger mt-3" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ errorMessage }}
+  </div>
+  }
+
+  <!-- Announcement Form -->
+  <div class="card shadow-sm">
+    <div class="card-header form-header">
+      <h5 class="mb-0">
+        <i class="bi bi-megaphone me-2"></i>
+        معلومات الإعلان
+      </h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="announcementForm" (ngSubmit)="onSubmit()">
+        <!-- Title Field -->
+        <div class="mb-3">
+          <label for="title" class="form-label">عنوان الإعلان</label>
+          <span class="text-danger me-2">*</span>
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            formControlName="title"
+            [class.is-invalid]="hasError('title')"
+            placeholder="أدخل عنوان الإعلان"
+            required
+          />
+          @if (hasError('title')) {
+          <div class="invalid-feedback">
+            {{ getErrorMessage("title") }}
+          </div>
+          }
+        </div>
+
+        <!-- Message Field -->
+        <div class="mb-3">
+          <label for="message" class="form-label">محتوى الإعلان</label>
+          <span class="text-danger me-2">*</span>
+          <textarea
+            id="message"
+            class="form-control"
+            rows="6"
+            formControlName="message"
+            [class.is-invalid]="hasError('message')"
+            placeholder="أدخل محتوى الإعلان"
+            required
+          ></textarea>
+          @if (hasError('message')) {
+          <div class="invalid-feedback">
+            {{ getErrorMessage("message") }}
+          </div>
+          }
+        </div>
+
+        <!-- Submit Button Section -->
+        <div class="d-flex justify-content-start flex-wrap gap-3">
+          <button type="submit" class="add-btn" [disabled]="isLoading">
+            @if (isLoading) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              جاري إضافة الإعلان...
+            } @else {
+              <i class="bi bi-check-circle me-2"></i>
+              إضافة إعلان
+            }
+          </button>
+          <button type="button" class="reset-btn" (click)="resetForm()" [disabled]="isLoading">
+            <i class="bi bi-arrow-clockwise me-2"></i>
+            إعادة تعيين
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

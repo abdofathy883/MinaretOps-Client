@@ -31,7 +31,7 @@
             <span class="nav-text" [class.hidden]="isCollapsed">الرئيسية</span>
           </a>
         </li> -->
-        <li class="nav-item">
+        <li [ngClass]="{'nav-item': true, 'me-2': !isCollapsed}">
           <a class="nav-link" routerLink="/tasks">
             <i class="bi bi-list-task ms-3"></i>
             <span class="nav-text" [class.hidden]="isCollapsed">التاسكات</span>
@@ -126,11 +126,43 @@
             }
           </ul>
         </li>
+        @if (isUserAdmin) {
+          <li [ngClass]="{'nav-item': true, 'me-2': !isCollapsed}">
+            <a routerLink="/attendance" class="nav-link">
+              <i class="bi bi-people-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">الحضور</span>
+            </a>
+          </li>
+          <li [ngClass]="{'nav-item': true, 'me-2': !isCollapsed}">
+            <a routerLink="/leave-requests" class="nav-link">
+              <i class="bi bi-cup-hot ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">طلبات الاجازة</span>
+            </a>
+          </li>
+
+        }
         <li class="nav-item">
-          <a routerLink="/attendance" class="nav-link">
-            <i class="bi bi-people-fill ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed">الحضور</span>
-          </a>
+          <button
+            class="text-white menu-toggler"
+            (click)="toggleMenu('announcements')"
+          >
+            <i class="bi bi-megaphone-fill ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed">الاعلانات</span>
+          </button>
+          <ul
+            class="submenu services-menu"
+            [class.open]="openMenu === 'announcements'"
+            [class.hidden]="isCollapsed"
+          >
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/announcements">قائمة الاعلانات</a>
+            </li>
+            @if (isUserAdmin || isUserAccountManager) {
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/announcements/add">إضافة اعلان</a>
+              </li>
+            }
+          </ul>
         </li>
       </ul>
     </div>

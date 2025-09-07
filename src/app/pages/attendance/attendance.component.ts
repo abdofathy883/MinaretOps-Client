@@ -1,7 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { AttendanceRecord, NewAttendanceRecord } from '../../model/attendance-record/attendance-record';
-import { FormBuilder } from '@angular/forms';
+import { AttendanceRecord, AttendanceStatus, NewAttendanceRecord } from '../../model/attendance-record/attendance-record';
 import { User } from '../../model/auth/user';
 import { AttendanceService } from '../../services/attendance/attendance.service';
 
@@ -20,12 +19,42 @@ export class AttendanceComponent {
   isCheckingIn = false;
   
   alertMessage = '';
+  attendanceErrorMessage = '';
   alertType = 'info';
 
-  constructor(private attendanceService: AttendanceService) {}
-
+  constructor(private attendanceService: AttendanceService) {
+    
+  }
+  
   ngOnInit() {
     this.startTimeUpdate();
+    setTimeout(() => {
+        if (this.currentUser) {
+        this.loadToadayAttendance(this.currentUser.id);
+      }
+      }, 5000);
+  }
+
+  getAttendanceStatusLabel(status: AttendanceStatus | null): string {
+    switch (status) {
+      case AttendanceStatus.Present: return 'حاضر';
+      case AttendanceStatus.Absent: return 'غائب';
+      case AttendanceStatus.Leave: return 'في إجازة';
+      default: return 'غير محدد';
+    }
+  }
+
+  loadToadayAttendance(empId: string) {
+    this.attendanceService.getTodayAttendanceByEmployeeId(empId).subscribe({
+      next: (response) => {
+        this.todayRecord = response;
+
+      },
+      error: (error) => {
+        this.attendanceErrorMessage =
+          error.message || 'حدث خطأ أثناء تحميل سجل الحضور';
+      }
+    });
   }
 
   startTimeUpdate() {
@@ -55,6 +84,8 @@ export class AttendanceComponent {
     this.attendanceService.checkIn(checkInData).subscribe({
       next: (response) => {
         this.hasCheckedInToday = true;
+        this.todayRecord = response;
+        console.log('Check-in successful:', response);
         this.showAlert('تم تسجيل الحضور بنجاح', 'success');
       },
       error: (error) => {
@@ -84,17 +115,6 @@ export class AttendanceComponent {
     } catch {
       return '127.0.0.1'; // Fallback
     }
-  }
-
-  checkTodayRecord() {
-    const today = new Date().toDateString();
-    // const foundRecord = this.attendanceRecords.find(record => 
-    //   record.employeeId === this.currentUser?.id && 
-    //   record.checkInTime.toDateString() === today
-    // );
-    // this.todayRecord = foundRecord ?? null;
-    
-    // this.hasCheckedInToday = !!this.todayRecord;
   }
 
   showAlert(message: string, type: string) {

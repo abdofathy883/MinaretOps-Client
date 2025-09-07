@@ -39,9 +39,9 @@ export class LoginComponent implements OnInit{
       password: this.loginForm.value.password
     }
     this.authService.login(user).subscribe({
-      next: () => {
+      next: (res) => {
         this.isLoading = false;
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/users/my-account', res.id]);
       },
       error: (error) => {
         this.isLoading = false;

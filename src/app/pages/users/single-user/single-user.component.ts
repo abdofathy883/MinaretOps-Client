@@ -1,35 +1,46 @@
+import { AttendanceComponent } from './../../attendance/attendance.component';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { UpdateUser, User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
+import { AttendanceService } from '../../../services/attendance/attendance.service';
+import { AttendanceRecord } from '../../../model/attendance-record/attendance-record';
 
 @Component({
   selector: 'app-single-user',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './single-user.component.html',
-  styleUrl: './single-user.component.css'
+  styleUrl: './single-user.component.css',
 })
 export class SingleUserComponent implements OnInit, OnDestroy {
   user: User | null = null;
+  attendanceRecords: AttendanceRecord[] = [];
   isLoading = false;
   isEditMode = false;
   errorMessage = '';
+  attendanceErrorMessage = '';
   successMessage = '';
   currentLoggedInUserId: string = '';
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
-  
+
   editUserForm: FormGroup;
-  
+
   private destroy$ = new Subject<void>();
 
   constructor(
     private authService: AuthService,
     private route: ActivatedRoute,
+    private attendanceService: AttendanceService,
     private router: Router,
     private fb: FormBuilder
   ) {
@@ -41,7 +52,19 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       role: [''],
       paymentNumber: [''],
       city: [''],
-      street: ['']
+      street: [''],
+    });
+  }
+
+  loadAttendance(empId: string) {
+    this.attendanceService.getAttendanceByEmployeeId(empId).subscribe({
+      next: (response) => {
+        this.attendanceRecords = response;
+      },
+      error: (error) => {
+        this.attendanceErrorMessage =
+          error.message || 'حدث خطأ أثناء تحميل سجلات الحضور';
+      },
     });
   }
 
@@ -72,18 +95,21 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.authService.getById(userId)
+    this.authService
+      .getById(userId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (user) => {
           this.user = user;
           this.populateForm(user);
           this.isLoading = false;
+          this.loadAttendance(userId);
         },
         error: (error) => {
-          this.errorMessage = error.message || 'حدث خطأ أثناء تحميل بيانات المستخدم';
+          this.errorMessage =
+            error.message || 'حدث خطأ أثناء تحميل بيانات المستخدم';
           this.isLoading = false;
-        }
+        },
       });
   }
 
@@ -96,13 +122,13 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       role: this.getRoleValue(user.roles?.[0]),
       paymentNumber: user.paymentNumber,
       city: user.city,
-      street: user.street
+      street: user.street,
     });
   }
 
   getRoleValue(role: string | undefined): string {
     if (!role) return '';
-    
+
     switch (role.toLowerCase()) {
       case '1':
         return 'Admin';
@@ -122,8 +148,8 @@ export class SingleUserComponent implements OnInit, OnDestroy {
         return 'SEO Specialist';
       case '9':
         return 'Web Developer';
-        case '10':
-          return 'Video Editor';
+      case '10':
+        return 'Video Editor';
       default:
         return 'اختر الدور';
     }
@@ -173,7 +199,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       phoneNumber: formValue.phoneNumber,
       city: formValue.city,
       street: formValue.street,
-      paymentNumber: formValue.paymentNumber
+      paymentNumber: formValue.paymentNumber,
     };
 
     this.authService.update(updateUser).subscribe({
@@ -184,15 +210,13 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.log(error);
         this.errorMessage = 'حدث خطأ أثناء تحديث بيانات المستخدم';
-      }
-    })
-
-
+      },
+    });
   }
 
   deleteUser() {
     if (this.user?.id == this.currentLoggedInUserId) {
-      this.errorMessage = "لا يمكن حذف حسابك";
+      this.errorMessage = 'لا يمكن حذف حسابك';
       return;
     }
     this.authService.delete(this.user?.id || '').subscribe({
@@ -207,11 +231,13 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.log(error);
         this.errorMessage = 'حدث خطأ أثناء حذف المستخدم';
-      }
+      },
     });
   }
 
-  private passwordMatchValidator(form: FormGroup): { [key: string]: any } | null {
+  private passwordMatchValidator(
+    form: FormGroup
+  ): { [key: string]: any } | null {
     const password = form.get('password');
     const confirmPassword = form.get('confirmPassword');
 
@@ -228,7 +254,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   }
 
   private markFormGroupTouched(): void {
-    Object.keys(this.editUserForm.controls).forEach(key => {
+    Object.keys(this.editUserForm.controls).forEach((key) => {
       const control = this.editUserForm.get(key);
       control?.markAsTouched();
     });
@@ -247,8 +273,10 @@ export class SingleUserComponent implements OnInit, OnDestroy {
 
     if (control.errors['required']) return 'هذا الحقل مطلوب';
     if (control.errors['email']) return 'صيغة البريد الإلكتروني غير صحيحة';
-    if (control.errors['minlength']) return `يجب أن يكون ${control.errors['minlength'].requiredLength} أحرف على الأقل`;
-    if (control.errors['maxlength']) return `يجب أن يكون ${control.errors['maxlength'].requiredLength} أحرف على الأكثر`;
+    if (control.errors['minlength'])
+      return `يجب أن يكون ${control.errors['minlength'].requiredLength} أحرف على الأقل`;
+    if (control.errors['maxlength'])
+      return `يجب أن يكون ${control.errors['maxlength'].requiredLength} أحرف على الأكثر`;
     if (control.errors['pattern']) return 'صيغة غير صحيحة';
     if (control.errors['passwordMismatch']) return 'كلمة المرور غير متطابقة';
 

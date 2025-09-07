@@ -21,11 +21,17 @@ export enum AttendanceStatus {
 }
 
 export interface LeaveRequest {
-
+    id: number;
+    employeeId: string;
+    employeeName: string;
+    date: Date;
+    status: LeaveStatus;
+    actionDate: Date;
 }
 
 export interface NewLeaveRequest {
-
+    employeeId: string;
+    date: Date;
 }
 
 export enum LeaveStatus {
