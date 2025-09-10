@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, EventEmitter, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { User } from '../../model/auth/user';
 import { AuthService } from '../../services/auth/auth.service';
@@ -16,6 +24,8 @@ export class HeaderComponent implements OnInit, OnChanges {
   isCollapsed: boolean = false;
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
+  isContentLeader: boolean = false;
+  isDesignerLeader: boolean = false;
 
   @Input() isSidebarCollapsed: boolean = false;
   @Output() sidebarToggle = new EventEmitter<boolean>();
@@ -34,7 +44,13 @@ export class HeaderComponent implements OnInit, OnChanges {
         this.isUserAccountManager = true;
       }
     });
-    
+    this.authService.isContentLeader().subscribe((isLeader) => {
+      if (isLeader) this.isContentLeader = true;
+    });
+    this.authService.isDesignerLeader().subscribe((isLeader) => {
+      if (isLeader) this.isDesignerLeader = true;
+    });
+
     // Set initial collapsed state based on screen width
     if (window.innerWidth <= 750) {
       this.isCollapsed = true;
@@ -43,7 +59,10 @@ export class HeaderComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isSidebarCollapsed'] && !changes['isSidebarCollapsed'].firstChange) {
+    if (
+      changes['isSidebarCollapsed'] &&
+      !changes['isSidebarCollapsed'].firstChange
+    ) {
       this.isCollapsed = this.isSidebarCollapsed;
     }
   }

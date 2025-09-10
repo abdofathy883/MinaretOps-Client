@@ -23,14 +23,16 @@ export interface LeaveRequest {
     id: number;
     employeeId: string;
     employeeName: string;
-    date: Date;
+    fromDate: Date;
+    toDate: Date;
     status: LeaveStatus;
     actionDate: Date;
 }
 
 export interface NewLeaveRequest {
     employeeId: string;
-    date: Date;
+    fromDate: Date;
+    toDate: Date;
 }
 
 export enum LeaveStatus {

@@ -47,10 +47,10 @@ export class AttendanceComponent {
         this.todayRecord = response;
 
       },
-      error: (error) => {
-        this.attendanceErrorMessage =
-          error.message || 'حدث خطأ أثناء تحميل سجل الحضور';
-      }
+      // error: (error) => {
+      //   this.attendanceErrorMessage =
+      //     error.message || 'حدث خطأ أثناء تحميل سجل الحضور';
+      // }
     });
   }
 

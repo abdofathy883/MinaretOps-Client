@@ -1,34 +1,57 @@
 <section class="container py-4">
     <h2>سجل الحضور</h2>
+    <div>
+      <h4>تصفية حسب:</h4>
+      <form [formGroup]="filterForm">
+        <div class="row">
+          <div class="col">
+            <label for="" class="form-label">اليوم</label>
+            <input type="date" class="form-control" formControlName="date">
+          </div>
+          <div class="col">
+            <label for="" class="form-label">الموظف</label>
+            <select name="" id="" class="form-select" formControlName="employeeId">
+              <option disabled selected>اختر موظف</option>
+              @for (emp of employees; track $index) {
+                <option [value]="emp.id">{{ emp.firstName + ' ' + emp.lastName }}</option>
+              }
+            </select>
+          </div>
+          <div class="col">
+            <button class="add-btn w-100" (click)="applyFilters()">تصفية</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>الموظف</th>
+          <th>تاريخ التسجيل</th>
+          <th>وقت التسجيل</th>
+          <th>الحالة</th>
+          <th>جهاز التسجيل</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (record of filteredAttendanceRecords; track $index) {
+        <tr>
+          <td data-cell="الموظف">{{ record.employeeName }}</td>
+          <td data-cell="تاريخ التسجيل">{{ record.checkInTime | date : "shortDate" }}</td>
+          <td data-cell="وقت التسجيل">{{ record.checkInTime | date : "shortTime" }}</td>
+          <td data-cell="الحالة">
+            <span class="status-badge status-present">حاضر</span>
+          </td>
+          <td data-cell="جهاز التسجيل">{{ record.deviceId }}</td>
+        </tr>
+        } @if (attendanceRecords.length === 0) {
+        <tr>
+          <td colspan="5" class="no-records">لا توجد سجلات حضور</td>
+        </tr>
+        }
+      </tbody>
+    </table>
     <div class="records-table">
-      <table>
-        <thead>
-          <tr>
-            <th>الموظف</th>
-            <th>تاريخ التسجيل</th>
-            <th>وقت التسجيل</th>
-            <th>الحالة</th>
-            <th>جهاز التسجيل</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (record of attendanceRecords; track $index) {
-          <tr>
-            <td>{{ record.employeeName }}</td>
-            <td>{{ record.checkInTime | date : "shortDate" }}</td>
-            <td>{{ record.checkInTime | date : "shortTime" }}</td>
-            <td>
-              <span class="status-badge status-present">حاضر</span>
-            </td>
-            <td>{{ record.deviceId }}</td>
-          </tr>
-          } @if (attendanceRecords.length === 0) {
-          <tr>
-            <td colspan="5" class="no-records">لا توجد سجلات حضور</td>
-          </tr>
-          }
-        </tbody>
-      </table>
     </div>
 
 </section>

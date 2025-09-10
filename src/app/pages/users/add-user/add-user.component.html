@@ -40,8 +40,8 @@
             المعلومات الشخصية
           </h6>
         </div>
-        <div class="row mb-4">
-          <div class="col-md-6 mb-sm-2">
+        <div class="row">
+          <div class="col-md-6 mb-3">
             <label for="firstName" class="form-label">الاسم الأول</label>
             <span class="text-danger me-2">*</span>
             <input
@@ -71,7 +71,7 @@
             }
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-6 mb-3">
             <label for="lastName" class="form-label">الاسم الأخير</label>
             <span class="text-danger me-2">*</span>
             <input
@@ -102,8 +102,8 @@
           </div>
         </div>
 
-        <div class="row mb-4">
-          <div class="col-md-6 mb-sm-2">
+        <div class="row">
+          <div class="col-md-6 mb-3">
             <label for="nid" class="form-label">الرقم القومي</label>
             <span class="text-danger me-2">*</span>
             <input
@@ -130,7 +130,7 @@
             </div>
             }
           </div>
-          <div class="col-md-6 mb-sm-2">
+          <div class="col-md-6 mb-3">
             <label for="dateOfHiring" class="form-label"
               >تاريخ بداية العمل</label
             >
@@ -165,8 +165,8 @@
             معلومات الاتصال
           </h6>
         </div>
-        <div class="row mb-4">
-          <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-6 mb-3">
             <label for="email" class="form-label">البريد الإلكتروني</label>
             <span class="text-danger me-2">*</span>
             <input
@@ -193,7 +193,7 @@
             </div>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-6 mb-3">
             <label for="phone" class="form-label">رقم الهاتف</label>
             <span class="text-danger me-2">*</span>
             <input
@@ -221,27 +221,14 @@
         </div>
 
         <div class="row mb-4">
-          <div class="col-md-6">
+          <div class="col-md-6 mb-3">
             <label for="paymentNumber" class="form-label"
               >رقم المحفظة او انستاباي</label
             >
             <span class="text-danger me-2">*</span>
-            <div class="row">
-              <div class="col-4">
-                <div class="form-check form-switch">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    id="switchCheckDefault"
-                    formControlName="useSameAsPhone"
-                  />
-                  <label class="form-check-label" for="switchCheckDefault"
-                    >نفس رقم الهاتف</label
-                  >
-                </div>
-              </div>
-              <div class="col-8">
+            <div class="">
+              
+              <div class="mb-2">
                 <input
                   type="tel"
                   class="form-control"
@@ -255,6 +242,21 @@
                   placeholder="أدخل رقم الهاتف"
                   required
                 />
+              </div>
+              <div class="">
+                <div class="form-check form-switch">
+                  <label class="form-check-label" for="switchCheckDefault"
+                    >نفس رقم الهاتف</label
+                  >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="switchCheckDefault"
+                    formControlName="useSameAsPhone"
+                  />
+                  
+                </div>
               </div>
               
             </div>
@@ -331,7 +333,7 @@
           </h6>
         </div>
         <div class="row mb-4">
-          <div class="col-md-6">
+          <div class="col-md-6 mb-3">
             <label for="role" class="form-label">الدور</label>
             <span class="text-danger me-2">*</span>
             <select
@@ -401,12 +403,30 @@
               <span>كلمة المرور مطلوبة</span>
               } @if (newUser.get('password')?.errors?.['minlength']) {
               <span>كلمة المرور يجب أن تكون 6 أحرف على الأقل</span>
+              } @if (newUser.get('password')?.errors?.['passwordComplexity']) {
+                <span>يجب ان تحتوي كلمة المرور على حرف كبير وحرف صغير ورمز خاص</span>
               }
             </div>
             }
-            <div class="form-text">
-              يجب أن تكون كلمة المرور 6 أحرف على الأقل
-            </div>
+            <!-- Live password requirements -->
+            <ul class="list-unstyled small mt-2 mb-0">
+              <li [class]="requirementClass(passHasMin)">
+                <i class="bi me-1" [class]="requirementIcon(passHasMin)"></i>
+                على الأقل 6 أحرف
+              </li>
+              <li [class]="requirementClass(passHasUpper)">
+                <i class="bi me-1" [class]="requirementIcon(passHasUpper)"></i>
+                يحتوي على حرف كبير (A-Z)
+              </li>
+              <li [class]="requirementClass(passHasLower)">
+                <i class="bi me-1" [class]="requirementIcon(passHasLower)"></i>
+                يحتوي على حرف صغير (a-z)
+              </li>
+              <li [class]="requirementClass(passHasSpecial)">
+                <i class="bi me-1" [class]="requirementIcon(passHasSpecial)"></i>
+                يحتوي على رمز خاص (&#64; # $ % ! ...)
+              </li>
+            </ul>
           </div>
         </div>
 

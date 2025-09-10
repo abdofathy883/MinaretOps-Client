@@ -56,6 +56,14 @@ export class AuthService {
     return this.hasRole('AccountManager');
   }
 
+  isDesignerLeader(): Observable<boolean> {
+    return this.hasRole('GraphicDesignerTeamLeader')
+  }
+
+  isContentLeader(): Observable<boolean> {
+    return this.hasRole('ContentCreatorTeamLeader')
+  }
+
   login(user: LoginUser): Observable<User> {
     return this.api.post<User>(`${this.endpoint}/login`, user)
     .pipe(

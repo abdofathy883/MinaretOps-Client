@@ -8,7 +8,7 @@ import { Announcement } from '../../../model/announcement/announcement';
   selector: 'app-all-announcements',
   imports: [CommonModule],
   templateUrl: './all-announcements.component.html',
-  styleUrl: './all-announcements.component.css'
+  styleUrl: './all-announcements.component.css',
 })
 export class AllAnnouncementsComponent implements OnInit {
   announcements: Announcement[] = [];
@@ -33,11 +33,6 @@ export class AllAnnouncementsComponent implements OnInit {
         this.announcements = response;
         this.isLoading = false;
       },
-      error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = 'خطأ في تحميل الإعلانات، حاول مرة أخرى';
-        console.error('Error loading announcements:', error);
-      }
     });
   }
 
@@ -57,7 +52,7 @@ export class AllAnnouncementsComponent implements OnInit {
       return announcementDate.toLocaleDateString('ar-SA', {
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
       });
     }
   }
@@ -82,7 +77,7 @@ export class AllAnnouncementsComponent implements OnInit {
       return announcementDate.toLocaleDateString('ar-SA', {
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
       });
     }
   }

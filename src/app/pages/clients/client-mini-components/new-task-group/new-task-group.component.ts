@@ -3,8 +3,7 @@ import {
   EventEmitter,
   Input,
   OnInit,
-  Output,
-  inject,
+  Output
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -12,9 +11,8 @@ import {
   FormGroup,
   FormArray,
   Validators,
-  ReactiveFormsModule,
+  ReactiveFormsModule
 } from '@angular/forms';
-import { ClientService } from '../../../../services/clients/client.service';
 import { ServicesService } from '../../../../services/services/services.service';
 import { TaskService } from '../../../../services/tasks/task.service';
 import { AuthService } from '../../../../services/auth/auth.service';
@@ -30,11 +28,13 @@ import { ICreateTaskGroup } from '../../../../model/task/task';
 export class NewTaskGroupComponent implements OnInit {
   @Input() clientId: number = 0;
   @Output() taskGroupCreated = new EventEmitter<any>();
-  private fb = inject(FormBuilder);
-  private clientService = inject(ClientService);
-  private servicesService = inject(ServicesService);
-  private taskService = inject(TaskService);
-  private authService = inject(AuthService);
+
+  constructor(
+    private fb: FormBuilder,
+    private servicesService: ServicesService,
+    private taskService: TaskService,
+    private authService: AuthService
+  ) {}
 
   taskGroupForm!: FormGroup;
   availableServices: any[] = [];
@@ -60,8 +60,6 @@ export class NewTaskGroupComponent implements OnInit {
     this.taskGroupForm = this.fb.group({
       clientServices: this.fb.array([]),
     });
-
-    // Add initial service
     this.addClientService();
   }
 
@@ -207,7 +205,6 @@ export class NewTaskGroupComponent implements OnInit {
     this.successMessage = '';
   }
 
-  // Helper methods for form validation
   hasError(controlName: string): boolean {
     const control = this.taskGroupForm.get(controlName);
     return !!(control && control.invalid && (control.dirty || control.touched));
@@ -219,7 +216,6 @@ export class NewTaskGroupComponent implements OnInit {
       if (control.errors['required']) {
         return 'هذا الحقل مطلوب';
       }
-      // Add more validation messages as needed
     }
     return '';
   }
@@ -238,7 +234,6 @@ export class NewTaskGroupComponent implements OnInit {
     }
   }
 
-  // Method to close the modal
   closeModal(): void {
     if (this.modal) {
       this.modal.hide();

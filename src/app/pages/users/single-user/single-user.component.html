@@ -6,19 +6,19 @@
       تفاصيل المستخدم
     </h2>
     @if (isUserAdmin || isUserAccountManager) {
-      <div>
-        @if (!isEditMode) {
-        <button class="reset-btn" (click)="toggleEditMode()">
-          <i class="bi bi-pencil me-1"></i>
-          تعديل
-        </button>
-        } @if (isEditMode) {
-        <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
-          <i class="bi bi-x-circle me-1"></i>
-          إلغاء
-        </button>
-        }
-      </div>
+    <div>
+      @if (!isEditMode) {
+      <button class="reset-btn" (click)="toggleEditMode()">
+        <i class="bi bi-pencil me-1"></i>
+        تعديل
+      </button>
+      } @if (isEditMode) {
+      <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
+        <i class="bi bi-x-circle me-1"></i>
+        إلغاء
+      </button>
+      }
+    </div>
     }
   </div>
 
@@ -111,52 +111,8 @@
     </div>
   </div>
 
-  <section class="container py-4">
-    <h2>سجل الحضور</h2>
-    @if (attendanceErrorMessage) {
-      <div class="alert alert-danger mt-3" role="alert">
-        <i class="bi bi-exclamation-triangle me-2"></i>
-        {{ attendanceErrorMessage }}
-      </div>
-    }
-    <div class="records-table">
-      <table>
-        <thead>
-          <tr>
-            <th>الموظف</th>
-            <th>تاريخ التسجيل</th>
-            <th>وقت التسجيل</th>
-            <th>الحالة</th>
-            <th>جهاز التسجيل</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (record of attendanceRecords; track $index) {
-          <tr>
-            <td>{{ record.employeeName }}</td>
-            <td>{{ record.checkInTime | date : "shortDate" }}</td>
-            <td>{{ record.checkInTime | date : "shortTime" }}</td>
-            <td>
-              <span class="status-badge status-present">حاضر</span>
-            </td>
-            <td>{{ record.deviceId }}</td>
-          </tr>
-          } @if (attendanceRecords.length === 0) {
-          <tr>
-            <td colspan="5" class="no-records">لا توجد سجلات حضور</td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-</section>
-@if (user) {
-  <app-my-kpis-management [currentUserId]="user.id"></app-my-kpis-management>
-}
-
-
-  } @if (isEditMode) {
+  
+   } @if (isEditMode) {
   <!-- Edit Mode -->
   <div>
     <form [formGroup]="editUserForm" (ngSubmit)="saveUser()">
@@ -276,8 +232,7 @@
                   editUserForm.get('phoneNumber')?.invalid &&
                   editUserForm.get('phoneNumber')?.touched
                 "
-              >
-              </div>
+              ></div>
             </div>
           </div>
 
@@ -296,15 +251,15 @@
               >
                 <option value="" disabled>اختر الدور</option>
                 <option value="1">Admin</option>
-              <option value="2">Account Manager</option>
-              <option value="3">Graphic Designer</option>
-              <option value="4">Graphic Designer Team Leader</option>
-              <option value="5">Content Creator</option>
-              <option value="6">Content Creator Team Leader</option>
-              <option value="7">Ads Specialist</option>
-              <option value="8">SEO Specialist</option>
-              <option value="9">Web Developer</option>
-              <option value="10">Video Editor</option>
+                <option value="2">Account Manager</option>
+                <option value="3">Graphic Designer</option>
+                <option value="4">Graphic Designer Team Leader</option>
+                <option value="5">Content Creator</option>
+                <option value="6">Content Creator Team Leader</option>
+                <option value="7">Ads Specialist</option>
+                <option value="8">SEO Specialist</option>
+                <option value="9">Web Developer</option>
+                <option value="10">Video Editor</option>
               </select>
               <div
                 class="invalid-feedback"
@@ -312,40 +267,48 @@
                   editUserForm.get('role')?.invalid &&
                   editUserForm.get('role')?.touched
                 "
-              >
-              </div>
+              ></div>
             </div>
             <div class="col-md-6 mb-3">
-              <label for="paymentNumber" class="form-label">رقم المحفظة / انستاباي</label>
-              <input type="tel" class="form-control" id="paymentNumber" formControlName="paymentNumber" />
+              <label for="paymentNumber" class="form-label"
+                >رقم المحفظة / انستاباي</label
+              >
+              <input
+                type="tel"
+                class="form-control"
+                id="paymentNumber"
+                formControlName="paymentNumber"
+              />
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="city" class="form-label">المدينة</label>
-              <input type="text" class="form-control" id="city" formControlName="city" />
+              <input
+                type="text"
+                class="form-control"
+                id="city"
+                formControlName="city"
+              />
             </div>
             <div class="col-md-6 mb-3">
               <label for="street" class="form-label">العنوان التفصيلي</label>
-              <input type="text" class="form-control" id="street" formControlName="street" />
+              <input
+                type="text"
+                class="form-control"
+                id="street"
+                formControlName="street"
+              />
             </div>
           </div>
 
-          <button
-            class="add-btn"
-            (click)="saveUser()"
-            *ngIf="isEditMode"
-          >
-          @if (isLoading) {
-            <span
-              class="spinner-border spinner-border-sm me-1"
-            ></span>
-            جار حفظ التغييرات...
-          } @else {
+          <button class="add-btn" (click)="saveUser()" *ngIf="isEditMode">
+            @if (isLoading) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+            جار حفظ التغييرات... } @else {
             <i class="bi bi-check-circle me-1"></i>
-            حفظ التغييرات
-          }
+            حفظ التغييرات }
           </button>
         </div>
       </div>
@@ -357,3 +320,117 @@
   </div>
   }
 </section>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button
+      class="nav-link active"
+      id="attendance-tab"
+      data-bs-toggle="tab"
+      data-bs-target="#attendance-tab-pane"
+      type="button"
+      role="tab"
+      aria-controls="attendance-tab-pane"
+      aria-selected="true"
+    >
+      سجل الحضور
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button
+      class="nav-link"
+      id="kpis-tab"
+      data-bs-toggle="tab"
+      data-bs-target="#kpis-tab-pane"
+      type="button"
+      role="tab"
+      aria-controls="kpis-tab-pane"
+      aria-selected="false"
+    >
+      KPIs
+    </button>
+  </li>
+  <!-- <li class="nav-item" role="presentation">
+    <button
+      class="nav-link"
+      id="contact-tab"
+      data-bs-toggle="tab"
+      data-bs-target="#contact-tab-pane"
+      type="button"
+      role="tab"
+      aria-controls="contact-tab-pane"
+      aria-selected="false"
+    >
+      Contact
+    </button>
+  </li> -->
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div
+    class="tab-pane fade show active"
+    id="attendance-tab-pane"
+    role="tabpanel"
+    aria-labelledby="attendance-tab"
+    tabindex="0"
+  >
+    <section class="container py-4">
+    <h2>سجل الحضور</h2>
+    @if (attendanceErrorMessage) {
+    <div class="alert alert-danger mt-3" role="alert">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      {{ attendanceErrorMessage }}
+    </div>
+    }
+    <div class="records-table">
+      <table>
+        <thead>
+          <tr>
+            <th>الموظف</th>
+            <th>تاريخ التسجيل</th>
+            <th>وقت التسجيل</th>
+            <th>الحالة</th>
+            <th>جهاز التسجيل</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (record of attendanceRecords; track $index) {
+          <tr>
+            <td>{{ record.employeeName }}</td>
+            <td>{{ record.checkInTime | date : "shortDate" }}</td>
+            <td>{{ record.checkInTime | date : "shortTime" }}</td>
+            <td>
+              <span class="status-badge status-present">حاضر</span>
+            </td>
+            <td>{{ record.deviceId }}</td>
+          </tr>
+          } @if (attendanceRecords.length === 0) {
+          <tr>
+            <td colspan="5" class="no-records">لا توجد سجلات حضور</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  </div>
+  <div
+    class="tab-pane fade"
+    id="kpis-tab-pane"
+    role="tabpanel"
+    aria-labelledby="kpis-tab"
+    tabindex="0"
+  >
+    @if (user) {
+  <app-my-kpis-management [currentUserId]="user.id"></app-my-kpis-management>
+  }
+  </div>
+  <!-- <div
+    class="tab-pane fade"
+    id="contact-tab-pane"
+    role="tabpanel"
+    aria-labelledby="contact-tab"
+    tabindex="0"
+  >
+    ...
+  </div> -->
+</div>

@@ -1,49 +1,64 @@
 <section class="container py-4">
-    <h2>سجل الحضور</h2>
-    <div class="records-table">
-      <table>
-        <thead>
-          <tr>
-            <th>الموظف</th>
-            <th>تاريخ الاجازة</th>
-            <th>الحالة</th>
-            <th>تاريخ الاجراء</th>
-            <th>اجراء</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (request of leaveRequests; track $index) {
-          <tr>
-            <td>{{ request.employeeName }}</td>
-            <td>{{ request.date | date : "shortDate" }}</td>
-            <td>{{ getStatusLabel(request.status) }}</td>
-            <td>{{ request.actionDate | date : "shortTime" }}</td>
-            <td>
-                <button class="btn btn-success btn-sm me-2" (click)="changeLeaveRequestStatus(request.id, 1)" [disabled]="isProcessing || request.status === 1">
-                    @if (isProcessing) {
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    جاري...
-                    } @else {
-                    الموافقة
-                    }
-                </button>
-                <button class="btn btn-danger btn-sm me-2" (click)="changeLeaveRequestStatus(request.id, 2)" [disabled]="isProcessing || request.status === 2">
-                    @if (isProcessing) {
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    جاري...
-                    } @else {
-                    الرفض
-                    }
-                </button>
-            </td>
-          </tr>
-          } @if (leaveRequests.length === 0) {
-          <tr>
-            <td colspan="5" class="no-records">لا توجد سجلات حضور</td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
+  <h2>جميع طلبات الاجازة</h2>
+  <table class="content-table">
+    <thead>
+      <tr>
+        <th>الموظف</th>
+        <th>من</th>
+        <th>الى</th>
+        <th>الحالة</th>
+        <th>تاريخ الاجراء</th>
+        <th>اجراء</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (request of leaveRequests; track $index) {
+      <tr>
+        <td data-cell="الموظف">{{ request.employeeName }}</td>
+        <td data-cell="من">
+          {{ request.fromDate | date : "shortDate" }}
+        </td>
+        <td data-cell="الى">
+          {{ request.toDate | date: 'shortDate' }}
+        </td>
+        <td data-cell="الحالة">{{ getStatusLabel(request.status) }}</td>
+        <td data-cell="تاريخ الاجراء">
+          {{ request.actionDate | date : "shortTime" }}
+        </td>
+        <td data-cell="اجراء">
+          <button
+            class="btn btn-success btn-sm me-2"
+            (click)="changeLeaveRequestStatus(request.id, 1)"
+            [disabled]="isProcessing || request.status === 1"
+          >
+            @if (isProcessing) {
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            جاري... } @else { الموافقة }
+          </button>
+          <button
+            class="btn btn-danger btn-sm me-2"
+            (click)="changeLeaveRequestStatus(request.id, 2)"
+            [disabled]="isProcessing || request.status === 2"
+          >
+            @if (isProcessing) {
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            جاري... } @else { الرفض }
+          </button>
+        </td>
+      </tr>
+      } @if (leaveRequests.length === 0) {
+      <tr>
+        <td colspan="5" class="no-records">لا توجد سجلات حضور</td>
+      </tr>
+      }
+    </tbody>
+  </table>
 </section>

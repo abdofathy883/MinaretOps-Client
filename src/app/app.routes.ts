@@ -27,6 +27,9 @@ import { AddComplaintComponent } from './pages/complaints/add-complaint/add-comp
 import { AllEntriesComponent } from './pages/contact/all-entries/all-entries.component';
 import { SingleEntryComponent } from './pages/contact/single-entry/single-entry.component';
 import { KpisManagementComponent } from './pages/kpis/kpis-management/kpis-management.component';
+import { roleGuard } from './core/guards/role.guard';
+import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 export const routes: Routes = [
     {
@@ -47,7 +50,8 @@ export const routes: Routes = [
     {
         path: 'users/add',
         component: AddUserComponent,
-        canActivate: [noauthGuard]
+        canActivate: [noauthGuard, roleGuard],
+        data: {roles: ['Admin', 'AccountManager']}
     },
     {
         path: 'users',
@@ -67,7 +71,8 @@ export const routes: Routes = [
     {
         path: 'services/add',
         component: AddServiceComponent,
-        canActivate: [noauthGuard]
+        canActivate: [noauthGuard, roleGuard],
+        data: {roles: ['Admin', 'AccountManager']}
     },
     {
         path: 'services',
@@ -82,7 +87,8 @@ export const routes: Routes = [
     {
         path: 'clients/add',
         component: AddClientComponent,
-        canActivate: [noauthGuard]
+        canActivate: [noauthGuard, roleGuard],
+        data: {roles: ['Admin', 'AccountManager']}
     },
     {
         path: 'clients',
@@ -112,7 +118,8 @@ export const routes: Routes = [
     {
         path: 'internal-tasks/add',
         component: AddInternalTaskComponent,
-        canActivate: [noauthGuard]
+        canActivate: [noauthGuard, roleGuard],
+        data: {roles: ['Admin', 'AccountManager']}
     },
     {
         path: 'internal-tasks/:id',
@@ -122,7 +129,8 @@ export const routes: Routes = [
     {
         path: 'attendance',
         component: AllAttendenceComponent,
-        canActivate: [noauthGuard]
+        canActivate: [noauthGuard, roleGuard],
+        data: {roles: ['Admin']}
     },
     {
         path: 'announcements',
@@ -132,17 +140,20 @@ export const routes: Routes = [
     {
         path: 'announcements/add',
         component: AddAnnouncementComponent,
-        canActivate: [noauthGuard]
+        canActivate: [noauthGuard, roleGuard],
+        data: {roles: ['Admin', 'AccountManager']}
     },
     {
         path: 'leave-requests',
         component: AllLeaveRequestsComponent,
-        canActivate: [noauthGuard]
+        canActivate: [noauthGuard, roleGuard],
+        data: {roles: ['Admin']}
     },
     {
         path: 'complaints',
         component: AllComplaintsComponent,
-        canActivate: [noauthGuard]
+        canActivate: [noauthGuard, roleGuard],
+        data: {roles: ['Admin']}
     },
     {
         path: 'complaints/add',
@@ -162,6 +173,17 @@ export const routes: Routes = [
     {
         path: 'kpis-management',
         component: KpisManagementComponent,
+        canActivate: [noauthGuard, roleGuard],
+        data: {roles: ['Admin']}
+    },
+    {
+        path: 'access-denied',
+        component: AccessDeniedComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: '**',
+        component: NotFoundComponent,
         canActivate: [noauthGuard]
     }
 ];

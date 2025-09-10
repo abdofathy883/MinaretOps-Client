@@ -30,7 +30,8 @@ export class SubmitLeaveRequestComponent implements OnInit {
   ngOnInit(): void {
     this.leaveRequestForm = this.fb.group({
       employeeId: [''],
-      date: ['', Validators.required, Validators],
+      fromDate: ['', Validators.required, Validators],
+      toDate: ['', Validators.required, Validators],
     });
   }
 
@@ -42,7 +43,8 @@ export class SubmitLeaveRequestComponent implements OnInit {
     this.isLoading = true;
     const formData : NewLeaveRequest = {
       employeeId: this.currentUser.id,
-      date: this.leaveRequestForm.value.date
+      fromDate: this.leaveRequestForm.value.fromDate,
+      toDate: this.leaveRequestForm.value.toDate
     }
     console.log('Submitting leave request:', formData);
     this.leaveRequestService.newLeaveRequest(formData).subscribe({

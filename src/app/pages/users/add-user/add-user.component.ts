@@ -1,6 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormsModule,
+  ValidatorFn,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { RegisterUser } from '../../../model/auth/user';
@@ -11,7 +20,7 @@ import { AuthService } from '../../../services/auth/auth.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './add-user.component.html',
-  styleUrl: './add-user.component.css'
+  styleUrl: './add-user.component.css',
 })
 export class AddUserComponent implements OnInit, OnDestroy {
   newUser: FormGroup;
@@ -20,7 +29,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   errorMessage = '';
   showPassword = false;
   useSameAsPhone = false; // Add this property
-  
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -29,57 +38,132 @@ export class AddUserComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     this.newUser = this.fb.group({
-      firstName: ['', [
-        Validators.required, 
-        Validators.minLength(3), 
-        Validators.maxLength(30)
-      ]],
-      lastName: ['', [
-        Validators.required, 
-        Validators.minLength(3), 
-        Validators.maxLength(30)
-      ]],
-      email: ['', [
-        Validators.required, 
-        Validators.email
-      ]],
-      phoneNumber: ['', [
-        Validators.required
-      ]],
-      role: ['', [Validators.required]],
-      password: ['', [
-        Validators.required, 
-        Validators.minLength(6)
-      ]],
-      city: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
-      street: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
+      firstName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(30),
+        ],
+      ],
+      lastName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(30),
+        ],
+      ],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', [Validators.required]],
+      role: ['choose', [Validators.required]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          this.passwordComplexityValidator(),
+        ],
+      ],
+      city: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(30),
+        ],
+      ],
+      street: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(200),
+        ],
+      ],
       paymentNumber: ['', Validators.required],
-      nid: ['', [Validators.required, Validators.minLength(14), Validators.maxLength(14)]],
+      nid: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(14),
+          Validators.maxLength(14),
+        ],
+      ],
       dateOfHiring: ['', Validators.required],
-      useSameAsPhone: [false]
+      useSameAsPhone: [false],
     });
 
-    this.newUser.get('useSameAsPhone')?.valueChanges.subscribe(useSame => {
-    if (useSame) {
-      const phoneValue = this.newUser.get('phoneNumber')?.value;
-      this.newUser.get('paymentNumber')?.setValue(phoneValue);
-      this.newUser.get('paymentNumber')?.disable({ emitEvent: false });
-    } else {
-      this.newUser.get('paymentNumber')?.enable({ emitEvent: false });
-    }
-  });
+    this.newUser.get('useSameAsPhone')?.valueChanges.subscribe((useSame) => {
+      if (useSame) {
+        const phoneValue = this.newUser.get('phoneNumber')?.value;
+        this.newUser.get('paymentNumber')?.setValue(phoneValue);
+        this.newUser.get('paymentNumber')?.disable({ emitEvent: false });
+      } else {
+        this.newUser.get('paymentNumber')?.enable({ emitEvent: false });
+      }
+    });
 
-  // When phone changes and checkbox is ON
-  this.newUser.get('phoneNumber')?.valueChanges.subscribe(phoneValue => {
-    if (this.newUser.get('useSameAsPhone')?.value) {
-      this.newUser.get('paymentNumber')?.setValue(phoneValue);
-    }
-  });
+    // When phone changes and checkbox is ON
+    this.newUser.get('phoneNumber')?.valueChanges.subscribe((phoneValue) => {
+      if (this.newUser.get('useSameAsPhone')?.value) {
+        this.newUser.get('paymentNumber')?.setValue(phoneValue);
+      }
+    });
+  }
+
+  // Password complexity validator: requires uppercase, lowercase, and special char
+  private passwordComplexityValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value: string = control.value || '';
+      if (!value) return null; // handled by required
+
+      const hasUpper = /[A-Z]/.test(value);
+      const hasLower = /[a-z]/.test(value);
+      const hasSpecial = /[^A-Za-z0-9]/.test(value);
+
+      return hasUpper && hasLower && hasSpecial
+        ? null
+        : { passwordComplexity: true };
+    };
+  }
+
+  // Convenience getters for template
+  get passwordControl() {
+    return this.newUser.get('password');
+  }
+
+  get passwordValue(): string {
+    return this.passwordControl?.value || '';
+  }
+
+  get passHasMin(): boolean {
+    return this.passwordValue.length >= 6;
+  }
+
+  get passHasUpper(): boolean {
+    return /[A-Z]/.test(this.passwordValue);
+  }
+
+  get passHasLower(): boolean {
+    return /[a-z]/.test(this.passwordValue);
+  }
+
+  get passHasSpecial(): boolean {
+    return /[^A-Za-z0-9]/.test(this.passwordValue);
+  }
+
+  requirementClass(ok: boolean): string {
+    return ok ? 'text-success' : 'text-danger';
+  }
+
+  requirementIcon(ok: boolean): string {
+    return ok ? 'bi-check-circle' : 'bi-x-circle';
   }
 
   ngOnInit(): void {
     // Component initialization logic if needed
-    this.resetForm()
+    this.resetForm();
   }
 
   ngOnDestroy(): void {
@@ -89,19 +173,22 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.newUser.invalid) {
-      this.markFormGroupTouched();
+      this.newUser.markAllAsTouched();
       return;
     }
 
     this.isLoading = true;
 
     // Get the payment number value properly, even if the field is disabled
-  let paymentNumberValue = this.newUser.get('paymentNumber')?.value;
-  
-  // If the field is disabled and useSameAsPhone is checked, get the phone number value
-  if (this.newUser.get('paymentNumber')?.disabled && this.newUser.get('useSameAsPhone')?.value) {
-    paymentNumberValue = this.newUser.get('phoneNumber')?.value;
-  }
+    let paymentNumberValue = this.newUser.get('paymentNumber')?.value;
+
+    // If the field is disabled and useSameAsPhone is checked, get the phone number value
+    if (
+      this.newUser.get('paymentNumber')?.disabled &&
+      this.newUser.get('useSameAsPhone')?.value
+    ) {
+      paymentNumberValue = this.newUser.get('phoneNumber')?.value;
+    }
 
     const userData: RegisterUser = {
       firstName: this.newUser.value.firstName,
@@ -114,45 +201,32 @@ export class AddUserComponent implements OnInit, OnDestroy {
       street: this.newUser.value.street,
       nid: this.newUser.value.nid,
       paymentNumber: paymentNumberValue,
-      dateOfHiring: this.newUser.value.dateOfHiring
+      dateOfHiring: this.newUser.value.dateOfHiring,
     };
 
-    this.authService.registerUser(userData)
+    this.authService
+      .registerUser(userData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           this.isLoading = false;
           this.successMessage = 'تم إضافة المستخدم بنجاح!';
-          
-          // Clear form after successful submission
-          this.resetForm();
-          
-          // Clear success message after 3 seconds and redirect
-          setTimeout(() => {
-            this.successMessage = '';
-            this.router.navigate(['/users']);
-          }, 3000);
         },
         error: (error) => {
           this.isLoading = false;
           this.errorMessage = error.message || 'حدث خطأ أثناء إضافة المستخدم';
-          
-          // Clear error message after 5 seconds
-          setTimeout(() => {
-            this.errorMessage = '';
-          }, 5000);
-        }
+        },
       });
   }
 
   onPaymentSwitchChange(): void {
     if (this.useSameAsPhone) {
-    const phoneValue = this.newUser.get('phoneNumber')?.value;
-    this.newUser.patchValue({ paymentNumber: phoneValue });
-    this.newUser.get('paymentNumber')?.disable({ emitEvent: false });
-  } else {
-    this.newUser.get('paymentNumber')?.enable({ emitEvent: false });
-  }
+      const phoneValue = this.newUser.get('phoneNumber')?.value;
+      this.newUser.patchValue({ paymentNumber: phoneValue });
+      this.newUser.get('paymentNumber')?.disable({ emitEvent: false });
+    } else {
+      this.newUser.get('paymentNumber')?.enable({ emitEvent: false });
+    }
   }
 
   resetForm(): void {
@@ -165,13 +239,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
-  }
-
-  private markFormGroupTouched(): void {
-    Object.keys(this.newUser.controls).forEach(key => {
-      const control = this.newUser.get(key);
-      control?.markAsTouched();
-    });
   }
 
   // Helper method to check if a form control has a specific error
@@ -187,8 +254,10 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
     if (control.errors['required']) return 'هذا الحقل مطلوب';
     if (control.errors['email']) return 'صيغة البريد الإلكتروني غير صحيحة';
-    if (control.errors['minlength']) return `يجب أن يكون ${control.errors['minlength'].requiredLength} أحرف على الأقل`;
-    if (control.errors['maxlength']) return `يجب أن يكون ${control.errors['maxlength'].requiredLength} أحرف على الأكثر`;
+    if (control.errors['minlength'])
+      return `يجب أن يكون ${control.errors['minlength'].requiredLength} أحرف على الأقل`;
+    if (control.errors['maxlength'])
+      return `يجب أن يكون ${control.errors['maxlength'].requiredLength} أحرف على الأكثر`;
     return 'قيمة غير صحيحة';
   }
 
@@ -218,8 +287,8 @@ export class AddUserComponent implements OnInit, OnDestroy {
         return 'SEO Specialist';
       case '9':
         return 'Web Developer';
-        case '10':
-          return 'Video Editor'
+      case '10':
+        return 'Video Editor';
       default:
         return 'اختر الدور';
     }
@@ -252,13 +321,13 @@ export class AddUserComponent implements OnInit, OnDestroy {
   getFieldValidationClasses(fieldName: string): string {
     const control = this.newUser.get(fieldName);
     if (!control) return 'form-control';
-    
+
     if (control.invalid && control.touched) {
       return 'form-control is-invalid';
     } else if (control.valid && control.touched) {
       return 'form-control is-valid';
     }
-    
+
     return 'form-control';
   }
 }

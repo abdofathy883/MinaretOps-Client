@@ -10,13 +10,31 @@
         <div class="row g-4 align-items-end">
           <div class="col-12 col-md-6">
             <label for="leaveDate" class="form-label fw-semibold"
-              >تاريخ الإجازة</label
+              >من</label
             >
             <input
               type="date"
               id="leaveDate"
               class="form-control form-control-md"
-              formControlName="date"
+              formControlName="fromDate"
+              required
+              [min]="today"
+              [class.is-invalid]="
+                leaveRequestForm.get('date')?.invalid &&
+                leaveRequestForm.get('date')?.touched
+              "
+            />
+            
+          </div>
+          <div class="col-12 col-md-6">
+            <label for="leaveDate" class="form-label fw-semibold"
+              >الى</label
+            >
+            <input
+              type="date"
+              id="leaveDate"
+              class="form-control form-control-md"
+              formControlName="toDate"
               required
               [min]="today"
               [class.is-invalid]="

@@ -2,3 +2,14 @@
     background-color: var(--orange-color);
     color: var(--mov-color);
 }
+
+
+.tab-btn {
+    font-weight: 500;
+    color: var(--terquoise-color)
+}
+
+.tab-btn.active{
+    background-color: var(--terquoise-color);
+    color: white;
+}

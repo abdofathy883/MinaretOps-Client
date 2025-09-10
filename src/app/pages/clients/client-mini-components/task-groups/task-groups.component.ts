@@ -28,6 +28,8 @@ export class TaskGroupsComponent implements OnInit {
   successMessage: string = '';
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
+  isContentLeader: boolean = false;
+  isDesignerLeader: boolean = false;
   
   // Modal and form related
   editTaskForm: FormGroup;
@@ -68,14 +70,16 @@ export class TaskGroupsComponent implements OnInit {
     this.loadEmployees();
     this.initializeModal();
     this.authService.isAdmin().subscribe((isAdmin) => {
-      if (isAdmin) {
-        this.isUserAdmin = true;
-      }
+      if (isAdmin) this.isUserAdmin = true;
     });
     this.authService.isAccountManager().subscribe((isAccountManager) => {
-      if (isAccountManager) {
-        this.isUserAccountManager = true;
-      }
+      if (isAccountManager) this.isUserAccountManager = true;
+    });
+    this.authService.isContentLeader().subscribe((isLeader) => {
+      if (isLeader) this.isContentLeader = true;
+    });
+    this.authService.isDesignerLeader().subscribe((isLeader) => {
+      if (isLeader) this.isDesignerLeader = true;
     });
   }
 
