@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api-service/api.service';
-import { ClientDTO, CreateClient, LightWieghtClient, UpdateClientDTO } from '../../model/client/client';
 import { Observable } from 'rxjs';
+import { IClient, ICreateClient, IUpdateClient, LightWieghtClient } from '../../model/client/client';
 
 @Injectable({
   providedIn: 'root'
@@ -14,15 +14,15 @@ export class ClientService {
     return this.api.get<LightWieghtClient[]>(`${this.endpoint}`)
   }
 
-  getById(id: number): Observable<ClientDTO> {
-    return this.api.get<ClientDTO>(`${this.endpoint}/${id}`);
+  getById(id: number): Observable<IClient> {
+    return this.api.get<IClient>(`${this.endpoint}/${id}`);
   }
 
-  add(client: CreateClient): Observable<ClientDTO>{
-    return this.api.post<ClientDTO>(`${this.endpoint}`, client)
+  add(client: ICreateClient): Observable<IClient>{
+    return this.api.post<IClient>(`${this.endpoint}`, client)
   }
 
-  update(clientId: number, updateClient: UpdateClientDTO): Observable<ClientDTO> {
-    return this.api.put<ClientDTO>(`${this.endpoint}/${clientId}`, updateClient);
+  update(clientId: number, updateClient: IUpdateClient): Observable<IClient> {
+    return this.api.put<IClient>(`${this.endpoint}/${clientId}`, updateClient);
   }
 }

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { InternalTaskService } from '../../../services/internal-tasks/internal-task.service';
 import { ActivatedRoute } from '@angular/router';
 import { InternalTask } from '../../../model/internal-task/internal-task';
-import { CustomTaskStatus } from '../../../model/client/client';
 import { CommonModule } from '@angular/common';
+import { CustomTaskStatus } from '../../../model/task/task';
 
 @Component({
   selector: 'app-single-internal-task',

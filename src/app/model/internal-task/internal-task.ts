@@ -1,4 +1,4 @@
-import { CustomTaskStatus } from "../client/client";
+import { CustomTaskStatus } from "../task/task";
 
 export interface InternalTask {
   id: number;

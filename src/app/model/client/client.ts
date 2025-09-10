@@ -1,3 +1,5 @@
+import { ICreateTaskGroup, ITask, ITaskGroup } from "../task/task";
+
 export interface LightWieghtClient {
   id: number;
   name: string;
@@ -7,53 +9,22 @@ export interface LightWieghtClient {
   serviceTitle: string;
 }
 
-// Enums matching server-side enums
 export enum ClientStatus {
   Active = 0,
   OnHold = 1,
   Cancelled = 2,
 }
 
-export enum CustomTaskStatus {
-  Open = 0,
-  Acknowledged = 1,
-  InProgress = 2,
-  UnderReview = 3,
-  NeedsEdits = 4,
-  Completed = 5,
-}
-
-// Task-related interfaces
-export interface CreateTaskDTO {
-  title: string;
-  description: string;
-  status: CustomTaskStatus;
-  clientServiceId: number;
-  deadline: Date;
-  priority: string;
-  refrence?: string;
-  employeeId: string;
-  completedAt?: Date;
-  taskGroupId: number;
-}
-
-export interface CreateTaskGroupDTO {
-  clientServiceId: number;
-  month: number; // 1-12
-  year: number;
-  monthLabel: string; // e.g., "August 2024"
-  tasks: CreateTaskDTO[];
-}
 
 // Client Service interfaces
-export interface CreateClientServiceDTO {
+export interface ICreateClientService {
   clientId: number;
   serviceId: number;
-  taskGroups: CreateTaskGroupDTO[];
+  taskGroups: ICreateTaskGroup[];
 }
 
 // Main client creation interface matching CreateClientDTO
-export interface CreateClient {
+export interface ICreateClient {
   name: string;
   companyName?: string;
   personalPhoneNumber: string;
@@ -61,48 +32,10 @@ export interface CreateClient {
   businessDescription: string;
   driveLink?: string;
   status: ClientStatus;
-  clientServices: CreateClientServiceDTO[];
+  clientServices: ICreateClientService[];
 }
 
-// Legacy interface for backward compatibility (keeping the old structure)
-// export interface CreateClientLegacy {
-//     name: string;
-//     personalPhoneNumber: string;
-//     companyName: string;
-//     companyPhoneNumber: string;
-//     driveLink: string;
-//     businessDescription: string;
-//     servicesId: number[];
-//     tasks?: CreateTaskItem[];
-// }
-
-// Legacy task item interface for backward compatibility
-export interface CreateTaskItem {
-  title: string;
-  description: string;
-  employeeId?: string;
-  deadline: Date;
-  priority: string;
-  refrence?: string;
-}
-
-// Response interfaces matching server-side DTOs
-export interface TaskDTO extends CreateTaskDTO {
-  id: number;
-  isCompletedOnDeadline: boolean;
-  clientName: string;
-  serviceName: string;
-  employeeName: string;
-  serviceId: number;
-  clientId: number;
-}
-
-export interface TaskGroupDTO extends CreateTaskGroupDTO {
-  id: number;
-  tasks: TaskDTO[];
-}
-
-export interface ClientServiceDTO {
+export interface IClientService {
   id: number;
   clientId: number;
   clientName: string;
@@ -110,11 +43,11 @@ export interface ClientServiceDTO {
   serviceTitle: string;
   startDate: Date;
   endDate?: Date;
-  taskItems: TaskDTO[];
-  taskGroups: TaskGroupDTO[];
+  taskItems: ITask[];
+  taskGroups: ITaskGroup[];
 }
 
-export interface ClientDTO {
+export interface IClient {
   id: number;
   name: string;
   companyName?: string;
@@ -126,18 +59,18 @@ export interface ClientDTO {
   statusNotes?: string;
   createdAt: Date;
   updatedAt?: Date;
-  clientServices: ClientServiceDTO[];
+  clientServices: IClientService[];
 }
 
-export interface ServiceDTO {
+export interface IService {
   id: number;
   title: string;
   description?: string;
   createdAt: Date;
-  clientServices: ClientServiceDTO[];
+  clientServices: IClientService[];
 }
 
-export interface UpdateClientDTO {
+export interface IUpdateClient {
   name: string;
   personalPhoneNumber: string;
   companyName: string;

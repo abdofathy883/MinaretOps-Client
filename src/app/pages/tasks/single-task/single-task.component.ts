@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomTaskStatus, TaskDTO } from '../../../model/client/client';
 import { TaskService } from '../../../services/tasks/task.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { CustomTaskStatus, ITask } from '../../../model/task/task';
 
 @Component({
   selector: 'app-single-task',
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './single-task.component.css'
 })
 export class SingleTaskComponent implements OnInit{
-  task!: TaskDTO;
+  task!: ITask;
   updatingStatus = false;
   availableStatuses = [
     { value: CustomTaskStatus.Open, label: 'لم تبدأ', icon: 'bi bi-clock' },

@@ -22,6 +22,11 @@ import { AllAttendenceComponent } from './pages/all-attendence/all-attendence.co
 import { AllAnnouncementsComponent } from './pages/announcements/all-announcements/all-announcements.component';
 import { AddAnnouncementComponent } from './pages/announcements/add-announcement/add-announcement.component';
 import { AllLeaveRequestsComponent } from './pages/leave-requests/all-leave-requests/all-leave-requests.component';
+import { AllComplaintsComponent } from './pages/complaints/all-complaints/all-complaints.component';
+import { AddComplaintComponent } from './pages/complaints/add-complaint/add-complaint.component';
+import { AllEntriesComponent } from './pages/contact/all-entries/all-entries.component';
+import { SingleEntryComponent } from './pages/contact/single-entry/single-entry.component';
+import { KpisManagementComponent } from './pages/kpis/kpis-management/kpis-management.component';
 
 export const routes: Routes = [
     {
@@ -132,6 +137,31 @@ export const routes: Routes = [
     {
         path: 'leave-requests',
         component: AllLeaveRequestsComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'complaints',
+        component: AllComplaintsComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'complaints/add',
+        component: AddComplaintComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'contact-form-entries',
+        component: AllEntriesComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'contact-form-entries/:id',
+        component: SingleEntryComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'kpis-management',
+        component: KpisManagementComponent,
         canActivate: [noauthGuard]
     }
 ];

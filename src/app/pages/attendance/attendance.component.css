@@ -17,7 +17,7 @@ h2, h3 {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  background-color: var(--mov-color);
+  background-color: var(--terquoise-color);
   color: white;
 }
 

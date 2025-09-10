@@ -10,17 +10,18 @@
       <button
         class="check-in-btn"
         (click)="onCheckIn()"
-        [disabled]="isCheckingIn || todayRecord"
+        [disabled]="todayRecord"
       >
         @if (isCheckingIn) {
         <span>جاري التسجيل...</span>
-        } @if (!isCheckingIn && !hasCheckedInToday) {
+        } @if (!isCheckingIn) {
         <i class="bi bi-calendar-plus ms-3"></i>
         <span>تسجيل الحضور</span>
-        } @else {
+        } 
+        <!-- @else {
         <i class="bi bi-calendar-check ms-3"></i>
         <span>تم التسجيل اليوم</span>
-        }
+        } -->
       </button>
     </div>
   </div>

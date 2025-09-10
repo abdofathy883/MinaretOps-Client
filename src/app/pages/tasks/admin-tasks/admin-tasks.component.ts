@@ -4,9 +4,7 @@ import { ServicesService } from '../../../services/services/services.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { User } from '../../../model/auth/user';
 import {
-  CustomTaskStatus,
   LightWieghtClient,
-  TaskDTO,
 } from '../../../model/client/client';
 import { ClientService } from '../../../services/clients/client.service';
 import { TaskService } from '../../../services/tasks/task.service';
@@ -18,6 +16,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { CustomTaskStatus, ITask } from '../../../model/task/task';
 
 @Component({
   selector: 'app-admin-tasks',
@@ -29,8 +28,8 @@ export class AdminTasksComponent implements OnInit {
   services: Service[] = [];
   employees: User[] = [];
   clients: LightWieghtClient[] = [];
-  tasks: TaskDTO[] = [];
-  filteredTasks: TaskDTO[] = [];
+  tasks: ITask[] = [];
+  filteredTasks: ITask[] = [];
   filterForm!: FormGroup;
 
   constructor(
@@ -142,9 +141,9 @@ export class AdminTasksComponent implements OnInit {
       }
 
       // Filter by client ID
-      if (clientId && task.clientId !== clientId) {
-        matches = false;
-      }
+      // if (clientId && task.clientId !== clientId) {
+      //   matches = false;
+      // }
 
       // Filter by employee ID
       if (employeeId && task.employeeId !== employeeId) {

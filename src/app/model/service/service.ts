@@ -1,4 +1,4 @@
-import { ClientServiceDTO } from "../client/client";
+import { IClientService } from "../client/client";
 
 export interface Service {
     id: number;
@@ -6,7 +6,7 @@ export interface Service {
     description: string;
     createdAt: Date;
     isDeleted: boolean;
-    clientServices: ClientServiceDTO[];
+    clientServices: IClientService[];
 }
 
 export interface CreateServiceRequest {

@@ -9,7 +9,6 @@ export interface AttendanceRecord {
 
 export interface NewAttendanceRecord {
     employeeId: string;
-    checkInTime: Date;
     deviceId: string;
     ipAddress: string;
 }

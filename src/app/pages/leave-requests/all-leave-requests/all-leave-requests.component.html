@@ -16,10 +16,10 @@
           <tr>
             <td>{{ request.employeeName }}</td>
             <td>{{ request.date | date : "shortDate" }}</td>
-            <td>{{ request.status }}</td>
+            <td>{{ getStatusLabel(request.status) }}</td>
             <td>{{ request.actionDate | date : "shortTime" }}</td>
             <td>
-                <button class="btn btn-success btn-sm me-2" (click)="changeLeaveRequestStatus(request.id, 1)" [disabled]="isProcessing">
+                <button class="btn btn-success btn-sm me-2" (click)="changeLeaveRequestStatus(request.id, 1)" [disabled]="isProcessing || request.status === 1">
                     @if (isProcessing) {
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     جاري...
@@ -27,7 +27,7 @@
                     الموافقة
                     }
                 </button>
-                <button class="btn btn-danger btn-sm me-2" (click)="changeLeaveRequestStatus(request.id, 2)" [disabled]="isProcessing">
+                <button class="btn btn-danger btn-sm me-2" (click)="changeLeaveRequestStatus(request.id, 2)" [disabled]="isProcessing || request.status === 2">
                     @if (isProcessing) {
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     جاري...

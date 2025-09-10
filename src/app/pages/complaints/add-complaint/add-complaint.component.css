@@ -1,0 +1,80 @@
+/* Form styling to match the app's design system */
+.form-header {
+  background: var(--orange-color);
+  color: var(--mov-color);
+  border-radius: 8px 8px 0 0;
+}
+
+
+
+.form-control {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+
+.form-control.is-invalid {
+  border-color: #e53e3e;
+}
+
+.form-control.is-invalid:focus {
+  border-color: #e53e3e;
+  box-shadow: 0 0 0 0.2rem rgba(229, 62, 62, 0.25);
+}
+
+.invalid-feedback {
+  display: block;
+  color: #e53e3e;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.form-text {
+  color: #718096;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.add-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Help section styling */
+.list-unstyled li {
+  display: flex;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .d-flex.justify-content-end {
+    flex-direction: column;
+  }
+  
+  .d-flex.justify-content-end .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .d-flex.justify-content-end .btn:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .form-control {
+    padding: 0.6rem;
+  }
+}

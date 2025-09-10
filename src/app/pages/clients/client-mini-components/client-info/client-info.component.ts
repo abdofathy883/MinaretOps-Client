@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ClientService } from '../../../../services/clients/client.service';
-import { ClientDTO, ClientStatus, UpdateClientDTO } from '../../../../model/client/client';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../services/auth/auth.service';
+import { ClientStatus, IClient, IUpdateClient } from '../../../../model/client/client';
 
 @Component({
   selector: 'app-client-info',
@@ -12,7 +12,7 @@ import { AuthService } from '../../../../services/auth/auth.service';
   styleUrl: './client-info.component.css',
 })
 export class ClientInfoComponent implements OnInit, OnChanges {
-  @Input() client: ClientDTO | null = null;
+  @Input() client: IClient | null = null;
   isLoading: boolean = false;
   isEditMode: boolean = false;
   errorMessage: string = '';
@@ -143,7 +143,7 @@ export class ClientInfoComponent implements OnInit, OnChanges {
     this.errorMessage = '';
 
     const formValues = this.clientForm.value;
-    const updateClient: UpdateClientDTO = {
+    const updateClient: IUpdateClient = {
       name: formValues.name,
       personalPhoneNumber: formValues.personalPhoneNumber,
       companyName: formValues.companyName,

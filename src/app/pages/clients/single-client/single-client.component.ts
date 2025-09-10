@@ -1,20 +1,15 @@
-import { ClientServiceDTO } from './../../../model/client/client';
 import { Component, OnInit } from '@angular/core';
 import { ClientService } from '../../../services/clients/client.service';
 import { TaskService } from '../../../services/tasks/task.service';
 import { ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import {
-  ClientDTO,
-  CreateTaskDTO,
-  CreateTaskGroupDTO,
-  TaskDTO,
-} from '../../../model/client/client';
 import { AuthService } from '../../../services/auth/auth.service';
 import { User } from '../../../model/auth/user';
 import { ClientInfoComponent } from '../client-mini-components/client-info/client-info.component';
 import { TaskGroupsComponent } from "../client-mini-components/task-groups/task-groups.component";
+import { IClient } from '../../../model/client/client';
+import { ICreateTask, ICreateTaskGroup, ITask } from '../../../model/task/task';
 
 @Component({
   selector: 'app-single-client',
@@ -29,7 +24,7 @@ import { TaskGroupsComponent } from "../client-mini-components/task-groups/task-
   styleUrl: './single-client.component.css',
 })
 export class SingleClientComponent implements OnInit {
-  client: ClientDTO | null = null;
+  client: IClient | null = null;
   employees: User[] = [];
   errorMessage: string = '';
   successMessage: string = '';
@@ -41,7 +36,7 @@ export class SingleClientComponent implements OnInit {
   showEditTaskModal = false;
   selectedClientServiceId: number | null = null;
   selectedTaskGroupId: number | null = null;
-  selectedTask: TaskDTO | null = null;
+  selectedTask: ITask | null = null;
 
   constructor(
     private clientService: ClientService,
@@ -74,7 +69,7 @@ export class SingleClientComponent implements OnInit {
           this.client = response;
           this.loading = false;
         },
-        error: (error) => {
+        error: () => {
           this.errorMessage = 'حدث خطأ في تحميل بيانات العميل';
           this.loading = false;
         },
@@ -83,7 +78,7 @@ export class SingleClientComponent implements OnInit {
   }
 
   // Client info updated
-  onClientUpdated(updatedClient: ClientDTO): void {
+  onClientUpdated(updatedClient: IClient): void {
     this.client = updatedClient;
     this.successMessage = 'تم تحديث بيانات العميل بنجاح';
     this.clearMessages();
@@ -101,12 +96,12 @@ export class SingleClientComponent implements OnInit {
     this.showAddTaskGroupModal = true;
   }
 
-  openEditTaskModal(task: TaskDTO): void {
+  openEditTaskModal(task: ITask): void {
     this.selectedTask = task;
     this.showEditTaskModal = true;
   }
 
-  onTaskCreated(createTask: CreateTaskDTO): void {
+  onTaskCreated(createTask: ICreateTask): void {
     this.loading = true;
 
     this.taskService.addTask(createTask).subscribe({
@@ -117,14 +112,14 @@ export class SingleClientComponent implements OnInit {
         this.closeAddTaskModal();
         this.loading = false;
       },
-      error: (error) => {
+      error: () => {
         this.errorMessage = 'حدث خطأ في إضافة المهمة';
         this.loading = false;
       },
     });
   }
 
-  onTaskGroupCreated(createTaskGroup: CreateTaskGroupDTO): void {
+  onTaskGroupCreated(createTaskGroup: ICreateTaskGroup): void {
     this.loading = true;
 
     this.taskService.addTaskGroup(createTaskGroup).subscribe({
@@ -135,7 +130,7 @@ export class SingleClientComponent implements OnInit {
         this.closeAddTaskGroupModal();
         this.loading = false;
       },
-      error: (error) => {
+      error: () => {
         this.errorMessage = 'حدث خطأ في إنشاء مجموعة المهام';
         this.loading = false;
       },
@@ -143,7 +138,7 @@ export class SingleClientComponent implements OnInit {
   }
 
   // Task updated from child components
-  onTaskUpdated(taskData: TaskDTO): void {
+  onTaskUpdated(taskData: ITask): void {
     this.loading = true;
 
     this.taskService.update(taskData.id, taskData).subscribe({
@@ -184,7 +179,7 @@ export class SingleClientComponent implements OnInit {
     }
   }
 
-  private updateTaskInLocalData(updatedTask: TaskDTO): void {
+  private updateTaskInLocalData(updatedTask: ITask): void {
     if (this.client) {
       this.client.clientServices.forEach((service) => {
         service.taskGroups.forEach((group) => {

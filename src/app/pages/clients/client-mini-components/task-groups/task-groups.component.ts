@@ -1,12 +1,12 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ClientServiceDTO, TaskDTO, CustomTaskStatus, CreateTaskDTO } from '../../../../model/client/client';
 import { User } from '../../../../model/auth/user';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { NewTaskGroupComponent } from '../new-task-group/new-task-group.component';
 import { TaskService } from '../../../../services/tasks/task.service';
-import { UpdateTaskDTO } from '../../../../model/task/task';
+import { IClientService } from '../../../../model/client/client';
+import { CustomTaskStatus, ICreateTask, ITask, IUpdateTask } from '../../../../model/task/task';
 
 @Component({
   selector: 'app-task-groups',
@@ -16,7 +16,7 @@ import { UpdateTaskDTO } from '../../../../model/task/task';
   styleUrl: './task-groups.component.css'
 })
 export class TaskGroupsComponent implements OnInit {
-  @Input() clientServices: ClientServiceDTO[] = [];
+  @Input() clientServices: IClientService[] = [];
   @Input() clientId: number = 0;
 
   @ViewChild('newTaskGroupModal') newTaskGroupModal!: NewTaskGroupComponent;
@@ -32,7 +32,7 @@ export class TaskGroupsComponent implements OnInit {
   // Modal and form related
   editTaskForm: FormGroup;
   modalMode: 'add' | 'edit' = 'add';
-  selectedTask: TaskDTO | null = null;
+  selectedTask: ITask | null = null;
   selectedTaskGroupId: number | null = null;
   employees: User[] = [];
   
@@ -144,7 +144,7 @@ export class TaskGroupsComponent implements OnInit {
   }
 
   // Open modal for editing existing task
-  openEditTaskModal(task: TaskDTO): void {
+  openEditTaskModal(task: ITask): void {
     this.modalMode = 'edit';
     this.selectedTask = task;
     this.selectedTaskGroupId = task.taskGroupId;
@@ -161,7 +161,7 @@ export class TaskGroupsComponent implements OnInit {
     this.showModal();
   }
 
-  private populateForm(task: TaskDTO): void {
+  private populateForm(task: ITask): void {
     this.editTaskForm.patchValue({
       title: task.title,
       description: task.description || '',
@@ -206,7 +206,7 @@ export class TaskGroupsComponent implements OnInit {
   }
 
   saveTask(): void {
-    debugger;
+    // debugger;
     if (this.editTaskForm.invalid || !this.selectedTaskGroupId) {
       return;
     }
@@ -224,7 +224,7 @@ export class TaskGroupsComponent implements OnInit {
   private updateExistingTask(formValue: any): void {
     if (!this.selectedTask) return;
 
-    const updatedTask: UpdateTaskDTO = {
+    const updatedTask: IUpdateTask = {
       title: formValue.title,
       description: formValue.description,
       priority: formValue.priority,
@@ -250,7 +250,7 @@ export class TaskGroupsComponent implements OnInit {
   }
 
   private createNewTask(formValue: any): void {
-    const newTask: CreateTaskDTO = {
+    const newTask: ICreateTask = {
       title: formValue.title,
       description: formValue.description,
       status: formValue.status,
@@ -264,9 +264,11 @@ export class TaskGroupsComponent implements OnInit {
 
     // Add to local data
     this.isSaving = false;
+    console.log('new task: ', newTask)
     this.taskService.addTask(newTask).subscribe({
       next: (response) => {
-        this.hideModal();
+        // this.hideModal();
+        console.log('response task: ', response);
         this.successMessage = 'تم إضافة المهمة بنجاح';  
 
       },

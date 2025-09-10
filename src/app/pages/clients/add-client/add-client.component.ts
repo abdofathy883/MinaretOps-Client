@@ -7,8 +7,9 @@ import { Service } from '../../../model/service/service';
 import { ServicesService } from '../../../services/services/services.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { User } from '../../../model/auth/user';
-import { CreateClient, CreateClientServiceDTO, CreateTaskGroupDTO, CreateTaskDTO, ClientStatus, CustomTaskStatus } from '../../../model/client/client';
 import { ClientService } from '../../../services/clients/client.service';
+import { ClientStatus, ICreateClient } from '../../../model/client/client';
+import { CustomTaskStatus } from '../../../model/task/task';
 
 @Component({
   selector: 'app-add-client',
@@ -177,7 +178,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.clientForm.invalid) {
-      this.markFormGroupTouched();
+      this.clientForm.markAllAsTouched();
       return;
     }
 
@@ -187,8 +188,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
 
     const formValue = this.clientForm.value;
     
-    // Transform form data to match CreateClient interface
-    const clientData: CreateClient = {
+    const clientData: ICreateClient = {
       name: formValue.name,
       companyName: formValue.companyName || undefined,
       personalPhoneNumber: formValue.personalPhoneNumber,
@@ -197,42 +197,29 @@ export class AddClientComponent implements OnInit, OnDestroy {
       driveLink: formValue.driveLink || undefined,
       status: formValue.status,
       clientServices: formValue.clientServices.map((cs: any) => ({
-        clientId: 0, // Will be set by server
         serviceId: cs.serviceId,
         taskGroups: [{
-          // Backend will handle month, year, monthLabel automatically
-          clientServiceId: 0, // Will be set by server
-          month: 0, // Backend will set current month
-          year: 0, // Backend will set current year
-          monthLabel: '', // Backend will set automatically
           tasks: cs.tasks.map((t: any) => ({
             title: t.title,
             description: t.description,
             status: t.status,
-            clientServiceId: 0, // Will be set by server
             deadline: new Date(t.deadline),
             priority: t.priority,
             refrence: t.refrence || undefined,
             employeeId: t.employeeId,
-            taskGroupId: 0 // Will be set by server
           }))
         }]
       }))
-    };
-
-    console.log('Client data to be sent:', clientData);
-    
+    };    
 
     this.clientService.add(clientData).subscribe({
-      next: (response) => {
+      next: () => {
         this.isLoading = false;
         this.successMessage = 'تم اضافة العميل بنجاح';
-        console.log('response adding client: ', response);
       },
-      error: (error) => {
+      error: () => {
         this.isLoading = false;
         this.errorMessage = 'فشل اضافة عميل, حاول مرة اخرى';
-        console.log('error response adding client: ', error);
       }
     })
   }
@@ -242,17 +229,10 @@ export class AddClientComponent implements OnInit, OnDestroy {
       status: ClientStatus.Active
     });
     this.clientServicesArray.clear();
-    this.addClientService(); // Add one default client service
-    this.collapsedTasks.clear(); // Clear collapsed state
+    this.addClientService(); 
+    this.collapsedTasks.clear(); 
     this.errorMessage = '';
     this.successMessage = '';
-  }
-
-  private markFormGroupTouched(): void {
-    Object.keys(this.clientForm.controls).forEach(key => {
-      const control = this.clientForm.get(key);
-      control?.markAsTouched();
-    });
   }
 
   hasError(controlName: string): boolean {

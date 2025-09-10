@@ -31,16 +31,21 @@
             <span class="nav-text" [class.hidden]="isCollapsed">الرئيسية</span>
           </a>
         </li> -->
-        <li [ngClass]="{'nav-item': true, 'me-2': !isCollapsed}">
+        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
           <a class="nav-link" routerLink="/tasks">
             <i class="bi bi-list-task ms-3"></i>
             <span class="nav-text" [class.hidden]="isCollapsed">التاسكات</span>
           </a>
         </li>
         <li class="nav-item">
-          <button class="text-white menu-toggler" (click)="toggleMenu('internalTasks')">
+          <button
+            class="text-white menu-toggler"
+            (click)="toggleMenu('internalTasks')"
+          >
             <i class="bi bi-list-task ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed">المهام الداخلية</span>
+            <span class="nav-text" [class.hidden]="isCollapsed"
+              >المهام الداخلية</span
+            >
           </button>
           <ul
             class="submenu internal-tasks-menu"
@@ -48,12 +53,16 @@
             [class.hidden]="isCollapsed"
           >
             <li class="nav-item">
-              <a class="nav-link" routerLink="/internal-tasks">قائمة المهام الداخلية</a>
+              <a class="nav-link" routerLink="/internal-tasks"
+                >قائمة المهام الداخلية</a
+              >
             </li>
             @if (isUserAdmin || isUserAccountManager) {
-              <li class="nav-item">
-                <a class="nav-link" routerLink="/internal-tasks/add">إضافة مهمة داخلية</a>
-              </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/internal-tasks/add"
+                >إضافة مهمة داخلية</a
+              >
+            </li>
             }
           </ul>
         </li>
@@ -73,9 +82,9 @@
               <a class="nav-link" routerLink="/users">قائمة المستخدمين</a>
             </li>
             @if (isUserAdmin || isUserAccountManager) {
-              <li class="nav-item">
-                <a class="nav-link" routerLink="/users/add">إضافة مستخدم</a>
-              </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/users/add">إضافة مستخدم</a>
+            </li>
 
             }
           </ul>
@@ -97,9 +106,9 @@
               <a class="nav-link" routerLink="/services">قائمة الخدمات</a>
             </li>
             @if (isUserAdmin || isUserAccountManager) {
-              <li class="nav-item">
-                <a class="nav-link" routerLink="/services/add">إضافة خدمة</a>
-              </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/services/add">إضافة خدمة</a>
+            </li>
             }
           </ul>
         </li>
@@ -120,27 +129,36 @@
               <a class="nav-link" routerLink="/clients">قائمة العملاء</a>
             </li>
             @if (isUserAdmin || isUserAccountManager) {
-              <li class="nav-item">
-                <a class="nav-link" routerLink="/clients/add">إضافة عميل</a>
-              </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/clients/add">إضافة عميل</a>
+            </li>
             }
           </ul>
         </li>
         @if (isUserAdmin) {
-          <li [ngClass]="{'nav-item': true, 'me-2': !isCollapsed}">
-            <a routerLink="/attendance" class="nav-link">
-              <i class="bi bi-people-fill ms-3"></i>
-              <span class="nav-text" [class.hidden]="isCollapsed">الحضور</span>
-            </a>
-          </li>
-          <li [ngClass]="{'nav-item': true, 'me-2': !isCollapsed}">
-            <a routerLink="/leave-requests" class="nav-link">
-              <i class="bi bi-cup-hot ms-3"></i>
-              <span class="nav-text" [class.hidden]="isCollapsed">طلبات الاجازة</span>
-            </a>
-          </li>
-
+        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+          <a routerLink="/attendance" class="nav-link">
+            <i class="bi bi-people-fill ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed">الحضور</span>
+          </a>
+        </li>
+        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+          <a routerLink="/leave-requests" class="nav-link">
+            <i class="bi bi-cup-hot ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed"
+              >طلبات الاجازة</span
+            >
+          </a>
+        </li>
         }
+
+        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+          <a class="nav-link" routerLink="/kpis-management">
+            <i class="bi bi-pie-chart-fill ms-3"></i>
+
+            <span class="nav-text" [class.hidden]="isCollapsed">KPIs</span>
+          </a>
+        </li>
         <li class="nav-item">
           <button
             class="text-white menu-toggler"
@@ -155,14 +173,63 @@
             [class.hidden]="isCollapsed"
           >
             <li class="nav-item">
-              <a class="nav-link" routerLink="/announcements">قائمة الاعلانات</a>
+              <a class="nav-link" routerLink="/announcements"
+                >قائمة الاعلانات</a
+              >
             </li>
             @if (isUserAdmin || isUserAccountManager) {
-              <li class="nav-item">
-                <a class="nav-link" routerLink="/announcements/add">إضافة اعلان</a>
-              </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/announcements/add"
+                >إضافة اعلان</a
+              >
+            </li>
             }
           </ul>
+        </li>
+        @if (isUserAdmin) {
+        <li class="nav-item">
+          <button
+            class="text-white menu-toggler"
+            (click)="toggleMenu('complaints')"
+          >
+            <i class="bi bi-chat-right-text-fill ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed"
+              >المقترحات والشكاوي</span
+            >
+          </button>
+          <ul
+            class="submenu complaints-menu"
+            [class.open]="openMenu === 'complaints'"
+            [class.hidden]="isCollapsed"
+          >
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/complaints">قائمة الشكاوي</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/complaints/add">إضافة شكوى</a>
+            </li>
+
+            
+          </ul>
+        </li>
+        } @else {
+        <!-- For Regular Users: Direct link to add complaint -->
+        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+          <a routerLink="/complaints/add" class="nav-link">
+            <i class="bi bi-chat-right-text-fill ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed"
+              >إضافة شكوى</span
+            >
+          </a>
+        </li>
+        }
+        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+          <a routerLink="/contact-form-entries" class="nav-link">
+            <i class="bi bi-file-text ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed"
+              >فورم التواصل</span
+            >
+          </a>
         </li>
       </ul>
     </div>

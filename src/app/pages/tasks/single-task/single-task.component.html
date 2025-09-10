@@ -103,18 +103,18 @@
           <span
             class="on-time-status mt-2"
             [ngClass]="{
-              'on-time': task.isCompletedOnDeadline,
-              late: !task.isCompletedOnDeadline
+              'on-time': task.isCompletedOnDeadLine,
+              late: !task.isCompletedOnDeadLine
             }"
           >
             <i
               [class]="
-                task.isCompletedOnDeadline
+                task.isCompletedOnDeadLine
                   ? 'bi bi-check-circle'
                   : 'bi bi-x-circle'
               "
             ></i>
-            {{ task.isCompletedOnDeadline ? "نعم" : "لا" }}
+            {{ task.isCompletedOnDeadLine ? "نعم" : "لا" }}
           </span>
         </div>
 

@@ -1,11 +1,24 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ClientService } from '../../../../services/clients/client.service';
 import { ServicesService } from '../../../../services/services/services.service';
 import { TaskService } from '../../../../services/tasks/task.service';
 import { AuthService } from '../../../../services/auth/auth.service';
-import { CreateTaskGroupDTO } from '../../../../model/client/client';
+import { ICreateTaskGroup } from '../../../../model/task/task';
 
 @Component({
   selector: 'app-new-task-group',
@@ -31,6 +44,7 @@ export class NewTaskGroupComponent implements OnInit {
   errorMessage = '';
 
   private modal: any;
+  collapsedTasks: Set<string> = new Set();
 
   // Task collapse state tracking
   private taskCollapseState: { [key: string]: boolean } = {};
@@ -44,9 +58,9 @@ export class NewTaskGroupComponent implements OnInit {
 
   private initializeForm() {
     this.taskGroupForm = this.fb.group({
-      clientServices: this.fb.array([])
+      clientServices: this.fb.array([]),
     });
-    
+
     // Add initial service
     this.addClientService();
   }
@@ -56,24 +70,20 @@ export class NewTaskGroupComponent implements OnInit {
       next: (services) => {
         this.availableServices = services;
       },
-      error: (error) => {
-        console.error('Error loading services:', error);
+      error: () => {
         this.errorMessage = 'حدث خطأ في تحميل الخدمات';
-      }
+      },
     });
   }
 
   private loadEmployees() {
-    // Assuming you have a method to get all employees
-    // You might need to adjust this based on your actual service
     this.authService.getAll().subscribe({
       next: (users) => {
         this.employees = users.filter((user: any) => user.role !== 'Admin');
       },
-      error: (error) => {
-        console.error('Error loading employees:', error);
+      error: () => {
         this.errorMessage = 'حدث خطأ في تحميل الموظفين';
-      }
+      },
     });
   }
 
@@ -88,11 +98,11 @@ export class NewTaskGroupComponent implements OnInit {
   addClientService() {
     const clientService = this.fb.group({
       serviceId: ['', Validators.required],
-      tasks: this.fb.array([])
+      tasks: this.fb.array([]),
     });
 
     this.clientServicesArray.push(clientService);
-    
+
     // Add initial task
     this.addTask(this.clientServicesArray.length - 1);
   }
@@ -110,7 +120,7 @@ export class NewTaskGroupComponent implements OnInit {
       employeeId: ['', Validators.required],
       deadline: ['', Validators.required],
       priority: ['عادي', Validators.required],
-      refrence: ['']
+      refrence: [''],
     });
 
     this.getTasksArray(serviceIndex).push(task);
@@ -123,14 +133,18 @@ export class NewTaskGroupComponent implements OnInit {
     }
   }
 
-  toggleTaskCollapse(serviceIndex: number, taskIndex: number) {
-    const key = `${serviceIndex}-${taskIndex}`;
-    this.taskCollapseState[key] = !this.taskCollapseState[key];
-  }
-
   isTaskCollapsed(serviceIndex: number, taskIndex: number): boolean {
     const key = `${serviceIndex}-${taskIndex}`;
-    return this.taskCollapseState[key] || false;
+    return this.collapsedTasks.has(key);
+  }
+
+  toggleTaskCollapse(serviceIndex: number, taskIndex: number): void {
+    const key = `${serviceIndex}-${taskIndex}`;
+    if (this.collapsedTasks.has(key)) {
+      this.collapsedTasks.delete(key);
+    } else {
+      this.collapsedTasks.add(key);
+    }
   }
 
   onSubmit() {
@@ -140,48 +154,47 @@ export class NewTaskGroupComponent implements OnInit {
       this.successMessage = '';
 
       const formData = this.taskGroupForm.value;
-      
-      // Transform the data to match your backend API structure
-      // const taskGroupData : CreateTaskGroupDTO= {
-      //   clientServices: formData.clientServices.map((service: any) => ({
-      //     serviceId: service.serviceId,
-      //     tasks: service.tasks.map((task: any) => ({
-      //       title: task.title,
-      //       description: task.description,
-      //       employeeId: task.employeeId,
-      //       deadline: task.deadline,
-      //       priority: task.priority,
-      //       refrence: task.refrence
-      //     }))
-      //   }))
-      // };
 
-      // Call your service to create the new task group
-      // this.taskService.createTaskGroup(taskGroupData).subscribe({
-      //   next: (response) => {
-      //     this.isLoading = false;
-      //     this.successMessage = 'تم إضافة الشهر الجديد بنجاح';
-      //     this.resetForm();
-          
-      //     // Close modal after successful submission
-      //     setTimeout(() => {
-      //       const modal = document.getElementById('taskModal');
-      //       if (modal) {
-      //         const bootstrapModal = (window as any).bootstrap?.Modal?.getInstance(modal);
-      //         if (bootstrapModal) {
-      //           bootstrapModal.hide();
-      //         }
-      //       }
-      //     }, 2000);
-      //   },
-      //   error: (error) => {
-      //     this.isLoading = false;
-      //     console.error('Error creating task group:', error);
-      //     this.errorMessage = 'حدث خطأ في إضافة الشهر الجديد';
-      //   }
-      // });
+      const taskGroup: ICreateTaskGroup = {
+        clientServiceId: formData.clientServices[0].serviceId,
+        tasks: formData.clientServices[0].tasks.map((task: any) => ({
+          title: task.title,
+          description: task.description,
+          employeeId: task.employeeId,
+          deadline: task.deadline,
+          priority: task.priority,
+          refrence: task.refrence,
+        })),
+      };
+
+      this.taskService.addTaskGroup(taskGroup).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          console.log('add new task group', response);
+          this.successMessage = 'تم إضافة الشهر الجديد بنجاح';
+          this.resetForm();
+
+          // Close modal after successful submission
+          setTimeout(() => {
+            const modal = document.getElementById('taskModal');
+            if (modal) {
+              const bootstrapModal = (
+                window as any
+              ).bootstrap?.Modal?.getInstance(modal);
+              if (bootstrapModal) {
+                bootstrapModal.hide();
+              }
+            }
+          }, 2000);
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error('Error creating task group:', error);
+          this.errorMessage = 'حدث خطأ في إضافة الشهر الجديد';
+        },
+      });
     } else {
-      this.markFormGroupTouched();
+      this.taskGroupForm.markAllAsTouched();
     }
   }
 
@@ -192,17 +205,6 @@ export class NewTaskGroupComponent implements OnInit {
     this.taskCollapseState = {};
     this.errorMessage = '';
     this.successMessage = '';
-  }
-
-  private markFormGroupTouched() {
-    Object.keys(this.taskGroupForm.controls).forEach(key => {
-      const control = this.taskGroupForm.get(key);
-      if (control instanceof FormGroup) {
-        this.markFormGroupTouched();
-      } else {
-        control?.markAsTouched();
-      }
-    });
   }
 
   // Helper methods for form validation

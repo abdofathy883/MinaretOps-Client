@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AttendanceService } from '../../../services/attendance/attendance.service';
-import { LeaveRequest, NewLeaveRequest } from '../../../model/attendance-record/attendance-record';
+import { NewLeaveRequest } from '../../../model/attendance-record/attendance-record';
 
 @Component({
   selector: 'app-submit-leave-request',
@@ -20,6 +20,7 @@ export class SubmitLeaveRequestComponent implements OnInit {
   today: string = new Date().toISOString().split('T')[0];
   leaveRequestForm!: FormGroup;
   isLoading: boolean = false;
+  showSuccessMessage: boolean = false;
 
   constructor(
     private leaveRequestService: AttendanceService,

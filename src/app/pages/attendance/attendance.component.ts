@@ -15,16 +15,13 @@ export class AttendanceComponent {
   currentTime = new Date();
 
   todayRecord: AttendanceRecord | null = null;
-  hasCheckedInToday = false;
   isCheckingIn = false;
   
   alertMessage = '';
   attendanceErrorMessage = '';
   alertType = 'info';
 
-  constructor(private attendanceService: AttendanceService) {
-    
-  }
+  constructor(private attendanceService: AttendanceService) { }
   
   ngOnInit() {
     this.startTimeUpdate();
@@ -64,28 +61,21 @@ export class AttendanceComponent {
   }
 
   async onCheckIn() {
-    if (this.hasCheckedInToday || this.isCheckingIn) return;
-
     this.isCheckingIn = true;
     
     // Get device info automatically
     const deviceId = await this.getDeviceId();
     const ipAddress = await this.getIpAddress();
-    console.log('Device ID:', deviceId);
-    console.log('IP Address:', ipAddress);
 
     const checkInData : NewAttendanceRecord = {
       employeeId: this.currentUser!.id,
-      checkInTime: new Date(),
       deviceId: deviceId,
       ipAddress: ipAddress
     };
 
     this.attendanceService.checkIn(checkInData).subscribe({
       next: (response) => {
-        this.hasCheckedInToday = true;
         this.todayRecord = response;
-        console.log('Check-in successful:', response);
         this.showAlert('تم تسجيل الحضور بنجاح', 'success');
       },
       error: (error) => {

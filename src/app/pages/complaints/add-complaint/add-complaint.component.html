@@ -1,0 +1,133 @@
+<section class="container my-4">
+  <!-- Header Section -->
+  <div class="mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-chat-right-text-fill me-2"></i>
+      إضافة شكوى أو مقترح جديد
+    </h2>
+    <p class="text-muted mt-2">شاركنا رأيك أو ابلغنا عن أي مشكلة تواجهها</p>
+  </div>
+
+  <!-- Success Message -->
+  @if (successMessage) {
+  <div class="alert alert-success mt-3" role="alert">
+    <i class="bi bi-check-circle me-2"></i>
+    {{ successMessage }}
+  </div>
+  }
+
+  <!-- Error Message -->
+  @if (errorMessage) {
+  <div class="alert alert-danger mt-3" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ errorMessage }}
+  </div>
+  }
+
+  <!-- Complaint Form -->
+  <div class="card shadow-sm">
+    <div class="card-header form-header">
+      <h5 class="mb-0">
+        <i class="bi bi-chat-right-text me-2"></i>
+        تفاصيل الشكوى أو المقترح
+      </h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="complaintFrom" (ngSubmit)="onSubmit()">
+        <!-- Subject Field -->
+        <div class="mb-3">
+          <label for="subject" class="form-label">عنوان الشكوى أو المقترح</label>
+          <span class="text-danger me-2">*</span>
+          <input
+            type="text"
+            class="form-control"
+            id="subject"
+            formControlName="subject"
+            [class.is-invalid]="complaintFrom.get('subject')?.invalid && complaintFrom.get('subject')?.touched"
+            placeholder="أدخل عنوان واضح للشكوى أو المقترح"
+            required
+          />
+          @if (complaintFrom.get('subject')?.invalid && complaintFrom.get('subject')?.touched) {
+          <div class="invalid-feedback">
+            @if (complaintFrom.get('subject')?.errors?.['required']) {
+            <span>عنوان الشكوى أو المقترح مطلوب</span>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Content Field -->
+        <div class="mb-4">
+          <label for="content" class="form-label">تفاصيل الشكوى أو المقترح</label>
+          <span class="text-danger me-2">*</span>
+          <textarea
+            id="content"
+            class="form-control"
+            rows="6"
+            formControlName="content"
+            [class.is-invalid]="complaintFrom.get('content')?.invalid && complaintFrom.get('content')?.touched"
+            placeholder="اكتب تفاصيل الشكوى أو المقترح هنا... كن واضحاً ومحدداً في وصف المشكلة أو الاقتراح"
+            required
+          ></textarea>
+          @if (complaintFrom.get('content')?.invalid && complaintFrom.get('content')?.touched) {
+          <div class="invalid-feedback">
+            @if (complaintFrom.get('content')?.errors?.['required']) {
+            <span>تفاصيل الشكوى أو المقترح مطلوبة</span>
+            }
+          </div>
+          }
+          <div class="form-text">
+            <i class="bi bi-info-circle me-1"></i>
+            كن واضحاً ومحدداً في وصف المشكلة أو الاقتراح لمساعدتنا في فهم طلبك بشكل أفضل
+          </div>
+        </div>
+
+        <!-- Submit Button Section -->
+        <div class="d-flex justify-content-start gap-2">
+          
+          <button type="submit" class="add-btn" >
+            @if (isLoading) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            جاري الإرسال... } @else {
+            <i class="bi bi-send me-2"></i>
+            إرسال الشكوى أو المقترح }
+          </button>
+          <button type="button" class="reset-btn" (click)="resetForm()">
+            <i class="bi bi-arrow-clockwise me-2"></i>
+            إعادة تعيين
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Help Section -->
+  <div class="card shadow-sm mt-4">
+    <div class="card-header form-header">
+      <h6 class="mb-0">
+        <i class="bi bi-question-circle me-2"></i>
+        نصائح لإرسال شكوى أو مقترح فعال
+      </h6>
+    </div>
+    <div class="card-body">
+      <ul class="list-unstyled mb-0">
+        <li class="mb-2">
+          <i class="bi bi-check-circle text-success ms-2"></i>
+          <strong>كن واضحاً: </strong>استخدم عنواناً وصفياً واكتب التفاصيل بوضوح
+        </li>
+        <li class="mb-2">
+          <i class="bi bi-check-circle text-success ms-2"></i>
+          <strong> كن محدداً: </strong> اذكر التفاصيل المهمة مثل التواريخ والأماكن والأشخاص المعنيين
+        </li>
+        <li class="mb-2">
+          <i class="bi bi-check-circle text-success ms-2"></i>
+          <strong>كن مهذباً: </strong> استخدم لغة مهنية ومحترمة في التعبير عن وجهة نظرك
+        </li>
+        <li>
+          <i class="bi bi-check-circle text-success ms-2"></i>
+          <strong>قدم حلول: </strong> إذا كان لديك اقتراحات لحل المشكلة، شاركها معنا
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>

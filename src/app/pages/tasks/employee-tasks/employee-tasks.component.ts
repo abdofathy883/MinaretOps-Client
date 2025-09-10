@@ -8,13 +8,10 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {
-  CustomTaskStatus,
-  LightWieghtClient,
-  TaskDTO,
-} from '../../../model/client/client';
+import { LightWieghtClient } from '../../../model/client/client';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
+import { CustomTaskStatus, ITask } from '../../../model/task/task';
 
 @Component({
   selector: 'app-employee-tasks',
@@ -24,8 +21,8 @@ import { AuthService } from '../../../services/auth/auth.service';
 })
 export class EmployeeTasksComponent implements OnInit {
   clients: LightWieghtClient[] = [];
-  tasks: TaskDTO[] = [];
-  filteredTasks: TaskDTO[] = [];
+  tasks: ITask[] = [];
+  filteredTasks: ITask[] = [];
   filterForm!: FormGroup;
   employeeId: string = '';
 
@@ -109,9 +106,9 @@ export class EmployeeTasksComponent implements OnInit {
       let matches = true;
 
       // Filter by client ID
-      if (clientId && task.clientId !== clientId) {
-        matches = false;
-      }
+      // if (clientId && task.clientId !== clientId) {
+      //   matches = false;
+      // }
 
       // Filter by priority
       if (priority && task.priority !== priority) {

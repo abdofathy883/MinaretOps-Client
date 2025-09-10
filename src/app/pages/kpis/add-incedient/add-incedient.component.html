@@ -1,0 +1,81 @@
+<section class="container py-3">
+  <div class="card">
+    <div class="card-header form-header">
+      <h5 class="mb-0">
+        <i class="bi bi-pie-chart-fill"></i>
+        اضافة مخالفة
+      </h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="kpiForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="aspect" class="form-label">جانب المخالفة</label>
+            <span class="text-danger me-2">*</span>
+            <select
+              name="aspect"
+              id="aspect"
+              class="form-select"
+              formControlName="aspect"
+            >
+              <option disabled selected>choose</option>
+              <option value="">الالتزام</option>
+              <option value="">الانتاجية</option>
+              <option value="">تكرار العمل</option>
+              <option value="">الجودة والتعاون</option>
+              <option value="">رضا العميل</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="employee" class="form-label">الموظف</label>
+            <span class="text-danger me-2">*</span>
+            <select
+              name="employee"
+              id="employee"
+              formControlName="employeeId"
+              class="form-select"
+            >
+              <option disabled selected>اختر الموظف</option>
+              @for (emp of employees; track $index) {
+              <option [value]="emp.id">
+                {{ emp.firstName + " " + emp.lastName }}
+              </option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="evidence" class="form-label">الدليل</label>
+          <input
+            type="file"
+            name="evidence"
+            id="evidence"
+            formControlName="evidenceURL"
+            class="form-control"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">الوصف</label>
+          <textarea
+            name="description"
+            id="description"
+            formControlName="description"
+            rows="3"
+            class="form-control"
+          ></textarea>
+        </div>
+
+        <button class="add-btn">
+            @if (isLoading) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                جار الاضافة...
+            } @else {
+                اضافة مخالفة
+            }
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

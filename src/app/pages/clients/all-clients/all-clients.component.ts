@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ClientService } from '../../../services/clients/client.service';
-import { ClientDTO, LightWieghtClient, ClientStatus } from '../../../model/client/client';
+import { LightWieghtClient, ClientStatus } from '../../../model/client/client';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 

@@ -7,10 +7,11 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AttendanceComponent } from "../../attendance/attendance.component";
 import { SubmitLeaveRequestComponent } from '../../leave-requests/submit-leave-request/submit-leave-request.component';
+import { MyKpisManagementComponent } from "../../kpis/my-kpis-management/my-kpis-management.component";
 
 @Component({
   selector: 'app-my-account',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, AttendanceComponent, SubmitLeaveRequestComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, AttendanceComponent, SubmitLeaveRequestComponent, MyKpisManagementComponent],
   standalone: true,
   templateUrl: './my-account.component.html',
   styleUrl: './my-account.component.css'

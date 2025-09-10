@@ -44,4 +44,13 @@ export class AllLeaveRequestsComponent implements OnInit{
       }
     });
   }
+
+  getStatusLabel(status: LeaveStatus) {
+    switch (status) {
+      case LeaveStatus.Pending: return 'قيد التنفيذ';
+      case LeaveStatus.Approved: return 'تم الموافقة';
+      case LeaveStatus.Rejected: return 'مرفوضة';
+      default: return 'غير محدد';
+    }
+  }
 }

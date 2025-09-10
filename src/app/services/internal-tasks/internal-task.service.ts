@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../api-service/api.service';
 import { Observable } from 'rxjs';
 import { CreateInternalTask, InternalTask } from '../../model/internal-task/internal-task';
-import { CustomTaskStatus } from '../../model/client/client';
+import { CustomTaskStatus } from '../../model/task/task';
 
 @Injectable({
   providedIn: 'root'

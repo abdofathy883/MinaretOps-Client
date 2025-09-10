@@ -13,11 +13,12 @@ import { UpdateUser, User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
 import { AttendanceService } from '../../../services/attendance/attendance.service';
 import { AttendanceRecord } from '../../../model/attendance-record/attendance-record';
+import { MyKpisManagementComponent } from "../../kpis/my-kpis-management/my-kpis-management.component";
 
 @Component({
   selector: 'app-single-user',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MyKpisManagementComponent],
   templateUrl: './single-user.component.html',
   styleUrl: './single-user.component.css',
 })

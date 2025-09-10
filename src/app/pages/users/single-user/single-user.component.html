@@ -151,6 +151,10 @@
     </div>
 
 </section>
+@if (user) {
+  <app-my-kpis-management [currentUserId]="user.id"></app-my-kpis-management>
+}
+
 
   } @if (isEditMode) {
   <!-- Edit Mode -->

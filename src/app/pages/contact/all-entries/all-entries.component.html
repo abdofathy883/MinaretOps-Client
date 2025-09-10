@@ -1,0 +1,31 @@
+<section class="container py-4">
+  <h2>مدخلات استمارة التواصل</h2>
+  <div class="entries-table">
+    <table>
+      <thead>
+        <tr>
+          <th>الاسم بالكامل</th>
+          <th>اسم الشركة</th>
+          <th>رقم الموبايل</th>
+          <th>الخدمة المطلوبة</th>
+          <th>وقت التسجيل</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (entry of entries; track $index) {
+        <tr style="cursor: pointer" (click)="goToEntry(entry.id)">
+          <td>{{ entry.fullName }}</td>
+          <td>{{ entry.companyName }}</td>
+          <td>{{ entry.phoneNumber }}</td>
+          <td>{{ entry.desiredService }}</td>
+          <td>{{ entry.timeStamp }}</td>
+        </tr>
+        } @if (entries.length === 0) {
+        <tr>
+          <td colspan="5" class="no-records">لا يوجد مدخلات حتى الان</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
