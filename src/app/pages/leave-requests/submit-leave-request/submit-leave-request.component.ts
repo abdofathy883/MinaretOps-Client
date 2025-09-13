@@ -30,8 +30,8 @@ export class SubmitLeaveRequestComponent implements OnInit {
   ngOnInit(): void {
     this.leaveRequestForm = this.fb.group({
       employeeId: [''],
-      fromDate: ['', Validators.required, Validators],
-      toDate: ['', Validators.required, Validators],
+      fromDate: ['', Validators.required],
+      toDate: ['', Validators.required],
     });
   }
 

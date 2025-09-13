@@ -31,11 +31,30 @@
             <span class="nav-text" [class.hidden]="isCollapsed">الرئيسية</span>
           </a>
         </li> -->
-        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
-          <a class="nav-link" routerLink="/tasks">
+        <li class="nav-item">
+          <button
+            class="text-white menu-toggler"
+            (click)="toggleMenu('tasks')"
+          >
             <i class="bi bi-list-task ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed">التاسكات</span>
-          </a>
+            <span class="nav-text" [class.hidden]="isCollapsed"
+              >التاسكات</span
+            >
+          </button>
+          <ul
+            class="submenu tasks-menu"
+            [class.open]="openMenu === 'tasks'"
+            [class.hidden]="isCollapsed"
+          >
+            <li class="nav-item">
+              <a routerLink="/tasks" class="nav-link">قائمة التاسكات</a>
+            </li>
+            @if (isContentLeader || isDesignerLeader || isUserAccountManager || isUserAdmin) {
+              <li class="nav-item">
+                <a routerLink="/tasks/add" class="nav-link">اضافة تاسك</a>
+              </li>
+            }
+          </ul>
         </li>
         <li class="nav-item">
           <button

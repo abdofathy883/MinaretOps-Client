@@ -1,0 +1,33 @@
+<section class="container py-4">
+  <div class="card">
+    <div class="form-header rounded p-2">
+      <h2 class="mb-0">اضافة تاسك</h2>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="clientForm" (ngSubmit)="onFilterSubmit()">
+        <label for="client" class="form-label">اختر العميل</label>
+        <select
+          name="client"
+          id="client"
+          class="form-control"
+          formControlName="clientId"
+        >
+          <option disabled selected>اختر عميل</option>
+          @for (client of clients; track $index) {
+          <option [value]="client.id">{{ client.name }}</option>
+          }
+        </select>
+        <button class="add-btn mt-3">اختر</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  @if (currentClient) {
+  <app-task-groups
+    [clientServices]="currentClient.clientServices"
+    [clientId]="currentClient.id"
+  ></app-task-groups>
+  }
+</section>

@@ -83,7 +83,6 @@
     </div>
     <div class="card-body">
       <h4>{{ clientService.serviceTitle }}</h4>
-      @if (taskGroup.tasks && taskGroup.tasks.length > 0) {
       <table class="table table-responsive">
         <thead>
           <tr>
@@ -123,9 +122,13 @@
       <button class="btn btn-outline-success" (click)="openAddTaskModal(taskGroup.id)">
         + اضافة تاسك
       </button>
+      @if (taskGroup.tasks && taskGroup.tasks.length > 0) {
     }
     </div>
   } } @else {
+    <!-- <button class="btn btn-outline-success" (click)="openAddTaskModal(taskGroup.id)">
+        + اضافة تاسك
+      </button> -->
     <div class="card-body">
         <p class="text-muted text-center">لا توجد مجموعات مهام لهذه الخدمة</p>
     </div>

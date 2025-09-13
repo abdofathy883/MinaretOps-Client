@@ -1,3 +1,4 @@
+import { AddTaskComponent } from './pages/tasks/add-task/add-task.component';
 import { Routes } from '@angular/router';
 import { AddServiceComponent } from './pages/services/add-service/add-service.component';
 import { AllServicesComponent } from './pages/services/all-services/all-services.component';
@@ -103,6 +104,11 @@ export const routes: Routes = [
     {
         path: 'tasks',
         component: AllTasksComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'tasks/add',
+        component: AddTaskComponent,
         canActivate: [noauthGuard]
     },
     {
