@@ -48,6 +48,7 @@ export class TaskGroupsComponent implements OnInit {
   ) {
     this.editTaskForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
+      taskType: ['', Validators.required],
       description: [''],
       priority: ['', Validators.required],
       deadline: ['', Validators.required],
@@ -64,6 +65,14 @@ export class TaskGroupsComponent implements OnInit {
     
     // Optionally, you can add the new task group to the local data
     // or refresh the entire data from the server
+  }
+
+  deleteTask(taskId: number) {
+    this.taskService.deleteTask(taskId).subscribe({
+      next: (response) => {
+        console.log('task deleted: ', response);
+      }
+    })
   }
 
   ngOnInit() {
@@ -168,6 +177,7 @@ export class TaskGroupsComponent implements OnInit {
   private populateForm(task: ITask): void {
     this.editTaskForm.patchValue({
       title: task.title,
+      taskType: task.taskType,
       description: task.description || '',
       priority: task.priority,
       deadline: this.formatDateTimeForInput(task.deadline),
@@ -207,6 +217,42 @@ export class TaskGroupsComponent implements OnInit {
     if (this.modal) {
       this.modal.hide();
     }
+  }
+
+  openDeleteModal(task: ITask): void {
+    const modalId = `deleteModal-${task.id}`;
+    const modalElement = document.getElementById(modalId);
+    if (modalElement) {
+      // @ts-ignore - Bootstrap types might not be available
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
+  private closeDeleteModal(taskId: number): void {
+  const modalId = `deleteModal-${taskId}`;
+  const modalElement = document.getElementById(modalId);
+  if (modalElement) {
+    // @ts-ignore - Bootstrap types might not be available
+    const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+    modal.hide();
+  }
+}
+
+  confirmDelete(taskId: number): void {
+    this.taskService.deleteTask(taskId).subscribe({
+      next: (response) => {
+        console.log('task deleted: ', response);
+        this.successMessage = 'تم حذف المهمة بنجاح';
+        this.closeDeleteModal(taskId);
+        
+        // Optionally refresh data or remove from local array
+      },
+      error: (error) => {
+        console.error('Error deleting task:', error);
+        this.errorMessage = 'حدث خطأ في حذف المهمة';
+      }
+    });
   }
 
   saveTask(): void {
@@ -256,6 +302,7 @@ export class TaskGroupsComponent implements OnInit {
   private createNewTask(formValue: any): void {
     const newTask: ICreateTask = {
       title: formValue.title,
+      taskType: formValue.taskType,
       description: formValue.description,
       status: formValue.status,
       clientServiceId: this.getClientServiceIdFromTaskGroup(this.selectedTaskGroupId!),

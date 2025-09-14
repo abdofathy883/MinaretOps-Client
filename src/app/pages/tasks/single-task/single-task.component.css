@@ -251,16 +251,16 @@
 }
 
 .status-option-btn:hover:not(.disabled) {
-  border-color: var(--orange-color);
-  background: var(--orange-color);
-  color: white;
+  border-color: var(--lime-color);
+  background: var(--lime-color);
+  color: var(--terquoise-color);
   transform: translateY(-2px);
 }
 
 .status-option-btn.active {
-  background: var(--mov-color);
-  color: white;
-  border-color: var(--mov-color);
+  background: var(--lime-color);
+  color: var(--terquoise-color);
+  border-color: var(--lime-color);
 }
 
 .status-option-btn.disabled {

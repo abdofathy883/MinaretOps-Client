@@ -91,7 +91,7 @@
             <th>الاولوية</th>
             <th>موعد التسليم</th>
             <th>الحالة</th>
-            <th></th>
+            <th>اجراء</th>
           </tr>
         </thead>
         <tbody>
@@ -111,11 +111,31 @@
               </span>
             </td>
             <td>
-              <button class="btn btn-outline-warning btn-sm" (click)="openEditTaskModal(task)" title="تعديل">
+              <button class="btn btn-outline-warning btn-sm ms-2" (click)="openEditTaskModal(task)" title="تعديل">
                 <i class="bi bi-pencil-square"></i>
+              </button>
+              <button class="btn btn-outline-danger btn-sm" (click)="openDeleteModal(task)" title="حذف">
+                <i class="bi bi-trash-fill"></i>
               </button>
             </td>
           </tr>
+          <div class="modal fade" [id]="'deleteModal-' + task.id" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">حذف تاسك</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>هل انت متاكد من حذف التاسك؟</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">تراجع</button>
+        <button type="button" class="btn btn-danger" (click)="confirmDelete(task.id)">نعم, حذف</button>
+      </div>
+    </div>
+  </div>
+</div>
           }
         </tbody>
       </table>
@@ -158,6 +178,35 @@
       <div class="modal-body">
         <form [formGroup]="editTaskForm" (ngSubmit)="saveTask()">
           <div class="row">
+            <div class="mb-3">
+              <label for="taskType" class="form-label">نوع التاسك</label>
+              <select name="taskType" id="taskType" formControlName="taskType" class="form-select">
+                <option value="[0]">Planning</option>
+                <option value="[1]">Content Strategy</option>
+                <option value="[2]">Content Writing</option>
+                <option value="[3]">Logo Design</option>
+                <option value="[4]">Visual Identity</option>
+                <option value="[5]">Design Directions</option>
+                <option value="[6]">SM Design</option>
+                <option value="[7]">Printings Design</option>
+                <option value="[8]">Illustrations</option>
+                <option value="[9]">Voiceover</option>
+                <option value="[10]">Motion</option>
+                <option value="[11]">Video Editing</option>
+                <option value="[12]">Publishing</option>
+                <option value="[13]">Moderation</option>
+                <option value="[14]">Ad Management</option>
+                <option value="[15]">E Mail Marketing</option>
+                <option value="[16]">WhatsApp Marketing</option>
+                <option value="[17]">UI UX</option>
+                <option value="[18]">WordPress</option>
+                <option value="[19]">Backend</option>
+                <option value="[20]">Frontend</option>
+                <option value="[21]">SEO</option>
+                <option value="[22]">Meeting</option>
+                <option value="[23]">Hosting Management</option>
+              </select>
+            </div>
             <div class="col-md-6 mb-3">
               <label for="title" class="form-label">عنوان التاسك</label>
               <input 
@@ -281,3 +330,7 @@
     </div>
   </div>
 </div>
+
+
+
+

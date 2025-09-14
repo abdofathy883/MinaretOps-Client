@@ -32,6 +32,32 @@
     <div class="card-body">
       <form [formGroup]="internalTaskForm" (ngSubmit)="onSubmit()">
         <div class="mb-3">
+          <label for="taskType" class="form-label">نوع التاسك</label>
+          <select name="taskType" id="taskType" formControlName="taskType" class="form-select">
+            <option value="[0]">HR Meeting</option>
+            <option value="[1]">Management Meeting</option>
+            <option value="[2]">Potential Client Meeting</option>
+            <option value="[3]">Existing Client Meeting</option>
+            <option value="[4]">Project Management Meeting</option>
+            <option value="[5]">Tasks Allocation</option>
+            <option value="[6]">Tasks Update</option>
+            <option value="[7]">Updating Reports</option>
+            <option value="[8]">Updating KPIs</option>
+            <option value="[9]">Production Follow Up</option>
+            <option value="[10]">Payments And Finance</option>
+            <option value="[11]">Client Onboarding</option>
+            <option value="[12]">Client Follow Up</option>
+            <option value="[13]">Quotations</option>
+            <option value="[14]">Marketing Offer</option>
+            <option value="[15]">Sales Team Handling</option>
+            <option value="[16]">Recruitment</option>
+            <option value="[17]">Subscriptions</option>
+            <option value="[18]">Financial Adjustments</option>
+            <option value="[19]">Modify Tables</option>
+            <option value="[20]">Check</option>
+          </select>
+        </div>
+        <div class="mb-3">
           <label for="title" class="form-label">عنوان التاسك</label>
           <span class="text-danger me-2">*</span>
           <input

@@ -38,6 +38,7 @@ export class AddInternalTaskComponent implements OnInit{
 
     this.internalTaskForm = this.fb.group({
       title: ['', Validators.required],
+      taskType: ['', Validators.required],
       description: ['', Validators.required],
       deadline: ['', Validators.required],
       priority: ['', Validators.required],
@@ -73,6 +74,7 @@ export class AddInternalTaskComponent implements OnInit{
       // Prepare the data according to CreateInternalTaskDTO structure
       const taskData: CreateInternalTask = {
         title: formValue.title,
+        taskType: formValue.taskType,
         description: formValue.description,
         deadline: this.formatDateForBackend(formValue.deadline),
         priority: this.mapPriorityToBackend(formValue.priority),
