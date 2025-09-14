@@ -407,3 +407,14 @@
     gap: 8px;
   }
 }
+
+.edit-btn {
+  background-color: var(--lime-color);
+  color: var(--terquoise-color);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  &:hover{
+    background-color: #95ef0dd5;
+  }
+}
