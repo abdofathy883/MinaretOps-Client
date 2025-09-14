@@ -102,6 +102,55 @@
           </div>
         </div>
 
+        <div class="mb-3">
+          <label for="bio" class="form-label">Bio</label>
+          <textarea
+            name="bio"
+            id="bio"
+            class="form-control"
+            rows="3"
+            formControlName="bio"
+            [class.is-invalid]="
+              newUser.get('bio')?.invalid && newUser.get('bio')?.touched
+            "
+            placeholder="ادخل نبذة عن الموظف تعرض في الموقع الرئيسي"
+          ></textarea>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="jobTitle" class="form-label">المسمى الوظيفي</label>
+            <input
+              type="text"
+              name="jobTitle"
+              id="jobTitle"
+              class="form-control"
+              formControlName="jobTitle"
+              [class.is-invalid]="
+                newUser.get('jobTitle')?.invalid &&
+                newUser.get('jobTitle')?.touched
+              "
+            />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="profilePicture" class="form-label"
+              >الصورة الشخصية</label
+            >
+            <input
+              type="file"
+              accept="image/*"
+              name="profilePicture"
+              id="profilePicture"
+              class="form-control"
+              formControlName="profilePicture"
+              [class.is-invalid]="
+                newUser.get('profilePicture')?.invalid &&
+                newUser.get('profilePicture')?.touched
+              "
+            />
+          </div>
+        </div>
+
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="nid" class="form-label">الرقم القومي</label>
@@ -118,8 +167,7 @@
               placeholder="ادخل الرقم القومي المكون من 14 رقم"
               required
             />
-            @if (newUser.get('nid')?.invalid && newUser.get('nid')?.touched)
-            {
+            @if (newUser.get('nid')?.invalid && newUser.get('nid')?.touched) {
             <div class="invalid-feedback">
               @if (newUser.get('nid')?.errors?.['required']) {
               <span>الرقم القومي مطلوب</span>
@@ -176,14 +224,13 @@
               name="email"
               formControlName="email"
               [class.is-invalid]="
-                newUser.get('email')?.invalid &&
-                newUser.get('email')?.touched
+                newUser.get('email')?.invalid && newUser.get('email')?.touched
               "
               placeholder="أدخل البريد الإلكتروني"
               required
             />
-            @if (newUser.get('email')?.invalid &&
-            newUser.get('email')?.touched) {}
+            @if (newUser.get('email')?.invalid && newUser.get('email')?.touched)
+            {}
             <div class="invalid-feedback">
               @if (newUser.get('email')?.errors?.['required']) {
               <span>البريد الإلكتروني مطلوب</span>
@@ -214,7 +261,7 @@
             <div class="invalid-feedback">
               @if (newUser.get('phoneNumber')?.errors?.['required']) {
               <span>رقم الهاتف مطلوب</span>
-              } 
+              }
             </div>
             }
           </div>
@@ -227,7 +274,6 @@
             >
             <span class="text-danger me-2">*</span>
             <div class="">
-              
               <div class="mb-2">
                 <input
                   type="tel"
@@ -255,17 +301,15 @@
                     id="switchCheckDefault"
                     formControlName="useSameAsPhone"
                   />
-                  
                 </div>
               </div>
-              
             </div>
             @if (newUser.get('paymentNumber')?.invalid &&
             newUser.get('paymentNumber')?.touched) {
             <div class="invalid-feedback">
               @if (newUser.get('paymentNumber')?.errors?.['required']) {
               <span>رقم المحفظة مطلوب</span>
-              } 
+              }
             </div>
             }
           </div>
@@ -279,15 +323,13 @@
               name="city"
               formControlName="city"
               [class.is-invalid]="
-                newUser.get('city')?.invalid &&
-                newUser.get('city')?.touched
+                newUser.get('city')?.invalid && newUser.get('city')?.touched
               "
               placeholder="أدخل المدينة"
               required
             />
-            
-            @if (newUser.get('city')?.invalid &&
-            newUser.get('city')?.touched) {
+
+            @if (newUser.get('city')?.invalid && newUser.get('city')?.touched) {
             <div class="invalid-feedback">
               @if (newUser.get('city')?.errors?.['required']) {
               <span>اكتب المدينة</span>
@@ -303,26 +345,29 @@
 
         <div class="mb-4">
           <label for="street" class="form-label">العنوان</label>
-            <span class="text-danger me-2">*</span>
-            <textarea name="street" id="street" class="form-control"
+          <span class="text-danger me-2">*</span>
+          <textarea
+            name="street"
+            id="street"
+            class="form-control"
             formControlName="street"
             placeholder="اكتب العنوان التفصيلي"
-              [class.is-invalid]="
-                newUser.get('street')?.invalid &&
-                newUser.get('street')?.touched
-              "></textarea>
-              @if (newUser.get('street')?.invalid &&
-            newUser.get('street')?.touched) {
-            <div class="invalid-feedback">
-              @if (newUser.get('street')?.errors?.['required']) {
-              <span>اكتب المدينة</span>
-              } @if (newUser.get('street')?.errors?.['minlength']) {
-              <span>العنوان يجب أن يكون 3 أحرف على الأقل</span>
-              } @if (newUser.get('street')?.errors?.['maxlength']) {
-              <span>العنوان يجب أن يكون 200 حرف على الأكثر</span>
-              }
-            </div>
+            [class.is-invalid]="
+              newUser.get('street')?.invalid && newUser.get('street')?.touched
+            "
+          ></textarea>
+          @if (newUser.get('street')?.invalid && newUser.get('street')?.touched)
+          {
+          <div class="invalid-feedback">
+            @if (newUser.get('street')?.errors?.['required']) {
+            <span>اكتب المدينة</span>
+            } @if (newUser.get('street')?.errors?.['minlength']) {
+            <span>العنوان يجب أن يكون 3 أحرف على الأقل</span>
+            } @if (newUser.get('street')?.errors?.['maxlength']) {
+            <span>العنوان يجب أن يكون 200 حرف على الأكثر</span>
             }
+          </div>
+          }
         </div>
 
         <!-- Account Information Section -->
@@ -358,8 +403,7 @@
               <option value="9">Web Developer</option>
               <option value="10">Video Editor</option>
             </select>
-            @if (newUser.get('role')?.invalid &&
-            newUser.get('role')?.touched) {
+            @if (newUser.get('role')?.invalid && newUser.get('role')?.touched) {
             <div class="invalid-feedback">
               @if (newUser.get('role')?.errors?.['required']) {
               <span>الدور مطلوب</span>
@@ -404,7 +448,9 @@
               } @if (newUser.get('password')?.errors?.['minlength']) {
               <span>كلمة المرور يجب أن تكون 6 أحرف على الأقل</span>
               } @if (newUser.get('password')?.errors?.['passwordComplexity']) {
-                <span>يجب ان تحتوي كلمة المرور على حرف كبير وحرف صغير ورمز خاص</span>
+              <span
+                >يجب ان تحتوي كلمة المرور على حرف كبير وحرف صغير ورمز خاص</span
+              >
               }
             </div>
             }
@@ -423,7 +469,10 @@
                 يحتوي على حرف صغير (a-z)
               </li>
               <li [class]="requirementClass(passHasSpecial)">
-                <i class="bi me-1" [class]="requirementIcon(passHasSpecial)"></i>
+                <i
+                  class="bi me-1"
+                  [class]="requirementIcon(passHasSpecial)"
+                ></i>
                 يحتوي على رمز خاص (&#64; # $ % ! ...)
               </li>
             </ul>
@@ -434,12 +483,10 @@
         <div class="d-flex justify-content-start flex-wrap gap-3">
           <button type="submit" class="add-btn">
             @if (isLoading) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-              جاري إضافة المستخدم...
-            } @if (!isLoading) {
-              <i class="bi bi-check-circle me-2"></i>
-              إضافة مستخدم
-            }
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            جاري إضافة المستخدم... } @if (!isLoading) {
+            <i class="bi bi-check-circle me-2"></i>
+            إضافة مستخدم }
           </button>
           <button type="button" class="reset-btn" (click)="resetForm()">
             <i class="bi bi-arrow-clockwise me-2"></i>

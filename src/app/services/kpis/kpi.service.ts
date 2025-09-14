@@ -15,19 +15,22 @@ export class KpiService {
     return this.api.post(this.endpoint, incedint);
   }
 
-  // getMySummary(employeeId: string, year: number, month: number): Observable<IKpiSummary> {
-  //   const params = new HttpParams().set('year', year).set('month', month);
-  //   return this.api.get<IKpiSummary>(`${this.endpoint}/summary/${employeeId}`, { params });
-  //   }
+  getMySummary(employeeId: string, year: number, month: number): Observable<IKpiSummary> {
+    // const params = new HttpParams().set('year', year).set('month', month);
+    // return this.api.get<IKpiSummary>(`${this.endpoint}/summary/${employeeId}`, { params });
+    return this.api.get<IKpiSummary>(`${this.endpoint}/summary/${employeeId}/${year}/${month}`);
+    }
 
-  // getIncidents(employeeId: string, year: number, month: number): Observable<IIncedint[]> {
-  //   const params = new HttpParams().set('employeeId', employeeId).set('year', year).set('month', month);
-  //   return this.api.get<IIncedint[]>(`${this.endpoint}/incidents`, { params });
-  // }
+  getIncidents(employeeId: string, year: number, month: number): Observable<IIncedint[]> {
+    // const params = new HttpParams().set('employeeId', employeeId).set('year', year).set('month', month);
+    // return this.api.get<IIncedint[]>(`${this.endpoint}/incidents`, { params });
+    return this.api.get<IIncedint[]>(`${this.endpoint}/incidents/${year}/${month}`)
+  }
 
-  // // Admin
-  // getSummaries(year: number, month: number): Observable<IKpiSummary[]> {
-  //   const params = new HttpParams().set('year', year).set('month', month);
-  //   return this.api.get<IKpiSummary[]>(`${this.endpoint}/summary`, { params });
-  // }
+  // Admin
+  getSummaries(year: number, month: number): Observable<IKpiSummary[]> {
+    // const params = new HttpParams().set('year', year).set('month', month);
+    // return this.api.get<IKpiSummary[]>(`${this.endpoint}/summary`, { params });
+    return this.api.get<IKpiSummary[]>(`${this.endpoint}/summary/${year}/${month}`);
+  }
 }

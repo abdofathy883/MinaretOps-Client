@@ -12,7 +12,6 @@ import { Announcement } from '../../../model/announcement/announcement';
 })
 export class AllAnnouncementsComponent implements OnInit {
   announcements: Announcement[] = [];
-  isLoading: boolean = false;
   errorMessage: string = '';
 
   constructor(
@@ -25,13 +24,11 @@ export class AllAnnouncementsComponent implements OnInit {
   }
 
   loadAnnouncements(): void {
-    this.isLoading = true;
     this.errorMessage = '';
 
     this.announcementService.getAll().subscribe({
       next: (response) => {
         this.announcements = response;
-        this.isLoading = false;
       },
     });
   }
@@ -49,7 +46,7 @@ export class AllAnnouncementsComponent implements OnInit {
     } else if (diffInDays < 7) {
       return `منذ ${diffInDays} أيام`;
     } else {
-      return announcementDate.toLocaleDateString('ar-SA', {
+      return announcementDate.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
@@ -74,7 +71,7 @@ export class AllAnnouncementsComponent implements OnInit {
     } else if (diffInDays < 7) {
       return `منذ ${diffInDays} يوم`;
     } else {
-      return announcementDate.toLocaleDateString('ar-SA', {
+      return announcementDate.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',

@@ -13,3 +13,9 @@
     background-color: var(--terquoise-color);
     color: white;
 }
+
+img {
+    background-size: cover;
+    width: 100%;
+    border-radius: 15px;
+}
