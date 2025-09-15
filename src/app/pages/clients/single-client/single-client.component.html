@@ -30,6 +30,7 @@
   <app-task-groups
     [clientServices]="client.clientServices"
     [clientId]="client.id"
+    (taskDataChanged)="loadClient()"
   ></app-task-groups>
   }
 </div>

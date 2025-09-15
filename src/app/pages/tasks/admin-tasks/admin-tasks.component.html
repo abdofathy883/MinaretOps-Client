@@ -90,6 +90,7 @@
           </div>
           <h5 class="card-title text-center">{{ task.title }}</h5>
           <p class="card-text text-center">{{ task.description }}</p>
+          <p class="card-text">نوع التاسك: <strong>{{ getTypeLabel(task.taskType) }}</strong> </p>
           <p class="card-text">العميل: {{ task.clientName }}</p>
           <p class="card-text">الخدمة: {{ task.serviceName }}</p>
           <p class="card-text">الموظف: {{ task.employeeName }}</p>

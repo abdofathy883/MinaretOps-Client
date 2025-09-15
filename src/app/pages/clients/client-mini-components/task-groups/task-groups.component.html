@@ -228,7 +228,19 @@
           X
         </button>
       </div>
+
       <div class="modal-body">
+        @if (successMessage) {
+        <div class="alert alert-success mt-3" role="alert">
+          <i class="bi bi-check-circle me-2"></i>
+          {{ successMessage }}
+        </div>
+        } @if (errorMessage) {
+        <div class="alert alert-danger mt-3" role="alert">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          {{ errorMessage }}
+        </div>
+        }
         <form [formGroup]="editTaskForm" (ngSubmit)="saveTask()">
           <div class="row">
             <div class="mb-3">
@@ -238,31 +250,32 @@
                 id="taskType"
                 formControlName="taskType"
                 class="form-select"
+                [class.is-invalid]="hasError('taskType')"
               >
-                <option value="[0]">Planning</option>
-                <option value="[1]">Content Strategy</option>
-                <option value="[2]">Content Writing</option>
-                <option value="[3]">Logo Design</option>
-                <option value="[4]">Visual Identity</option>
-                <option value="[5]">Design Directions</option>
-                <option value="[6]">SM Design</option>
-                <option value="[7]">Printings Design</option>
-                <option value="[8]">Illustrations</option>
-                <option value="[9]">Voiceover</option>
-                <option value="[10]">Motion</option>
-                <option value="[11]">Video Editing</option>
-                <option value="[12]">Publishing</option>
-                <option value="[13]">Moderation</option>
-                <option value="[14]">Ad Management</option>
-                <option value="[15]">E Mail Marketing</option>
-                <option value="[16]">WhatsApp Marketing</option>
-                <option value="[17]">UI UX</option>
-                <option value="[18]">WordPress</option>
-                <option value="[19]">Backend</option>
-                <option value="[20]">Frontend</option>
-                <option value="[21]">SEO</option>
-                <option value="[22]">Meeting</option>
-                <option value="[23]">Hosting Management</option>
+                <option [value]="0">Planning</option>
+                <option [value]="1">Content Strategy</option>
+                <option [value]="2">Content Writing</option>
+                <option [value]="3">Logo Design</option>
+                <option [value]="4">Visual Identity</option>
+                <option [value]="5">Design Directions</option>
+                <option [value]="6">SM Design</option>
+                <option [value]="7">Printings Design</option>
+                <option [value]="8">Illustrations</option>
+                <option [value]="9">Voiceover</option>
+                <option [value]="10">Motion</option>
+                <option [value]="11">Video Editing</option>
+                <option [value]="12">Publishing</option>
+                <option [value]="13">Moderation</option>
+                <option [value]="14">Ad Management</option>
+                <option [value]="15">E Mail Marketing</option>
+                <option [value]="16">WhatsApp Marketing</option>
+                <option [value]="17">UI UX</option>
+                <option [value]="18">WordPress</option>
+                <option [value]="19">Backend</option>
+                <option [value]="20">Frontend</option>
+                <option [value]="21">SEO</option>
+                <option [value]="22">Meeting</option>
+                <option [value]="23">Hosting Management</option>
               </select>
             </div>
             <div class="col-md-6 mb-3">

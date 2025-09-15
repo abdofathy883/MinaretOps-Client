@@ -120,11 +120,7 @@
                     id="task-{{ serviceIndex }}-{{ taskIndex }}"
                     class="task-details"
                     [class.collapsed]="isTaskCollapsed(serviceIndex, taskIndex)"
-                    [@slideInOut]="
-                      isTaskCollapsed(serviceIndex, taskIndex)
-                        ? 'collapsed'
-                        : 'expanded'
-                    "
+                    
                   >
                     <div class="mb-2">
                       <label class="form-label">عنوان المهمة</label>

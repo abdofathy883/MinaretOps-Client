@@ -58,7 +58,7 @@ export class SingleClientComponent implements OnInit {
     });
   }
 
-  private loadClient(): void {
+  loadClient(): void {
     const clientIdParam = this.route.snapshot.paramMap.get('id');
     const clientId = Number(clientIdParam);
 
@@ -78,11 +78,11 @@ export class SingleClientComponent implements OnInit {
   }
 
   // Client info updated
-  onClientUpdated(updatedClient: IClient): void {
-    this.client = updatedClient;
-    this.successMessage = 'تم تحديث بيانات العميل بنجاح';
-    this.clearMessages();
-  }
+  // onClientUpdated(updatedClient: IClient): void {
+  //   this.client = updatedClient;
+  //   this.successMessage = 'تم تحديث بيانات العميل بنجاح';
+  //   this.clearMessages();
+  // }
 
   // Task management
   openAddTaskModal(clientServiceId: number, taskGroupId: number): void {

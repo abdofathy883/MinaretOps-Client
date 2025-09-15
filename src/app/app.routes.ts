@@ -33,11 +33,11 @@ import { AccessDeniedComponent } from './pages/access-denied/access-denied.compo
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 export const routes: Routes = [
-    {
-        path: 'dashboard',
-        component: DashboardComponent,
-        canActivate: [noauthGuard]
-    },
+    // {
+    //     path: 'dashboard',
+    //     component: DashboardComponent,
+    //     canActivate: [noauthGuard]
+    // },
     {
         path: 'login',
         component: LoginComponent,

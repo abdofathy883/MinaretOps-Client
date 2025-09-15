@@ -1,10 +1,10 @@
-import { DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { AttendanceRecord, AttendanceStatus, NewAttendanceRecord } from '../../model/attendance-record/attendance-record';
 import { User } from '../../model/auth/user';
 import { AttendanceService } from '../../services/attendance/attendance.service';
 import { LogService } from '../../services/logging/log.service';
 import { map, Observable, switchMap } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-attendance',

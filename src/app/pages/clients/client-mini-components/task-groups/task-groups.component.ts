@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { User } from '../../../../model/auth/user';
@@ -18,6 +18,7 @@ import { CustomTaskStatus, ICreateTask, ITask, IUpdateTask } from '../../../../m
 export class TaskGroupsComponent implements OnInit {
   @Input() clientServices: IClientService[] = [];
   @Input() clientId: number = 0;
+  @Output() taskDataChanged = new EventEmitter<void>();
 
   @ViewChild('newTaskGroupModal') newTaskGroupModal!: NewTaskGroupComponent;
   
@@ -70,7 +71,7 @@ export class TaskGroupsComponent implements OnInit {
   deleteTask(taskId: number) {
     this.taskService.deleteTask(taskId).subscribe({
       next: (response) => {
-        console.log('task deleted: ', response);
+        this.taskDataChanged.emit();
       }
     })
   }
@@ -242,14 +243,11 @@ export class TaskGroupsComponent implements OnInit {
   confirmDelete(taskId: number): void {
     this.taskService.deleteTask(taskId).subscribe({
       next: (response) => {
-        console.log('task deleted: ', response);
         this.successMessage = 'تم حذف المهمة بنجاح';
         this.closeDeleteModal(taskId);
-        
-        // Optionally refresh data or remove from local array
+        this.taskDataChanged.emit();        
       },
       error: (error) => {
-        console.error('Error deleting task:', error);
         this.errorMessage = 'حدث خطأ في حذف المهمة';
       }
     });
@@ -289,20 +287,21 @@ export class TaskGroupsComponent implements OnInit {
       next: (response) => {
         this.isSaving = false;
         this.hideModal();
+        this.taskDataChanged.emit();
         this.successMessage = 'تم تحديث المهمة بنجاح';
       },
       error: (error) => {
         this.isSaving = false;
-        console.log(error);
         this.errorMessage = 'حدث خطأ في تحديث المهمة';
       }
     });
   }
 
   private createNewTask(formValue: any): void {
+    this.isSaving = true;
     const newTask: ICreateTask = {
       title: formValue.title,
-      taskType: formValue.taskType,
+      taskType: Number(formValue.taskType),
       description: formValue.description,
       status: formValue.status,
       clientServiceId: this.getClientServiceIdFromTaskGroup(this.selectedTaskGroupId!),
@@ -313,18 +312,19 @@ export class TaskGroupsComponent implements OnInit {
       taskGroupId: this.selectedTaskGroupId!
     };
 
-    // Add to local data
-    this.isSaving = false;
-    console.log('new task: ', newTask)
+    this.isSaving = true;
     this.taskService.addTask(newTask).subscribe({
       next: (response) => {
-        // this.hideModal();
-        console.log('response task: ', response);
-        this.successMessage = 'تم إضافة المهمة بنجاح';  
+        // Add to local data
+        this.isSaving = false;
+        this.hideModal();
+        this.taskDataChanged.emit();
+        this.successMessage = 'تم إضافة التاسك بنجاح';  
 
       },
       error: (error) => {
-        console.log(error);
+        this.isSaving = false;
+        this.errorMessage = 'فشل اضافة التاسك, حاول مرة اخرى'
       }
     })
   }
