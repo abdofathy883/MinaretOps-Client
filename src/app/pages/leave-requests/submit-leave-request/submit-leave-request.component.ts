@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { AttendanceService } from '../../../services/attendance/attendance.service';
 import { NewLeaveRequest } from '../../../model/attendance-record/attendance-record';
+import { LeaveRequestService } from '../../../services/leave-request/leave-request.service';
 
 @Component({
   selector: 'app-submit-leave-request',
@@ -23,7 +24,7 @@ export class SubmitLeaveRequestComponent implements OnInit {
   showSuccessMessage: boolean = false;
 
   constructor(
-    private leaveRequestService: AttendanceService,
+    private leaveRequestService: LeaveRequestService,
     private fb: FormBuilder
   ) {}
 

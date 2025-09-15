@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LeaveRequest, LeaveStatus } from '../../../model/attendance-record/attendance-record';
-import { AttendanceService } from '../../../services/attendance/attendance.service';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
+import { LeaveRequestService } from '../../../services/leave-request/leave-request.service';
 
 @Component({
   selector: 'app-all-leave-requests',
@@ -16,7 +16,7 @@ export class AllLeaveRequestsComponent implements OnInit{
   currentUserId: string = '';
 
   constructor(
-    private leaveRequestService: AttendanceService,
+    private leaveRequestService: LeaveRequestService,
     private authService: AuthService
   ) {}
 

@@ -3,10 +3,7 @@ import { ApiService } from '../api-service/api.service';
 import {
   AttendanceRecord,
   AttendanceStatus,
-  LeaveRequest,
-  LeaveStatus,
   NewAttendanceRecord,
-  NewLeaveRequest,
 } from '../../model/attendance-record/attendance-record';
 import { Observable } from 'rxjs';
 
@@ -49,33 +46,4 @@ export class AttendanceService {
     );
   }
 
-  // Leave Requests
-
-  newLeaveRequest(request: NewLeaveRequest): Observable<LeaveRequest> {
-    return this.api.post<LeaveRequest>(
-      `${this.endpoint}/submit-leave-request`,
-      request
-    );
-  }
-
-  getRequestsByEmployeeId(empId: string): Observable<LeaveRequest[]> {
-    return this.api.get<LeaveRequest[]>(
-      `${this.endpoint}/employee-leave-requests/${empId}`
-    );
-  }
-
-  getAllRequests(): Observable<LeaveRequest[]> {
-    return this.api.get<LeaveRequest[]>(`${this.endpoint}/all-leave-requests`);
-  }
-
-  changeLeaveRequestStatus(
-    adminId: string,
-    requestId: number,
-    newStatus: LeaveStatus
-  ): Observable<LeaveRequest> {
-    return this.api.put<LeaveRequest>(
-      `${this.endpoint}/admin-change-leave-request/${adminId}/${requestId}`,
-      newStatus
-    );
-  }
 }
