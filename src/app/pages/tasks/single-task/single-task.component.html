@@ -8,7 +8,8 @@
       </div>
     </div>
     <div>
-      @if (isUserAdmin || isUserAccountManager || isUserContentLeader || isUserDesignLeader) {
+      @if (isUserAdmin || isUserAccountManager || isUserContentLeader ||
+      isUserDesignLeader) {
       <div>
         @if (!isEditMode) {
         <button class="edit-btn" (click)="toggleEditMode()">
@@ -23,333 +24,330 @@
         }
       </div>
 
-    }
+      }
     </div>
   </div>
 
   @if (!isEditMode) {
-    <div class="row">
-      <div class="col-lg-6 mb-md-3">
-        <div class="task-details-card">
-  
-          <div class="card-header">
-            <h3><i class="bi bi-info-circle"></i> تفاصيل المهمة</h3>
-          </div>
-
-          <div class="detail-item">
-            <label>نوع التاسك :</label>
-            <p>{{ getTypeLabel(task.taskType) }}</p>
-          </div>
-    
-          <div class="detail-item">
-            <label>الوصف:</label>
-            <p class="description">{{ task.description }}</p>
-          </div>
-    
-          <div class="detail-item">
-            <label>العميل:</label>
-            <span class="client-name">{{ task.clientName }}</span>
-          </div>
-    
-          <div class="detail-item">
-            <label>الخدمة:</label>
-            <span class="service-name">{{ task.serviceName }}</span>
-          </div>
-    
-          <div class="detail-item">
-            <label>الموظف المسؤول:</label>
-            <span class="employee-name">{{ task.employeeName }}</span>
-          </div>
-    
-          <div class="detail-item">
-            <label>المرجع:</label>
-            <span class="reference" *ngIf="task.refrence; else noReference">
-              {{ task.refrence }}
-            </span>
-            <ng-template #noReference>
-              <span class="no-reference">لا يوجد مرجع</span>
-            </ng-template>
-          </div>
+  <div class="row">
+    <div class="col-lg-6 mb-md-3">
+      <div class="task-details-card">
+        <div class="card-header">
+          <h3><i class="bi bi-info-circle"></i> تفاصيل المهمة</h3>
         </div>
-      </div>
-  
-      <div class="col-lg-6">
-        <div class="task-status-card">
-          <div class="card-header">
-            <h3><i class="bi bi-list-task"></i> حالة المهمة</h3>
-          </div>
-  
-          <!-- Current Status Display -->
-          <div class="current-status">
-            <label>الحالة الحالية:</label>
-            <div
-              class="status-badge me-3"
-              [ngClass]="getStatusClass(task.status)"
-            >
-              {{ getStatusLabel(task.status) }}
-            </div>
-          </div>
-  
-          <!-- Priority Display -->
-          <div class="priority-section">
-            <label>الأولوية:</label>
-            <div
-              class="priority-badge me-3"
-              [ngClass]="getPriorityClass(task.priority)"
-            >
-              {{ task.priority }}
-            </div>
-          </div>
-  
-          <!-- Deadline Section -->
-          <div class="deadline-section">
-            <label>الموعد النهائي:</label>
-            <div class="deadline-info mt-2" [ngClass]="{ overdue: isOverdue() }">
-              <i class="fas fa-calendar-alt"></i>
-              <span>{{ task.deadline | date : "dd/MM/yyyy" }}</span>
-              <span class="overdue-warning" *ngIf="isOverdue()">
-                <i class="fas fa-exclamation-triangle"></i>
-                متأخر
-              </span>
-            </div>
-          </div>
-  
-          <!-- Completion Date -->
-          <div class="completion-section" *ngIf="task.completedAt">
-            <label>تاريخ الإنجاز:</label>
-            <span class="completion-date">
-              {{ task.completedAt | date : "dd/MM/yyyy" }}
-            </span>
-          </div>
-  
-          <div class="info-item">
-            <label>تم الإنجاز في الموعد:</label>
-            <span
-              class="on-time-status mt-2"
-              [ngClass]="{
-                'on-time': task.isCompletedOnDeadLine,
-                late: !task.isCompletedOnDeadLine
-              }"
-            >
-              <i
-                [class]="
-                  task.isCompletedOnDeadLine
-                    ? 'bi bi-check-circle'
-                    : 'bi bi-x-circle'
-                "
-              ></i>
-              {{ task.isCompletedOnDeadLine ? "نعم" : "لا" }}
-            </span>
-          </div>
-  
-          <!-- Status Update Section -->
-          <div class="status-update-section">
-            <h4>تحديث الحالة</h4>
-            <div class="status-options">
-              @for (status of availableStatuses; track $index) {
-                <button
-                  class="status-option-btn"
-                  [ngClass]="{
-                    active: task.status === status.value,
-                    disabled: updatingStatus
-                  }"
-                  (click)="updateTaskStatus(status.value)"
-                  [disabled]="updatingStatus || task.status === status.value ||
-                  (status.value === CustomTaskStatus.Open && task.status !== CustomTaskStatus.Open)"
-                >
-                  <i [class]="status.icon"></i>
-                  {{ status.label }}
-                </button>
-  
-                
-              }
-            </div>
-  
-            <div class="update-feedback" *ngIf="updatingStatus">
-              <div class="spinner"></div>
-              <span>جاري التحديث...</span>
-            </div>
-  
-            <!-- <div class="error-message" *ngIf="error">
-            <i class="fas fa-exclamation-circle"></i>
-            {{ error }}
-          </div> -->
-          </div>
+
+        <div class="detail-item">
+          <label>نوع التاسك :</label>
+          <p>{{ getTypeLabel(task.taskType) }}</p>
+        </div>
+
+        <div class="detail-item">
+          <label>الوصف:</label>
+          <p class="description">{{ task.description }}</p>
+        </div>
+
+        <div class="detail-item">
+          <label>العميل:</label>
+          <span class="client-name">{{ task.clientName }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label>الخدمة:</label>
+          <span class="service-name">{{ task.serviceName }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label>الموظف المسؤول:</label>
+          <span class="employee-name">{{ task.employeeName }}</span>
+        </div>
+
+        <div class="detail-item">
+          <label>المرجع:</label>
+          <span class="reference" *ngIf="task.refrence; else noReference">
+            {{ task.refrence }}
+          </span>
+          <ng-template #noReference>
+            <span class="no-reference">لا يوجد مرجع</span>
+          </ng-template>
         </div>
       </div>
     </div>
-  }
-  @if (isEditMode) {
-    <form [formGroup]="editTaskForm" (ngSubmit)="saveTask()">
-          <div class="row">
-            <div class="mb-3">
-              <label for="taskType" class="form-label">نوع التاسك</label>
-              <select
-                name="taskType"
-                id="taskType"
-                formControlName="taskType"
-                class="form-select"
-              >
-                <option value="[0]">Planning</option>
-                <option value="[1]">Content Strategy</option>
-                <option value="[2]">Content Writing</option>
-                <option value="[3]">Logo Design</option>
-                <option value="[4]">Visual Identity</option>
-                <option value="[5]">Design Directions</option>
-                <option value="[6]">SM Design</option>
-                <option value="[7]">Printings Design</option>
-                <option value="[8]">Illustrations</option>
-                <option value="[9]">Voiceover</option>
-                <option value="[10]">Motion</option>
-                <option value="[11]">Video Editing</option>
-                <option value="[12]">Publishing</option>
-                <option value="[13]">Moderation</option>
-                <option value="[14]">Ad Management</option>
-                <option value="[15]">E Mail Marketing</option>
-                <option value="[16]">WhatsApp Marketing</option>
-                <option value="[17]">UI UX</option>
-                <option value="[18]">WordPress</option>
-                <option value="[19]">Backend</option>
-                <option value="[20]">Frontend</option>
-                <option value="[21]">SEO</option>
-                <option value="[22]">Meeting</option>
-                <option value="[23]">Hosting Management</option>
-              </select>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="title" class="form-label">عنوان التاسك</label>
-              <input
-                type="text"
-                class="form-control"
-                id="title"
-                formControlName="title"
-                [class.is-invalid]="hasError('title')"
-                placeholder="أدخل عنوان المهمة"
-              />
-              @if (hasError('title')) {
-              <div class="invalid-feedback">
-                {{ getErrorMessage("title") }}
-              </div>
-              }
-            </div>
 
-            <div class="col-md-6 mb-3">
-              <label for="priority" class="form-label">الأولوية</label>
-              <select
-                class="form-select"
-                id="priority"
-                formControlName="priority"
-                [class.is-invalid]="hasError('priority')"
-              >
-                <option value="">اختر الأولوية</option>
-                <option value="عادي">عادي</option>
-                <option value="مهم">مهم</option>
-                <option value="مستعجل">مستعجل</option>
-              </select>
-              @if (hasError('priority')) {}
-              <div class="invalid-feedback">
-                {{ getErrorMessage("priority") }}
-              </div>
-            </div>
+    <div class="col-lg-6">
+      <div class="task-status-card">
+        <div class="card-header">
+          <h3><i class="bi bi-list-task"></i> حالة المهمة</h3>
+        </div>
+
+        <!-- Current Status Display -->
+        <div class="current-status">
+          <label>الحالة الحالية:</label>
+          <div
+            class="status-badge me-3"
+            [ngClass]="getStatusClass(task.status)"
+          >
+            {{ getStatusLabel(task.status) }}
           </div>
+        </div>
 
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="deadline" class="form-label">موعد التسليم</label>
-              <input
-                type="date"
-                class="form-control"
-                id="deadline"
-                formControlName="deadline"
-                [class.is-invalid]="hasError('deadline')"
-              />
-              @if (hasError('deadline')) {
-              <div class="invalid-feedback">
-                {{ getErrorMessage("deadline") }}
-              </div>
-              }
-            </div>
-
-            <div class="col-md-6 mb-3">
-              <label for="status" class="form-label">الحالة</label>
-              <select
-                class="form-select"
-                id="status"
-                formControlName="status"
-                [class.is-invalid]="hasError('status')"
-              >
-                <option value="">اختر الحالة</option>
-                <option [value]="0">لم يبدأ</option>
-                <option [value]="1">قيد التنفيذ</option>
-                <option [value]="2">تم التسليم</option>
-                <option [value]="3">مكتمل</option>
-              </select>
-              @if (hasError('status')) {
-              <div class="invalid-feedback">
-                {{ getErrorMessage("status") }}
-              </div>
-              }
-            </div>
+        <!-- Priority Display -->
+        <div class="priority-section">
+          <label>الأولوية:</label>
+          <div
+            class="priority-badge me-3"
+            [ngClass]="getPriorityClass(task.priority)"
+          >
+            {{ task.priority }}
           </div>
+        </div>
 
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="employee" class="form-label">الموظف</label>
-              <select
-                class="form-select"
-                id="employee"
-                formControlName="employeeId"
-              >
-                <option value="">اختر الموظف</option>
-                @for (employee of employees; track employee.id) {
-                <option [value]="employee.id">
-                  {{ employee.firstName }} {{ employee.lastName }}
-                </option>
-                }
-              </select>
-            </div>
-
-            <div class="col-md-6 mb-3">
-              <label for="reference" class="form-label">ريفرنس</label>
-              <input
-                type="text"
-                class="form-control"
-                id="reference"
-                formControlName="refrence"
-                placeholder="أدخل المرجع"
-              />
-            </div>
+        <!-- Deadline Section -->
+        <div class="deadline-section">
+          <label>الموعد النهائي:</label>
+          <div class="deadline-info mt-2" [ngClass]="{ overdue: isOverdue() }">
+            <i class="fas fa-calendar-alt"></i>
+            <span>{{ task.deadline | date : "dd/MM/yyyy" }}</span>
+            <span class="overdue-warning" *ngIf="isOverdue()">
+              <i class="fas fa-exclamation-triangle"></i>
+              متأخر
+            </span>
           </div>
+        </div>
 
-          <div class="mb-3">
-            <label for="description" class="form-label">وصف المهمة</label>
-            <textarea
-              class="form-control"
-              id="description"
-              rows="3"
-              formControlName="description"
-              placeholder="أدخل وصف المهمة"
-            ></textarea>
-          </div>
+        <!-- Completion Date -->
+        <div class="completion-section" *ngIf="task.completedAt">
+          <label>تاريخ الإنجاز:</label>
+          <span class="completion-date">
+            {{ task.completedAt | date : "dd/MM/yyyy" }}
+          </span>
+        </div>
 
-          <div class="">
+        <div class="info-item">
+          <label>تم الإنجاز في الموعد:</label>
+          <span
+            class="on-time-status mt-2"
+            [ngClass]="{
+              'on-time': task.isCompletedOnDeadLine,
+              late: !task.isCompletedOnDeadLine
+            }"
+          >
+            <i
+              [class]="
+                task.isCompletedOnDeadLine
+                  ? 'bi bi-check-circle'
+                  : 'bi bi-x-circle'
+              "
+            ></i>
+            {{ task.isCompletedOnDeadLine ? "نعم" : "لا" }}
+          </span>
+        </div>
+
+        <!-- Status Update Section -->
+        <div class="status-update-section">
+          <h4>تحديث الحالة</h4>
+          <div class="status-options">
+            @for (status of availableStatuses; track $index) {
             <button
-              type="submit"
-              class="add-btn"
-              [disabled]="editTaskForm.invalid || isLoading"
+              class="status-option-btn"
+              [ngClass]="{
+                active: task.status === status.value,
+                disabled: updatingStatus
+              }"
+              (click)="updateTaskStatus(status.value)"
+              [disabled]="
+                updatingStatus ||
+                task.status === status.value ||
+                (status.value === CustomTaskStatus.Open &&
+                  task.status !== CustomTaskStatus.Open)
+              "
             >
-              @if (isLoading) {
-              <span
-                class="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              جاري التعديل...
-              } @if(!isLoading) {
-              تعديل
-              }
+              <i [class]="status.icon"></i>
+              {{ status.label }}
             </button>
+
+            }
           </div>
-        </form>
+
+          <div class="update-feedback" *ngIf="updatingStatus">
+            <div class="spinner"></div>
+            <span>جاري التحديث...</span>
+          </div>
+
+          <!-- <div class="error-message" *ngIf="error">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ error }}
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  } @if (isEditMode) {
+  <form [formGroup]="editTaskForm" (ngSubmit)="saveTask()">
+    <div class="row">
+      <div class="mb-3">
+        <label for="taskType" class="form-label">نوع التاسك</label>
+        <select
+          name="taskType"
+          id="taskType"
+          formControlName="taskType"
+          class="form-select"
+        >
+          <option value="[0]">Planning</option>
+          <option value="[1]">Content Strategy</option>
+          <option value="[2]">Content Writing</option>
+          <option value="[3]">Logo Design</option>
+          <option value="[4]">Visual Identity</option>
+          <option value="[5]">Design Directions</option>
+          <option value="[6]">SM Design</option>
+          <option value="[7]">Printings Design</option>
+          <option value="[8]">Illustrations</option>
+          <option value="[9]">Voiceover</option>
+          <option value="[10]">Motion</option>
+          <option value="[11]">Video Editing</option>
+          <option value="[12]">Publishing</option>
+          <option value="[13]">Moderation</option>
+          <option value="[14]">Ad Management</option>
+          <option value="[15]">E Mail Marketing</option>
+          <option value="[16]">WhatsApp Marketing</option>
+          <option value="[17]">UI UX</option>
+          <option value="[18]">WordPress</option>
+          <option value="[19]">Backend</option>
+          <option value="[20]">Frontend</option>
+          <option value="[21]">SEO</option>
+          <option value="[22]">Meeting</option>
+          <option value="[23]">Hosting Management</option>
+        </select>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="title" class="form-label">عنوان التاسك</label>
+        <input
+          type="text"
+          class="form-control"
+          id="title"
+          formControlName="title"
+          [class.is-invalid]="hasError('title')"
+          placeholder="أدخل عنوان المهمة"
+        />
+        @if (hasError('title')) {
+        <div class="invalid-feedback">
+          {{ getErrorMessage("title") }}
+        </div>
+        }
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="priority" class="form-label">الأولوية</label>
+        <select
+          class="form-select"
+          id="priority"
+          formControlName="priority"
+          [class.is-invalid]="hasError('priority')"
+        >
+          <option value="">اختر الأولوية</option>
+          <option value="عادي">عادي</option>
+          <option value="مهم">مهم</option>
+          <option value="مستعجل">مستعجل</option>
+        </select>
+        @if (hasError('priority')) {}
+        <div class="invalid-feedback">
+          {{ getErrorMessage("priority") }}
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="deadline" class="form-label">موعد التسليم</label>
+        <input
+          type="date"
+          class="form-control"
+          id="deadline"
+          formControlName="deadline"
+          [class.is-invalid]="hasError('deadline')"
+        />
+        @if (hasError('deadline')) {
+        <div class="invalid-feedback">
+          {{ getErrorMessage("deadline") }}
+        </div>
+        }
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="status" class="form-label">الحالة</label>
+        <select
+          class="form-select"
+          id="status"
+          formControlName="status"
+          [class.is-invalid]="hasError('status')"
+        >
+          <option value="">اختر الحالة</option>
+          <option [value]="0">لم يبدأ</option>
+          <option [value]="1">قيد التنفيذ</option>
+          <option [value]="2">تم التسليم</option>
+          <option [value]="3">مكتمل</option>
+        </select>
+        @if (hasError('status')) {
+        <div class="invalid-feedback">
+          {{ getErrorMessage("status") }}
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="employee" class="form-label">الموظف</label>
+        <select class="form-select" id="employee" formControlName="employeeId">
+          <option value="">اختر الموظف</option>
+          @for (employee of employees; track employee.id) {
+          <option [value]="employee.id">
+            {{ employee.firstName }} {{ employee.lastName }}
+          </option>
+          }
+        </select>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="reference" class="form-label">ريفرنس</label>
+        <input
+          type="text"
+          class="form-control"
+          id="reference"
+          formControlName="refrence"
+          placeholder="أدخل المرجع"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">وصف المهمة</label>
+      <textarea
+        class="form-control"
+        id="description"
+        rows="3"
+        formControlName="description"
+        placeholder="أدخل وصف المهمة"
+      ></textarea>
+    </div>
+
+    <div class="">
+      <button
+        type="submit"
+        class="add-btn"
+        [disabled]="editTaskForm.invalid || isLoading"
+      >
+        @if (isLoading) {
+        <span
+          class="spinner-border spinner-border-sm me-2"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        جاري التعديل... } @if(!isLoading) { تعديل }
+      </button>
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-danger" (click)="deleteTask()">حذف التاسك</button>
+    </div>
+  </form>
   }
 </div>

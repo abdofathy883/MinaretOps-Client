@@ -40,7 +40,8 @@ export enum InternalTaskType {
 export interface InternalTaskAssignment {
   id: number;
   internalTaskId: number;
-  userId: string;
+  employeeId: string;
+  employeeName: string;
   isLeader: boolean;
 }
 
@@ -56,4 +57,14 @@ export interface CreateInternalTask {
 export interface CreateInternalTaskAssignment {
   userId: string;
   isLeader: boolean;
+}
+
+export interface UpdateInternalTask {
+  title: string;
+  taskType: InternalTaskType;
+  description: string;
+  deadline: string;
+  priority: string;
+  status: CustomTaskStatus;
+  assignments: CreateInternalTaskAssignment[];
 }

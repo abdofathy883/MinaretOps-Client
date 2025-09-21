@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AuthService } from '../../../services/auth/auth.service';
 import { InternalTaskService } from '../../../services/internal-tasks/internal-task.service';
 import { User } from '../../../model/auth/user';
-import { CreateInternalTask, CreateInternalTaskAssignment } from '../../../model/internal-task/internal-task';
+import { CreateInternalTask, CreateInternalTaskAssignment, InternalTaskType } from '../../../model/internal-task/internal-task';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -15,9 +15,12 @@ import { CommonModule } from '@angular/common';
 export class AddInternalTaskComponent implements OnInit{
   isLoading: boolean = false;
   errorMessage: string = '';
-  successMessage: string = '';
   internalTaskForm!: FormGroup;
   employees: User[] = [];
+
+  alertMessage = '';
+  attendanceErrorMessage = '';
+  alertType = 'info';
 
   constructor(
     private authService: AuthService,
@@ -32,7 +35,6 @@ export class AddInternalTaskComponent implements OnInit{
       },
       error: (error) => {
         this.errorMessage = 'فشل في تحميل قائمة الموظفين';
-        console.error('Error loading employees:', error);
       }
     });
 
@@ -43,7 +45,7 @@ export class AddInternalTaskComponent implements OnInit{
       deadline: ['', Validators.required],
       priority: ['', Validators.required],
       leader: ['', Validators.required],
-      employees: [[], Validators.required]
+      employees: [[]]
     });
   }
 
@@ -51,7 +53,7 @@ export class AddInternalTaskComponent implements OnInit{
     if (this.internalTaskForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
-      this.successMessage = '';
+      this.alertMessage = '';
 
       const formValue = this.internalTaskForm.value;
       const assignments: CreateInternalTaskAssignment[] = [];
@@ -62,19 +64,30 @@ export class AddInternalTaskComponent implements OnInit{
         isLeader: true
       });
       
+      // // Add team members (excluding the leader to avoid duplication)
+      // const teamMembers = formValue.employees.filter((empId: string) => empId !== formValue.leader);
+      // teamMembers.forEach((empId: string) => {
+      //   assignments.push({
+      //     userId: empId,
+      //     isLeader: false
+      //   });
+      // });
+
       // Add team members (excluding the leader to avoid duplication)
-      const teamMembers = formValue.employees.filter((empId: string) => empId !== formValue.leader);
-      teamMembers.forEach((empId: string) => {
-        assignments.push({
-          userId: empId,
-          isLeader: false
+      if (formValue.employees && formValue.employees.length > 0) {
+        const teamMembers = formValue.employees.filter((empId: string) => empId !== formValue.leader);
+        teamMembers.forEach((empId: string) => {
+          assignments.push({
+            userId: empId,
+            isLeader: false
+          });
         });
-      });
+      }
 
       // Prepare the data according to CreateInternalTaskDTO structure
       const taskData: CreateInternalTask = {
         title: formValue.title,
-        taskType: formValue.taskType,
+        taskType: this.mapTaskTypeToEnum(formValue.taskType),
         description: formValue.description,
         deadline: this.formatDateForBackend(formValue.deadline),
         priority: this.mapPriorityToBackend(formValue.priority),
@@ -83,15 +96,16 @@ export class AddInternalTaskComponent implements OnInit{
 
       this.internalTaskService.add(taskData).subscribe({
         next: (response) => {
-          this.successMessage = 'تم إنشاء التاسك بنجاح';
+          this.showAlert('تم إنشاء التاسك بنجاح', 'success');
           this.isLoading = false;
+          this.internalTaskForm.reset();
         },
         error: (error) => {
           this.isLoading = false;
           if (error.error && error.error.message) {
             this.errorMessage = error.error.message;
           } else {
-            this.errorMessage = 'فشل في إنشاء التاسك. يرجى المحاولة مرة أخرى.';
+            this.showAlert('فشل في إنشاء التاسك. يرجى المحاولة مرة أخرى.', 'error');
           }
         }
       });
@@ -100,10 +114,23 @@ export class AddInternalTaskComponent implements OnInit{
     }
   }
 
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+    
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
+  }
+
   resetForm() {
     this.internalTaskForm.reset();
     this.errorMessage = '';
-    this.successMessage = '';
+    this.alertMessage = '';
   }
 
   // Helper method to format date for backend (DateOnly)
@@ -123,9 +150,39 @@ export class AddInternalTaskComponent implements OnInit{
     return priorityMap[priority] || 'عادي';
   }
 
+  // Helper method to map task type string to enum
+  private mapTaskTypeToEnum(taskTypeString: string): InternalTaskType {
+    const taskTypeMap: { [key: string]: InternalTaskType } = {
+      '0': InternalTaskType.HRMeeting,
+      '1': InternalTaskType.ManagementMeeting,
+      '2': InternalTaskType.PotentialClientMeeting,
+      '3': InternalTaskType.ExistingClientMeeting,
+      '4': InternalTaskType.ProjectManagementMeeting,
+      '5': InternalTaskType.TasksAllocation,
+      '6': InternalTaskType.TasksUpdate,
+      '7': InternalTaskType.UpdatingReports,
+      '8': InternalTaskType.UpdatingKPIs,
+      '9': InternalTaskType.ProductionFollowUp,
+      '10': InternalTaskType.PaymentsAndFinance,
+      '11': InternalTaskType.ClientOnboarding,
+      '12': InternalTaskType.ClientFollowUp,
+      '13': InternalTaskType.Quotations,
+      '14': InternalTaskType.MarketingOffer,
+      '15': InternalTaskType.SalesTeamHandling,
+      '16': InternalTaskType.Recruitment,
+      '17': InternalTaskType.Subscriptions,
+      '18': InternalTaskType.FinancialAdjustments,
+      '19': InternalTaskType.ModifyTables,
+      '20': InternalTaskType.Check
+    };
+    return taskTypeMap[taskTypeString] || InternalTaskType.Check;
+  }
+  
   // Helper method to check if a field is invalid and touched
   isFieldInvalid(fieldName: string): boolean {
     const field = this.internalTaskForm.get(fieldName);
     return !!(field && field.invalid && field.touched);
   }
+
+  
 }

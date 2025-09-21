@@ -1,10 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../../../services/tasks/task.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { CustomTaskStatus, ITask, IUpdateTask, TaskType } from '../../../model/task/task';
+import {
+  CustomTaskStatus,
+  ITask,
+  IUpdateTask,
+  TaskType,
+} from '../../../model/task/task';
 import { AuthService } from '../../../services/auth/auth.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { User } from '../../../model/auth/user';
 
 @Component({
@@ -60,6 +70,7 @@ export class SingleTaskComponent implements OnInit {
     private taskService: TaskService,
     private authService: AuthService,
     private route: ActivatedRoute,
+    private router: Router,
     private fb: FormBuilder
   ) {
     this.editTaskForm = this.fb.group({
@@ -70,7 +81,7 @@ export class SingleTaskComponent implements OnInit {
       deadline: ['', Validators.required],
       employeeId: [''],
       status: ['', Validators.required],
-      refrence: ['']
+      refrence: [''],
     });
   }
 
@@ -86,7 +97,7 @@ export class SingleTaskComponent implements OnInit {
 
     this.authService.getAll().subscribe((response) => {
       this.employees = response;
-    })
+    });
 
     this.authService.isAdmin().subscribe((isAdmin) => {
       if (isAdmin) this.isUserAdmin = true;
@@ -111,7 +122,7 @@ export class SingleTaskComponent implements OnInit {
       deadline: task.deadline,
       employeeId: task.employeeId || '',
       status: task.status,
-      refrence: task.refrence || ''
+      refrence: task.refrence || '',
     });
   }
 
@@ -135,7 +146,7 @@ export class SingleTaskComponent implements OnInit {
   }
 
   getTypeLabel(type: TaskType): string {
-    switch (type){
+    switch (type) {
       case TaskType.Ad_Management:
         return 'Ad Management';
       case TaskType.Backend:
@@ -185,7 +196,7 @@ export class SingleTaskComponent implements OnInit {
       case TaskType.WordPress:
         return 'WordPress';
       default:
-        return 'غير محدد'
+        return 'غير محدد';
     }
   }
 
@@ -294,14 +305,14 @@ export class SingleTaskComponent implements OnInit {
     const formValue = this.editTaskForm.value;
 
     const updatedTask: IUpdateTask = {
-          title: formValue.title,
-          description: formValue.description,
-          priority: formValue.priority,
-          deadline: new Date(formValue.deadline),
-          employeeId: formValue.employeeId,
-          status: formValue.status,
-          refrence: formValue.refrence
-        };
+      title: formValue.title,
+      description: formValue.description,
+      priority: formValue.priority,
+      deadline: new Date(formValue.deadline),
+      employeeId: formValue.employeeId,
+      status: formValue.status,
+      refrence: formValue.refrence,
+    };
 
     this.taskService.update(this.task.id, updatedTask).subscribe({
       next: (response) => {
@@ -311,7 +322,18 @@ export class SingleTaskComponent implements OnInit {
       error: (error) => {
         this.isLoading = false;
         this.errorMessage = 'حدث خطأ في تحديث المهمة';
-      }
+      },
+    });
+  }
+
+  deleteTask() {
+    this.taskService.deleteTask(this.task.id).subscribe({
+      next: () => {
+        this.router.navigate(['/tasks']);
+      },
+      error: (error) => {
+        this.errorMessage = 'حدث خطأ أثناء حذف المهمة';
+      },
     });
   }
 }

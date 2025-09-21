@@ -2,136 +2,381 @@
     @if (internalTask) {
         <div class="task-container">
   <!-- Header Section -->
-  <div class="task-header">
+  <div class="task-header d-flex align-items-center flex-wrap">
     <div class="task-title-section">
       <h1 class="task-title">{{ internalTask.title }}</h1>
       <div class="task-meta">
         <span class="task-id">#{{ internalTask.id }}</span>
       </div>
     </div>
+    <div>
+      @if (isUserAdmin || isUserAccountManager || isUserContentLeader || isUserDesignLeader) {
+      <div>
+        @if (!isEditMode) {
+        <button class="edit-btn" (click)="toggleEditMode()">
+          <i class="bi bi-pencil me-1"></i>
+          تعديل
+        </button>
+        } @if (isEditMode) {
+        <button class="btn btn-danger me-2" (click)="cancelEdit()">
+          <i class="bi bi-x-circle me-1"></i>
+          إلغاء
+        </button>
+        }
+      </div>
+
+    }
+    </div>
   </div>
 
-  <div class="row">
-    <div class="col-lg-6 mb-md-3">
-      <div class="task-details-card">
+  <!-- Error Message -->
+  @if (errorMessage) {
+  <div class="alert alert-danger mt-3" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ errorMessage }}
+  </div>
+  }
 
-        <div class="card-header">
-          <h3><i class="bi bi-info-circle"></i> تفاصيل المهمة</h3>
-        </div>
-  
-        <div class="detail-item">
-          <label>الوصف:</label>
-          <p class="description">{{ internalTask.description }}</p>
-        </div>
-  
-        
-  
-        <!-- <div class="detail-item">
-          <label>الموظف المسؤول:</label>
-          <span class="employee-name">{{ task.employeeName }}</span>
-        </div> -->
-  
-        
-      </div>
-    </div>
+  <!-- Success Message -->
+  @if (successMessage) {
+  <div class="alert alert-success mt-3" role="alert">
+    <i class="bi bi-check-circle me-2"></i>
+    {{ successMessage }}
+  </div>
+  }
 
-    <div class="col-lg-6">
-      <div class="task-status-card">
-        <div class="card-header">
-          <h3><i class="bi bi-list-task"></i> حالة المهمة</h3>
-        </div>
-
-        <!-- Current Status Display -->
-        <div class="current-status">
-          <label>الحالة الحالية:</label>
-          <div
-            class="status-badge me-3"
-            [ngClass]="getStatusClass(internalTask.status)"
-          >
-            {{ getStatusLabel(internalTask.status) }}
+  @if (!isEditMode) {
+    <div class="row">
+      <div class="col-lg-6 mb-md-3">
+        <div class="task-details-card">
+  
+          <div class="card-header">
+            <h3><i class="bi bi-info-circle"></i> تفاصيل المهمة</h3>
           </div>
-        </div>
-
-        <!-- Priority Display -->
-        <div class="priority-section">
-          <label>الأولوية:</label>
-          <div
-            class="priority-badge me-3"
-            [ngClass]="getPriorityClass(internalTask.priority)"
-          >
-            {{ internalTask.priority }}
-          </div>
-        </div>
-
-        <!-- Deadline Section -->
-        <div class="deadline-section">
-          <label>الموعد النهائي:</label>
-          <div class="deadline-info mt-2" [ngClass]="{ overdue: isOverdue() }">
-            <i class="fas fa-calendar-alt"></i>
-            <span>{{ internalTask.deadline | date : "dd/MM/yyyy" }}</span>
-            <span class="overdue-warning" *ngIf="isOverdue()">
-              <i class="fas fa-exclamation-triangle"></i>
-              متأخر
-            </span>
-          </div>
-        </div>
-
-        <!-- Completion Date -->
-        <div class="completion-section" *ngIf="internalTask.completedAt">
-          <label>تاريخ الإنجاز:</label>
-          <span class="completion-date">
-            {{ internalTask.completedAt | date : "dd/MM/yyyy" }}
-          </span>
-        </div>
-
-        <div class="info-item">
-          <label>تم الإنجاز في الموعد:</label>
-          <span
-            class="on-time-status mt-2"
-            [ngClass]="{
-              'on-time': internalTask.isCompletedOnDeadline,
-              late: !internalTask.isCompletedOnDeadline
-            }"
-          >
-            <i
-              [class]="
-                internalTask.isCompletedOnDeadline
-                  ? 'bi bi-check-circle'
-                  : 'bi bi-x-circle'
-              "
-            ></i>
-            {{ internalTask.isCompletedOnDeadline ? "نعم" : "لا" }}
-          </span>
-        </div>
-
-        <!-- Status Update Section -->
-        <div class="status-update-section">
-          <h4>تحديث الحالة</h4>
-          <div class="status-options">
-            @for (status of availableStatuses; track $index) {
-              <button
-                class="status-option-btn"
-                [ngClass]="{
-                  active: internalTask.status === status.value,
-                  disabled: updatingStatus
-                }"
-                (click)="updateTaskStatus(status.value)"
-                [disabled]="updatingStatus || internalTask.status === status.value ||
-                (status.value === CustomTaskStatus.Open && internalTask.status !== CustomTaskStatus.Open)"
-              >
-                <i [class]="status.icon"></i>
-                {{ status.label }}
-              </button>
-
-              
-            }
+    
+          <div class="detail-item">
+            <label>الوصف:</label>
+            <p class="description">{{ internalTask.description }}</p>
           </div>
 
+          <!-- Team Members Section -->
+          <div class="detail-item team-section">
+            <label>فريق العمل:</label>
+            <div class="team-members-container">
+              @for (assignment of internalTask.assignments; track assignment.id) {
+                <div class="team-member-card" [ngClass]="{ 'leader': assignment.isLeader }">
+                  <div class="member-avatar">
+                    <i class="bi bi-person-fill" [ngClass]="{ 'leader-icon': assignment.isLeader }"></i>
+                  </div>
+                  <div class="member-info">
+                    <span class="member-name">{{ assignment.employeeName }}</span>
+                    <span class="member-role" *ngIf="assignment.isLeader">
+                      <i class="bi bi-crown-fill"></i>
+                      قائد الفريق
+                    </span>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+    
           
         </div>
       </div>
+  
+      <div class="col-lg-6">
+        <div class="task-status-card">
+          <div class="card-header">
+            <h3><i class="bi bi-list-task"></i> حالة المهمة</h3>
+          </div>
+  
+          <!-- Current Status Display -->
+          <div class="current-status">
+            <label>الحالة الحالية:</label>
+            <div
+              class="status-badge me-3"
+              [ngClass]="getStatusClass(internalTask.status)"
+            >
+              {{ getStatusLabel(internalTask.status) }}
+            </div>
+          </div>
+  
+          <!-- Priority Display -->
+          <div class="priority-section">
+            <label>الأولوية:</label>
+            <div
+              class="priority-badge me-3"
+              [ngClass]="getPriorityClass(internalTask.priority)"
+            >
+              {{ internalTask.priority }}
+            </div>
+          </div>
+  
+          <!-- Deadline Section -->
+          <div class="deadline-section">
+            <label>الموعد النهائي:</label>
+            <div class="deadline-info mt-2" [ngClass]="{ overdue: isOverdue() }">
+              <i class="fas fa-calendar-alt"></i>
+              <span>{{ internalTask.deadline | date : "dd/MM/yyyy" }}</span>
+              <span class="overdue-warning" *ngIf="isOverdue()">
+                <i class="fas fa-exclamation-triangle"></i>
+                متأخر
+              </span>
+            </div>
+          </div>
+  
+          <!-- Completion Date -->
+          <div class="completion-section" *ngIf="internalTask.completedAt">
+            <label>تاريخ الإنجاز:</label>
+            <span class="completion-date">
+              {{ internalTask.completedAt | date : "dd/MM/yyyy" }}
+            </span>
+          </div>
+  
+          <div class="info-item">
+            <label>تم الإنجاز في الموعد:</label>
+            <span
+              class="on-time-status mt-2"
+              [ngClass]="{
+                'on-time': internalTask.isCompletedOnDeadline,
+                late: !internalTask.isCompletedOnDeadline
+              }"
+            >
+              <i
+                [class]="
+                  internalTask.isCompletedOnDeadline
+                    ? 'bi bi-check-circle'
+                    : 'bi bi-x-circle'
+                "
+              ></i>
+              {{ internalTask.isCompletedOnDeadline ? "نعم" : "لا" }}
+            </span>
+          </div>
+  
+          <!-- Status Update Section -->
+          <div class="status-update-section">
+            <h4>تحديث الحالة</h4>
+            <div class="status-options">
+              @for (status of availableStatuses; track $index) {
+                <button
+                  class="status-option-btn"
+                  [ngClass]="{
+                    active: internalTask.status === status.value,
+                    disabled: updatingStatus
+                  }"
+                  (click)="updateTaskStatus(status.value)"
+                  [disabled]="updatingStatus || internalTask.status === status.value ||
+                  (status.value === CustomTaskStatus.Open && internalTask.status !== CustomTaskStatus.Open)"
+                >
+                  <i [class]="status.icon"></i>
+                  {{ status.label }}
+                </button>
+
+                
+              }
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+  } @if (isEditMode) {
+    <div class="card shadow-sm">
+    <div class="card-header form-header">
+      <h5 class="mb-0">
+        <i class="bi bi-gear me-2"></i>
+        تعديل معلومات التاسك
+      </h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="internalTaskForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="taskType" class="form-label">نوع التاسك</label>
+          <span class="text-danger me-2">*</span>
+          <select 
+            name="taskType" 
+            id="taskType" 
+            formControlName="taskType" 
+            class="form-select"
+            [class.is-invalid]="isFieldInvalid('taskType')"
+          >
+            <option value="" disabled selected>اختر نوع التاسك</option>
+            <option value="0">HR Meeting</option>
+            <option value="1">Management Meeting</option>
+            <option value="2">Potential Client Meeting</option>
+            <option value="3">Existing Client Meeting</option>
+            <option value="4">Project Management Meeting</option>
+            <option value="5">Tasks Allocation</option>
+            <option value="6">Tasks Update</option>
+            <option value="7">Updating Reports</option>
+            <option value="8">Updating KPIs</option>
+            <option value="9">Production Follow Up</option>
+            <option value="10">Payments And Finance</option>
+            <option value="11">Client Onboarding</option>
+            <option value="12">Client Follow Up</option>
+            <option value="13">Quotations</option>
+            <option value="14">Marketing Offer</option>
+            <option value="15">Sales Team Handling</option>
+            <option value="16">Recruitment</option>
+            <option value="17">Subscriptions</option>
+            <option value="18">Financial Adjustments</option>
+            <option value="19">Modify Tables</option>
+            <option value="20">Check</option>
+          </select>
+          @if (isFieldInvalid('taskType')) {
+            <div class="invalid-feedback">
+              يرجى اختيار نوع التاسك
+            </div>
+          }
+        </div>
+        <div class="mb-3">
+          <label for="title" class="form-label">عنوان التاسك</label>
+          <span class="text-danger me-2">*</span>
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            required
+            name="title"
+            formControlName="title"
+            [class.is-invalid]="isFieldInvalid('title')"
+          />
+          @if (isFieldInvalid('title')) {
+            <div class="invalid-feedback">
+              يرجى إدخال عنوان التاسك
+            </div>
+          }
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">الوصف</label>
+          <span class="text-danger me-2">*</span>
+          <textarea
+            id="description"
+            class="form-control"
+            rows="4"
+            required
+            name="description"
+            formControlName="description"
+            [class.is-invalid]="isFieldInvalid('description')"
+          ></textarea>
+          @if (isFieldInvalid('description')) {
+            <div class="invalid-feedback">
+              يرجى إدخال وصف التاسك
+            </div>
+          }
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="deadline" class="form-label">موعد التسليم</label>
+                <span class="text-danger me-2">*</span>
+                <input
+                    type="date"
+                    class="form-control"
+                    id="deadline"
+                    required
+                    name="deadline"
+                    formControlName="deadline"
+                    [class.is-invalid]="isFieldInvalid('deadline')"
+                />
+                @if (isFieldInvalid('deadline')) {
+                  <div class="invalid-feedback">
+                    يرجى اختيار موعد التسليم
+                  </div>
+                }
+            </div>
+            <div class="col-md-6">
+                <label for="priority" class="form-label">الاولوية</label>
+                <span class="text-danger me-2">*</span>
+                <select
+                    class="form-select"
+                    id="priority"
+                    required
+                    name="priority"
+                    formControlName="priority"
+                    [class.is-invalid]="isFieldInvalid('priority')"
+                >
+                    <option value="" disabled selected>اختر أولوية</option>
+                    <option value="low">عادي</option>
+                    <option value="medium">مهم</option>
+                    <option value="high">مستعجل</option>
+                </select>
+                @if (isFieldInvalid('priority')) {
+                  <div class="invalid-feedback">
+                    يرجى اختيار الأولوية
+                  </div>
+                }
+            </div>
+        </div>
+
+        <!-- Leader Selection -->
+        <div class="mb-3">
+            <label for="leader" class="form-label">قائد التاسك</label>
+            <span class="text-danger me-2">*</span>
+            <select
+                class="form-select"
+                id="leader"
+                required
+                name="leader"
+                formControlName="leader"
+                [class.is-invalid]="isFieldInvalid('leader')"
+            >
+                <option value="" disabled selected>اختر قائد الفريق</option>
+                @for (employee of employees; track $index) {
+                    <option [value]="employee.id">{{ employee.firstName + ' ' + employee.lastName }}</option>
+                }
+            </select>
+            @if (isFieldInvalid('leader')) {
+              <div class="invalid-feedback">
+                يرجى اختيار قائد الفريق
+              </div>
+            }
+        </div>
+
+        <!-- Team Members Selection -->
+        <div class="mb-3">
+            <label for="employees" class="form-label">الموظفين (اختياري)</label>
+            <select
+                class="form-select"
+                id="employees"
+                name="employees"
+                formControlName="employees"
+                multiple
+                size="4"
+            >
+                @for (employee of employees; track $index) {
+                    <option [value]="employee.id">{{ employee.firstName + ' ' + employee.lastName }}</option>
+                }
+            </select>
+            <small class="form-text text-muted">
+              يمكنك اختيار أكثر من موظف بالضغط على Ctrl (أو Cmd على Mac) أثناء الاختيار
+            </small>
+        </div>
+
+        <!-- Submit Button Section -->
+        <div class="d-flex justify-content-start flex-wrap gap-3">
+          <button type="submit" class="add-btn" [disabled]="isLoading">
+            @if (isLoading) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              جاري تحديث التاسك...
+            } @else {
+              <i class="bi bi-check-circle me-2"></i>
+              تحديث التاسك
+            }
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelEdit()" [disabled]="isLoading">
+            <i class="bi bi-x-circle me-2"></i>
+            إلغاء
+          </button>
+        </div>
+        <div class="mt-3">
+          <button class="btn btn-danger" (click)="deleteTask()">حذف التاسك</button>
+        </div>
+      </form>
     </div>
   </div>
+  }
 </div>
     }
 </section>

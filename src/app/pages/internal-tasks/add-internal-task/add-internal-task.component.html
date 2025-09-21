@@ -6,14 +6,6 @@
     </h2>
   </div>
 
-  <!-- Success Message -->
-  @if (successMessage) {
-  <div class="alert alert-success mt-3" role="alert">
-    <i class="bi bi-check-circle me-2"></i>
-    {{ successMessage }}
-  </div>
-  }
-
   <!-- Error Message -->
   @if (errorMessage) {
   <div class="alert alert-danger mt-3" role="alert">
@@ -21,6 +13,14 @@
     {{ errorMessage }}
   </div>
   }
+
+  <!-- Alert Messages -->
+@if (alertMessage) {
+<div class="alert" [class]="'alert-' + alertType">
+  {{ alertMessage }}
+  <button class="alert-close" (click)="closeAlert()">×</button>
+</div>
+}
 
   <div class="card shadow-sm">
     <div class="card-header form-header">
@@ -33,29 +33,42 @@
       <form [formGroup]="internalTaskForm" (ngSubmit)="onSubmit()">
         <div class="mb-3">
           <label for="taskType" class="form-label">نوع التاسك</label>
-          <select name="taskType" id="taskType" formControlName="taskType" class="form-select">
-            <option value="[0]">HR Meeting</option>
-            <option value="[1]">Management Meeting</option>
-            <option value="[2]">Potential Client Meeting</option>
-            <option value="[3]">Existing Client Meeting</option>
-            <option value="[4]">Project Management Meeting</option>
-            <option value="[5]">Tasks Allocation</option>
-            <option value="[6]">Tasks Update</option>
-            <option value="[7]">Updating Reports</option>
-            <option value="[8]">Updating KPIs</option>
-            <option value="[9]">Production Follow Up</option>
-            <option value="[10]">Payments And Finance</option>
-            <option value="[11]">Client Onboarding</option>
-            <option value="[12]">Client Follow Up</option>
-            <option value="[13]">Quotations</option>
-            <option value="[14]">Marketing Offer</option>
-            <option value="[15]">Sales Team Handling</option>
-            <option value="[16]">Recruitment</option>
-            <option value="[17]">Subscriptions</option>
-            <option value="[18]">Financial Adjustments</option>
-            <option value="[19]">Modify Tables</option>
-            <option value="[20]">Check</option>
+          <span class="text-danger me-2">*</span>
+          <select 
+            name="taskType" 
+            id="taskType" 
+            formControlName="taskType" 
+            class="form-select"
+            [class.is-invalid]="isFieldInvalid('taskType')"
+          >
+            <option value="" disabled selected>اختر نوع التاسك</option>
+            <option value="0">HR Meeting</option>
+            <option value="1">Management Meeting</option>
+            <option value="2">Potential Client Meeting</option>
+            <option value="3">Existing Client Meeting</option>
+            <option value="4">Project Management Meeting</option>
+            <option value="5">Tasks Allocation</option>
+            <option value="6">Tasks Update</option>
+            <option value="7">Updating Reports</option>
+            <option value="8">Updating KPIs</option>
+            <option value="9">Production Follow Up</option>
+            <option value="10">Payments And Finance</option>
+            <option value="11">Client Onboarding</option>
+            <option value="12">Client Follow Up</option>
+            <option value="13">Quotations</option>
+            <option value="14">Marketing Offer</option>
+            <option value="15">Sales Team Handling</option>
+            <option value="16">Recruitment</option>
+            <option value="17">Subscriptions</option>
+            <option value="18">Financial Adjustments</option>
+            <option value="19">Modify Tables</option>
+            <option value="20">Check</option>
           </select>
+          @if (isFieldInvalid('taskType')) {
+            <div class="invalid-feedback">
+              يرجى اختيار نوع التاسك
+            </div>
+          }
         </div>
         <div class="mb-3">
           <label for="title" class="form-label">عنوان التاسك</label>
@@ -67,7 +80,13 @@
             required
             name="title"
             formControlName="title"
+            [class.is-invalid]="isFieldInvalid('title')"
           />
+          @if (isFieldInvalid('title')) {
+            <div class="invalid-feedback">
+              يرجى إدخال عنوان التاسك
+            </div>
+          }
         </div>
         <div class="mb-3">
           <label for="description" class="form-label">الوصف</label>
@@ -79,7 +98,13 @@
             required
             name="description"
             formControlName="description"
+            [class.is-invalid]="isFieldInvalid('description')"
           ></textarea>
+          @if (isFieldInvalid('description')) {
+            <div class="invalid-feedback">
+              يرجى إدخال وصف التاسك
+            </div>
+          }
         </div>
         <div class="row mb-3">
             <div class="col-md-6">
@@ -92,7 +117,13 @@
                     required
                     name="deadline"
                     formControlName="deadline"
+                    [class.is-invalid]="isFieldInvalid('deadline')"
                 />
+                @if (isFieldInvalid('deadline')) {
+                  <div class="invalid-feedback">
+                    يرجى اختيار موعد التسليم
+                  </div>
+                }
             </div>
             <div class="col-md-6">
                 <label for="priority" class="form-label">الاولوية</label>
@@ -103,12 +134,18 @@
                     required
                     name="priority"
                     formControlName="priority"
+                    [class.is-invalid]="isFieldInvalid('priority')"
                 >
                     <option value="" disabled selected>اختر أولوية</option>
                     <option value="low">عادي</option>
                     <option value="medium">مهم</option>
                     <option value="high">مستعجل</option>
                 </select>
+                @if (isFieldInvalid('priority')) {
+                  <div class="invalid-feedback">
+                    يرجى اختيار الأولوية
+                  </div>
+                }
             </div>
         </div>
 
@@ -122,36 +159,43 @@
                 required
                 name="leader"
                 formControlName="leader"
+                [class.is-invalid]="isFieldInvalid('leader')"
             >
                 <option value="" disabled selected>اختر قائد الفريق</option>
                 @for (employee of employees; track $index) {
                     <option [value]="employee.id">{{ employee.firstName + ' ' + employee.lastName }}</option>
                 }
             </select>
+            @if (isFieldInvalid('leader')) {
+              <div class="invalid-feedback">
+                يرجى اختيار قائد الفريق
+              </div>
+            }
         </div>
 
         <!-- Team Members Selection -->
         <div class="mb-3">
-            <label for="employees" class="form-label">الموظفين</label>
-            <span class="text-danger me-2">*</span>
+            <label for="employees" class="form-label">الموظفين (اختياري)</label>
             <select
                 class="form-select"
                 id="employees"
-                required
                 name="employees"
                 formControlName="employees"
                 multiple
+                size="4"
             >
-                <option value="" disabled>اختر الموظفين</option>
                 @for (employee of employees; track $index) {
                     <option [value]="employee.id">{{ employee.firstName + ' ' + employee.lastName }}</option>
                 }
             </select>
+            <small class="form-text text-muted">
+              يمكنك اختيار أكثر من موظف بالضغط على Ctrl (أو Cmd على Mac) أثناء الاختيار
+            </small>
         </div>
 
         <!-- Submit Button Section -->
         <div class="d-flex justify-content-start flex-wrap gap-3">
-          <button type="submit" class="add-btn">
+          <button type="submit" class="add-btn" [disabled]="isLoading">
             @if (isLoading) {
               <span class="spinner-border spinner-border-sm me-2"></span>
               جاري إضافة التاسك...
@@ -160,7 +204,7 @@
               إضافة تاسك
             }
           </button>
-          <button type="button" class="reset-btn" (click)="resetForm()">
+          <button type="button" class="reset-btn" (click)="resetForm()" [disabled]="isLoading">
             <i class="bi bi-arrow-clockwise me-2"></i>
             إعادة تعيين
           </button>

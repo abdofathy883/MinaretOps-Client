@@ -19,11 +19,11 @@
               formControlName="aspect"
             >
               <option disabled selected>choose</option>
-              <option value="">الالتزام</option>
-              <option value="">الانتاجية</option>
-              <option value="">تكرار العمل</option>
-              <option value="">الجودة والتعاون</option>
-              <option value="">رضا العميل</option>
+              <option value="1">الالتزام</option>
+              <option value="3">الانتاجية</option>
+              <option value="2">التعاون</option>
+              <option value="5">جودة العمل</option>
+              <option value="4">رضا العميل</option>
             </select>
           </div>
           <div class="col-12 col-md-6 mb-3">
@@ -68,12 +68,9 @@
         </div>
 
         <button class="add-btn">
-            @if (isLoading) {
-                <span class="spinner-border spinner-border-sm me-2"></span>
-                جار الاضافة...
-            } @else {
-                اضافة مخالفة
-            }
+          @if (isLoading) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          جار الاضافة... } @else { اضافة مخالفة }
         </button>
       </form>
     </div>
