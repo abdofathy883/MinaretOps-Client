@@ -182,7 +182,6 @@ export class AddUserComponent implements OnInit {
   // }
 
   onSubmit(): void {
-    debugger;
     if (this.newUser.invalid) {
       this.newUser.markAllAsTouched();
       return;
@@ -213,9 +212,6 @@ export class AddUserComponent implements OnInit {
       paymentNumber: paymentNumberValue,
       dateOfHiring: this.newUser.value.dateOfHiring,
     };
-
-    console.log('user data', userData);
-
     this.authService.registerUser(userData).subscribe({
       next: (response) => {
         this.isLoading = false;
@@ -224,7 +220,6 @@ export class AddUserComponent implements OnInit {
       error: (error) => {
         this.isLoading = false;
         this.showAlert('حدث خطأ أثناء إضافة المستخدم', 'error');
-        console.error('Error adding user:', error);
       },
     });
   }

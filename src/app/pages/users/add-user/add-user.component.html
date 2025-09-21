@@ -8,12 +8,12 @@
   </div>
 
   <!-- Alert Messages -->
-@if (alertMessage) {
-<div class="alert" [class]="'alert-' + alertType">
-  {{ alertMessage }}
-  <button class="alert-close" (click)="closeAlert()">×</button>
-</div>
-}
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <button class="alert-close" (click)="closeAlert()">×</button>
+  </div>
+  }
 
   <!-- User Form -->
   <div class="card shadow-sm">
@@ -24,7 +24,7 @@
       </h5>
     </div>
     <div class="card-body">
-      <form [formGroup]="newUser"  (ngSubmit)="onSubmit()">
+      <form [formGroup]="newUser" (ngSubmit)="onSubmit()">
         <!-- Personal Information Section -->
         <div class="mb-1">
           <h6>
