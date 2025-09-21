@@ -51,9 +51,9 @@ export interface LoginUser {
 export interface RegisterUser {
   firstName: string;
   lastName: string;
-  jobTitle: string;
-  bio: string;
-  profilePicture: string;
+  // jobTitle: string;
+  // bio: string;
+  // profilePicture: File;
   email: string;
   phoneNumber: string;
   role: number;

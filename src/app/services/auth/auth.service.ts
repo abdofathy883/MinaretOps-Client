@@ -73,7 +73,10 @@ export class AuthService {
   }
 
   registerUser(user: RegisterUser) {
-    return this.api.post(`${this.endpoint}/register`, user);
+    return this.api.post(`${this.endpoint}/register`, user)
+    .pipe(
+      catchError(this.handleError)
+    )
   }
 
   getAll(): Observable<User[]>{

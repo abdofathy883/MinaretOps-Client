@@ -22,15 +22,17 @@ import { AuthService } from '../../../services/auth/auth.service';
   templateUrl: './add-user.component.html',
   styleUrl: './add-user.component.css',
 })
-export class AddUserComponent implements OnInit, OnDestroy {
+export class AddUserComponent implements OnInit {
   newUser: FormGroup;
   isLoading = false;
-  successMessage = '';
-  errorMessage = '';
   showPassword = false;
-  useSameAsPhone = false; // Add this property
+  useSameAsPhone = false;
+  profilePictureFile!: File;
 
-  private destroy$ = new Subject<void>();
+  alertMessage = '';
+  alertType = 'info';
+
+  // private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
@@ -54,9 +56,9 @@ export class AddUserComponent implements OnInit, OnDestroy {
           Validators.maxLength(30),
         ],
       ],
-      bio: ['', Validators.required],
-      jobTitle: ['', Validators.required],
-      profilePicture: ['', Validators.required],
+      // bio: ['', Validators.required],
+      // jobTitle: ['', Validators.required],
+      // profilePicture: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phoneNumber: ['', [Validators.required]],
       role: ['choose', [Validators.required]],
@@ -115,6 +117,12 @@ export class AddUserComponent implements OnInit, OnDestroy {
     });
   }
 
+  onFileChange(event: any) {
+    if (event.target.files.length > 0) {
+      this.profilePictureFile = event.target.files[0];
+    }
+  }
+
   // Password complexity validator: requires uppercase, lowercase, and special char
   private passwordComplexityValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -165,27 +173,23 @@ export class AddUserComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Component initialization logic if needed
     this.resetForm();
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  // ngOnDestroy(): void {
+  //   this.destroy$.next();
+  //   this.destroy$.complete();
+  // }
 
   onSubmit(): void {
+    debugger;
     if (this.newUser.invalid) {
       this.newUser.markAllAsTouched();
       return;
     }
 
     this.isLoading = true;
-
-    // Get the payment number value properly, even if the field is disabled
     let paymentNumberValue = this.newUser.get('paymentNumber')?.value;
-
-    // If the field is disabled and useSameAsPhone is checked, get the phone number value
     if (
       this.newUser.get('paymentNumber')?.disabled &&
       this.newUser.get('useSameAsPhone')?.value
@@ -196,9 +200,9 @@ export class AddUserComponent implements OnInit, OnDestroy {
     const userData: RegisterUser = {
       firstName: this.newUser.value.firstName,
       lastName: this.newUser.value.lastName,
-      jobTitle: this.newUser.value.jonTitle,
-      bio: this.newUser.value.bio,
-      profilePicture: this.newUser.value.profilePicture,
+      // jobTitle: this.newUser.value.jobTitle,
+      // bio: this.newUser.value.bio,
+      // profilePicture: this.profilePictureFile,
       email: this.newUser.value.email,
       phoneNumber: this.newUser.value.phoneNumber,
       role: parseInt(this.newUser.value.role),
@@ -210,19 +214,19 @@ export class AddUserComponent implements OnInit, OnDestroy {
       dateOfHiring: this.newUser.value.dateOfHiring,
     };
 
-    this.authService
-      .registerUser(userData)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          this.successMessage = 'تم إضافة المستخدم بنجاح!';
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.errorMessage = error.message || 'حدث خطأ أثناء إضافة المستخدم';
-        },
-      });
+    console.log('user data', userData);
+
+    this.authService.registerUser(userData).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.showAlert('تم إضافة المستخدم بنجاح!', 'success');
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.showAlert('حدث خطأ أثناء إضافة المستخدم', 'error');
+        console.error('Error adding user:', error);
+      },
+    });
   }
 
   onPaymentSwitchChange(): void {
@@ -238,13 +242,24 @@ export class AddUserComponent implements OnInit, OnDestroy {
   resetForm(): void {
     this.newUser.reset();
     this.showPassword = false;
-    this.useSameAsPhone = false; // Reset the switch
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.useSameAsPhone = false;
   }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 
   // Helper method to check if a form control has a specific error

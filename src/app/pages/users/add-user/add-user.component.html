@@ -7,21 +7,13 @@
     </h2>
   </div>
 
-  <!-- Success Message -->
-  @if (successMessage) {
-  <div class="alert alert-success mt-3" role="alert">
-    <i class="bi bi-check-circle me-2"></i>
-    {{ successMessage }}
-  </div>
-  }
-
-  <!-- Error Message -->
-  @if (errorMessage) {
-  <div class="alert alert-danger mt-3" role="alert">
-    <i class="bi bi-exclamation-triangle me-2"></i>
-    {{ errorMessage }}
-  </div>
-  }
+  <!-- Alert Messages -->
+@if (alertMessage) {
+<div class="alert" [class]="'alert-' + alertType">
+  {{ alertMessage }}
+  <button class="alert-close" (click)="closeAlert()">×</button>
+</div>
+}
 
   <!-- User Form -->
   <div class="card shadow-sm">
@@ -32,7 +24,7 @@
       </h5>
     </div>
     <div class="card-body">
-      <form [formGroup]="newUser" (ngSubmit)="onSubmit()">
+      <form [formGroup]="newUser"  (ngSubmit)="onSubmit()">
         <!-- Personal Information Section -->
         <div class="mb-1">
           <h6>
@@ -102,7 +94,7 @@
           </div>
         </div>
 
-        <div class="mb-3">
+        <!-- <div class="mb-3">
           <label for="bio" class="form-label">Bio</label>
           <textarea
             name="bio"
@@ -115,9 +107,9 @@
             "
             placeholder="ادخل نبذة عن الموظف تعرض في الموقع الرئيسي"
           ></textarea>
-        </div>
+        </div> -->
 
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-md-6 mb-3">
             <label for="jobTitle" class="form-label">المسمى الوظيفي</label>
             <input
@@ -147,9 +139,10 @@
                 newUser.get('profilePicture')?.invalid &&
                 newUser.get('profilePicture')?.touched
               "
+              (change)="onFileChange($event)"
             />
           </div>
-        </div>
+        </div> -->
 
         <div class="row">
           <div class="col-md-6 mb-3">

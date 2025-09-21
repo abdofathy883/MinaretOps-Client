@@ -19,7 +19,6 @@ export class AddInternalTaskComponent implements OnInit{
   employees: User[] = [];
 
   alertMessage = '';
-  attendanceErrorMessage = '';
   alertType = 'info';
 
   constructor(
@@ -63,15 +62,6 @@ export class AddInternalTaskComponent implements OnInit{
         userId: formValue.leader,
         isLeader: true
       });
-      
-      // // Add team members (excluding the leader to avoid duplication)
-      // const teamMembers = formValue.employees.filter((empId: string) => empId !== formValue.leader);
-      // teamMembers.forEach((empId: string) => {
-      //   assignments.push({
-      //     userId: empId,
-      //     isLeader: false
-      //   });
-      // });
 
       // Add team members (excluding the leader to avoid duplication)
       if (formValue.employees && formValue.employees.length > 0) {
