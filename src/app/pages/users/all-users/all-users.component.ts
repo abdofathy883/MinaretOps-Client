@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
+import { MapUserRolePipe } from '../../../core/pipes/map-task-user-role/map-user-role.pipe';
 
 @Component({
   selector: 'app-all-users',
-  imports: [],
+  imports: [MapUserRolePipe],
   templateUrl: './all-users.component.html',
   styleUrl: './all-users.component.css'
 })

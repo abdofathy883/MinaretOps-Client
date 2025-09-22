@@ -17,10 +17,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { User } from '../../../model/auth/user';
+import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
+import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
 
 @Component({
   selector: 'app-single-internal-task',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MapTaskStatusClassPipe,
+    MapTaskStatusPipe,
+  ],
   templateUrl: './single-internal-task.component.html',
   styleUrl: './single-internal-task.component.css',
 })
@@ -99,9 +106,6 @@ export class SingleInternalTaskComponent implements OnInit {
       next: (response) => {
         this.employees = response;
       },
-      error: (error) => {
-        console.error('Error loading employees:', error);
-      },
     });
   }
 
@@ -112,11 +116,9 @@ export class SingleInternalTaskComponent implements OnInit {
     this.internalTaskService.getById(taskId).subscribe({
       next: (task) => {
         this.internalTask = task;
-        console.log('Fetched task:', task);
       },
       error: (error) => {
         this.errorMessage = 'فشل في تحميل بيانات المهمة';
-        console.error('Error loading task:', error);
       },
     });
   }
@@ -196,47 +198,8 @@ export class SingleInternalTaskComponent implements OnInit {
         },
         error: (err) => {
           this.updatingStatus = false;
-          console.error('Error updating task status:', err);
         },
       });
-  }
-
-  getStatusLabel(status: CustomTaskStatus): string {
-    switch (status) {
-      case CustomTaskStatus.Open:
-        return 'لم تبدأ';
-      case CustomTaskStatus.Acknowledged:
-        return 'تم الإقرار';
-      case CustomTaskStatus.InProgress:
-        return 'قيد التنفيذ';
-      case CustomTaskStatus.UnderReview:
-        return 'قيد المراجعة';
-      case CustomTaskStatus.NeedsEdits:
-        return 'تحتاج إلى تعديلات';
-      case CustomTaskStatus.Completed:
-        return 'مكتمل';
-      default:
-        return 'غير محدد';
-    }
-  }
-
-  getStatusClass(status: CustomTaskStatus): string {
-    switch (status) {
-      case CustomTaskStatus.Open:
-        return 'status-not-started';
-      case CustomTaskStatus.Acknowledged:
-        return 'status-acknowledged';
-      case CustomTaskStatus.InProgress:
-        return 'status-in-progress';
-      case CustomTaskStatus.UnderReview:
-        return 'status-under-review';
-      case CustomTaskStatus.NeedsEdits:
-        return 'status-needs-edits';
-      case CustomTaskStatus.Completed:
-        return 'status-completed';
-      default:
-        return 'status-unknown';
-    }
   }
 
   getPriorityClass(priority: string): string {

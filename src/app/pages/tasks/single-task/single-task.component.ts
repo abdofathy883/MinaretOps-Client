@@ -16,10 +16,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { User } from '../../../model/auth/user';
+import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
+import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 
 @Component({
   selector: 'app-single-task',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MapTaskStatusPipe, MapTaskStatusClassPipe],
   templateUrl: './single-task.component.html',
   styleUrl: './single-task.component.css',
 })
@@ -126,25 +128,6 @@ export class SingleTaskComponent implements OnInit {
     });
   }
 
-  getStatusLabel(status: CustomTaskStatus): string {
-    switch (status) {
-      case CustomTaskStatus.Open:
-        return 'لم تبدأ';
-      case CustomTaskStatus.Acknowledged:
-        return 'تم الإقرار';
-      case CustomTaskStatus.InProgress:
-        return 'قيد التنفيذ';
-      case CustomTaskStatus.UnderReview:
-        return 'قيد المراجعة';
-      case CustomTaskStatus.NeedsEdits:
-        return 'تحتاج إلى تعديلات';
-      case CustomTaskStatus.Completed:
-        return 'مكتمل';
-      default:
-        return 'غير محدد';
-    }
-  }
-
   getTypeLabel(type: TaskType): string {
     switch (type) {
       case TaskType.Ad_Management:
@@ -197,25 +180,6 @@ export class SingleTaskComponent implements OnInit {
         return 'WordPress';
       default:
         return 'غير محدد';
-    }
-  }
-
-  getStatusClass(status: CustomTaskStatus): string {
-    switch (status) {
-      case CustomTaskStatus.Open:
-        return 'status-not-started';
-      case CustomTaskStatus.Acknowledged:
-        return 'status-acknowledged';
-      case CustomTaskStatus.InProgress:
-        return 'status-in-progress';
-      case CustomTaskStatus.UnderReview:
-        return 'status-under-review';
-      case CustomTaskStatus.NeedsEdits:
-        return 'status-needs-edits';
-      case CustomTaskStatus.Completed:
-        return 'status-completed';
-      default:
-        return 'status-unknown';
     }
   }
 

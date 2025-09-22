@@ -30,7 +30,8 @@ export interface ICreateClient {
   personalPhoneNumber: string;
   companyNumber?: string;
   businessDescription: string;
-  driveLink?: string;
+  driveLink: string;
+  discordChannelId?: string;
   status: ClientStatus;
   clientServices: ICreateClientService[];
 }
@@ -55,6 +56,7 @@ export interface IClient {
   companyNumber?: string;
   businessDescription: string;
   driveLink?: string;
+  discordChannelId?: string;
   status: ClientStatus;
   statusNotes?: string;
   createdAt: Date;
@@ -77,6 +79,7 @@ export interface IUpdateClient {
   companyNumber: string;
   businessDescription: string;
   driveLink: string;
+  discordId: string;
   status: ClientStatus;
   statusNotes: string;
 }

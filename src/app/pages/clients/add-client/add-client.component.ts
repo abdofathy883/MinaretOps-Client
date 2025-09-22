@@ -24,10 +24,9 @@ export class AddClientComponent implements OnInit, OnDestroy {
   employees: User[] = [];
   
   isLoading = false;
-  successMessage = '';
-  errorMessage = '';
+  alertMessage = '';
+  alertType = 'info';
   
-  // Track collapsed state for tasks
   collapsedTasks: Set<string> = new Set();
   
   private destroy$ = new Subject<void>();
@@ -45,7 +44,8 @@ export class AddClientComponent implements OnInit, OnDestroy {
       companyName: ['', [Validators.minLength(2), Validators.maxLength(100)]],
       companyNumber: [''],
       businessDescription: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
-      driveLink: [''],
+      driveLink: ['', Validators.required],
+      discordChannelId: [''],
       status: [ClientStatus.Active],
       clientServices: this.fb.array([])
     });
@@ -65,7 +65,6 @@ export class AddClientComponent implements OnInit, OnDestroy {
 
   removeClientService(index: number): void {
     this.clientServicesArray.removeAt(index);
-    // Clean up collapsed state for this service
     this.cleanupCollapsedTasks(index);
   }
 
@@ -154,7 +153,6 @@ export class AddClientComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadAvailableServices();
     this.loadEmployees();
-    // Add one default client service
     this.addClientService();
   }
 
@@ -171,7 +169,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
           this.availableServices = services;
         },
         error: (error) => {
-          this.errorMessage = 'حدث خطأ أثناء تحميل الخدمات المتاحة';
+          this.showAlert('حدث خطأ أثناء تحميل الخدمات المتاحة', 'error');
         }
       });
   }
@@ -183,9 +181,6 @@ export class AddClientComponent implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
-
     const formValue = this.clientForm.value;
     
     const clientData: ICreateClient = {
@@ -195,6 +190,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
       companyNumber: formValue.companyNumber || undefined,
       businessDescription: formValue.businessDescription,
       driveLink: formValue.driveLink || undefined,
+      discordChannelId: formValue.discordChannelId || undefined,
       status: formValue.status,
       clientServices: formValue.clientServices.map((cs: any) => ({
         serviceId: cs.serviceId,
@@ -212,14 +208,16 @@ export class AddClientComponent implements OnInit, OnDestroy {
       }))
     };    
 
+    console.log('Submitting client data:', clientData);
     this.clientService.add(clientData).subscribe({
       next: () => {
         this.isLoading = false;
-        this.successMessage = 'تم اضافة العميل بنجاح';
+        this.showAlert('تم اضافة العميل بنجاح', 'success');
       },
-      error: () => {
+      error: (err) => {
         this.isLoading = false;
-        this.errorMessage = 'فشل اضافة عميل, حاول مرة اخرى';
+        this.showAlert('فشل اضافة عميل, حاول مرة اخرى', 'error');
+        console.error('Error adding client:', err);
       }
     })
   }
@@ -230,9 +228,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
     });
     this.clientServicesArray.clear();
     this.addClientService(); 
-    this.collapsedTasks.clear(); 
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.collapsedTasks.clear();
   }
 
   hasError(controlName: string): boolean {
@@ -249,5 +245,18 @@ export class AddClientComponent implements OnInit, OnDestroy {
     if (control.errors['maxlength']) return `يجب أن يكون ${control.errors['maxlength'].requiredLength} أحرف على الأكثر`;
 
     return 'قيمة غير صحيحة';
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

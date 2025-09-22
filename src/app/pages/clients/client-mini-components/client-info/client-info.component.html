@@ -127,8 +127,21 @@
               placeholder="ادخل لينك درايف فولدر الخاص بالعميل (اختياري)"
             />
           </div>
+
           <div class="col-md-6 mb-3">
-            <label for="status" class="form-label">الحالة</label>
+            <label for="discordId" class="form-label">معرف ديسكورد</label>
+            <input
+              type="text"
+              class="form-control"
+              id="discordId"
+              formControlName="discordId"
+              placeholder="أدخل معرف ديسكورد الخاص بالعميل (اختياري)"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="status" class="form-label">الحالة</label>
             <select
               name="status"
               id="status"
@@ -139,7 +152,6 @@
               <option value="1">متوقف مؤقتا</option>
               <option value="2">الغى التعاقد</option>
             </select>
-          </div>
         </div>
 
         <div class="mb-3">

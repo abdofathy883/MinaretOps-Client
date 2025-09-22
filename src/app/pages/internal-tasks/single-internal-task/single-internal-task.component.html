@@ -95,9 +95,9 @@
             <label>الحالة الحالية:</label>
             <div
               class="status-badge me-3"
-              [ngClass]="getStatusClass(internalTask.status)"
+              [ngClass]="internalTask.status | mapTaskStatusClass"
             >
-              {{ getStatusLabel(internalTask.status) }}
+              {{ internalTask.status | mapTaskStatus }}
             </div>
           </div>
   

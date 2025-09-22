@@ -7,19 +7,11 @@
     </h2>
   </div>
 
-  <!-- Success Message -->
-  @if (successMessage) {
-  <div class="alert alert-success mt-3" role="alert">
-    <i class="bi bi-check-circle me-2"></i>
-    {{ successMessage }}
-  </div>
-  }
-
-  <!-- Error Message -->
-  @if (errorMessage) {
-  <div class="alert alert-danger mt-3" role="alert">
-    <i class="bi bi-exclamation-triangle me-2"></i>
-    {{ errorMessage }}
+   <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <button class="alert-close" (click)="closeAlert()">×</button>
   </div>
   }
 
@@ -113,13 +105,32 @@
 
         <div class="mb-3">
           <label for="driveLink" class="form-label">لينك الدرايف</label>
+          <span class="text-danger me-2">*</span>
           <input
             type="text"
             class="form-control"
             id="driveLink"
             formControlName="driveLink"
-            placeholder="ادخل لينك درايف فولدر الخاص بالعميل (اختياري)"
+            [class.is-invalid]="hasError('driveLink')"
+            placeholder="ادخل لينك درايف فولدر الخاص بالعميل"
           />
+          @if (hasError('driveLink')) {
+            <div class="invalid-feedback">
+              {{ getErrorMessage("driveLink") }}
+            </div>
+            }
+        </div>
+
+        <div class="mb-3">
+          <label for="discordId" class="form-label">معرف ديسكورد</label>
+          <input
+            type="text"
+            class="form-control"
+            id="discordId"
+            formControlName="discordChannelId"
+            placeholder="أدخل معرف ديسكورد الخاص بالعميل (اختياري)"
+          />
+          <small class="text-muted">كليك يمين على القناة واختار copy Id</small>
         </div>
 
         <!-- Business Description Section -->

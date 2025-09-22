@@ -57,6 +57,7 @@ export class ClientInfoComponent implements OnInit, OnChanges {
       companyNumber: ['', ],
       businessDescription: ['', [Validators.required, Validators.minLength(10)]],
       driveLink: [''],
+      discordId: [''],
       status: [0],
       statusNotes: ['']
     });
@@ -98,6 +99,7 @@ export class ClientInfoComponent implements OnInit, OnChanges {
         companyNumber: this.client.companyNumber || '',
         businessDescription: this.client.businessDescription,
         driveLink: this.client.driveLink || '',
+        discordId: this.client.discordChannelId || '',
         status: this.client.status,
         statusNotes: this.client.statusNotes
       });
@@ -150,6 +152,7 @@ export class ClientInfoComponent implements OnInit, OnChanges {
       companyNumber: formValues.companyNumber,
       businessDescription: formValues.businessDescription,
       driveLink: formValues.driveLink,
+      discordId: formValues.discordId,
       status: formValues.status,
       statusNotes: formValues.statusNotes,
     };

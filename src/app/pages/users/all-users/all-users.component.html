@@ -17,7 +17,7 @@
           <h5 class="card-title text-center">{{ user.firstName + " " + user.lastName }}</h5>
           <p class="card-text">الايميل: {{ user.email }}</p>
           <p class="card-text">رقم الهاتف: {{ user.phoneNumber }}</p>
-          <p class="card-text">الدور: {{ user.roles[0] }}</p>
+          <p class="card-text">الدور: {{ user.roles[0] | mapUserRole }}</p>
         </div>
       </div>
     </div>
