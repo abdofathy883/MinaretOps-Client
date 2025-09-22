@@ -1,63 +1,70 @@
 <app-add-incedient></app-add-incedient>
 
-<section class="container my-4">
+<!-- <section class="container my-4">
   <form class="p-3">
     <div class="row align-items-end g-3">
-      <!-- Month filter -->
       <div class="col-12 col-md-6 col-lg-4">
-        <label for="monthYear" class="form-label fw-bold">تصفية حسب الشهر</label>
-        <input type="month" id="monthYear" name="monthYear" class="form-control" />
+        <label for="monthYear" class="form-label fw-bold"
+          >تصفية حسب الشهر</label
+        >
+        <input
+          type="month"
+          id="monthYear"
+          name="monthYear"
+          class="form-control"
+        />
       </div>
-      <!-- Button -->
       <div class="col-12 col-md-3 col-lg-2">
         <button type="submit" class="add-btn">تصفية</button>
       </div>
     </div>
   </form>
-</section>
-
-
+</section> -->
 
 <section class="container my-4">
   <div class="row g-4">
     <!-- Card Item -->
+    @for (item of summaries; track $index) {
     <div class="col-12 col-md-6 col-lg-4">
       <div class="card h-100 shadow-sm">
-        <div class="card-header d-flex justify-content-between align-items-center bg-light">
-          <h5 class="mb-0">emp name</h5>
-          <span class="text-muted">month label</span>
+        <div
+          class="card-header d-flex justify-content-between align-items-center bg-light"
+        >
+          <h5 class="mb-0">{{ item.employeeName }}</h5>
+          <span class="text-muted">{{ item.monthLabel }}</span>
         </div>
         <div class="card-body">
           <div class="row text-center">
             <div class="col-6 mb-3">
               <h6>الالتزام</h6>
-              <p class="fw-bold text-primary">20%</p>
+              <p class="fw-bold text-primary">{{ item.commitment }}%</p>
             </div>
             <div class="col-6 mb-3">
               <h6>الانتاجية</h6>
-              <p class="fw-bold text-primary">20%</p>
+              <p class="fw-bold text-primary">{{ item.productivity }}%</p>
             </div>
             <div class="col-6 mb-3">
               <h6>تكرار العمل</h6>
-              <p class="fw-bold text-primary">20%</p>
+              <p class="fw-bold text-primary">{{ item.qualityOfWork }}%</p>
             </div>
             <div class="col-6 mb-3">
               <h6>الجودة والتعاون</h6>
-              <p class="fw-bold text-primary">20%</p>
+              <p class="fw-bold text-primary">{{ item.cooperation }}%</p>
             </div>
             <div class="col-12">
               <h6>رضا العميل</h6>
-              <p class="fw-bold text-primary">20%</p>
+              <p class="fw-bold text-primary">
+                {{ item.customerSatisfaction }}%
+              </p>
             </div>
           </div>
         </div>
         <div class="card-footer d-flex justify-content-between bg-light">
           <h6 class="mb-0">الاجمالي</h6>
-          <p class="mb-0 fw-bold">100%</p>
+          <p class="mb-0 fw-bold">{{ item.total }}%</p>
         </div>
       </div>
     </div>
-    <!-- Repeat .col for more cards -->
+    }
   </div>
 </section>
-

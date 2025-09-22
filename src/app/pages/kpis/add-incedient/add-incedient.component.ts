@@ -16,6 +16,7 @@ export class AddIncedientComponent implements OnInit{
   employees: User[] = [];
   kpiForm!: FormGroup;
   isLoading: boolean = false;
+  private evidenceFile!: File;
 
   constructor(
     private authService: AuthService,
@@ -29,8 +30,17 @@ export class AddIncedientComponent implements OnInit{
       employeeId: ['', Validators.required],
       aspect: ['', Validators.required],
       description: [''],
-      evidenceURL: ['']
+      evidenceURL: [null]
     })
+  }
+
+  onFileChange(event: any) {
+    if (event.target.files.length > 0) {
+      this.evidenceFile = event.target.files[0];
+      // this.kpiForm.patchValue({
+      //   evidenceURL: this.evidenceFile.name
+      // });
+    }
   }
 
   loadEmployees() {
@@ -42,24 +52,27 @@ export class AddIncedientComponent implements OnInit{
   }
 
   onSubmit() {
+    debugger;
     if (this.kpiForm.invalid) {
       this.isLoading = false;
       this.kpiForm.markAllAsTouched();
       return;
     }
     this.isLoading = true;
-    const incedient: ICreateIncedint = {
-      employeeId: this.kpiForm.value.employeeId,
-      aspect: this.kpiForm.value.aspect,
-      description: this.kpiForm.value.description,
-      evidenceURL: this.kpiForm.value.evidenceURL
-    }
+    const incedient: FormData = new FormData();
+    incedient.append('employeeId', this.kpiForm.value.employeeId);
+    incedient.append('aspect', this.kpiForm.value.aspect);
+    incedient.append('description', this.kpiForm.value.description);
+    incedient.append('evidenceURL', this.evidenceFile);
+
+    console.log(incedient);
 
     
 
     this.kpiService.create(incedient).subscribe({
       next: (response) => {
         this.isLoading = false;
+        console.log(response);
       }
     })
   }

@@ -7,7 +7,7 @@
       </h5>
     </div>
     <div class="card-body">
-      <form [formGroup]="kpiForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="kpiForm" enctype="multipart/form-data" (ngSubmit)="onSubmit()">
         <div class="row">
           <div class="col-12 col-md-6 mb-3">
             <label for="aspect" class="form-label">جانب المخالفة</label>
@@ -53,6 +53,7 @@
             id="evidence"
             formControlName="evidenceURL"
             class="form-control"
+            (change)="onFileChange($event)"
           />
         </div>
 
