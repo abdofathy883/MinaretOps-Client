@@ -8,7 +8,7 @@ export const noauthGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if (!token) {
-    return router.navigate(['/login'], {
+    return router.createUrlTree(['/login'], {
       queryParams: { returnUrl: state.url },
     });
   }

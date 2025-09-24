@@ -23,7 +23,7 @@ import { MyKpisManagementComponent } from "../../kpis/my-kpis-management/my-kpis
   styleUrl: './single-user.component.css',
 })
 export class SingleUserComponent implements OnInit, OnDestroy {
-  user: User | null = null;
+  user!: User;
   attendanceRecords: AttendanceRecord[] = [];
   isLoading = false;
   isEditMode = false;
@@ -195,19 +195,18 @@ export class SingleUserComponent implements OnInit, OnDestroy {
 
     const formValue = this.editUserForm.value;
 
-    const updateUser: UpdateUser = {
-      id: this.user?.id,
-      firstName: formValue.firstName,
-      lastName: formValue.lastName,
-      bio: formValue.bio,
-      jobTitle: formValue.jobTitle,
-      profilePicture: formValue.profilePicture,
-      email: formValue.email,
-      phoneNumber: formValue.phoneNumber,
-      city: formValue.city,
-      street: formValue.street,
-      paymentNumber: formValue.paymentNumber,
-    };
+    const updateUser: FormData = new FormData();
+    updateUser.append('id', this.user?.id);
+    updateUser.append('firstName', formValue.firstName);
+    updateUser.append('lastName', formValue.lastName);
+    updateUser.append('bio', formValue.bio);
+    updateUser.append('jobTitle', formValue.jobTitle);
+    // updateUser.append('profilePicture', this.profilePictureFile);
+    updateUser.append('email', formValue.email);
+    updateUser.append('phoneNumber', formValue.phoneNumber);
+    updateUser.append('city', formValue.city);
+    updateUser.append('street', formValue.street);
+    updateUser.append('paymentNumber', formValue.paymentNumber);
 
     this.authService.update(updateUser).subscribe({
       next: (response) => {

@@ -14,6 +14,7 @@ import { ClientStatus, IClient, IUpdateClient } from '../../../../model/client/c
 export class ClientInfoComponent implements OnInit, OnChanges {
   @Input() client: IClient | null = null;
   isLoading: boolean = false;
+  isDeleteLoading: boolean = false;
   isEditMode: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
@@ -57,7 +58,7 @@ export class ClientInfoComponent implements OnInit, OnChanges {
       companyNumber: ['', ],
       businessDescription: ['', [Validators.required, Validators.minLength(10)]],
       driveLink: [''],
-      discordId: [''],
+      discordChannelId: [''],
       status: [0],
       statusNotes: ['']
     });
@@ -95,11 +96,11 @@ export class ClientInfoComponent implements OnInit, OnChanges {
       this.clientForm.patchValue({
         name: this.client.name,
         personalPhoneNumber: this.client.personalPhoneNumber,
-        companyName: this.client.companyName || '',
-        companyNumber: this.client.companyNumber || '',
+        companyName: this.client.companyName,
+        companyNumber: this.client.companyNumber,
         businessDescription: this.client.businessDescription,
-        driveLink: this.client.driveLink || '',
-        discordId: this.client.discordChannelId || '',
+        driveLink: this.client.driveLink,
+        discordChannelId: this.client.discordChannelId,
         status: this.client.status,
         statusNotes: this.client.statusNotes
       });
@@ -152,15 +153,19 @@ export class ClientInfoComponent implements OnInit, OnChanges {
       companyNumber: formValues.companyNumber,
       businessDescription: formValues.businessDescription,
       driveLink: formValues.driveLink,
-      discordId: formValues.discordId,
-      status: formValues.status,
+      discordChannelId: formValues.discordChannelId,
+      status: parseInt(formValues.status),
       statusNotes: formValues.statusNotes,
     };
+
+    console.log('Updating client with data:', updateClient);
 
     if (this.client) {
       this.clientService.update(this.client.id, updateClient).subscribe({
         next: (response) => {
           this.successMessage = 'تم تحديث بيانات العميل بنجاح';
+          this.client = response;
+          
           // this.clientUpdated.emit(response);
           this.isLoading = false;
         },
@@ -170,5 +175,17 @@ export class ClientInfoComponent implements OnInit, OnChanges {
         },
       });
     }
+  }
+
+  deleteClient(): void {
+    this.isDeleteLoading = true;
+    this.clientService.delete(this.client!.id).subscribe({
+      next: (response) => {
+        this.isDeleteLoading = false;
+      },
+      error: (error) => {
+        this.isDeleteLoading = false;
+      },
+    });
   }
 }

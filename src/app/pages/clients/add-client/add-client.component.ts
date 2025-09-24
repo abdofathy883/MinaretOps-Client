@@ -74,6 +74,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
 
   addTask(clientServiceIndex: number): void {
     const task = this.fb.group({
+      taskType: ['', Validators.required],
       title: ['', Validators.required],
       description: ['', Validators.required],
       status: [CustomTaskStatus.Open],
@@ -189,13 +190,14 @@ export class AddClientComponent implements OnInit, OnDestroy {
       personalPhoneNumber: formValue.personalPhoneNumber,
       companyNumber: formValue.companyNumber || undefined,
       businessDescription: formValue.businessDescription,
-      driveLink: formValue.driveLink || undefined,
-      discordChannelId: formValue.discordChannelId || undefined,
+      driveLink: formValue.driveLink,
+      discordChannelId: formValue.discordChannelId,
       status: formValue.status,
       clientServices: formValue.clientServices.map((cs: any) => ({
         serviceId: cs.serviceId,
         taskGroups: [{
           tasks: cs.tasks.map((t: any) => ({
+            taskType: parseInt(t.taskType),
             title: t.title,
             description: t.description,
             status: t.status,

@@ -79,7 +79,7 @@ export interface IUpdateClient {
   companyNumber: string;
   businessDescription: string;
   driveLink: string;
-  discordId: string;
+  discordChannelId: string;
   status: ClientStatus;
   statusNotes: string;
 }

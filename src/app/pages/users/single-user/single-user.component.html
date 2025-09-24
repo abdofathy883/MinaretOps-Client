@@ -53,23 +53,23 @@
         <div class="row">
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">الاسم الأول:</label>
-            <p class="form-control-plaintext">{{ user?.firstName }}</p>
+            <p class="form-control-plaintext">{{ user.firstName }}</p>
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">الاسم الأخير:</label>
-            <p class="form-control-plaintext">{{ user?.lastName }}</p>
+            <p class="form-control-plaintext">{{ user.lastName }}</p>
           </div>
         </div>
 
         <div class="row">
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">البريد الإلكتروني:</label>
-            <p class="form-control-plaintext">{{ user?.email }}</p>
+            <p class="form-control-plaintext">{{ user.email }}</p>
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">رقم الهاتف:</label>
             <p class="form-control-plaintext">
-              {{ user?.phoneNumber || "غير محدد" }}
+              {{ user.phoneNumber || "غير محدد" }}
             </p>
           </div>
         </div>
@@ -77,11 +77,11 @@
         <div class="row">
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">الرقم القومي:</label>
-            <p class="form-control-plaintext">{{ user?.nid }}</p>
+            <p class="form-control-plaintext">{{ user.nid }}</p>
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">رقم المحفظة او انستاباي:</label>
-            <p class="form-control-plaintext">{{ user?.paymentNumber }}</p>
+            <p class="form-control-plaintext">{{ user.paymentNumber }}</p>
           </div>
         </div>
 
@@ -89,22 +89,22 @@
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">الدور:</label>
             <p class="form-control-plaintext">
-              <span class="badge bg-info">{{ user?.roles || "غير محدد" }}</span>
+              <span class="badge bg-info">{{ user.roles || "غير محدد" }}</span>
             </p>
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">تاريخ بداية العمل:</label>
-            <p class="form-control-plaintext">{{ user?.dateOfHiring }}</p>
+            <p class="form-control-plaintext">{{ user.dateOfHiring }}</p>
           </div>
         </div>
         <div class="row">
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">المدينة:</label>
-            <p class="form-control-plaintext">{{ user?.city }}</p>
+            <p class="form-control-plaintext">{{ user.city }}</p>
           </div>
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">العنوان:</label>
-            <p class="form-control-plaintext">{{ user?.street }}</p>
+            <p class="form-control-plaintext">{{ user.street }}</p>
           </div>
         </div>
       </div>

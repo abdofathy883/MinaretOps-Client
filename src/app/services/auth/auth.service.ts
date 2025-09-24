@@ -87,7 +87,7 @@ export class AuthService {
     return this.api.get<User>(`${this.endpoint}/user/${userId}`);
   }
 
-  update(updatedUser: UpdateUser): Observable<User> {
+  update(updatedUser: FormData): Observable<User> {
     return this.api.patch<User>(`${this.endpoint}/update-user`, updatedUser)
   }
 

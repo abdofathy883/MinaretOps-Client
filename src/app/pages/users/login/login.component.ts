@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../services/auth/auth.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LoginUser } from '../../../model/auth/user';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,17 +14,26 @@ export class LoginComponent implements OnInit{
   isLoading: boolean = false;
   loginForm!: FormGroup;
   errorMessage: string = '';
+  showPassword: boolean = false;
+  returnUrl: string = '/users/my-account';
+
   constructor(
     private authService: AuthService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/users/my-account';
     this.loginForm = this.fb.group({
       phoneNumber: ['', Validators.required],
       password: ['', Validators.required]
     })
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit() {
@@ -40,8 +49,11 @@ export class LoginComponent implements OnInit{
     }
     this.authService.login(user).subscribe({
       next: (res) => {
+        const targetUrl = this.returnUrl.includes(':id')
+        ? this.returnUrl.replace(':id', res.id)
+        : this.returnUrl;
         this.isLoading = false;
-        this.router.navigate(['/users/my-account', res.id]);
+        this.router.navigateByUrl(targetUrl);
       },
       error: (error) => {
         this.isLoading = false;

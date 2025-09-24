@@ -283,32 +283,32 @@ export class AddUserComponent implements OnInit {
   }
 
   // Method to get role display name
-  getRoleDisplayName(roleValue: string): string {
-    switch (roleValue) {
-      case '1':
-        return 'Admin';
-      case '2':
-        return 'Account Manager';
-      case '3':
-        return 'Graphic Designer';
-      case '4':
-        return 'Graphic Designer Team Leader';
-      case '5':
-        return 'Content Creator';
-      case '6':
-        return 'Content Creator Team Leader';
-      case '7':
-        return 'Ads Specialist';
-      case '8':
-        return 'SEO Specialist';
-      case '9':
-        return 'Web Developer';
-      case '10':
-        return 'Video Editor';
-      default:
-        return 'اختر الدور';
-    }
-  }
+  // getRoleDisplayName(roleValue: string): string {
+  //   switch (roleValue) {
+  //     case '1':
+  //       return 'Admin';
+  //     case '2':
+  //       return 'Account Manager';
+  //     case '3':
+  //       return 'Graphic Designer';
+  //     case '4':
+  //       return 'Graphic Designer Team Leader';
+  //     case '5':
+  //       return 'Content Creator';
+  //     case '6':
+  //       return 'Content Creator Team Leader';
+  //     case '7':
+  //       return 'Ads Specialist';
+  //     case '8':
+  //       return 'SEO Specialist';
+  //     case '9':
+  //       return 'Web Developer';
+  //     case '10':
+  //       return 'Video Editor';
+  //     default:
+  //       return 'اختر الدور';
+  //   }
+  // }
 
   // Method to handle form field focus
   onFieldFocus(fieldName: string): void {

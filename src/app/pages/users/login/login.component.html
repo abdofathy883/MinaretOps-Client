@@ -35,14 +35,26 @@
       </div>
       <div class="mb-3">
         <label for="password" class="form-label text-white">كلمة المرور</label>
-        <input
-          type="password"
-          class="form-control"
-          id="password"
-          name="password"
-          formControlName="password"
-          required
-        />
+        <div class="input-group">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control"
+            id="password"
+            name="password"
+            formControlName="password"
+            required
+          />
+          <button
+            class="btn btn-light"
+            type="button"
+            (click)="togglePasswordVisibility()"
+          >
+            <i
+              class="bi"
+              [class]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+            ></i>
+          </button>
+        </div>
       </div>
       <button class="add-btn w-100">
         @if (isLoading) {

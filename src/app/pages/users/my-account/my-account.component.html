@@ -1,5 +1,5 @@
 @if (currentUser) {
-  <!-- <section class="container my-4">
+<!-- <section class="container my-4">
     <img src="./assets/background.png" height="200px" alt="">
     <img [src]="currentUser.profilePicture" alt="">
   </section> -->
@@ -107,8 +107,8 @@
     tabindex="0"
   >
     <app-submit-leave-request
-  [currentUser]="currentUser"
-></app-submit-leave-request>
+      [currentUser]="currentUser"
+    ></app-submit-leave-request>
   </div>
   <div
     class="tab-pane fade"
@@ -118,8 +118,8 @@
     tabindex="0"
   >
     <app-my-kpis-management
-  [currentUserId]="currentUser.id"
-></app-my-kpis-management>
+      [currentUserId]="currentUser.id"
+    ></app-my-kpis-management>
   </div>
   <div
     class="tab-pane fade"
@@ -129,207 +129,256 @@
     tabindex="0"
   >
     <section class="container my-4">
-  <!-- Error Message -->
-  @if (errorMessage) {
-  <div class="alert alert-danger">
-    {{ errorMessage }}
-  </div>
-  }
-
-  <!-- Success Message -->
-  @if (successMessage) {
-  <div class="alert alert-success">
-    {{ successMessage }}
-  </div>
-  }
-</section>
-
-<section class="container my-4">
-  <!-- User Information Section -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-header form-header">
-      <h5 class="mb-0">البيانات الاساسية</h5>
-    </div>
-    <div class="card-body">
-      <form [formGroup]="editUserForm" (ngSubmit)="onSubmit()">
-        <div class="row mb-3">
-          <div class="col-12 col-md-6 mb-3 mb-md-0">
-            <label for="firstName" class="form-label">الاسم الاول</label>
-            <input
-              type="text"
-              class="form-control"
-              id="firstName"
-              formControlName="firstName"
-            />
-          </div>
-          <div class="col-12 col-md-6 mb-3 mb-md-0">
-            <label for="lastName" class="form-label">الاسم الاخير</label>
-            <input
-              type="text"
-              class="form-control"
-              id="lastName"
-              formControlName="lastName"
-            />
-          </div>
+      <!-- Alert Messages -->
+      @if (alertMessage) {
+      <div class="alert" [class]="'alert-' + alertType">
+        {{ alertMessage }}
+        <button class="alert-close" (click)="closeAlert()">×</button>
+      </div>
+      }
+      <!-- User Information Section -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header form-header">
+          <h5 class="mb-0">البيانات الاساسية</h5>
         </div>
-
-        <div class="row mb-3">
-          <div class="col-12 col-md-6 mb-3 mb-md-0">
-            <label for="email" class="form-label">البريد الالكتروني</label>
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              formControlName="email"
-            />
-          </div>
-          <div class="col-12 col-md-6">
-            <label for="phoneNumber" class="form-label">الهاتف</label>
-            <input
-              type="tel"
-              class="form-control"
-              id="phoneNumber"
-              formControlName="phoneNumber"
-            />
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-12 col-md-6 mb-3 mb-md-0">
-            <label for="paymentNumber" class="form-label"
-              >رقم المحفظة او انستاباي</label
-            >
-            <input
-              type="tel"
-              class="form-control"
-              id="paymentNumber"
-              formControlName="paymentNumber"
-            />
-          </div>
-          <div class="col-12 col-md-6">
-            <label for="city" class="form-label">المدينة</label>
-            <input
-              type="text"
-              class="form-control"
-              id="city"
-              formControlName="city"
-            />
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="street" class="form-label">العنوان التفصيلي</label>
-          <textarea
-            name="street"
-            id="street"
-            class="form-control"
-            formControlName="street"
-          ></textarea>
-        </div>
-
-        <!-- Submit Button Section -->
-        <button type="submit" class="add-btn">
-          @if (isLoading) {
-          <span class="spinner-border spinner-border-sm me-2"></span>
-          جاري تعديل البيانات... } @else {
-          <i class="bi bi-check-circle me-2"></i>
-          تعديل البيانات }
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Password Update Section -->
-  <div class="card shadow-sm">
-    <div class="card-header form-header">
-      <h5 class="mb-0">
-        <i class="bi bi-shield-shaded"></i>
-        تغيير كلمة المرور
-      </h5>
-    </div>
-    <div class="card-body">
-      <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
-        <div class="mb-3">
-          <label for="currentPassword" class="form-label"
-            >كلمة المرور الحالية</label
+        <div class="card-body">
+          <form
+            [formGroup]="editUserForm"
+            enctype="multipart/form-data"
+            (ngSubmit)="onSubmit()"
           >
-          <input
-            type="password"
-            id="currentPassword"
-            name="currentPassword"
-            formControlName="currentPassword"
-            class="form-control"
-            required
-          />
-          @if (passwordForm.get('currentPassword')?.invalid &&
-          passwordForm.get('currentPassword')?.touched) {
-          <div class="error-message">كلمة المرور الحالية مطلوبة</div>
-          }
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-12 col-md-6 mb-3 mb-md-0">
-            <label for="newPassword" class="form-label"
-              >كلمة المرور الجديدة</label
-            >
-            <input
-              type="password"
-              id="newPassword"
-              name="newPassword"
-              formControlName="newPassword"
-              class="form-control"
-              required
-            />
-            @if (passwordForm.get('newPassword')?.invalid &&
-            passwordForm.get('newPassword')?.touched) {
-            <div class="error-message">
-              كلمة المرور الجديدة مطلوبة ويجب أن تكون 6 أحرف على الأقل
+            <div class="row mb-3">
+              <div class="col-12 col-md-6 mb-3 mb-md-0">
+                <label for="firstName" class="form-label">الاسم الاول</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="firstName"
+                  formControlName="firstName"
+                />
+              </div>
+              <div class="col-12 col-md-6 mb-3 mb-md-0">
+                <label for="lastName" class="form-label">الاسم الاخير</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastName"
+                  formControlName="lastName"
+                />
+              </div>
             </div>
-            }
-          </div>
-          <div class="col-12 col-md-6">
-            <label for="confirmNewPassword" class="form-label"
-              >تأكيد كلمة المرور الجديدة</label
-            >
-            <input
-              type="password"
-              id="confirmNewPassword"
-              name="confirmNewPassword"
-              formControlName="confirmNewPassword"
-              class="form-control"
-              required
-            />
-            @if (passwordForm.get('confirmNewPassword')?.invalid &&
-            passwordForm.get('confirmNewPassword')?.touched) {
-            <div class="error-message">تأكيد كلمة المرور مطلوب</div>
-            } @if (passwordForm.errors?.['passwordMismatch'] &&
-            passwordForm.get('confirmNewPassword')?.touched) {
-            <div class="error-message">
-              كلمة المرور الجديدة وتأكيدها غير متطابقين
-            </div>
-            }
-          </div>
-        </div>
 
-        <!-- Submit Button Section -->
-        <button type="submit" class="add-btn">
-          @if (isLoading) {
-          <span class="spinner-border spinner-border-sm me-2"></span>
-          جاري تحديث الرقم السري ... }
-          <i class="bi bi-check-circle me-2"></i>
-          تحديث الرقم السري
-        </button>
-      </form>
-    </div>
-  </div>
-</section>
+            <div class="mb-3">
+              <label for="bio" class="form-label">Bio</label>
+              <textarea
+                name="bio"
+                id="bio"
+                class="form-control"
+                formControlName="bio"
+                rows="3"
+              ></textarea>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-12 col-md-6 mb-3 mb-md-0">
+                <label for="jobTitle" class="form-label">المسمى الوظيفي</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="jobTitle"
+                  formControlName="jobTitle"
+                />
+              </div>
+              <div class="col-12 col-md-6 mb-3 mb-md-0">
+                <label for="profilePicture" class="form-label"
+                  >الصورة الشخصية</label
+                >
+                <input
+                  type="file"
+                  accept="image/*"
+                  class="form-control"
+                  id="profilePicture"
+                  formControlName="profilePicture"
+                  (change)="onFileChange($event)"
+                />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-12 col-md-6 mb-3 mb-md-0">
+                <label for="email" class="form-label">البريد الالكتروني</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  formControlName="email"
+                />
+              </div>
+              <div class="col-12 col-md-6">
+                <label for="phoneNumber" class="form-label">الهاتف</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="phoneNumber"
+                  formControlName="phoneNumber"
+                />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-12 col-md-6 mb-3 mb-md-0">
+                <label for="paymentNumber" class="form-label"
+                  >رقم المحفظة او انستاباي</label
+                >
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="paymentNumber"
+                  formControlName="paymentNumber"
+                />
+              </div>
+              <div class="col-12 col-md-6">
+                <label for="city" class="form-label">المدينة</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="city"
+                  formControlName="city"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="street" class="form-label">العنوان التفصيلي</label>
+              <textarea
+                name="street"
+                id="street"
+                class="form-control"
+                formControlName="street"
+              ></textarea>
+            </div>
+
+            <!-- Submit Button Section -->
+            <button type="submit" class="add-btn">
+              @if (isLoading) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              جاري تعديل البيانات... } @else {
+              <i class="bi bi-check-circle me-2"></i>
+              تعديل البيانات }
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Password Update Section -->
+      <div class="card shadow-sm">
+        <div class="card-header form-header">
+          <h5 class="mb-0">
+            <i class="bi bi-shield-shaded"></i>
+            تغيير كلمة المرور
+          </h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+            <div class="mb-3">
+              <label for="currentPassword" class="form-label"
+                >كلمة المرور الحالية</label
+              >
+              <input
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                formControlName="currentPassword"
+                class="form-control"
+                required
+              />
+              @if (passwordForm.get('currentPassword')?.invalid &&
+              passwordForm.get('currentPassword')?.touched) {
+              <div class="error-message">كلمة المرور الحالية مطلوبة</div>
+              }
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-12 col-md-6 mb-3 mb-md-0">
+                <label for="newPassword" class="form-label"
+                  >كلمة المرور الجديدة</label
+                >
+                <input
+                  type="password"
+                  id="newPassword"
+                  name="newPassword"
+                  formControlName="newPassword"
+                  class="form-control"
+                  required
+                />
+                @if (passwordForm.get('newPassword')?.invalid &&
+                passwordForm.get('newPassword')?.touched) {
+                <div class="error-message">
+                  كلمة المرور الجديدة مطلوبة ويجب أن تكون 6 أحرف على الأقل
+                </div>
+                }
+                <!-- Live password requirements -->
+            <ul class="list-unstyled small mt-2 mb-0">
+              <li [class]="requirementClass(passHasMin)">
+                <i class="bi me-1" [class]="requirementIcon(passHasMin)"></i>
+                على الأقل 6 أحرف
+              </li>
+              <li [class]="requirementClass(passHasUpper)">
+                <i class="bi me-1" [class]="requirementIcon(passHasUpper)"></i>
+                يحتوي على حرف كبير (A-Z)
+              </li>
+              <li [class]="requirementClass(passHasLower)">
+                <i class="bi me-1" [class]="requirementIcon(passHasLower)"></i>
+                يحتوي على حرف صغير (a-z)
+              </li>
+              <li [class]="requirementClass(passHasSpecial)">
+                <i
+                  class="bi me-1"
+                  [class]="requirementIcon(passHasSpecial)"
+                ></i>
+                يحتوي على رمز خاص (&#64; # $ % ! ...)
+              </li>
+            </ul>
+              </div>
+              <div class="col-12 col-md-6">
+                <label for="confirmNewPassword" class="form-label"
+                  >تأكيد كلمة المرور الجديدة</label
+                >
+                <input
+                  type="password"
+                  id="confirmNewPassword"
+                  name="confirmNewPassword"
+                  formControlName="confirmNewPassword"
+                  class="form-control"
+                  required
+                />
+                @if (passwordForm.get('confirmNewPassword')?.invalid &&
+                passwordForm.get('confirmNewPassword')?.touched) {
+                <div class="error-message">تأكيد كلمة المرور مطلوب</div>
+                } @if (passwordForm.errors?.['passwordMismatch'] &&
+                passwordForm.get('confirmNewPassword')?.touched) {
+                <div class="error-message">
+                  كلمة المرور الجديدة وتأكيدها غير متطابقين
+                </div>
+                }
+                
+              </div>
+            </div>
+
+            <!-- Submit Button Section -->
+            <button type="submit" class="add-btn">
+              @if (isPasswordLoading) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              جاري تحديث الرقم السري ... } @if (!isPasswordLoading) {
+                <i class="bi bi-check-circle me-2"></i>
+                تحديث الرقم السري
+              }
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
-
-
-
-
-
-
 
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChangePassword, UpdateUser, User } from '../../../model/auth/user';
@@ -18,9 +18,12 @@ import { MyKpisManagementComponent } from "../../kpis/my-kpis-management/my-kpis
 })
 export class MyAccountComponent implements OnInit {
   currentUser!: User;
-  isLoading = false;
-  errorMessage = '';
-  successMessage = '';
+  isLoading: boolean = false;
+  isPasswordLoading: boolean = false;
+  profilePictureFile!: File;
+
+  alertMessage = '';
+  alertType = 'info';
   
   editUserForm!: FormGroup;
   passwordForm!: FormGroup;
@@ -38,6 +41,9 @@ export class MyAccountComponent implements OnInit {
       this.editUserForm = this.fb.group({
         firstName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
         lastName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
+        bio: [''],
+        jobTitle: [''],
+        profilePicture: [''],
         email: [''],
         phoneNumber: [''],
         paymentNumber: [''],
@@ -52,6 +58,12 @@ export class MyAccountComponent implements OnInit {
       }, {Validators: this.passwordMatchValidator});
   }
   
+  onFileChange(event: any): void {
+    if (event.target.files && event.target.files.length) {
+      this.profilePictureFile = event.target.files[0];     
+    }
+  }
+
   ngOnInit(): void {
     const userId = this.route.snapshot.paramMap.get('id') ?? ''
     this.authService.getById(userId).subscribe({
@@ -61,8 +73,6 @@ export class MyAccountComponent implements OnInit {
       }
     })
   }
-
-  
 
   updateFormValues(): void {
     if (this.currentUser) {
@@ -79,46 +89,43 @@ export class MyAccountComponent implements OnInit {
   }
 
   onSubmit(): void {
-    debugger;
     if (this.editUserForm.invalid) {
       this.isLoading = false;
       this.editUserForm.markAllAsTouched();
       return;
     }
     this.isLoading = true;
-    const updateUser: UpdateUser = {
-      id: this.currentUser?.id,
-      firstName: this.editUserForm.value.firstName,
-      lastName: this.editUserForm.value.lastName,
-      bio: this.editUserForm.value.bio,
-      jobTitle: this.editUserForm.value.jobTitle,
-      profilePicture: this.editUserForm.value.profilePicture,
-      email: this.editUserForm.value.email,
-      phoneNumber: this.editUserForm.value.phoneNumber,
-      paymentNumber: this.editUserForm.value.paymentNumber,
-      city: this.editUserForm.value.city,
-      street: this.editUserForm.value.street
-    }
-
-    if (!updateUser.id) {
+    const updateUser: FormData = new FormData();
+    updateUser.append('id', this.currentUser?.id);
+    updateUser.append('firstName', this.editUserForm.value.firstName);
+    updateUser.append('lastName', this.editUserForm.value.lastName);
+    updateUser.append('bio', this.editUserForm.value.bio);
+    updateUser.append('jobTitle', this.editUserForm.value.jobTitle);
+    updateUser.append('profilePicture', this.profilePictureFile);
+    updateUser.append('email', this.editUserForm.value.email);
+    updateUser.append('phoneNumber', this.editUserForm.value.phoneNumber);
+    updateUser.append('paymentNumber', this.editUserForm.value.paymentNumber);
+    updateUser.append('city', this.editUserForm.value.city);
+    updateUser.append('street', this.editUserForm.value.street);
+    if (!updateUser.get('id')) {
       return;
     }
     this.authService.update(updateUser).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.currentUser = response;
-        this.successMessage = 'تم تحديث بياناتك بنجاح'
+        this.showAlert('تم تحديث بياناتك بنجاح', 'success');
       },
       error: () => {
         this.isLoading = false;
-        this.errorMessage = 'فشل تحديث البيانات, حاول وقت اخر'
+        this.showAlert('فشل تحديث البيانات, حاول وقت اخر', 'error');
       }
     })
   }
 
   updatePassword(): void {
     if (this.passwordForm.invalid || !this.currentUser?.id) return;
-
+    this.isPasswordLoading = true;
     const password: ChangePassword = {
       id: this.currentUser?.id,
       oldPassword: this.passwordForm.value.currentPassword,
@@ -129,10 +136,16 @@ export class MyAccountComponent implements OnInit {
 
     this.authService.changePassword(password).subscribe({
       next: (response) => {
+        this.isPasswordLoading = false;
         this.currentUser = response;
-
+        this.showAlert('تم تحديث كلمة المرور بنجاح', 'success');
+        this.passwordForm.reset();
+      },
+      error: () => {
+        this.isPasswordLoading = false;
+        this.showAlert('فشل تحديث كلمة المرور, حاول وقت اخر', 'error');
       }
-    })
+    });
   }
 
   private passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
@@ -148,5 +161,65 @@ export class MyAccountComponent implements OnInit {
 
   logout() {
     this.authService.LogOut();
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
+  }
+
+  private passwordComplexityValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value: string = control.value || '';
+      if (!value) return null; // handled by required
+
+      const hasUpper = /[A-Z]/.test(value);
+      const hasLower = /[a-z]/.test(value);
+      const hasSpecial = /[^A-Za-z0-9]/.test(value);
+
+      return hasUpper && hasLower && hasSpecial
+        ? null
+        : { passwordComplexity: true };
+    };
+  }
+
+  // Convenience getters for template
+  get passwordControl() {
+    return this.passwordForm.get('newPassword');
+  }
+
+  get passwordValue(): string {
+    return this.passwordControl?.value || '';
+  }
+    get passHasMin(): boolean {
+    return this.passwordValue.length >= 6;
+  }
+
+  get passHasUpper(): boolean {
+    return /[A-Z]/.test(this.passwordValue);
+  }
+
+  get passHasLower(): boolean {
+    return /[a-z]/.test(this.passwordValue);
+  }
+
+  get passHasSpecial(): boolean {
+    return /[^A-Za-z0-9]/.test(this.passwordValue);
+  }
+
+  requirementClass(ok: boolean): string {
+    return ok ? 'text-success' : 'text-danger';
+  }
+
+  requirementIcon(ok: boolean): string {
+    return ok ? 'bi-check-circle' : 'bi-x-circle';
   }
 }

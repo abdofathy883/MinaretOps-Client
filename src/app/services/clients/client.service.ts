@@ -25,4 +25,8 @@ export class ClientService {
   update(clientId: number, updateClient: IUpdateClient): Observable<IClient> {
     return this.api.put<IClient>(`${this.endpoint}/${clientId}`, updateClient);
   }
+
+  delete(clientId: number): Observable<boolean> {
+    return this.api.delete<boolean>(`${this.endpoint}/${clientId}`);
+  }
 }

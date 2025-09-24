@@ -39,7 +39,7 @@
   top: 10px;
   left: 10px;
   z-index: 2;
-  background: var(--orange-color);
+  background: var(--lime-color);
   border: none;
   border-radius: 15px;
   color: white;
@@ -63,7 +63,7 @@
 
 .logo-container.collapsed img {
   width: 40px !important;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .sidebar-nav {
