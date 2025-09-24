@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../api-service/api.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
-import { ChangePassword, LoginUser, RegisterUser, TokenPayload, UpdateUser, User } from '../../model/auth/user';
+import { ChangePassword, IResetPassword, LoginUser, RegisterUser, TokenPayload, UpdateUser, User } from '../../model/auth/user';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
@@ -93,6 +93,14 @@ export class AuthService {
 
   changePassword(changePassword: ChangePassword): Observable<User> {
     return this.api.patch<User>(`${this.endpoint}/set-password`, changePassword);
+  }
+
+  requestPasswordReset(userId: string): Observable<string> {
+    return this.api.post<string>(`${this.endpoint}/send-reset-link/${userId}`, {});
+  }
+
+  resetPassword(request: IResetPassword): Observable<void> {
+    return this.api.post<void>(`${this.endpoint}/reset-password`, request);
   }
 
   delete(userId: string): Observable<boolean> {

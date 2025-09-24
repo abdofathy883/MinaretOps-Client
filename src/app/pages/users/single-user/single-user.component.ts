@@ -26,13 +26,14 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   user!: User;
   attendanceRecords: AttendanceRecord[] = [];
   isLoading = false;
+  isResetPasswordLoading: boolean = false;
   isEditMode = false;
-  errorMessage = '';
-  attendanceErrorMessage = '';
-  successMessage = '';
   currentLoggedInUserId: string = '';
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
+
+  alertMessage = '';
+  alertType = 'info';
 
   editUserForm: FormGroup;
 
@@ -64,11 +65,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     this.attendanceService.getAttendanceByEmployeeId(empId).subscribe({
       next: (response) => {
         this.attendanceRecords = response;
-      },
-      error: (error) => {
-        this.attendanceErrorMessage =
-          error.message || 'حدث خطأ أثناء تحميل سجلات الحضور';
-      },
+      }
     });
   }
 
@@ -95,7 +92,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   loadUser(): void {
     const userId = this.route.snapshot.paramMap.get('id');
     if (!userId) {
-      this.errorMessage = 'معرف المستخدم غير صحيح';
+      this.showAlert('معرف المستخدم غير صالح', 'error');
       return;
     }
 
@@ -110,8 +107,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
           this.loadAttendance(userId);
         },
         error: (error) => {
-          this.errorMessage =
-            error.message || 'حدث خطأ أثناء تحميل بيانات المستخدم';
+          this.showAlert('حدث خطأ أثناء تحميل بيانات المستخدم', 'error');
           this.isLoading = false;
         },
       });
@@ -172,15 +168,11 @@ export class SingleUserComponent implements OnInit, OnDestroy {
 
   toggleEditMode(): void {
     this.isEditMode = true;
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   cancelEdit(): void {
     this.isEditMode = false;
     this.populateForm(this.user!);
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   saveUser(): void {
@@ -190,8 +182,6 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
 
     const formValue = this.editUserForm.value;
 
@@ -211,32 +201,31 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     this.authService.update(updateUser).subscribe({
       next: (response) => {
         this.user = response;
-        this.successMessage = 'تم تحديث بيانات المستخدم بنجاح';
+        this.showAlert('تم تحديث بيانات المستخدم بنجاح', 'success');
       },
       error: (error) => {
         console.log(error);
-        this.errorMessage = 'حدث خطأ أثناء تحديث بيانات المستخدم';
+        this.showAlert('حدث خطأ أثناء تحديث بيانات المستخدم', 'error');
       },
     });
   }
 
   deleteUser() {
     if (this.user?.id == this.currentLoggedInUserId) {
-      this.errorMessage = 'لا يمكن حذف حسابك';
+      this.showAlert('لا يمكن حذف حسابك', 'error');
       return;
     }
     this.authService.delete(this.user?.id || '').subscribe({
       next: (response) => {
         if (response) {
-          this.successMessage = 'تم حذف المستخدم بنجاح';
+          this.showAlert('تم حذف المستخدم بنجاح', 'success');
           this.router.navigate(['/users']);
         } else {
-          this.errorMessage = 'حدث خطأ أثناء حذف المستخدم';
+          this.showAlert('حدث خطأ أثناء حذف المستخدم', 'error');
         }
       },
       error: (error) => {
-        console.log(error);
-        this.errorMessage = 'حدث خطأ أثناء حذف المستخدم';
+        this.showAlert('حدث خطأ أثناء حذف المستخدم', 'error');
       },
     });
   }
@@ -287,5 +276,32 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     if (control.errors['passwordMismatch']) return 'كلمة المرور غير متطابقة';
 
     return 'قيمة غير صحيحة';
+  }
+
+  requestPasswordReset(): void {
+    this.isResetPasswordLoading = true;
+    this.authService.requestPasswordReset(this.user.id).subscribe({
+      next: (response) => {
+        this.isResetPasswordLoading = false;
+        this.showAlert('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريد المستخدم.', 'success');
+      },
+      error: (err) => {
+        this.isResetPasswordLoading = false;
+        this.showAlert('حدث خطأ أثناء إرسال رابط إعادة تعيين كلمة المرور.', 'error');
+      }
+    })
+  } 
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

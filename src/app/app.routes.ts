@@ -31,6 +31,7 @@ import { KpisManagementComponent } from './pages/kpis/kpis-management/kpis-manag
 import { roleGuard } from './core/guards/role.guard';
 import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { ResetPasswordComponent } from './pages/users/reset-password/reset-password.component';
 
 export const routes: Routes = [
     // {
@@ -186,6 +187,11 @@ export const routes: Routes = [
         path: 'access-denied',
         component: AccessDeniedComponent,
         canActivate: [noauthGuard]
+    },
+    {
+        path: 'reset-password',
+        component: ResetPasswordComponent,
+        canActivate: [authGuard] // This should be accessible without authentication
     },
     {
         path: '**',

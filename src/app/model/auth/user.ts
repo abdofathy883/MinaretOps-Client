@@ -65,6 +65,12 @@ export interface RegisterUser {
   dateOfHiring: Date;
 }
 
+export interface IResetPassword {
+  userId: string;
+  token: string;
+  newPassword: string;
+}
+
 export interface TokenPayload {
     exp: number;
   sub: string;

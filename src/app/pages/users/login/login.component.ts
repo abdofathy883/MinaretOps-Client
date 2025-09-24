@@ -49,9 +49,15 @@ export class LoginComponent implements OnInit{
     }
     this.authService.login(user).subscribe({
       next: (res) => {
-        const targetUrl = this.returnUrl.includes(':id')
+        let targetUrl = this.returnUrl.includes(':id')
         ? this.returnUrl.replace(':id', res.id)
         : this.returnUrl;
+
+        // Fallback: if someone passed '/users/my-account' without id
+      if (targetUrl === '/users/my-account' || targetUrl === '/users/my-account/') {
+        targetUrl = `/users/my-account/${res.id}`;
+      }
+
         this.isLoading = false;
         this.router.navigateByUrl(targetUrl);
       },

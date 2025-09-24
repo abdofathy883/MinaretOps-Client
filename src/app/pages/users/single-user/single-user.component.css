@@ -48,3 +48,49 @@ tr:hover {
     padding: 8px;
   }
 }
+
+
+.alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  z-index: 1000;
+  animation: slideIn 0.3s ease;
+}
+
+.alert-success {
+  background: #28a745;
+}
+
+.alert-error {
+  background: #dc3545;
+}
+
+.alert-info {
+  background: #17a2b8;
+}
+
+.alert-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: 15px;
+  float: right;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

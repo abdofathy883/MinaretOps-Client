@@ -22,19 +22,11 @@
     }
   </div>
 
-  <!-- Error State -->
-  @if (errorMessage) {
-  <div class="alert alert-danger mt-3" role="alert">
-    <i class="bi bi-exclamation-triangle me-2"></i>
-    {{ errorMessage }}
-  </div>
-  }
-
-  <!-- Success Message -->
-  @if (successMessage) {
-  <div class="alert alert-success mt-3" role="alert">
-    <i class="bi bi-check-circle me-2"></i>
-    {{ successMessage }}
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <button class="alert-close" (click)="closeAlert()">×</button>
   </div>
   }
 
@@ -364,10 +356,15 @@
     </form>
   </div>
 
+  
+
   <div class="mt-4">
     <button class="btn btn-danger" (click)="deleteUser()">حذف المستخدم</button>
   </div>
   }
+  <div class="mt-3">
+    <button class="add-btn" (click)="requestPasswordReset()">ارسال ايميل لاعادة تعيين كلمة المرور</button>
+  </div>
 </section>
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -424,12 +421,12 @@
   >
     <section class="container py-4">
     <h2>سجل الحضور</h2>
-    @if (attendanceErrorMessage) {
+    <!-- @if (attendanceErrorMessage) {
     <div class="alert alert-danger mt-3" role="alert">
       <i class="bi bi-exclamation-triangle me-2"></i>
       {{ attendanceErrorMessage }}
     </div>
-    }
+    } -->
     <div class="records-table">
       <table>
         <thead>

@@ -32,8 +32,6 @@ export class AddUserComponent implements OnInit {
   alertMessage = '';
   alertType = 'info';
 
-  // private destroy$ = new Subject<void>();
-
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
