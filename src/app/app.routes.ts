@@ -32,6 +32,9 @@ import { roleGuard } from './core/guards/role.guard';
 import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { ResetPasswordComponent } from './pages/users/reset-password/reset-password.component';
+import { AttendanceComponent } from './pages/attendance/attendance.component';
+import { SubmitLeaveRequestComponent } from './pages/leave-requests/submit-leave-request/submit-leave-request.component';
+import { MyKpisManagementComponent } from './pages/kpis/my-kpis-management/my-kpis-management.component';
 
 export const routes: Routes = [
     // {
@@ -68,7 +71,12 @@ export const routes: Routes = [
     {
         path: 'users/my-account/:id',
         component: MyAccountComponent,
-        canActivate: [noauthGuard]
+        canActivate: [noauthGuard], 
+        children: [
+            { path: 'attendance', component: AttendanceComponent},
+            { path: 'leave-requests', component: SubmitLeaveRequestComponent},
+            { path: 'my-kpis', component: MyKpisManagementComponent}
+        ]
     },
     {
         path: 'services/add',

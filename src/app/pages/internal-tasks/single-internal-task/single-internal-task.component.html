@@ -70,10 +70,12 @@
                   </div>
                   <div class="member-info">
                     <span class="member-name">{{ assignment.employeeName }}</span>
-                    <span class="member-role" *ngIf="assignment.isLeader">
-                      <i class="bi bi-crown-fill"></i>
-                      قائد الفريق
-                    </span>
+                    @if (assignment.isLeader) {
+                      <span class="member-role">
+                        <i class="bi bi-crown-fill"></i>
+                        قائد الفريق
+                      </span>
+                    }
                   </div>
                 </div>
               }

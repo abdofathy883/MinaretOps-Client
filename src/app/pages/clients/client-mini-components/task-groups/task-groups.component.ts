@@ -312,10 +312,13 @@ export class TaskGroupsComponent implements OnInit {
       taskGroupId: this.selectedTaskGroupId!
     };
 
+    console.log("new task ",newTask);
+
     this.isSaving = true;
     this.taskService.addTask(newTask).subscribe({
       next: (response) => {
         // Add to local data
+        console.log("response", response)
         this.isSaving = false;
         this.hideModal();
         this.taskDataChanged.emit();
@@ -339,8 +342,6 @@ export class TaskGroupsComponent implements OnInit {
     }
     return 0;
   }
-
-  
 
   getStatusText(status: CustomTaskStatus): string {
     switch (status) {

@@ -31,6 +31,16 @@
   </div>
 </section>
 
+<!-- <ul class="nav nav-tabs">
+  <li><a routerLink="attendance" routerLinkActive="active" class="nav-link">الحضور</a></li>
+  <li><a routerLink="leave" routerLinkActive="active" class="nav-link">الاجازات</a></li>
+  <li><a routerLink="kpis" routerLinkActive="active" class="nav-link">KPIs</a></li>
+  <li><a routerLink="profile" routerLinkActive="active" class="nav-link">تعديل الحساب</a></li>
+</ul>
+
+<router-outlet></router-outlet> -->
+
+
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item" role="presentation">
     <button
@@ -89,6 +99,7 @@
     </button>
   </li>
 </ul>
+
 <div class="tab-content" id="myTabContent">
   <div
     class="tab-pane fade show active"
@@ -318,27 +329,36 @@
                 </div>
                 }
                 <!-- Live password requirements -->
-            <ul class="list-unstyled small mt-2 mb-0">
-              <li [class]="requirementClass(passHasMin)">
-                <i class="bi me-1" [class]="requirementIcon(passHasMin)"></i>
-                على الأقل 6 أحرف
-              </li>
-              <li [class]="requirementClass(passHasUpper)">
-                <i class="bi me-1" [class]="requirementIcon(passHasUpper)"></i>
-                يحتوي على حرف كبير (A-Z)
-              </li>
-              <li [class]="requirementClass(passHasLower)">
-                <i class="bi me-1" [class]="requirementIcon(passHasLower)"></i>
-                يحتوي على حرف صغير (a-z)
-              </li>
-              <li [class]="requirementClass(passHasSpecial)">
-                <i
-                  class="bi me-1"
-                  [class]="requirementIcon(passHasSpecial)"
-                ></i>
-                يحتوي على رمز خاص (&#64; # $ % ! ...)
-              </li>
-            </ul>
+                <ul class="list-unstyled small mt-2 mb-0">
+                  <li [class]="requirementClass(passHasMin)">
+                    <i
+                      class="bi me-1"
+                      [class]="requirementIcon(passHasMin)"
+                    ></i>
+                    على الأقل 6 أحرف
+                  </li>
+                  <li [class]="requirementClass(passHasUpper)">
+                    <i
+                      class="bi me-1"
+                      [class]="requirementIcon(passHasUpper)"
+                    ></i>
+                    يحتوي على حرف كبير (A-Z)
+                  </li>
+                  <li [class]="requirementClass(passHasLower)">
+                    <i
+                      class="bi me-1"
+                      [class]="requirementIcon(passHasLower)"
+                    ></i>
+                    يحتوي على حرف صغير (a-z)
+                  </li>
+                  <li [class]="requirementClass(passHasSpecial)">
+                    <i
+                      class="bi me-1"
+                      [class]="requirementIcon(passHasSpecial)"
+                    ></i>
+                    يحتوي على رمز خاص (&#64; # $ % ! ...)
+                  </li>
+                </ul>
               </div>
               <div class="col-12 col-md-6">
                 <label for="confirmNewPassword" class="form-label"
@@ -361,7 +381,6 @@
                   كلمة المرور الجديدة وتأكيدها غير متطابقين
                 </div>
                 }
-                
               </div>
             </div>
 
@@ -370,15 +389,15 @@
               @if (isPasswordLoading) {
               <span class="spinner-border spinner-border-sm me-2"></span>
               جاري تحديث الرقم السري ... } @if (!isPasswordLoading) {
-                <i class="bi bi-check-circle me-2"></i>
-                تحديث الرقم السري
-              }
+              <i class="bi bi-check-circle me-2"></i>
+              تحديث الرقم السري }
             </button>
           </form>
         </div>
       </div>
     </section>
   </div>
+
 </div>
 
 }

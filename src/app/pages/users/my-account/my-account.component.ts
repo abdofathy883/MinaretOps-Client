@@ -1,20 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidatorFn,
+  ValidationErrors,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChangePassword, UpdateUser, User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { AttendanceComponent } from "../../attendance/attendance.component";
+import { AttendanceComponent } from '../../attendance/attendance.component';
 import { SubmitLeaveRequestComponent } from '../../leave-requests/submit-leave-request/submit-leave-request.component';
-import { MyKpisManagementComponent } from "../../kpis/my-kpis-management/my-kpis-management.component";
-
+import { MyKpisManagementComponent } from '../../kpis/my-kpis-management/my-kpis-management.component';
 @Component({
   selector: 'app-my-account',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, AttendanceComponent, SubmitLeaveRequestComponent, MyKpisManagementComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterLink,
+    AttendanceComponent,
+    SubmitLeaveRequestComponent,
+    MyKpisManagementComponent,
+],
   standalone: true,
   templateUrl: './my-account.component.html',
-  styleUrl: './my-account.component.css'
+  styleUrl: './my-account.component.css',
 })
 export class MyAccountComponent implements OnInit {
   currentUser!: User;
@@ -24,54 +38,57 @@ export class MyAccountComponent implements OnInit {
 
   alertMessage = '';
   alertType = 'info';
-  
+
   editUserForm!: FormGroup;
   passwordForm!: FormGroup;
-  
 
   constructor(
     private authService: AuthService,
     private fb: FormBuilder,
     private route: ActivatedRoute
-    ) { 
+  ) {
     this.initializeForms();
-    }
+  }
+
 
   initializeForms(): void {
-      this.editUserForm = this.fb.group({
-        firstName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
-        lastName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
-        bio: [''],
-        jobTitle: [''],
-        profilePicture: [''],
-        email: [''],
-        phoneNumber: [''],
-        paymentNumber: [''],
-        city: [''],
-        street: [''],
-      });
+    this.editUserForm = this.fb.group({
+      firstName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
+      lastName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
+      bio: [''],
+      jobTitle: [''],
+      profilePicture: [''],
+      email: [''],
+      phoneNumber: [''],
+      paymentNumber: [''],
+      city: [''],
+      street: [''],
+    });
 
-      this.passwordForm = this.fb.group({
+    this.passwordForm = this.fb.group(
+      {
         currentPassword: ['', Validators.required],
         newPassword: ['', Validators.required],
-        confirmNewPassword: ['', Validators.required]
-      }, {Validators: this.passwordMatchValidator});
+        confirmNewPassword: ['', Validators.required],
+      },
+      { Validators: this.passwordMatchValidator }
+    );
   }
-  
+
   onFileChange(event: any): void {
     if (event.target.files && event.target.files.length) {
-      this.profilePictureFile = event.target.files[0];     
+      this.profilePictureFile = event.target.files[0];
     }
   }
 
   ngOnInit(): void {
-    const userId = this.route.snapshot.paramMap.get('id') ?? ''
+    const userId = this.route.snapshot.paramMap.get('id') ?? '';
     this.authService.getById(userId).subscribe({
       next: (response) => {
         this.currentUser = response;
         this.updateFormValues();
-      }
-    })
+      },
+    });
   }
 
   updateFormValues(): void {
@@ -119,8 +136,8 @@ export class MyAccountComponent implements OnInit {
       error: () => {
         this.isLoading = false;
         this.showAlert('فشل تحديث البيانات, حاول وقت اخر', 'error');
-      }
-    })
+      },
+    });
   }
 
   updatePassword(): void {
@@ -130,9 +147,8 @@ export class MyAccountComponent implements OnInit {
       id: this.currentUser?.id,
       oldPassword: this.passwordForm.value.currentPassword,
       newPassword: this.passwordForm.value.newPassword,
-      confirmNewPassword: this.passwordForm.value.confirmNewPassword
-    }
-
+      confirmNewPassword: this.passwordForm.value.confirmNewPassword,
+    };
 
     this.authService.changePassword(password).subscribe({
       next: (response) => {
@@ -144,15 +160,21 @@ export class MyAccountComponent implements OnInit {
       error: () => {
         this.isPasswordLoading = false;
         this.showAlert('فشل تحديث كلمة المرور, حاول وقت اخر', 'error');
-      }
+      },
     });
   }
 
-  private passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
+  private passwordMatchValidator(
+    control: AbstractControl
+  ): { [key: string]: boolean } | null {
     const newPassword = control.get('newPassword');
     const confirmPassword = control.get('confirmPassword');
 
-    if (newPassword && confirmPassword && newPassword.value !== confirmPassword.value) {
+    if (
+      newPassword &&
+      confirmPassword &&
+      newPassword.value !== confirmPassword.value
+    ) {
       return { passwordMismatch: true };
     }
 
@@ -199,7 +221,7 @@ export class MyAccountComponent implements OnInit {
   get passwordValue(): string {
     return this.passwordControl?.value || '';
   }
-    get passHasMin(): boolean {
+  get passHasMin(): boolean {
     return this.passwordValue.length >= 6;
   }
 

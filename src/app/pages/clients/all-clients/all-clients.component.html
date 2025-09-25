@@ -1,36 +1,32 @@
-<div class="clients-container">
-  <div class="clients-header">
+<section class="container py-4">
+  <div class="text-center mb-3">
     <h1>عملاؤنا</h1>
     <p class="subtitle">ادارة العملاء بامتياز</p>
   </div>
 
-  <div class="clients-grid">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     @for (client of clients; track client.id) {
-      <div class="client-card" (click)="goToClient(client.id)" style="cursor: pointer;">
-        <div class="client-header">
-          <div class="client-avatar">
-            <span class="avatar-text">{{ client.name.charAt(0).toUpperCase() }}</span>
+      <div class="col">
+        <div class="client-card" (click)="goToClient(client.id)" style="cursor: pointer;">
+          <div class="client-header d-flex align-items-center gap-3 mb-3">
+            <div class="client-avatar">
+              <span class="avatar-text">{{ client.name.charAt(0).toUpperCase() }}</span>
+            </div>
+            <div>
+              <h3 class="client-name mb-1">{{ client.name }}</h3>
+              <p class="company-name mb-0">{{ client.companyName }}</p>
+            </div>
           </div>
-          <div class="client-info">
-            <h3 class="client-name">{{ client.name }}</h3>
-            <p class="company-name">{{ client.companyName }}</p>
-          </div>
-          <div class="status-badge" [ngClass]="'status-' + getStatusClass(client.status)">
+          <div class="status-badge mb-3" [ngClass]="'status-' + getStatusClass(client.status)">
             {{ getStatusText(client.status) }}
           </div>
-        </div>
-        
-        <div class="client-details">
-          <div class="service-info">
-            <span class="service-label">Service:</span>
-            <span class="service-title">{{ client.serviceTitle }}</span>
+          
+          <div>
+            <p class="service-label">Service:</p>
+            <p class="service-title">{{ client.serviceTitle }}</p>
           </div>
         </div>
-        
-        <!-- <div class="card-actions">
-          <button class="btn btn-primary">View Details</button>
-          <button class="btn btn-secondary">Edit</button>
-        </div> -->
+
       </div>
     }
   </div>
@@ -42,4 +38,4 @@
       <p>ابدأ بإضافة أول عميل لك لتنظيم الأمور.</p>
     </div>
   }
-</div>
+</section>

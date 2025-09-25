@@ -1,32 +1,6 @@
-.clients-container {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.clients-header {
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.clients-header h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #1a202c;
-  margin-bottom: 0.5rem;
-}
-
 .subtitle {
   font-size: 1.1rem;
   color: #718096;
-  margin: 0;
-}
-
-.clients-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
 }
 
 .client-card {
@@ -46,13 +20,6 @@
   border-color: #cbd5e0;
 }
 
-.client-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  gap: 1rem;
-}
-
 .client-avatar {
   width: 50px;
   height: 50px;
@@ -70,36 +37,22 @@
   font-weight: 600;
 }
 
-.client-info {
-  flex: 1;
-  min-width: 0;
-}
-
 .client-name {
   font-size: 1.25rem;
   font-weight: 600;
   color: #1a202c;
-  margin: 0 0 0.25rem 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.4;
 }
 
 .company-name {
   font-size: 0.875rem;
   color: #718096;
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .status-badge {
-  padding: 0.375rem 0.75rem;
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.05em;
   flex-shrink: 0;
 }
@@ -124,19 +77,6 @@
   color: #2d3748;
 }
 
-.client-details {
-  margin-bottom: 1.5rem;
-}
-
-.service-info {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  background-color: #f7fafc;
-  border-radius: 8px;
-}
-
 .service-label {
   font-size: 0.875rem;
   font-weight: 500;
@@ -147,40 +87,6 @@
   font-size: 0.875rem;
   color: #2d3748;
   font-weight: 600;
-}
-
-.card-actions {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex: 1;
-}
-
-.btn-primary {
-  background-color: #4299e1;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #3182ce;
-}
-
-.btn-secondary {
-  background-color: #e2e8f0;
-  color: #4a5568;
-}
-
-.btn-secondary:hover {
-  background-color: #cbd5e0;
 }
 
 .empty-state {
@@ -212,25 +118,6 @@
 @media (max-width: 768px) {
   .clients-container {
     padding: 1rem;
-  }
-  
-  .clients-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .client-card {
-    padding: 1rem;
-  }
-  
-  .client-header {
-    flex-direction: column;
-    text-align: center;
-    gap: 0.75rem;
-  }
-  
-  .card-actions {
-    flex-direction: column;
   }
   
   .clients-header h1 {

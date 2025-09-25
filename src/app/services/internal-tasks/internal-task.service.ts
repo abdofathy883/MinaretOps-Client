@@ -15,8 +15,16 @@ export class InternalTaskService {
     return this.api.get<InternalTask[]>(this.endpoint);
   }
 
+  getTasksByEmp(empId: string): Observable<InternalTask[]> {
+    return this.api.get<InternalTask[]>(`${this.endpoint}/emp-tasks/${empId}`);
+  }
+
   getById(id: number): Observable<InternalTask> {
     return this.api.get<InternalTask>(`${this.endpoint}/${id}`);
+  }
+
+  search(title: string): Observable<InternalTask[]> {
+    return this.api.get<InternalTask[]>(`${this.endpoint}/search-tasks/${title}`);
   }
 
   add(task: CreateInternalTask): Observable<InternalTask> {
