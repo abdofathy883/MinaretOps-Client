@@ -31,6 +31,7 @@
           <th>وقت التسجيل</th>
           <th>الحالة</th>
           <th>جهاز التسجيل</th>
+          <th>الشبكة</th>
         </tr>
       </thead>
       <tbody>
@@ -43,6 +44,7 @@
             <span class="status-badge status-present">حاضر</span>
           </td>
           <td data-cell="جهاز التسجيل">{{ record.deviceId }}</td>
+          <td data-cell="الشبكة">{{ record.ipAddress }}</td>
         </tr>
         } @if (attendanceRecords.length === 0) {
         <tr>

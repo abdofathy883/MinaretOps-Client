@@ -1,19 +1,44 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MapTaskStatusPipe } from './../../../../core/pipes/map-task-status/map-task-status.pipe';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { User } from '../../../../model/auth/user';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { NewTaskGroupComponent } from '../new-task-group/new-task-group.component';
 import { TaskService } from '../../../../services/tasks/task.service';
 import { IClientService } from '../../../../model/client/client';
-import { CustomTaskStatus, ICreateTask, ITask, IUpdateTask } from '../../../../model/task/task';
+import {
+  CustomTaskStatus,
+  ICreateTask,
+  ITask,
+  IUpdateTask,
+} from '../../../../model/task/task';
+import { MapTaskStatusClassPipe } from '../../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 
 @Component({
   selector: 'app-task-groups',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NewTaskGroupComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NewTaskGroupComponent,
+    MapTaskStatusPipe,
+    MapTaskStatusClassPipe,
+  ],
   templateUrl: './task-groups.component.html',
-  styleUrl: './task-groups.component.css'
+  styleUrl: './task-groups.component.css',
 })
 export class TaskGroupsComponent implements OnInit {
   @Input() clientServices: IClientService[] = [];
@@ -21,7 +46,7 @@ export class TaskGroupsComponent implements OnInit {
   @Output() taskDataChanged = new EventEmitter<void>();
 
   @ViewChild('newTaskGroupModal') newTaskGroupModal!: NewTaskGroupComponent;
-  
+
   isLoading: boolean = false;
   isEditMode: boolean = false;
   isSaving: boolean = false;
@@ -31,14 +56,14 @@ export class TaskGroupsComponent implements OnInit {
   isUserAccountManager: boolean = false;
   isContentLeader: boolean = false;
   isDesignerLeader: boolean = false;
-  
+
   // Modal and form related
   editTaskForm: FormGroup;
   modalMode: 'add' | 'edit' = 'add';
   selectedTask: ITask | null = null;
   selectedTaskGroupId: number | null = null;
   employees: User[] = [];
-  
+
   // Bootstrap modal instance
   private modal: any;
 
@@ -55,7 +80,7 @@ export class TaskGroupsComponent implements OnInit {
       deadline: ['', Validators.required],
       employeeId: [''],
       status: ['', Validators.required],
-      refrence: ['']
+      refrence: [''],
     });
   }
 
@@ -63,7 +88,7 @@ export class TaskGroupsComponent implements OnInit {
     // Refresh the client services data or handle the new task group
     // You might want to emit an event to the parent component to refresh data
     console.log('New task group created:', newTaskGroup);
-    
+
     // Optionally, you can add the new task group to the local data
     // or refresh the entire data from the server
   }
@@ -72,57 +97,25 @@ export class TaskGroupsComponent implements OnInit {
     this.taskService.deleteTask(taskId).subscribe({
       next: (response) => {
         this.taskDataChanged.emit();
-      }
-    })
+      },
+    });
   }
 
   ngOnInit() {
     this.loadEmployees();
     this.initializeModal();
-    this.authService.isAdmin().subscribe((isAdmin) => {
-      if (isAdmin) this.isUserAdmin = true;
-    });
-    this.authService.isAccountManager().subscribe((isAccountManager) => {
-      if (isAccountManager) this.isUserAccountManager = true;
-    });
-    this.authService.isContentLeader().subscribe((isLeader) => {
-      if (isLeader) this.isContentLeader = true;
-    });
-    this.authService.isDesignerLeader().subscribe((isLeader) => {
-      if (isLeader) this.isDesignerLeader = true;
-    });
-  }
-
-  getStatusLabel(status: CustomTaskStatus): string {
-    switch (status) {
-      case CustomTaskStatus.Open: return 'لم تبدأ';
-      case CustomTaskStatus.Acknowledged: return 'تم الإقرار';
-      case CustomTaskStatus.InProgress: return 'قيد التنفيذ';
-      case CustomTaskStatus.UnderReview: return 'قيد المراجعة';
-      case CustomTaskStatus.NeedsEdits: return 'تحتاج إلى تعديلات';
-      case CustomTaskStatus.Completed: return 'مكتمل';
-      default: return 'غير محدد';
-    }
-  }
-
-  getStatusClass(status: CustomTaskStatus): string {
-    switch (status) {
-      case CustomTaskStatus.Open: return 'status-not-started';
-      case CustomTaskStatus.Acknowledged: return 'status-acknowledged';
-      case CustomTaskStatus.InProgress: return 'status-in-progress';
-      case CustomTaskStatus.UnderReview: return 'status-under-review';
-      case CustomTaskStatus.NeedsEdits: return 'status-needs-edits';
-      case CustomTaskStatus.Completed: return 'status-completed';
-      default: return 'status-unknown';
-    }
   }
 
   getPriorityClass(priority: string): string {
     switch (priority.toLowerCase()) {
-      case 'مستعجل': return 'priority-high';
-      case 'مهم': return 'priority-medium';
-      case 'عادي': return 'priority-normal';
-      default: return 'priority-normal';
+      case 'مستعجل':
+        return 'priority-high';
+      case 'مهم':
+        return 'priority-medium';
+      case 'عادي':
+        return 'priority-normal';
+      default:
+        return 'priority-normal';
     }
   }
 
@@ -141,7 +134,19 @@ export class TaskGroupsComponent implements OnInit {
       },
       error: () => {
         this.employees = [];
-      }
+      },
+    });
+    this.authService.isAdmin().subscribe((isAdmin) => {
+      if (isAdmin) this.isUserAdmin = true;
+    });
+    this.authService.isAccountManager().subscribe((isAccountManager) => {
+      if (isAccountManager) this.isUserAccountManager = true;
+    });
+    this.authService.isContentLeader().subscribe((isLeader) => {
+      if (isLeader) this.isContentLeader = true;
+    });
+    this.authService.isDesignerLeader().subscribe((isLeader) => {
+      if (isLeader) this.isDesignerLeader = true;
     });
   }
 
@@ -184,7 +189,7 @@ export class TaskGroupsComponent implements OnInit {
       deadline: this.formatDateTimeForInput(task.deadline),
       employeeId: task.employeeId || '',
       status: task.status,
-      refrence: task.refrence || ''
+      refrence: task.refrence || '',
     });
   }
 
@@ -196,7 +201,7 @@ export class TaskGroupsComponent implements OnInit {
       deadline: '',
       employeeId: '',
       status: CustomTaskStatus.Open,
-      refrence: ''
+      refrence: '',
     });
   }
 
@@ -231,25 +236,25 @@ export class TaskGroupsComponent implements OnInit {
   }
 
   private closeDeleteModal(taskId: number): void {
-  const modalId = `deleteModal-${taskId}`;
-  const modalElement = document.getElementById(modalId);
-  if (modalElement) {
-    // @ts-ignore - Bootstrap types might not be available
-    const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-    modal.hide();
+    const modalId = `deleteModal-${taskId}`;
+    const modalElement = document.getElementById(modalId);
+    if (modalElement) {
+      // @ts-ignore - Bootstrap types might not be available
+      const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+      modal.hide();
+    }
   }
-}
 
   confirmDelete(taskId: number): void {
     this.taskService.deleteTask(taskId).subscribe({
       next: (response) => {
         this.successMessage = 'تم حذف المهمة بنجاح';
         this.closeDeleteModal(taskId);
-        this.taskDataChanged.emit();        
+        this.taskDataChanged.emit();
       },
       error: (error) => {
         this.errorMessage = 'حدث خطأ في حذف المهمة';
-      }
+      },
     });
   }
 
@@ -279,7 +284,7 @@ export class TaskGroupsComponent implements OnInit {
       deadline: new Date(formValue.deadline),
       employeeId: formValue.employeeId || this.selectedTask.employeeId,
       status: formValue.status,
-      refrence: formValue.refrence
+      refrence: formValue.refrence,
     };
 
     // Update local data
@@ -293,7 +298,7 @@ export class TaskGroupsComponent implements OnInit {
       error: (error) => {
         this.isSaving = false;
         this.errorMessage = 'حدث خطأ في تحديث المهمة';
-      }
+      },
     });
   }
 
@@ -303,33 +308,33 @@ export class TaskGroupsComponent implements OnInit {
       title: formValue.title,
       taskType: Number(formValue.taskType),
       description: formValue.description,
-      status: formValue.status,
-      clientServiceId: this.getClientServiceIdFromTaskGroup(this.selectedTaskGroupId!),
+      clientServiceId: this.getClientServiceIdFromTaskGroup(
+        this.selectedTaskGroupId!
+      ),
       deadline: new Date(formValue.deadline),
       priority: formValue.priority,
       refrence: formValue.refrence,
       employeeId: formValue.employeeId,
-      taskGroupId: this.selectedTaskGroupId!
+      taskGroupId: this.selectedTaskGroupId!,
     };
 
-    console.log("new task ",newTask);
+    console.log('new task ', newTask);
 
     this.isSaving = true;
     this.taskService.addTask(newTask).subscribe({
       next: (response) => {
         // Add to local data
-        console.log("response", response)
+        console.log('response', response);
         this.isSaving = false;
         this.hideModal();
         this.taskDataChanged.emit();
-        this.successMessage = 'تم إضافة التاسك بنجاح';  
-
+        this.successMessage = 'تم إضافة التاسك بنجاح';
       },
       error: (error) => {
         this.isSaving = false;
-        this.errorMessage = 'فشل اضافة التاسك, حاول مرة اخرى'
-      }
-    })
+        this.errorMessage = 'فشل اضافة التاسك, حاول مرة اخرى';
+      },
+    });
   }
 
   private getClientServiceIdFromTaskGroup(taskGroupId: number): number {
@@ -341,20 +346,6 @@ export class TaskGroupsComponent implements OnInit {
       }
     }
     return 0;
-  }
-
-  getStatusText(status: CustomTaskStatus): string {
-    switch (status) {
-      case CustomTaskStatus.Completed:
-        return 'مكتمل';
-      case CustomTaskStatus.InProgress:
-        return 'قيد التنفيذ';
-      case CustomTaskStatus.Acknowledged:
-        return 'تم الإقرار';
-      case CustomTaskStatus.Open:
-      default:
-        return 'لم يبدأ';
-    }
   }
 
   hasError(controlName: string): boolean {

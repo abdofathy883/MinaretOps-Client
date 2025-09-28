@@ -47,17 +47,17 @@
         <tbody>
           @for (task of taskGroup.tasks; track task.id) {
           <tr>
-            <td>{{ task.title }}</td>
-            <td>{{ task.employeeName || "غير محدد" }}</td>
-            <td>
+            <td data-cell="التاسك">{{ task.title }}</td>
+            <td data-cell="الموظف">{{ task.employeeName || "غير محدد" }}</td>
+            <td data-cell="الاولوية">
               <span class="badge" [ngClass]="getPriorityClass(task.priority)">
                 {{ task.priority }}
               </span>
             </td>
-            <td>{{ task.deadline | date : "dd/MM/yyyy" }}</td>
-            <td>
-              <span class="badge" [ngClass]="getStatusClass(task.status)">
-                {{ getStatusText(task.status) }}
+            <td data-cell="موعد التسليم">{{ task.deadline | date : "dd/MM/yyyy" }}</td>
+            <td data-cell="الحالة">
+              <span class="badge" [ngClass]="task.status | mapTaskStatusClass">
+                {{ task.status | mapTaskStatus }}
               </span>
             </td>
           </tr>
@@ -105,10 +105,10 @@
                 {{ task.priority }}
               </span>
             </td>
-            <td>{{ task.deadline | date : "dd/MM/yyyy" }}</td>
+            <td>{{ task.deadline | date : "short" }}</td>
             <td>
-              <span class="badge" [ngClass]="getStatusClass(task.status)">
-                {{ getStatusText(task.status) }}
+              <span class="badge" [ngClass]="task.status | mapTaskStatusClass">
+                {{ task.status | mapTaskStatus }}
               </span>
             </td>
             <td>
@@ -180,9 +180,6 @@
       @if (taskGroup.tasks && taskGroup.tasks.length > 0) { }
     </div>
     } } @else {
-    <!-- <button class="btn btn-outline-success" (click)="openAddTaskModal(taskGroup.id)">
-        + اضافة تاسك
-      </button> -->
     <div class="card-body">
       <p class="text-muted text-center">لا توجد مجموعات مهام لهذه الخدمة</p>
     </div>
@@ -319,7 +316,7 @@
             <div class="col-md-6 mb-3">
               <label for="deadline" class="form-label">موعد التسليم</label>
               <input
-                type="date"
+                type="datetime-local"
                 class="form-control"
                 id="deadline"
                 formControlName="deadline"
@@ -331,27 +328,31 @@
               </div>
               }
             </div>
+            @if (modalMode === 'edit') {
 
-            <div class="col-md-6 mb-3">
-              <label for="status" class="form-label">الحالة</label>
-              <select
-                class="form-select"
-                id="status"
-                formControlName="status"
-                [class.is-invalid]="hasError('status')"
-              >
-                <option value="">اختر الحالة</option>
-                <option [value]="0">لم يبدأ</option>
-                <option [value]="1">قيد التنفيذ</option>
-                <option [value]="2">تم التسليم</option>
-                <option [value]="3">مكتمل</option>
-              </select>
-              @if (hasError('status')) {
-              <div class="invalid-feedback">
-                {{ getErrorMessage("status") }}
+              <div class="col-md-6 mb-3">
+                <label for="status" class="form-label">الحالة</label>
+                <select
+                  class="form-select"
+                  id="status"
+                  formControlName="status"
+                  [class.is-invalid]="hasError('status')"
+                >
+                  <option value="">اختر الحالة</option>
+                  <option [value]="0">لم يبدأ</option>
+                  <option [value]="1">تم الاقرار</option>
+                  <option [value]="2">قيد التنفيذ</option>
+                  <option [value]="3">قيد المراجعة</option>
+                  <option [value]="4">تحتاج تعديلات</option>
+                  <option [value]="5">مكتمل</option>
+                </select>
+                @if (hasError('status')) {
+                <div class="invalid-feedback">
+                  {{ getErrorMessage("status") }}
+                </div>
+                }
               </div>
-              }
-            </div>
+            }
           </div>
 
           <div class="row">

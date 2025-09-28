@@ -60,7 +60,6 @@ export interface ICreateTask {
   title: string;
   taskType: TaskType;
   description: string;
-  status: CustomTaskStatus;
   clientServiceId: number;
   deadline: Date;
   priority: string;
