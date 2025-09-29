@@ -93,7 +93,6 @@ export class SingleTaskComponent implements OnInit {
     this.taskService.getById(taskId).subscribe({
       next: (response) => {
         this.task = response;
-        console.log(response);
       },
     });
 
@@ -121,11 +120,21 @@ export class SingleTaskComponent implements OnInit {
       taskType: task.taskType,
       description: task.description || '',
       priority: task.priority,
-      deadline: task.deadline,
+      deadline: this.formatDateTimeForInput(task.deadline),
       employeeId: task.employeeId || '',
       status: task.status,
       refrence: task.refrence || '',
     });
+  }
+
+  private formatDateTimeForInput(date: Date): string {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
   getTypeLabel(type: TaskType): string {
@@ -234,11 +243,11 @@ export class SingleTaskComponent implements OnInit {
     this.isEditMode = true;
     this.errorMessage = '';
     this.successMessage = '';
+    this.populateForm(this.task!);
   }
 
   cancelEdit(): void {
     this.isEditMode = false;
-    this.populateForm(this.task!);
     this.errorMessage = '';
     this.successMessage = '';
   }

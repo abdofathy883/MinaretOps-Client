@@ -9,6 +9,7 @@ import { AttendanceService } from '../../services/attendance/attendance.service'
 import { LogService } from '../../services/logging/log.service';
 import { map, Observable, switchMap } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { FingerPrientService } from '../../services/finger-prient/finger-prient.service';
 
 @Component({
   selector: 'app-attendance',
@@ -27,8 +28,12 @@ export class AttendanceComponent {
   attendanceErrorMessage = '';
   alertType = 'info';
 
+  deviceID = '';
+  ipAddress = '';
+
   constructor(
     private attendanceService: AttendanceService,
+    private fp: FingerPrientService,
     private logger: LogService
   ) {}
 
@@ -38,7 +43,23 @@ export class AttendanceComponent {
       if (this.currentUser) {
         this.loadToadayAttendance(this.currentUser.id);
       }
-    }, 5000);
+    }, 3000);
+
+    this.getFingerPrient();
+    this.getIpAddress().subscribe((ip) => {
+      this.ipAddress = ip;
+      this.logger.log('info', 'Current IP Address: ', ip);
+      console.log('Current IP Address:', ip);
+    });
+  }
+
+  async getFingerPrient() {
+    try {
+      this.deviceID = await this.fp.getOrCreateDeviceId();
+      console.log('Device ID:', this.deviceID);
+    } catch (err) {
+      console.error('Error getting device ID:', err);
+    }
   }
 
   getAttendanceStatusLabel(status: AttendanceStatus | null): string {
@@ -72,75 +93,32 @@ export class AttendanceComponent {
   onCheckIn() {
     this.isCheckingIn = true;
 
-    this.getDeviceId()
-      .pipe(
-        switchMap((deviceId) =>
-          this.getIpAddress().pipe(
-            map((ipAddress) => ({ deviceId, ipAddress }))
-          )
-        ),
-        switchMap(({ deviceId, ipAddress }) => {
-          this.logger.log('debug', 'Getting Device ID and Network IP: ', {
-            deviceId,
-            ipAddress,
-          });
+    const checkInData: NewAttendanceRecord = {
+      employeeId: this.currentUser!.id,
+      deviceId: this.deviceID,
+      ipAddress: this.ipAddress,
+    };
 
-          const checkInData: NewAttendanceRecord = {
-            employeeId: this.currentUser!.id,
-            deviceId: deviceId,
-            ipAddress: ipAddress,
-          };
-
-          this.logger.log('debug', 'New Attendance Record: ', checkInData);
-
-          return this.attendanceService.checkIn(checkInData);
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          this.todayRecord = response;
-          this.logger.log(
-            'info',
-            'Sent Attendance Record and Got Response: ',
-            response
-          );
-          this.showAlert('تم تسجيل الحضور بنجاح', 'success');
-          this.isCheckingIn = false;
-        },
-        error: (error) => {
-          this.logger.log(
-            'error',
-            'Sent Attendance Record and Got Error Response: ',
-            error
-          );
-          this.showAlert('حدث خطأ أثناء تسجيل الحضور', 'error');
-          this.isCheckingIn = false;
-        },
-      });
-  }
-
-  getDeviceId(): Observable<string> {
-    return new Observable((observer) => {
-      try {
-        // Simple device fingerprinting
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        ctx!.textBaseline = 'top';
-        ctx!.font = '14px Arial';
-        ctx!.fillText('Device fingerprint', 2, 2);
-
-        const fingerprint = canvas.toDataURL();
+    this.attendanceService.checkIn(checkInData).subscribe({
+      next: (response) => {
+        this.todayRecord = response;
         this.logger.log(
-          'debug',
-          'Check In From Get Device ID Method with FingerPrint: ',
-          fingerprint
+          'info',
+          'Sent Attendance Record and Got Response: ',
+          response
         );
-        const deviceId = btoa(fingerprint).substring(0, 16);
-        observer.next(deviceId);
-        observer.complete();
-      } catch (error) {
-        observer.error(error);
-      }
+        this.showAlert('تم تسجيل الحضور بنجاح', 'success');
+        this.isCheckingIn = false;
+      },
+      error: (error) => {
+        this.logger.log(
+          'error',
+          'Sent Attendance Record and Got Error Response: ',
+          error
+        );
+        this.showAlert('حدث خطأ أثناء تسجيل الحضور', 'error');
+        this.isCheckingIn = false;
+      },
     });
   }
 

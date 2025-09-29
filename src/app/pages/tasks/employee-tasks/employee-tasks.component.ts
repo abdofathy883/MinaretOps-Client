@@ -12,10 +12,18 @@ import { LightWieghtClient } from '../../../model/client/client';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CustomTaskStatus, ITask, TaskType } from '../../../model/task/task';
+import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
+import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
 
 @Component({
   selector: 'app-employee-tasks',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    MapTaskStatusClassPipe,
+    MapTaskStatusPipe,
+  ],
   templateUrl: './employee-tasks.component.html',
   styleUrl: './employee-tasks.component.css',
 })
@@ -62,39 +70,19 @@ export class EmployeeTasksComponent implements OnInit {
     });
   }
 
-  getStatusLabel(status: CustomTaskStatus): string {
-    switch (status) {
-      case CustomTaskStatus.Open: return 'لم تبدأ';
-      case CustomTaskStatus.Acknowledged: return 'تم الإقرار';
-      case CustomTaskStatus.InProgress: return 'قيد التنفيذ';
-      case CustomTaskStatus.UnderReview: return 'قيد المراجعة';
-      case CustomTaskStatus.NeedsEdits: return 'تحتاج إلى تعديلات';
-      case CustomTaskStatus.Completed: return 'مكتمل';
-      default: return 'غير محدد';
-    }
-  }
-
-  getStatusClass(status: CustomTaskStatus): string {
-    switch (status) {
-      case CustomTaskStatus.Open: return 'status-not-started';
-      case CustomTaskStatus.Acknowledged: return 'status-acknowledged';
-      case CustomTaskStatus.InProgress: return 'status-in-progress';
-      case CustomTaskStatus.UnderReview: return 'status-under-review';
-      case CustomTaskStatus.NeedsEdits: return 'status-needs-edits';
-      case CustomTaskStatus.Completed: return 'status-completed';
-      default: return 'status-unknown';
-    }
-  }
-
   getPriorityClass(priority: string): string {
     switch (priority.toLowerCase()) {
-      case 'مستعجل': return 'priority-high';
-      case 'مهم': return 'priority-medium';
-      case 'عادي': return 'priority-normal';
-      default: return 'priority-normal';
+      case 'مستعجل':
+        return 'priority-high';
+      case 'مهم':
+        return 'priority-medium';
+      case 'عادي':
+        return 'priority-normal';
+      default:
+        return 'priority-normal';
     }
   }
-  
+
   applyFilters() {
     const formValues = this.filterForm.value;
 
@@ -124,7 +112,7 @@ export class EmployeeTasksComponent implements OnInit {
   }
 
   getTypeLabel(type: TaskType): string {
-    switch (type){
+    switch (type) {
       case TaskType.Ad_Management:
         return 'Ad Management';
       case TaskType.Backend:
@@ -174,7 +162,7 @@ export class EmployeeTasksComponent implements OnInit {
       case TaskType.WordPress:
         return 'WordPress';
       default:
-        return 'غير محدد'
+        return 'غير محدد';
     }
   }
 }

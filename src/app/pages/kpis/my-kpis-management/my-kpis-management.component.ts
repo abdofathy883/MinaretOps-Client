@@ -12,7 +12,7 @@ import { MapKpiAspectPipe } from '../../../core/pipes/kpis/map-kpi-aspect.pipe';
 export class MyKpisManagementComponent implements OnInit{
   @Input() currentUserId!: string;
   incedients: IIncedint[] = [];
-  summary!: IKpiSummary;
+  summary: IKpiSummary | null = null;
   
   constructor(
     private kpiService: KpiService

@@ -54,9 +54,9 @@
             الحالة:
             <div
               class="status-badge me-3"
-              [ngClass]="getStatusClass(task.status)"
+              [ngClass]="task.status | mapTaskStatusClass"
             >
-              {{ getStatusLabel(task.status) }}
+              {{ task.status | mapTaskStatus }}
             </div>
           </div>
         </div>
