@@ -1,37 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { Service } from '../../../model/service/service';
-import { ServicesService } from '../../../services/services/services.service';
-import { AuthService } from '../../../services/auth/auth.service';
+import { Component } from '@angular/core';
+import { ITask, TaskType } from '../../../model/task/task';
 import { User } from '../../../model/auth/user';
 import { LightWieghtClient } from '../../../model/client/client';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ServicesService } from '../../../services/services/services.service';
+import { AuthService } from '../../../services/auth/auth.service';
 import { ClientService } from '../../../services/clients/client.service';
 import { TaskService } from '../../../services/tasks/task.service';
 import { Router } from '@angular/router';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { Service } from '../../../model/service/service';
 import { CommonModule } from '@angular/common';
-import { CustomTaskStatus, ITask, TaskType } from '../../../model/task/task';
-import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
+import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
 
 @Component({
-  selector: 'app-admin-tasks',
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    CommonModule,
-    MapTaskStatusPipe,
-    MapTaskStatusClassPipe,
-  ],
-  templateUrl: './admin-tasks.component.html',
-  styleUrl: './admin-tasks.component.css',
+  selector: 'app-archive',
+  imports: [CommonModule, ReactiveFormsModule, MapTaskStatusClassPipe, MapTaskStatusPipe],
+  templateUrl: './archive.component.html',
+  styleUrl: './archive.component.css'
 })
-export class AdminTasksComponent implements OnInit {
-  services: Service[] = [];
+export class ArchiveComponent {
+services: Service[] = [];
   employees: User[] = [];
   clients: LightWieghtClient[] = [];
   tasks: ITask[] = [];
@@ -86,7 +75,7 @@ export class AdminTasksComponent implements OnInit {
   }
 
   loadTasks() {
-    this.taskService.getAll().subscribe({
+    this.taskService.getArchivedTasks().subscribe({
       next: (response) => {
         this.tasks = response;
         this.filteredTasks = [...this.tasks];

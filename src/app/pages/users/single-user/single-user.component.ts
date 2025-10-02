@@ -13,7 +13,8 @@ import { UpdateUser, User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
 import { AttendanceService } from '../../../services/attendance/attendance.service';
 import { AttendanceRecord } from '../../../model/attendance-record/attendance-record';
-import { MyKpisManagementComponent } from "../../kpis/my-kpis-management/my-kpis-management.component";
+import { MyKpisManagementComponent } from '../../kpis/my-kpis-management/my-kpis-management.component';
+import { AlertService } from '../../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-single-user',
@@ -41,6 +42,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
+    private alertService: AlertService,
     private route: ActivatedRoute,
     private attendanceService: AttendanceService,
     private router: Router,
@@ -65,7 +67,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     this.attendanceService.getAttendanceByEmployeeId(empId).subscribe({
       next: (response) => {
         this.attendanceRecords = response;
-      }
+      },
     });
   }
 
@@ -107,7 +109,10 @@ export class SingleUserComponent implements OnInit, OnDestroy {
           this.loadAttendance(userId);
         },
         error: (error) => {
-          this.showAlert('حدث خطأ أثناء تحميل بيانات المستخدم', 'error');
+          this.showAlert(
+            'حدث خطأ أثناء تحميل بيانات المستخدم',
+            'error'
+          );
           this.isLoading = false;
         },
       });
@@ -177,7 +182,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
 
   saveUser(): void {
     if (this.editUserForm.invalid) {
-      this.markFormGroupTouched();
+      this.editUserForm.markAllAsTouched();
       return;
     }
 
@@ -201,11 +206,16 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     this.authService.update(updateUser).subscribe({
       next: (response) => {
         this.user = response;
-        this.showAlert('تم تحديث بيانات المستخدم بنجاح', 'success');
+        this.showAlert(
+          'تم تحديث بيانات المستخدم بنجاح',
+          'success'
+        );
       },
-      error: (error) => {
-        console.log(error);
-        this.showAlert('حدث خطأ أثناء تحديث بيانات المستخدم', 'error');
+      error: () => {
+        this.showAlert(
+          'حدث خطأ أثناء تحديث بيانات المستخدم',
+          'error'
+        );
       },
     });
   }
@@ -248,13 +258,6 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  private markFormGroupTouched(): void {
-    Object.keys(this.editUserForm.controls).forEach((key) => {
-      const control = this.editUserForm.get(key);
-      control?.markAsTouched();
-    });
-  }
-
   // Helper method to check if a form control has a specific error
   hasError(controlName: string, errorType: string): boolean {
     const control = this.editUserForm.get(controlName);
@@ -281,16 +284,22 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   requestPasswordReset(): void {
     this.isResetPasswordLoading = true;
     this.authService.requestPasswordReset(this.user.id).subscribe({
-      next: (response) => {
+      next: () => {
         this.isResetPasswordLoading = false;
-        this.showAlert('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريد المستخدم.', 'success');
+        this.showAlert(
+          'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريد المستخدم.',
+          'success'
+        );
       },
       error: (err) => {
         this.isResetPasswordLoading = false;
-        this.showAlert('حدث خطأ أثناء إرسال رابط إعادة تعيين كلمة المرور.', 'error');
-      }
-    })
-  } 
+        this.showAlert(
+          'حدث خطأ أثناء إرسال رابط إعادة تعيين كلمة المرور.',
+          'error'
+        );
+      },
+    });
+  }
 
   showAlert(message: string, type: string) {
     this.alertMessage = message;

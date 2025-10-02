@@ -18,10 +18,17 @@ import {
 import { User } from '../../../model/auth/user';
 import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
+import { AlertService } from '../../../services/helper-services/alert.service';
+import { hasError } from '../../../services/helper-services/utils';
 
 @Component({
   selector: 'app-single-task',
-  imports: [CommonModule, ReactiveFormsModule, MapTaskStatusPipe, MapTaskStatusClassPipe],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MapTaskStatusPipe,
+    MapTaskStatusClassPipe,
+  ],
   templateUrl: './single-task.component.html',
   styleUrl: './single-task.component.css',
 })
@@ -29,15 +36,17 @@ export class SingleTaskComponent implements OnInit {
   task!: ITask;
   updatingStatus = false;
   isEditMode: boolean = false;
-  errorMessage = '';
-  successMessage = '';
+  alertMessage = '';
+  alertType = 'info';
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
   isUserContentLeader: boolean = false;
   isUserDesignLeader: boolean = false;
   editTaskForm!: FormGroup;
   employees: User[] = [];
+  currentUserId: string = '';
   isLoading: boolean = false;
+  isArchiveLoading: boolean = false;
 
   availableStatuses = [
     { value: CustomTaskStatus.Open, label: 'لم تبدأ', icon: 'bi bi-clock' },
@@ -61,16 +70,17 @@ export class SingleTaskComponent implements OnInit {
       label: 'تحتاج إلى تعديلات',
       icon: 'bi bi-pencil-fill',
     },
-    {
-      value: CustomTaskStatus.Completed,
-      label: 'مكتمل',
-      icon: 'bi bi-rocket-takeoff-fill',
-    },
+    // {
+    //   value: CustomTaskStatus.Completed,
+    //   label: 'مكتمل',
+    //   icon: 'bi bi-rocket-takeoff-fill',
+    // },
   ];
   CustomTaskStatus = CustomTaskStatus;
   constructor(
     private taskService: TaskService,
     private authService: AuthService,
+    private alertService: AlertService,
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder
@@ -95,6 +105,12 @@ export class SingleTaskComponent implements OnInit {
         this.task = response;
       },
     });
+
+    this.loadUser();
+  }
+  
+  loadUser() {
+    this.currentUserId = this.authService.getCurrentUserId();
 
     this.authService.getAll().subscribe((response) => {
       this.employees = response;
@@ -197,7 +213,7 @@ export class SingleTaskComponent implements OnInit {
 
     this.updatingStatus = true;
 
-    this.taskService.changeStatus(this.task.id, newStatus).subscribe({
+    this.taskService.changeStatus(this.task.id, this.currentUserId, newStatus).subscribe({
       next: () => {
         if (this.task) {
           this.task.status = newStatus;
@@ -208,12 +224,13 @@ export class SingleTaskComponent implements OnInit {
           } else {
             this.task.completedAt = undefined;
           }
+          this.showAlert('تم تحديث حالة التاسك', 'success');
         }
         this.updatingStatus = false;
       },
-      error: (err) => {
+      error: () => {
         this.updatingStatus = false;
-        console.error('Error updating task status:', err);
+        this.showAlert('فشل تحديث حالة التاسك', 'error');
       },
     });
   }
@@ -241,20 +258,15 @@ export class SingleTaskComponent implements OnInit {
 
   toggleEditMode(): void {
     this.isEditMode = true;
-    this.errorMessage = '';
-    this.successMessage = '';
     this.populateForm(this.task!);
   }
 
   cancelEdit(): void {
     this.isEditMode = false;
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   hasError(controlName: string): boolean {
-    const control = this.editTaskForm.get(controlName);
-    return control ? control.invalid && control.touched : false;
+    return hasError(this.editTaskForm, controlName);
   }
 
   getErrorMessage(controlName: string): string {
@@ -270,9 +282,7 @@ export class SingleTaskComponent implements OnInit {
   }
 
   saveTask() {
-    if (this.editTaskForm.invalid) {
-      return;
-    }
+    if (this.editTaskForm.invalid) return;
 
     this.isLoading = true;
     const formValue = this.editTaskForm.value;
@@ -283,18 +293,22 @@ export class SingleTaskComponent implements OnInit {
       priority: formValue.priority,
       deadline: new Date(formValue.deadline),
       employeeId: formValue.employeeId,
-      status: formValue.status,
+      status: Number(formValue.status),
       refrence: formValue.refrence,
     };
+    console.log(updatedTask);
+    this.isLoading = false;
 
-    this.taskService.update(this.task.id, updatedTask).subscribe({
+    this.taskService.update(this.task.id, this.currentUserId, updatedTask).subscribe({
+
       next: (response) => {
         this.isLoading = false;
-        this.successMessage = 'تم تحديث المهمة بنجاح';
+        this.task = response;
+        this.showAlert('تم تحديث التاسك بنجاح', 'success');
       },
-      error: (error) => {
+      error: () => {
         this.isLoading = false;
-        this.errorMessage = 'حدث خطأ في تحديث المهمة';
+        this.showAlert('فشل تحديث التاسك', 'error');
       },
     });
   }
@@ -304,9 +318,36 @@ export class SingleTaskComponent implements OnInit {
       next: () => {
         this.router.navigate(['/tasks']);
       },
-      error: (error) => {
-        this.errorMessage = 'حدث خطأ أثناء حذف المهمة';
+      error: () => {
+        this.showAlert('فشل حذف التاسك', 'error');
       },
     });
+  }
+
+  archiveTask() {
+    this.isArchiveLoading = true;
+    this.taskService.archive(this.task.id).subscribe({
+      next: () => {
+        this.isArchiveLoading = false;
+        this.showAlert('تم أرشفة المهمة بنجاح', 'success');
+      },
+      error: () => {
+        this.isArchiveLoading = false;
+        this.showAlert('فشل ارشفة التاسك', 'error');
+      }
+    });
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

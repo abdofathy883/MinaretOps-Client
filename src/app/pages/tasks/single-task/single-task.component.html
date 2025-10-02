@@ -3,6 +3,9 @@
   <div class="task-header d-flex align-items-center flex-wrap">
     <div class="task-title-section">
       <h1 class="task-title">{{ task.title }}</h1>
+      @if (task.isArchived) {
+      <h1 class="task-title">التاسك مؤرشف</h1>
+      }
       <div class="task-meta">
         <span class="task-id">#{{ task.id }}</span>
       </div>
@@ -64,12 +67,89 @@
         <div class="detail-item">
           <label>المرجع:</label>
           <span class="reference" *ngIf="task.refrence; else noReference">
-            <a [href]="task.refrence" target="_blank" rel="noopener noreferrer">عرض الريفرنس</a>
+            <a [href]="task.refrence" target="_blank" rel="noopener noreferrer"
+              >عرض الريفرنس</a
+            >
           </span>
           <ng-template #noReference>
             <span class="no-reference">لا يوجد مرجع</span>
           </ng-template>
         </div>
+
+        <div class="task-history-card mt-4">
+          <div class="card-header mb-2">
+            <h3><i class="bi bi-clock-history"></i> سجل التغييرات</h3>
+          </div>
+
+          @if (task.taskHistory.length) {
+          <ul class="timeline">
+            @for (h of task.taskHistory; track h.id) {
+            <li class="timeline-item">
+              <div class="timeline-time">
+                {{ h.updatedAt | date : "short" }}
+              </div>
+              <div class="timeline-content">
+                <div class="change-summary">
+                  <span class="prop">{{ h.propertyName }}</span>
+                  <span class="arrow">←</span>
+                  <span class="old">{{ h.oldValue || "-" }}</span>
+                  <span class="to">إلى</span>
+                  <span class="new">{{ h.newValue || "-" }}</span>
+                </div>
+                <div class="byline">
+                  <i class="bi bi-person"></i>
+                  <span>تم التعديل بواسطة: {{ h.updatedByName }}</span>
+                </div>
+              </div>
+            </li>
+            }
+          </ul>
+          } @else {
+          <div class="no-history">لا يوجد سجل تغييرات حتى الآن</div>
+          }
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <!-- <div class="demonstration-section mt-4">
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="bi bi-plus-circle"></i> انهاء التاسك</h3>
+      </div>
+      <div class="card-body">
+        <div class="dynamic-inputs-section mb-4">
+          <label class="form-label">إضافة رابط</label>
+          <div class="input-group mb-2">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="أدخل الرابط"
+            />
+            <button class="btn btn-outline-primary" type="button">
+              <i class="bi bi-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="text-area-section mb-4">
+          <label for="demoTextArea" class="form-label">نص إضافي</label>
+          <textarea 
+            class="form-control" 
+            id="demoTextArea" 
+            rows="4" 
+            placeholder="أدخل النص الإضافي هنا..."
+          ></textarea>
+        </div>
+
+        <div class="submit-section">
+          <button type="button" class="btn btn-success">
+            <i class="bi bi-check-circle me-1"></i>
+            إرسال
+          </button>
+        </div>
+      </div>
+    </div>
+  </div> -->
       </div>
     </div>
 
@@ -167,6 +247,20 @@
 
             }
           </div>
+          @if (isUserAdmin || isUserAccountManager) {
+          <button class="archive-btn" (click)="archiveTask()">
+            @if(isArchiveLoading) {
+            <span
+              class="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            جار الارشفة... } @if(!isArchiveLoading) { ارشفة التاسك }
+          </button>
+          @if (task.isArchived) {
+            <small class="text-muted">التاسك مؤرشفة. اضغط مرة اخرى لالغاء الارشفة</small>
+          }
+          }
 
           <div class="update-feedback" *ngIf="updatingStatus">
             <div class="spinner"></div>
@@ -182,6 +276,13 @@
     </div>
   </div>
   } @if (isEditMode) {
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
+  </div>
+  }
   <form [formGroup]="editTaskForm" (ngSubmit)="saveTask()">
     <div class="row">
       <div class="mb-3">

@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { ClientStatus, IClient, IUpdateClient } from '../../../../model/client/client';
+import { AlertService } from '../../../../services/helper-services/alert.service';
+import { hasError } from '../../../../services/helper-services/utils';
 
 @Component({
   selector: 'app-client-info',
@@ -16,16 +18,19 @@ export class ClientInfoComponent implements OnInit, OnChanges {
   isLoading: boolean = false;
   isDeleteLoading: boolean = false;
   isEditMode: boolean = false;
-  errorMessage: string = '';
-  successMessage: string = '';
   clientForm!: FormGroup;
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
+  alertMessage = '';
+  alertType = 'info';
 
   constructor(
     private clientService: ClientService, 
     private authService: AuthService,
-    private fb: FormBuilder) {}
+    private alertService: AlertService,
+    private fb: FormBuilder) 
+    {}
+
   ngOnInit(): void {
     this.initializeForm();
     if (this.client) {
@@ -109,20 +114,15 @@ export class ClientInfoComponent implements OnInit, OnChanges {
 
   toggleEditMode(): void {
     this.isEditMode = true;
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   cancelEdit(): void {
     this.isEditMode = false;
     // this.populateForm(this.user!);
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   hasError(controlName: string): boolean {
-    const control = this.clientForm.get(controlName);
-    return control ? control.invalid && control.touched : false;
+    return hasError(this.clientForm, controlName);
   }
 
   getErrorMessage(controlName: string): string {
@@ -143,7 +143,6 @@ export class ClientInfoComponent implements OnInit, OnChanges {
       return;
     }
     this.isLoading = true;
-    this.errorMessage = '';
 
     const formValues = this.clientForm.value;
     const updateClient: IUpdateClient = {
@@ -158,19 +157,17 @@ export class ClientInfoComponent implements OnInit, OnChanges {
       statusNotes: formValues.statusNotes,
     };
 
-    console.log('Updating client with data:', updateClient);
-
     if (this.client) {
       this.clientService.update(this.client.id, updateClient).subscribe({
         next: (response) => {
-          this.successMessage = 'تم تحديث بيانات العميل بنجاح';
+          this.showAlert('تم تحديث بيانات العميل بنجاح', 'success');
           this.client = response;
           
           // this.clientUpdated.emit(response);
           this.isLoading = false;
         },
-        error: (error) => {
-          this.errorMessage = 'حدث خطأ في تحديث بيانات العميل';
+        error: () => {
+          this.showAlert('فشل في تحديث بيانات العميل, حاول مرة اخرى', 'error');
           this.isLoading = false;
         },
       });
@@ -182,10 +179,25 @@ export class ClientInfoComponent implements OnInit, OnChanges {
     this.clientService.delete(this.client!.id).subscribe({
       next: (response) => {
         this.isDeleteLoading = false;
+        this.showAlert('تم حذف العميل بنجاح', 'success');
       },
       error: (error) => {
         this.isDeleteLoading = false;
+        this.showAlert('فشل في حذف العميل, حاول مرة اخرى', 'error');
       },
     });
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

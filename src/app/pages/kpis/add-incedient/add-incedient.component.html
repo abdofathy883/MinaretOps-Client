@@ -1,4 +1,11 @@
 <section class="container py-3">
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
+  </div>
+  }
   <div class="card">
     <div class="card-header form-header">
       <h5 class="mb-0">
@@ -45,16 +52,22 @@
           </div>
         </div>
 
-        <div class="mb-3">
-          <label for="evidence" class="form-label">الدليل</label>
-          <input
-            type="file"
-            name="evidence"
-            id="evidence"
-            formControlName="evidenceURL"
-            class="form-control"
-            (change)="onFileChange($event)"
-          />
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="evidence" class="form-label">الدليل</label>
+            <input
+              type="file"
+              name="evidence"
+              id="evidence"
+              formControlName="evidenceURL"
+              class="form-control"
+              (change)="onFileChange($event)"
+            />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="date" class="form-label">تاريخ المخالفة</label>
+            <input type="date" name="date" id="date" class="form-control" formControlName="date">
+          </div>
         </div>
 
         <div class="mb-3">

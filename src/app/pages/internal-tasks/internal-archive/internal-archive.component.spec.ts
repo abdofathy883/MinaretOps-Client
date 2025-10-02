@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdminTasksComponent } from './admin-tasks.component';
+import { InternalArchiveComponent } from './internal-archive.component';
 
-describe('AdminTasksComponent', () => {
-  let component: AdminTasksComponent;
-  let fixture: ComponentFixture<AdminTasksComponent>;
+describe('InternalArchiveComponent', () => {
+  let component: InternalArchiveComponent;
+  let fixture: ComponentFixture<InternalArchiveComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdminTasksComponent]
+      imports: [InternalArchiveComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AdminTasksComponent);
+    fixture = TestBed.createComponent(InternalArchiveComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

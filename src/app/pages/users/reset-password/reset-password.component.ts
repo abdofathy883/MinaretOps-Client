@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { IResetPassword } from '../../../model/auth/user';
+import { AlertService } from '../../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -24,13 +25,13 @@ export class ResetPasswordComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private alertService: AlertService,
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute
   ) { 
     this.resetPasswordForm = this.fb.group({
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
-      // confirmPassword: ['', [Validators.required]]
     });
   }
 
@@ -108,24 +109,16 @@ export class ResetPasswordComponent implements OnInit {
     return 'قيمة غير صحيحة';
   }
 
-  // getPasswordMismatchError(): boolean {
-  //   return this.resetPasswordForm.hasError('passwordMismatch') && 
-  //          this.resetPasswordForm.get('confirmPassword')?.touched;
-  // }
-
-  showAlert(message: string, type: string): void {
+  showAlert(message: string, type: string) {
     this.alertMessage = message;
     this.alertType = type;
-    this.isLoading = false;
 
-    if (type === 'success') {
-      setTimeout(() => {
-        this.closeAlert();
-      }, 3000);
-    }
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
   }
 
-  closeAlert(): void {
+  closeAlert() {
     this.alertMessage = '';
   }
 }

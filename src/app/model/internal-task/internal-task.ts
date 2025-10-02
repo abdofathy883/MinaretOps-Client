@@ -8,6 +8,7 @@ export interface InternalTask {
   deadline: string;
   priority: string;
   status: CustomTaskStatus;
+  isArchived: boolean;
   completedAt: Date;
   isCompletedOnDeadline: boolean;
   assignments: InternalTaskAssignment[];

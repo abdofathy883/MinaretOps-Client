@@ -14,6 +14,8 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { RegisterUser } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
+import { hasError } from '../../../services/helper-services/utils';
+import { AlertService } from '../../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-add-user',
@@ -35,6 +37,7 @@ export class AddUserComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private alertService: AlertService,
     private router: Router
   ) {
     this.newUser = this.fb.group({
@@ -121,7 +124,6 @@ export class AddUserComponent implements OnInit {
     }
   }
 
-  // Password complexity validator: requires uppercase, lowercase, and special char
   private passwordComplexityValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value: string = control.value || '';
@@ -173,11 +175,6 @@ export class AddUserComponent implements OnInit {
   ngOnInit(): void {
     this.resetForm();
   }
-
-  // ngOnDestroy(): void {
-  //   this.destroy$.next();
-  //   this.destroy$.complete();
-  // }
 
   onSubmit(): void {
     if (this.newUser.invalid) {
@@ -242,26 +239,10 @@ export class AddUserComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
-  showAlert(message: string, type: string) {
-    this.alertMessage = message;
-    this.alertType = type;
-
-    setTimeout(() => {
-      this.closeAlert();
-    }, 5000);
-  }
-
-  closeAlert() {
-    this.alertMessage = '';
-  }
-
-  // Helper method to check if a form control has a specific error
   hasError(controlName: string, errorType: string): boolean {
-    const control = this.newUser.get(controlName);
-    return control ? control.hasError(errorType) && control.touched : false;
+    return hasError(this.newUser, controlName);
   }
 
-  // Helper method to get error message for a specific control
   getErrorMessage(controlName: string): string {
     const control = this.newUser.get(controlName);
     if (!control || !control.errors || !control.touched) return '';
@@ -275,40 +256,10 @@ export class AddUserComponent implements OnInit {
     return 'قيمة غير صحيحة';
   }
 
-  // Method to check if form is valid for submit button
   isFormValid(): boolean {
     return this.newUser.valid && !this.isLoading;
   }
 
-  // Method to get role display name
-  // getRoleDisplayName(roleValue: string): string {
-  //   switch (roleValue) {
-  //     case '1':
-  //       return 'Admin';
-  //     case '2':
-  //       return 'Account Manager';
-  //     case '3':
-  //       return 'Graphic Designer';
-  //     case '4':
-  //       return 'Graphic Designer Team Leader';
-  //     case '5':
-  //       return 'Content Creator';
-  //     case '6':
-  //       return 'Content Creator Team Leader';
-  //     case '7':
-  //       return 'Ads Specialist';
-  //     case '8':
-  //       return 'SEO Specialist';
-  //     case '9':
-  //       return 'Web Developer';
-  //     case '10':
-  //       return 'Video Editor';
-  //     default:
-  //       return 'اختر الدور';
-  //   }
-  // }
-
-  // Method to handle form field focus
   onFieldFocus(fieldName: string): void {
     // Clear any previous error messages when user starts typing
     const control = this.newUser.get(fieldName);
@@ -317,7 +268,6 @@ export class AddUserComponent implements OnInit {
     }
   }
 
-  // Method to handle form field blur
   onFieldBlur(fieldName: string): void {
     const control = this.newUser.get(fieldName);
     if (control) {
@@ -343,5 +293,18 @@ export class AddUserComponent implements OnInit {
     }
 
     return 'form-control';
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

@@ -47,6 +47,9 @@
             @if (isContentLeader || isDesignerLeader || isUserAccountManager ||
             isUserAdmin) {
             <li class="nav-item">
+              <a routerLink="/tasks/archive" class="nav-link">الارشيف</a>
+            </li>
+            <li class="nav-item">
               <a routerLink="/tasks/add" class="nav-link">اضافة تاسك</a>
             </li>
             }
@@ -73,6 +76,9 @@
               >
             </li>
             @if (isUserAdmin || isUserAccountManager) {
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks/archive">الارشيف</a>
+              </li>
             <li class="nav-item">
               <a class="nav-link" routerLink="/internal-tasks/add"
                 >إضافة مهمة داخلية</a

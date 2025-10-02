@@ -3,6 +3,7 @@ import { ServicesService } from '../../../services/services/services.service';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CreateServiceRequest } from '../../../model/service/service';
+import { AlertService } from '../../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-add-service',
@@ -14,13 +15,14 @@ export class AddServiceComponent implements OnInit {
   formService!: FormBuilder;
   isLoading: boolean = false;
 
-  successMessage: string = '';
-  errorMessage: string = '';
+  alertMessage = '';
+  alertType = 'info';
 
   serviceForm!: FormGroup;
   
   constructor(
     private serviceService: ServicesService,
+    private alertService: AlertService,
     private fb: FormBuilder
   ) {}
 
@@ -35,8 +37,6 @@ export class AddServiceComponent implements OnInit {
 
   resetForm(): void {
     this.serviceForm.reset();
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   onSubmit() {
@@ -56,13 +56,26 @@ export class AddServiceComponent implements OnInit {
     this.serviceService.create(newService).subscribe({
       next: () => {
         this.isLoading = false;
-        this.successMessage = 'تم اضافة الخدمة بنجاح'
+        this.showAlert('تم اضافة الخدمة بنجاح', 'success');
         this.serviceForm.reset();
       },
       error: () => {
         this.isLoading = false;
-        this.errorMessage = 'خطا في اضافة الخدمة, حاول مرة اخرى'
+        this.showAlert('فشل اضافة الخدمة', 'error');
       },
     });
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

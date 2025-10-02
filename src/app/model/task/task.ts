@@ -8,15 +8,18 @@ export interface ITask {
   clientServiceId: number;
   deadline: Date;
   priority: string;
+  isArchived: boolean;
   refrence?: string;
   employeeId: string;
   employeeName: string;
   taskGroupId: number;
   serviceId: number;
   serviceName: string;
+  clientId: number;
   clientName: string;
   completedAt?: Date;
   isCompletedOnDeadLine: boolean;
+  taskHistory: ITaskHistory[];
 }
 
 export enum CustomTaskStatus {
@@ -92,6 +95,17 @@ export interface ITaskGroup {
   monthLabel: string;
   tasks: ITask[];
   createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ITaskHistory {
+  id: number;
+  taskItemId: number;
+  propertyName: string;
+  oldValue: string;
+  newValue: string;
+  updatedById: string;
+  updatedByName: string;
   updatedAt: Date;
 }
 

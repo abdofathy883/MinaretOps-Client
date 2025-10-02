@@ -15,6 +15,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AttendanceComponent } from '../../attendance/attendance.component';
 import { SubmitLeaveRequestComponent } from '../../leave-requests/submit-leave-request/submit-leave-request.component';
 import { MyKpisManagementComponent } from '../../kpis/my-kpis-management/my-kpis-management.component';
+import { AlertService } from '../../../services/helper-services/alert.service';
 @Component({
   selector: 'app-my-account',
   imports: [
@@ -25,7 +26,7 @@ import { MyKpisManagementComponent } from '../../kpis/my-kpis-management/my-kpis
     AttendanceComponent,
     SubmitLeaveRequestComponent,
     MyKpisManagementComponent,
-],
+  ],
   standalone: true,
   templateUrl: './my-account.component.html',
   styleUrl: './my-account.component.css',
@@ -44,12 +45,12 @@ export class MyAccountComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private alertService: AlertService,
     private fb: FormBuilder,
     private route: ActivatedRoute
   ) {
     this.initializeForms();
   }
-
 
   initializeForms(): void {
     this.editUserForm = this.fb.group({
@@ -62,7 +63,7 @@ export class MyAccountComponent implements OnInit {
       phoneNumber: [''],
       paymentNumber: [''],
       city: [''],
-      street: [''],
+      street: [''],      
     });
 
     this.passwordForm = this.fb.group(
@@ -86,6 +87,7 @@ export class MyAccountComponent implements OnInit {
     this.authService.getById(userId).subscribe({
       next: (response) => {
         this.currentUser = response;
+        console.log(response);
         this.updateFormValues();
       },
     });
@@ -94,13 +96,15 @@ export class MyAccountComponent implements OnInit {
   updateFormValues(): void {
     if (this.currentUser) {
       this.editUserForm.patchValue({
-        firstName: this.currentUser.firstName || '',
-        lastName: this.currentUser.lastName || '',
-        email: this.currentUser.email || '',
-        phoneNumber: this.currentUser.phoneNumber || '',
-        paymentNumber: this.currentUser.paymentNumber || '',
-        city: this.currentUser.city || '',
-        street: this.currentUser.street || '',
+        firstName: this.currentUser.firstName,
+        lastName: this.currentUser.lastName,
+        email: this.currentUser.email,
+        phoneNumber: this.currentUser.phoneNumber,
+        paymentNumber: this.currentUser.paymentNumber,
+        city: this.currentUser.city,
+        street: this.currentUser.street,
+        jobTitle: this.currentUser.jobTitle,
+        bio: this.currentUser.bio
       });
     }
   }
@@ -135,7 +139,10 @@ export class MyAccountComponent implements OnInit {
       },
       error: () => {
         this.isLoading = false;
-        this.showAlert('فشل تحديث البيانات, حاول وقت اخر', 'error');
+        this.showAlert(
+          'فشل تحديث البيانات, حاول وقت اخر',
+          'error'
+        );
       },
     });
   }
@@ -159,7 +166,10 @@ export class MyAccountComponent implements OnInit {
       },
       error: () => {
         this.isPasswordLoading = false;
-        this.showAlert('فشل تحديث كلمة المرور, حاول وقت اخر', 'error');
+        this.showAlert(
+          'فشل تحديث كلمة المرور, حاول وقت اخر',
+          'error'
+        );
       },
     });
   }
@@ -183,19 +193,6 @@ export class MyAccountComponent implements OnInit {
 
   logout() {
     this.authService.LogOut();
-  }
-
-  showAlert(message: string, type: string) {
-    this.alertMessage = message;
-    this.alertType = type;
-
-    setTimeout(() => {
-      this.closeAlert();
-    }, 5000);
-  }
-
-  closeAlert() {
-    this.alertMessage = '';
   }
 
   private passwordComplexityValidator(): ValidatorFn {
@@ -243,5 +240,18 @@ export class MyAccountComponent implements OnInit {
 
   requirementIcon(ok: boolean): string {
     return ok ? 'bi-check-circle' : 'bi-x-circle';
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

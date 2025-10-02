@@ -12,7 +12,6 @@ import { Announcement } from '../../../model/announcement/announcement';
 })
 export class AllAnnouncementsComponent implements OnInit {
   announcements: Announcement[] = [];
-  errorMessage: string = '';
 
   constructor(
     private announcementService: AnnouncementService,
@@ -24,8 +23,6 @@ export class AllAnnouncementsComponent implements OnInit {
   }
 
   loadAnnouncements(): void {
-    this.errorMessage = '';
-
     this.announcementService.getAll().subscribe({
       next: (response) => {
         this.announcements = response;

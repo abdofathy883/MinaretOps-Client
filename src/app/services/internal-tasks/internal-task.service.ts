@@ -12,7 +12,11 @@ export class InternalTaskService {
   constructor(private api: ApiService) { }
 
   getAll(): Observable<InternalTask[]> {
-    return this.api.get<InternalTask[]>(this.endpoint);
+    return this.api.get<InternalTask[]>(`${this.endpoint}/un-archived-tasks`);
+  }
+
+  getArchivedTasks(): Observable<InternalTask[]> {
+    return this.api.get<InternalTask[]>(`${this.endpoint}/archived-tasks`)
   }
 
   getTasksByEmp(empId: string): Observable<InternalTask[]> {
@@ -23,8 +27,8 @@ export class InternalTaskService {
     return this.api.get<InternalTask>(`${this.endpoint}/${id}`);
   }
 
-  search(title: string): Observable<InternalTask[]> {
-    return this.api.get<InternalTask[]>(`${this.endpoint}/search-tasks/${title}`);
+  search(title: string, empId: string): Observable<InternalTask[]> {
+    return this.api.get<InternalTask[]>(`${this.endpoint}/search-tasks/${title}/${empId}`);
   }
 
   add(task: CreateInternalTask): Observable<InternalTask> {
@@ -33,6 +37,10 @@ export class InternalTaskService {
 
   changeTaskStatus(id: number, status: CustomTaskStatus): Observable<boolean> {
     return this.api.patch<boolean>(`${this.endpoint}/${id}`, status);
+  }
+
+  archive(taskId: number) : Observable<boolean> {
+    return this.api.patch<boolean>(`${this.endpoint}/archive/${taskId}`, null);
   }
 
   delete(taskId: number): Observable<boolean> {

@@ -19,6 +19,7 @@ import {
 import { User } from '../../../model/auth/user';
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
+import { AlertService } from '../../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-single-internal-task',
@@ -36,14 +37,14 @@ export class SingleInternalTaskComponent implements OnInit {
   updatingStatus = false;
   isLoading: boolean = false;
   isEditMode: boolean = false;
-  errorMessage = '';
-  successMessage = '';
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
   isUserContentLeader: boolean = false;
   isUserDesignLeader: boolean = false;
   internalTaskForm!: FormGroup;
   employees: User[] = [];
+  alertMessage = '';
+  alertType = 'info';
 
   availableStatuses = [
     { value: CustomTaskStatus.Open, label: 'لم تبدأ', icon: 'bi bi-clock' },
@@ -80,6 +81,7 @@ export class SingleInternalTaskComponent implements OnInit {
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
+    private alertService: AlertService,
     private fb: FormBuilder
   ) {}
 
@@ -89,6 +91,7 @@ export class SingleInternalTaskComponent implements OnInit {
     this.loadTask();
     this.checkUserPermissions();
   }
+
   private initializeForm(): void {
     this.internalTaskForm = this.fb.group({
       title: ['', Validators.required],
@@ -105,7 +108,7 @@ export class SingleInternalTaskComponent implements OnInit {
     this.authService.getAll().subscribe({
       next: (response) => {
         this.employees = response;
-      },
+      }
     });
   }
 
@@ -116,10 +119,7 @@ export class SingleInternalTaskComponent implements OnInit {
     this.internalTaskService.getById(taskId).subscribe({
       next: (task) => {
         this.internalTask = task;
-      },
-      error: (error) => {
-        this.errorMessage = 'فشل في تحميل بيانات المهمة';
-      },
+      }
     });
   }
 
@@ -140,16 +140,12 @@ export class SingleInternalTaskComponent implements OnInit {
 
   toggleEditMode(): void {
     this.isEditMode = true;
-    this.errorMessage = '';
-    this.successMessage = '';
     this.populateForm();
   }
 
   cancelEdit(): void {
     this.isEditMode = false;
     // this.populateForm(this.task!);
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   private populateForm(): void {
@@ -178,9 +174,7 @@ export class SingleInternalTaskComponent implements OnInit {
   }
 
   updateTaskStatus(newStatus: CustomTaskStatus) {
-    if (!this.internalTask) {
-      return;
-    }
+    if (!this.internalTask) return;
 
     this.updatingStatus = true;
 
@@ -226,8 +220,6 @@ export class SingleInternalTaskComponent implements OnInit {
   onSubmit(): void {
     if (this.internalTaskForm.valid && this.internalTask) {
       this.isLoading = true;
-      this.errorMessage = '';
-      this.successMessage = '';
 
       const formValue = this.internalTaskForm.value;
       const assignments: CreateInternalTaskAssignment[] = [];
@@ -269,24 +261,16 @@ export class SingleInternalTaskComponent implements OnInit {
             this.internalTask = updatedTask;
             this.isEditMode = false;
             this.isLoading = false;
-            this.successMessage = 'تم تحديث المهمة بنجاح';
-            setTimeout(() => {
-              this.successMessage = '';
-            }, 3000);
+            this.showAlert('تم تحديث التاسك بنجاح', 'success');
           },
           error: (error) => {
             this.isLoading = false;
-            if (error.error && error.error.message) {
-              this.errorMessage = error.error.message;
-            } else {
-              this.errorMessage =
-                'فشل في تحديث المهمة. يرجى المحاولة مرة أخرى.';
-            }
+            this.showAlert('فشل تحديث التاسك', 'error');
           },
         });
     } else {
       this.internalTaskForm.markAllAsTouched();
-      this.errorMessage = 'يرجى ملء جميع الحقول المطلوبة';
+      this.showAlert('يرجى ملء جميع الحقول المطلوبة', 'error');
     }
   }
 
@@ -361,5 +345,29 @@ export class SingleInternalTaskComponent implements OnInit {
         this.router.navigate(['/internal-tasks']);
       },
     });
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
+  }
+
+  archiveTask() {
+    if (!this.internalTask) {
+      return;
+    }
+    this.internalTaskService.archive(this.internalTask.id).subscribe({
+      next: () => {
+        this.showAlert('تم ارشفة التاسك بنجاح', 'success');
+      }
+    })
   }
 }

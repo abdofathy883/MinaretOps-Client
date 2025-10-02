@@ -5,6 +5,10 @@
   <div class="task-header d-flex align-items-center flex-wrap">
     <div class="task-title-section">
       <h1 class="task-title">{{ internalTask.title }}</h1>
+      @if (internalTask.isArchived) {
+        <h1 class="task-title">التاسك مؤرشف</h1>
+
+      }
       <div class="task-meta">
         <span class="task-id">#{{ internalTask.id }}</span>
       </div>
@@ -29,19 +33,11 @@
     </div>
   </div>
 
-  <!-- Error Message -->
-  @if (errorMessage) {
-  <div class="alert alert-danger mt-3" role="alert">
-    <i class="bi bi-exclamation-triangle me-2"></i>
-    {{ errorMessage }}
-  </div>
-  }
-
-  <!-- Success Message -->
-  @if (successMessage) {
-  <div class="alert alert-success mt-3" role="alert">
-    <i class="bi bi-check-circle me-2"></i>
-    {{ successMessage }}
+ <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
   </div>
   }
 
@@ -173,13 +169,14 @@
                   <i [class]="status.icon"></i>
                   {{ status.label }}
                 </button>
-
-                
               }
             </div>
-
+            
             
           </div>
+          @if (isUserAdmin || isUserAccountManager) {
+            <button class="archive-btn" (click)="archiveTask()">ارشفة التاسك</button>
+          }
         </div>
       </div>
     </div>

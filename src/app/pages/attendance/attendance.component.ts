@@ -10,6 +10,7 @@ import { LogService } from '../../services/logging/log.service';
 import { map, Observable, switchMap } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { FingerPrientService } from '../../services/finger-prient/finger-prient.service';
+import { AlertService } from '../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-attendance',
@@ -33,6 +34,7 @@ export class AttendanceComponent {
 
   constructor(
     private attendanceService: AttendanceService,
+    private alertService: AlertService,
     private fp: FingerPrientService,
     private logger: LogService
   ) {}
@@ -49,17 +51,11 @@ export class AttendanceComponent {
     this.getIpAddress().subscribe((ip) => {
       this.ipAddress = ip;
       this.logger.log('info', 'Current IP Address: ', ip);
-      console.log('Current IP Address:', ip);
     });
   }
 
   async getFingerPrient() {
-    try {
-      this.deviceID = await this.fp.getOrCreateDeviceId();
-      console.log('Device ID:', this.deviceID);
-    } catch (err) {
-      console.error('Error getting device ID:', err);
-    }
+    this.deviceID = await this.fp.getOrCreateDeviceId();
   }
 
   getAttendanceStatusLabel(status: AttendanceStatus | null): string {

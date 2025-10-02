@@ -1,17 +1,20 @@
 <section class="container my-5">
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
+  </div>
+  }
   <div class="card shadow-sm border-0">
     <div class="card-header form-header">
-      <h2 class="mb-0 fs-4">
-       <i class="bi bi-cup-hot ms-3"></i>طلب إجازة
-      </h2>
+      <h2 class="mb-0 fs-4"><i class="bi bi-cup-hot ms-3"></i>طلب إجازة</h2>
     </div>
     <div class="card-body p-4">
       <form [formGroup]="leaveRequestForm" (ngSubmit)="onSubmit()">
         <div class="row g-4 align-items-end">
           <div class="col-12 col-md-6">
-            <label for="fromDate" class="form-label fw-semibold"
-              >من</label
-            >
+            <label for="fromDate" class="form-label fw-semibold">من</label>
             <input
               type="date"
               id="fromDate"
@@ -24,12 +27,9 @@
                 leaveRequestForm.get('date')?.touched
               "
             />
-            
           </div>
           <div class="col-12 col-md-6">
-            <label for="toDate" class="form-label fw-semibold"
-              >الى</label
-            >
+            <label for="toDate" class="form-label fw-semibold">الى</label>
             <input
               type="date"
               id="toDate"
@@ -42,13 +42,9 @@
                 leaveRequestForm.get('date')?.touched
               "
             />
-            
           </div>
           <div class="col-12 col-md-6 text-end">
-            <button
-              type="submit"
-              class="add-btn btn-md"
-            >
+            <button type="submit" class="add-btn btn-md">
               @if (isLoading) {
               <span
                 class="spinner-border spinner-border-sm me-2"

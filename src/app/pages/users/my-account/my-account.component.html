@@ -3,7 +3,7 @@
     <img src="./assets/background.png" height="200px" alt="">
     <img [src]="currentUser.profilePicture" alt="">
   </section> -->
-<section class="container my-4">
+<!-- <section class="container my-4">
   <div class="card mb-4 px-3 py-3">
     <div class="row align-items-center">
       <div class="col-md-8 text-center text-md-end">
@@ -25,6 +25,45 @@
             <i class="bi bi-box-arrow-right fs-2 mb-2 text-danger"></i>
             <h6 class="card-title text-danger">تسجيل الخروج</h6>
           </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<section class="container my-4">
+  <div class="profile-header">
+    <!-- Cover Image -->
+    <div class="cover-image"></div>
+    
+    <!-- Profile Picture and Info -->
+    <div class="profile-info">
+      <div class="profile-picture-container">
+        <img 
+          [src]="currentUser.profilePicture || './assets/The Minaret Agency.png'" 
+          alt="Profile Picture" 
+          class="profile-picture"
+        />
+      </div>
+      
+      <div class="profile-details">
+        <h4 class="profile-name">
+          {{ currentUser.firstName + " " + currentUser.lastName }}
+        </h4>
+        <p class="profile-subtitle">تقدر تعدل بياناتك من هنا</p>
+        <p class="profile-links">
+          ومتنساش تشوف تاسكاتك من هنا <a routerLink="/tasks">التاسكات</a>
+        </p>
+      </div>
+      
+      <div class="profile-actions">
+        <button
+          class="logout-btn"
+          (click)="logout()"
+        >
+          <i class="bi bi-box-arrow-right"></i>
+          تسجيل الخروج
         </button>
       </div>
     </div>
@@ -144,7 +183,7 @@
       @if (alertMessage) {
       <div class="alert" [class]="'alert-' + alertType">
         {{ alertMessage }}
-        <button class="alert-close" (click)="closeAlert()">×</button>
+        <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
       </div>
       }
       <!-- User Information Section -->

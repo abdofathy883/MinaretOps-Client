@@ -1,25 +1,9 @@
 <div class="container-fluid py-4">
-  <!-- Error Message -->
-  @if (errorMessage) {
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    {{ errorMessage }}
-    <button
-      type="button"
-      class="btn-close"
-      (click)="errorMessage = ''"
-    ></button>
-  </div>
-  }
-
-  <!-- Success Message -->
-  @if (successMessage) {
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-    {{ successMessage }}
-    <button
-      type="button"
-      class="btn-close"
-      (click)="successMessage = ''"
-    ></button>
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
   </div>
   }
 
@@ -30,6 +14,7 @@
   <app-task-groups
     [clientServices]="client.clientServices"
     [clientId]="client.id"
+    [currentUserId]="currentUserId"
     (taskDataChanged)="loadClient()"
   ></app-task-groups>
   }

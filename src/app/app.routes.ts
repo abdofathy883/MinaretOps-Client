@@ -35,6 +35,8 @@ import { ResetPasswordComponent } from './pages/users/reset-password/reset-passw
 import { AttendanceComponent } from './pages/attendance/attendance.component';
 import { SubmitLeaveRequestComponent } from './pages/leave-requests/submit-leave-request/submit-leave-request.component';
 import { MyKpisManagementComponent } from './pages/kpis/my-kpis-management/my-kpis-management.component';
+import { ArchiveComponent } from './pages/tasks/archive/archive.component';
+import { InternalArchiveComponent } from './pages/internal-tasks/internal-archive/internal-archive.component';
 
 export const routes: Routes = [
     // {
@@ -116,6 +118,11 @@ export const routes: Routes = [
         canActivate: [noauthGuard]
     },
     {
+        path: 'tasks/archive',
+        component: ArchiveComponent,
+        canActivate: [noauthGuard]
+    },
+    {
         path: 'tasks/add',
         component: AddTaskComponent,
         canActivate: [noauthGuard]
@@ -128,6 +135,11 @@ export const routes: Routes = [
     {
         path: 'internal-tasks',
         component: AllInternalTasksComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'internal-tasks/archive',
+        component: InternalArchiveComponent,
         canActivate: [noauthGuard]
     },
     {

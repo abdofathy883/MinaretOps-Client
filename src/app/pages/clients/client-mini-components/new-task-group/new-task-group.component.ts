@@ -17,6 +17,8 @@ import { ServicesService } from '../../../../services/services/services.service'
 import { TaskService } from '../../../../services/tasks/task.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { ICreateTaskGroup } from '../../../../model/task/task';
+import { AlertService } from '../../../../services/helper-services/alert.service';
+import { hasError } from '../../../../services/helper-services/utils';
 
 @Component({
   selector: 'app-new-task-group',
@@ -33,15 +35,16 @@ export class NewTaskGroupComponent implements OnInit {
     private fb: FormBuilder,
     private servicesService: ServicesService,
     private taskService: TaskService,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertService: AlertService
   ) {}
 
   taskGroupForm!: FormGroup;
   availableServices: any[] = [];
   employees: any[] = [];
   isLoading = false;
-  successMessage = '';
-  errorMessage = '';
+  alertMessage = '';
+  alertType = 'info';
 
   private modal: any;
   collapsedTasks: Set<string> = new Set();
@@ -67,10 +70,7 @@ export class NewTaskGroupComponent implements OnInit {
     this.servicesService.getAll().subscribe({
       next: (services) => {
         this.availableServices = services;
-      },
-      error: () => {
-        this.errorMessage = 'حدث خطأ في تحميل الخدمات';
-      },
+      }
     });
   }
 
@@ -78,10 +78,7 @@ export class NewTaskGroupComponent implements OnInit {
     this.authService.getAll().subscribe({
       next: (users) => {
         this.employees = users.filter((user: any) => user.role !== 'Admin');
-      },
-      error: () => {
-        this.errorMessage = 'حدث خطأ في تحميل الموظفين';
-      },
+      }
     });
   }
 
@@ -148,8 +145,6 @@ export class NewTaskGroupComponent implements OnInit {
   onSubmit() {
     if (this.taskGroupForm.valid) {
       this.isLoading = true;
-      this.errorMessage = '';
-      this.successMessage = '';
 
       const formData = this.taskGroupForm.value;
 
@@ -168,8 +163,7 @@ export class NewTaskGroupComponent implements OnInit {
       this.taskService.addTaskGroup(taskGroup).subscribe({
         next: (response) => {
           this.isLoading = false;
-          console.log('add new task group', response);
-          this.successMessage = 'تم إضافة الشهر الجديد بنجاح';
+          this.showAlert('تم إضافة الشهر الجديد بنجاح', 'success');
           this.resetForm();
 
           // Close modal after successful submission
@@ -187,8 +181,7 @@ export class NewTaskGroupComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          console.error('Error creating task group:', error);
-          this.errorMessage = 'حدث خطأ في إضافة الشهر الجديد';
+          this.showAlert('فشل في إضافة الشهر الجديد, حاول مرة اخرى', 'error');
         },
       });
     } else {
@@ -201,13 +194,10 @@ export class NewTaskGroupComponent implements OnInit {
     this.clientServicesArray.clear();
     this.addClientService();
     this.taskCollapseState = {};
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   hasError(controlName: string): boolean {
-    const control = this.taskGroupForm.get(controlName);
-    return !!(control && control.invalid && (control.dirty || control.touched));
+    return hasError(this.taskGroupForm, controlName);
   }
 
   getErrorMessage(controlName: string): string {
@@ -238,5 +228,18 @@ export class NewTaskGroupComponent implements OnInit {
     if (this.modal) {
       this.modal.hide();
     }
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

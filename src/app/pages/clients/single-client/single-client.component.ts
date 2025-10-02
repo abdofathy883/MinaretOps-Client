@@ -10,6 +10,7 @@ import { ClientInfoComponent } from '../client-mini-components/client-info/clien
 import { TaskGroupsComponent } from "../client-mini-components/task-groups/task-groups.component";
 import { IClient } from '../../../model/client/client';
 import { ICreateTask, ICreateTaskGroup, ITask } from '../../../model/task/task';
+import { AlertService } from '../../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-single-client',
@@ -26,9 +27,10 @@ import { ICreateTask, ICreateTaskGroup, ITask } from '../../../model/task/task';
 export class SingleClientComponent implements OnInit {
   client: IClient | null = null;
   employees: User[] = [];
-  errorMessage: string = '';
-  successMessage: string = '';
   loading = false;
+
+  alertMessage = '';
+  alertType = 'info';
 
   // Modal states
   showAddTaskModal = false;
@@ -37,11 +39,13 @@ export class SingleClientComponent implements OnInit {
   selectedClientServiceId: number | null = null;
   selectedTaskGroupId: number | null = null;
   selectedTask: ITask | null = null;
+  currentUserId: string = '';
 
   constructor(
     private clientService: ClientService,
     private taskService: TaskService,
     private authService: AuthService,
+    private alertService: AlertService,
     private route: ActivatedRoute
   ) {}
 
@@ -56,6 +60,8 @@ export class SingleClientComponent implements OnInit {
         this.employees = response;
       },
     });
+
+    this.currentUserId = this.authService.getCurrentUserId();
   }
 
   loadClient(): void {
@@ -70,8 +76,8 @@ export class SingleClientComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.errorMessage = 'حدث خطأ في تحميل بيانات العميل';
           this.loading = false;
+          this.showAlert('حدث خطا في تحميل بيانات العميل', 'error');
         },
       });
     }
@@ -108,13 +114,13 @@ export class SingleClientComponent implements OnInit {
       next: (response) => {
         // Add the new task to local data
         this.addTaskToLocalData(response);
-        this.successMessage = 'تم إضافة المهمة بنجاح';
+        this.showAlert('تم اضافة التاسك بنجاح', 'success');
         this.closeAddTaskModal();
         this.loading = false;
       },
       error: () => {
-        this.errorMessage = 'حدث خطأ في إضافة المهمة';
         this.loading = false;
+        this.showAlert('حدث خطا في اضافة المهمة', 'error');
       },
     });
   }
@@ -126,13 +132,13 @@ export class SingleClientComponent implements OnInit {
       next: (response) => {
         // Add the new task group to local data
         this.addTaskGroupToLocalData(response);
-        this.successMessage = 'تم إنشاء مجموعة المهام بنجاح';
-        this.closeAddTaskGroupModal();
         this.loading = false;
+        this.showAlert('تم انشاء مجموعة التاسكات بنجاح', 'erroer');
+        this.closeAddTaskGroupModal();
       },
       error: () => {
-        this.errorMessage = 'حدث خطأ في إنشاء مجموعة المهام';
         this.loading = false;
+        this.showAlert('حدث خطا في انشاء مجموعة التاسكات', 'error');
       },
     });
   }
@@ -141,17 +147,17 @@ export class SingleClientComponent implements OnInit {
   onTaskUpdated(taskData: ITask): void {
     this.loading = true;
 
-    this.taskService.update(taskData.id, taskData).subscribe({
+    this.taskService.update(taskData.id, this.currentUserId, taskData).subscribe({
       next: (response) => {
         // Update the task in local data
         this.updateTaskInLocalData(response);
-        this.successMessage = 'تم تحديث المهمة بنجاح';
-        this.closeEditTaskModal();
         this.loading = false;
+        this.showAlert('تم تحديث التاسك بنجاح', 'success');
+        this.closeEditTaskModal();
       },
       error: (error) => {
-        this.errorMessage = 'حدث خطأ في تحديث المهمة';
         this.loading = false;
+        this.showAlert('حدث خطا في تحديث التاسك', 'error');
       },
     });
   }
@@ -208,8 +214,16 @@ export class SingleClientComponent implements OnInit {
     this.selectedTask = null;
   }
 
-  private clearMessages(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

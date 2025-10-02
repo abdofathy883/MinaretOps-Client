@@ -20,21 +20,13 @@
         </button>
       </div>
       <div class="modal-body">
-        <!-- Success Message -->
-        @if (successMessage) {
-        <div class="alert alert-success mt-3" role="alert">
-          <i class="bi bi-check-circle me-2"></i>
-          {{ successMessage }}
-        </div>
-        }
-
-        <!-- Error Message -->
-        @if (errorMessage) {
-        <div class="alert alert-danger mt-3" role="alert">
-          <i class="bi bi-exclamation-triangle me-2"></i>
-          {{ errorMessage }}
-        </div>
-        }
+        <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
+  </div>
+  }
 
         <form [formGroup]="taskGroupForm" (ngSubmit)="onSubmit()">
           <div class="me-2 mb-3">

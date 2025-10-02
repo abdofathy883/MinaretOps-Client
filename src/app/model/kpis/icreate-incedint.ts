@@ -3,6 +3,7 @@ export interface ICreateIncedint {
   aspect: KPIAspect;
   description?: string;
   evidenceURL?: string;
+  date?: Date;
 }
 
 export interface IKpiSummary {
@@ -28,6 +29,7 @@ export interface IIncedint {
   penaltyPercentage: number;
   description?: string;
   evidenceURL?: string;
+  date?: Date;
 }
 
 export enum KPIAspect {

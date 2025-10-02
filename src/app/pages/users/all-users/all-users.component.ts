@@ -8,28 +8,21 @@ import { MapUserRolePipe } from '../../../core/pipes/map-task-user-role/map-user
   selector: 'app-all-users',
   imports: [MapUserRolePipe],
   templateUrl: './all-users.component.html',
-  styleUrl: './all-users.component.css'
+  styleUrl: './all-users.component.css',
 })
-export class AllUsersComponent implements OnInit{
+export class AllUsersComponent implements OnInit {
   users: User[] = [];
-  errorMessage: string = '';
 
-
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.authService.getAll().subscribe({
       next: (response) => {
         this.users = response;
-      },
-      error: (error) => {
-        this.errorMessage = error;
       }
-    })
+    });
   }
+
   goToUser(userId: string) {
     this.router.navigate(['/users', userId]);
   }

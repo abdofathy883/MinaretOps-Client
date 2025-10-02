@@ -1,30 +1,23 @@
 <section class="container my-4">
-  <!-- Error Message -->
-  @if (errorMessage) {
-  <div class="alert alert-danger mt-3" role="alert">
-    <i class="bi bi-exclamation-triangle me-2"></i>
-    {{ errorMessage }}
-  </div>
-  }
-
-
   <div class="row row-cols-1 row-cols-md-3 g-4">
     @for (user of users; track $index) {
-      <div class="col">
-      <div class="card h-100 pt-2" style="cursor: pointer;" (click)="goToUser(user.id)">
+    <div class="col">
+      <div
+        class="card h-100 pt-2"
+        style="cursor: pointer"
+        (click)="goToUser(user.id)"
+      >
         <i class="bi bi-person-vcard-fill text-center"></i>
         <div class="card-body">
-          <h5 class="card-title text-center">{{ user.firstName + " " + user.lastName }}</h5>
+          <h5 class="card-title text-center">
+            {{ user.firstName + " " + user.lastName }}
+          </h5>
           <p class="card-text">الايميل: {{ user.email }}</p>
           <p class="card-text">رقم الهاتف: {{ user.phoneNumber }}</p>
           <p class="card-text">الدور: {{ user.roles[0] | mapUserRole }}</p>
         </div>
       </div>
     </div>
-      
     }
-  
-  
-  
-</div>
+  </div>
 </section>

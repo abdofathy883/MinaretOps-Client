@@ -1,3 +1,4 @@
+import { AlertService } from './../../../services/helper-services/alert.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { User } from '../../../model/auth/user';
 import {
@@ -6,7 +7,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { AttendanceService } from '../../../services/attendance/attendance.service';
 import { NewLeaveRequest } from '../../../model/attendance-record/attendance-record';
 import { LeaveRequestService } from '../../../services/leave-request/leave-request.service';
 
@@ -22,9 +22,12 @@ export class SubmitLeaveRequestComponent implements OnInit {
   leaveRequestForm!: FormGroup;
   isLoading: boolean = false;
   showSuccessMessage: boolean = false;
+  alertMessage = '';
+  alertType = 'info';
 
   constructor(
     private leaveRequestService: LeaveRequestService,
+    private alertService: AlertService,
     private fb: FormBuilder
   ) {}
 
@@ -42,24 +45,34 @@ export class SubmitLeaveRequestComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    const formData : NewLeaveRequest = {
+    const formData: NewLeaveRequest = {
       employeeId: this.currentUser.id,
       fromDate: this.leaveRequestForm.value.fromDate,
-      toDate: this.leaveRequestForm.value.toDate
-    }
-    console.log('Submitting leave request:', formData);
+      toDate: this.leaveRequestForm.value.toDate,
+    };
     this.leaveRequestService.newLeaveRequest(formData).subscribe({
       next: (response) => {
         this.isLoading = false;
-        console.log('Leave request submitted successfully:', response);
-        alert('تم تقديم طلب الإجازة بنجاح.');
+        this.showAlert('تم تقديم طلب الإجازة بنجاح', 'success');
         this.leaveRequestForm.reset();
       },
       error: (error) => {
         this.isLoading = false;
-        console.error('Error submitting leave request:', error);
-        alert('حدث خطأ أثناء تقديم طلب الإجازة. الرجاء المحاولة مرة أخرى.');
+        this.showAlert('حدث خطأ أثناء تقديم طلب الإجازة', 'error');
       },
     });
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

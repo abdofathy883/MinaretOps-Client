@@ -6,37 +6,32 @@
       تفاصيل الخدمة
     </h2>
     @if (isUserAdmin || isUserAccountManager) {
-      <div>
-        @if (!isEditMode) {
-        <button class="reset-btn" (click)="toggleEditMode()">
-          <i class="bi bi-pencil me-1"></i>
-          تعديل
-        </button>
-        } @if (isEditMode) {
-        <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
-          <i class="bi bi-x-circle me-1"></i>
-          إلغاء
-        </button>
-        }
-      </div>
+    <div>
+      @if (!isEditMode) {
+      <button class="reset-btn" (click)="toggleEditMode()">
+        <i class="bi bi-pencil me-1"></i>
+        تعديل
+      </button>
+      } @if (isEditMode) {
+      <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
+        <i class="bi bi-x-circle me-1"></i>
+        إلغاء
+      </button>
+      }
+    </div>
 
     }
   </div>
 
-  @if (errorMessage) {
-  <div class="alert alert-danger mt-3" role="alert">
-    <i class="bi bi-exclamation-triangle me-2"></i>
-    {{ errorMessage }}
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
   </div>
   }
 
-  <!-- Success Message -->
-  @if (successMessage) {
-  <div class="alert alert-success mt-3" role="alert">
-    <i class="bi bi-check-circle me-2"></i>
-    {{ successMessage }}
-  </div>
-  } @if (isEditMode) {
+  @if (isEditMode) {
   <div class="card shadow-sm">
     <div class="card-header form-header">
       <h5 class="mb-0">تعديل بيانات الخدمة</h5>

@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
+import { AlertService } from '../../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-single-service',
@@ -16,10 +17,10 @@ export class SingleServiceComponent implements OnInit {
   service: Service | null = null;
   isEditMode: boolean = false;
   isLoading: boolean = false;
-  errorMessage: string = '';
-  successMessage: string = '';
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
+  alertMessage = '';
+  alertType = 'info';
 
   serviceForm!: FormGroup;
 
@@ -27,6 +28,7 @@ export class SingleServiceComponent implements OnInit {
     private serviceService: ServicesService,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private alertService: AlertService,
     private fb: FormBuilder
   ) {}
   ngOnInit(): void {
@@ -63,13 +65,12 @@ export class SingleServiceComponent implements OnInit {
       next: (response) => {
         this.service = response;
         this.isLoading = false;
-        this.successMessage = 'تم حفظ التغييرات بنجاح';
+        this.showAlert('تم حفظ التغييرات بنجاح', 'success');
         this.isEditMode = false;
       },
-      error: (error) => {
+      error: () => {
         this.isLoading = false;
-        console.log(error);
-        this.errorMessage = 'حدث خطأ أثناء حفظ التغييرات';
+        this.showAlert('فشل تعديل بيانات الخدمة', 'error');
       },
     });
   }
@@ -102,42 +103,49 @@ export class SingleServiceComponent implements OnInit {
 
   toggleEditMode(): void {
     this.isEditMode = true;
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   cancelEdit(): void {
     this.isEditMode = false;
     this.populateForm(this.service!);
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   toggleVisibility() {
     this.serviceService.toggleVisibility(this.service!.id).subscribe({
       next: (response) => {
         this.service = response;
-        this.successMessage = 'تم تغيير حالة الخدمة بنجاح';
+        this.showAlert('تم تغيير حالة الخدمة بنجاح', 'success');
       },
-      error: (error) => {
-        console.log(error)
-        this.errorMessage = 'حدث خطأ أثناء تغيير حالة الخدمة';
+      error: () => {
+        this.showAlert('فشل تغيير حالة الخدمة', 'error');
       },
     });
-    
   }
 
   deleteService() {
     if (this.service) {
       this.serviceService.delete(this.service.id).subscribe({
         next: () => {
-          this.successMessage = 'تم حذف الخدمة بنجاح';
+          this.showAlert('تم حذف الخدمة بنجاح', 'success');
           this.service = null;
         },
         error: () => {
-          this.errorMessage = 'حدث خطأ أثناء حذف الخدمة';
+          this.showAlert('فشل حذف الخدمة', 'error');
         },
       });
     }
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

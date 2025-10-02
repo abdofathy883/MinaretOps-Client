@@ -8,19 +8,11 @@
     <p class="text-muted mt-2">شاركنا رأيك أو ابلغنا عن أي مشكلة تواجهها</p>
   </div>
 
-  <!-- Success Message -->
-  @if (successMessage) {
-  <div class="alert alert-success mt-3" role="alert">
-    <i class="bi bi-check-circle me-2"></i>
-    {{ successMessage }}
-  </div>
-  }
-
-  <!-- Error Message -->
-  @if (errorMessage) {
-  <div class="alert alert-danger mt-3" role="alert">
-    <i class="bi bi-exclamation-triangle me-2"></i>
-    {{ errorMessage }}
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
   </div>
   }
 
@@ -36,18 +28,24 @@
       <form [formGroup]="complaintFrom" (ngSubmit)="onSubmit()">
         <!-- Subject Field -->
         <div class="mb-3">
-          <label for="subject" class="form-label">عنوان الشكوى أو المقترح</label>
+          <label for="subject" class="form-label"
+            >عنوان الشكوى أو المقترح</label
+          >
           <span class="text-danger me-2">*</span>
           <input
             type="text"
             class="form-control"
             id="subject"
             formControlName="subject"
-            [class.is-invalid]="complaintFrom.get('subject')?.invalid && complaintFrom.get('subject')?.touched"
+            [class.is-invalid]="
+              complaintFrom.get('subject')?.invalid &&
+              complaintFrom.get('subject')?.touched
+            "
             placeholder="أدخل عنوان واضح للشكوى أو المقترح"
             required
           />
-          @if (complaintFrom.get('subject')?.invalid && complaintFrom.get('subject')?.touched) {
+          @if (complaintFrom.get('subject')?.invalid &&
+          complaintFrom.get('subject')?.touched) {
           <div class="invalid-feedback">
             @if (complaintFrom.get('subject')?.errors?.['required']) {
             <span>عنوان الشكوى أو المقترح مطلوب</span>
@@ -58,18 +56,24 @@
 
         <!-- Content Field -->
         <div class="mb-4">
-          <label for="content" class="form-label">تفاصيل الشكوى أو المقترح</label>
+          <label for="content" class="form-label"
+            >تفاصيل الشكوى أو المقترح</label
+          >
           <span class="text-danger me-2">*</span>
           <textarea
             id="content"
             class="form-control"
             rows="6"
             formControlName="content"
-            [class.is-invalid]="complaintFrom.get('content')?.invalid && complaintFrom.get('content')?.touched"
+            [class.is-invalid]="
+              complaintFrom.get('content')?.invalid &&
+              complaintFrom.get('content')?.touched
+            "
             placeholder="اكتب تفاصيل الشكوى أو المقترح هنا... كن واضحاً ومحدداً في وصف المشكلة أو الاقتراح"
             required
           ></textarea>
-          @if (complaintFrom.get('content')?.invalid && complaintFrom.get('content')?.touched) {
+          @if (complaintFrom.get('content')?.invalid &&
+          complaintFrom.get('content')?.touched) {
           <div class="invalid-feedback">
             @if (complaintFrom.get('content')?.errors?.['required']) {
             <span>تفاصيل الشكوى أو المقترح مطلوبة</span>
@@ -78,14 +82,14 @@
           }
           <div class="form-text">
             <i class="bi bi-info-circle me-1"></i>
-            كن واضحاً ومحدداً في وصف المشكلة أو الاقتراح لمساعدتنا في فهم طلبك بشكل أفضل
+            كن واضحاً ومحدداً في وصف المشكلة أو الاقتراح لمساعدتنا في فهم طلبك
+            بشكل أفضل
           </div>
         </div>
 
         <!-- Submit Button Section -->
         <div class="d-flex justify-content-start gap-2 flex-wrap">
-          
-          <button type="submit" class="add-btn" >
+          <button type="submit" class="add-btn">
             @if (isLoading) {
             <span class="spinner-border spinner-border-sm me-2"></span>
             جاري الإرسال... } @else {
@@ -118,15 +122,18 @@
         </li>
         <li class="mb-3 d-flex flex-wrap">
           <i class="bi bi-check-circle text-success ms-2"></i>
-          <strong> كن محدداً: </strong> اذكر التفاصيل المهمة مثل التواريخ والأماكن والأشخاص المعنيين
+          <strong> كن محدداً: </strong> اذكر التفاصيل المهمة مثل التواريخ
+          والأماكن والأشخاص المعنيين
         </li>
         <li class="mb-3 d-flex flex-wrap">
           <i class="bi bi-check-circle text-success ms-2"></i>
-          <strong>كن مهذباً: </strong> استخدم لغة مهنية ومحترمة في التعبير عن وجهة نظرك
+          <strong>كن مهذباً: </strong> استخدم لغة مهنية ومحترمة في التعبير عن
+          وجهة نظرك
         </li>
-        <li class=" d-flex flex-wrap">
+        <li class="d-flex flex-wrap">
           <i class="bi bi-check-circle text-success ms-2"></i>
-          <strong>قدم حلول: </strong> إذا كان لديك اقتراحات لحل المشكلة، شاركها معنا
+          <strong>قدم حلول: </strong> إذا كان لديك اقتراحات لحل المشكلة، شاركها
+          معنا
         </li>
       </ul>
     </div>

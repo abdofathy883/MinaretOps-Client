@@ -26,6 +26,8 @@ import {
   IUpdateTask,
 } from '../../../../model/task/task';
 import { MapTaskStatusClassPipe } from '../../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
+import { AlertService } from '../../../../services/helper-services/alert.service';
+import { hasError } from '../../../../services/helper-services/utils';
 
 @Component({
   selector: 'app-task-groups',
@@ -43,6 +45,7 @@ import { MapTaskStatusClassPipe } from '../../../../core/pipes/map-task-status-c
 export class TaskGroupsComponent implements OnInit {
   @Input() clientServices: IClientService[] = [];
   @Input() clientId: number = 0;
+  @Input() currentUserId: string = '';
   @Output() taskDataChanged = new EventEmitter<void>();
 
   @ViewChild('newTaskGroupModal') newTaskGroupModal!: NewTaskGroupComponent;
@@ -50,12 +53,13 @@ export class TaskGroupsComponent implements OnInit {
   isLoading: boolean = false;
   isEditMode: boolean = false;
   isSaving: boolean = false;
-  errorMessage: string = '';
-  successMessage: string = '';
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
   isContentLeader: boolean = false;
   isDesignerLeader: boolean = false;
+
+  alertMessage = '';
+  alertType = 'info';
 
   // Modal and form related
   editTaskForm: FormGroup;
@@ -70,7 +74,8 @@ export class TaskGroupsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private alertService: AlertService
   ) {
     this.editTaskForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
@@ -84,18 +89,11 @@ export class TaskGroupsComponent implements OnInit {
     });
   }
 
-  onTaskGroupCreated(newTaskGroup: any): void {
-    // Refresh the client services data or handle the new task group
-    // You might want to emit an event to the parent component to refresh data
-    console.log('New task group created:', newTaskGroup);
-
-    // Optionally, you can add the new task group to the local data
-    // or refresh the entire data from the server
-  }
 
   deleteTask(taskId: number) {
     this.taskService.deleteTask(taskId).subscribe({
       next: (response) => {
+        this.showAlert('تم حذف المهمة بنجاح', 'success');
         this.taskDataChanged.emit();
       },
     });
@@ -152,14 +150,10 @@ export class TaskGroupsComponent implements OnInit {
 
   toggleEditMode(): void {
     this.isEditMode = true;
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   cancelEdit(): void {
     this.isEditMode = false;
-    this.errorMessage = '';
-    this.successMessage = '';
   }
 
   // Open modal for editing existing task
@@ -248,18 +242,17 @@ export class TaskGroupsComponent implements OnInit {
   confirmDelete(taskId: number): void {
     this.taskService.deleteTask(taskId).subscribe({
       next: (response) => {
-        this.successMessage = 'تم حذف المهمة بنجاح';
+        this.showAlert('تم حذف المهمة بنجاح', 'success');
         this.closeDeleteModal(taskId);
         this.taskDataChanged.emit();
       },
       error: (error) => {
-        this.errorMessage = 'حدث خطأ في حذف المهمة';
+        this.showAlert('فشل في حذف المهمة, حاول مرة اخرى', 'error');
       },
     });
   }
 
   saveTask(): void {
-    // debugger;
     if (this.editTaskForm.invalid || !this.selectedTaskGroupId) {
       return;
     }
@@ -288,16 +281,16 @@ export class TaskGroupsComponent implements OnInit {
     };
 
     // Update local data
-    this.taskService.update(this.selectedTask.id, updatedTask).subscribe({
+    this.taskService.update(this.selectedTask.id, this.currentUserId, updatedTask).subscribe({
       next: (response) => {
         this.isSaving = false;
         this.hideModal();
         this.taskDataChanged.emit();
-        this.successMessage = 'تم تحديث المهمة بنجاح';
+        this.showAlert('تم تحديث المهمة بنجاح', 'success');
       },
       error: (error) => {
         this.isSaving = false;
-        this.errorMessage = 'حدث خطأ في تحديث المهمة';
+        this.showAlert('حدث خطأ في تحديث المهمة', 'error');
       },
     });
   }
@@ -318,21 +311,17 @@ export class TaskGroupsComponent implements OnInit {
       taskGroupId: this.selectedTaskGroupId!,
     };
 
-    console.log('new task ', newTask);
-
     this.isSaving = true;
     this.taskService.addTask(newTask).subscribe({
       next: (response) => {
-        // Add to local data
-        console.log('response', response);
         this.isSaving = false;
         this.hideModal();
         this.taskDataChanged.emit();
-        this.successMessage = 'تم إضافة التاسك بنجاح';
+        this.showAlert('تم إضافة التاسك بنجاح', 'success');
       },
       error: (error) => {
         this.isSaving = false;
-        this.errorMessage = 'فشل اضافة التاسك, حاول مرة اخرى';
+        this.showAlert('فشل اضافة التاسك, حاول مرة اخرى', 'error');
       },
     });
   }
@@ -349,8 +338,7 @@ export class TaskGroupsComponent implements OnInit {
   }
 
   hasError(controlName: string): boolean {
-    const control = this.editTaskForm.get(controlName);
-    return control ? control.invalid && control.touched : false;
+    return hasError(this.editTaskForm, controlName)
   }
 
   getErrorMessage(controlName: string): string {
@@ -369,5 +357,18 @@ export class TaskGroupsComponent implements OnInit {
     if (this.newTaskGroupModal) {
       this.newTaskGroupModal.openModal();
     }
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

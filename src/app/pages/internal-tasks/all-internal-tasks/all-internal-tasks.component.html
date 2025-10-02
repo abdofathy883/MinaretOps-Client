@@ -1,21 +1,40 @@
-<!-- <section class="container py-3">
-  <h4>search</h4>
-  <input 
-  type="search" 
-  [formControl]="searchControl"
-  class="form-control" 
-  placeholder="Search by title..." >
-  @if (results$ | async) {
-    @for (task of results$ | async; track $index) {
-      <div class="task-item">
-        <span class="task-id">#{{ task.id }}</span>
-        <span class="task-title">{{ task.title }}</span>
+<section class="container my-4">
+  <h1 class="text-center">جميع التاسكات الداخلية</h1>
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-3">
+    @for (task of internalTasks; track $index) {
+    <div class="col">
+      <div
+        class="card h-100"
+        (click)="goToTask(task.id)"
+        style="cursor: pointer"
+      >
+        <div class="card-body">
+          <div
+            class="priority-badge"
+            [ngClass]="getPriorityClass(task.priority)"
+          >
+            {{ task.priority }}
+          </div>
+          <h5 class="card-title text-center mt-2">{{ task.title }}</h5>
+          <p class="card-text text-center">{{ task.description }}</p>
+          <p class="card-text">رقم التاسك: <strong>{{ task.id }}</strong></p>
+          <p class="card-text">نوع التاسك: <strong>{{ getTypeLabel(task.taskType) }}</strong> </p>
+          <!-- <p class="card-text">الموظف: {{ task.employeeName }}</p> -->
+          <div>
+            الحالة:
+            <div
+              class="status-badge me-3"
+              [ngClass]="task.status | mapTaskStatusClass"
+            >
+              {{ task.status | mapTaskStatus }}
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <small>وقت التسليم: {{ task.deadline | date }}</small>
+        </div>
       </div>
-    }
-  }
-</section> -->
-@if (isAdmin || isAccManager) {
-  <app-admin-internal-tasks></app-admin-internal-tasks>
-} @else {
-  <app-employee-internal-tasks [currentUserId]="currentUserId"></app-employee-internal-tasks>
-}
+    </div>
+    } 
+  </div>
+</section>

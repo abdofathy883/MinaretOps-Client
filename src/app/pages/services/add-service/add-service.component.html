@@ -6,19 +6,11 @@
     </h2>
   </div>
 
-  <!-- Success Message -->
-  @if (successMessage) {
-  <div class="alert alert-success mt-3" role="alert">
-    <i class="bi bi-check-circle me-2"></i>
-    {{ successMessage }}
-  </div>
-  }
-
-  <!-- Error Message -->
-  @if (errorMessage) {
-  <div class="alert alert-danger mt-3" role="alert">
-    <i class="bi bi-exclamation-triangle me-2"></i>
-    {{ errorMessage }}
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
   </div>
   }
 
@@ -60,12 +52,10 @@
         <div class="d-flex justify-content-start flex-wrap gap-3">
           <button type="submit" class="add-btn">
             @if (isLoading) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-              جاري إضافة الخدمة...
-            } @else {
-              <i class="bi bi-check-circle me-2"></i>
-              إضافة خدمة
-            }
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            جاري إضافة الخدمة... } @else {
+            <i class="bi bi-check-circle me-2"></i>
+            إضافة خدمة }
           </button>
           <button type="button" class="reset-btn" (click)="resetForm()">
             <i class="bi bi-arrow-clockwise me-2"></i>

@@ -23,6 +23,13 @@
   </div>
 
   @if (isEditMode) {
+    <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
+  </div>
+  }
   <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
     <div class="card shadow-sm">
       <div class="card-header bg-warning text-dark">

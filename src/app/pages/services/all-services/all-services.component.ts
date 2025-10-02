@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 })
 export class AllServicesComponent implements OnInit {
   services: Service[] = [];
-  errorMessage: string = '';
 
   constructor(
     private serviceService: ServicesService,
@@ -26,9 +25,6 @@ export class AllServicesComponent implements OnInit {
     this.serviceService.getAll().subscribe({
       next: (data) => {
         this.services = data;
-      },
-      error: () => {
-        this.errorMessage = 'خطا في تحميل الخدمات, حاول مرة اخرى'
       }
     });
   }
