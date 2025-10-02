@@ -137,7 +137,7 @@ export class MyAccountComponent implements OnInit {
         this.currentUser = response;
         this.showAlert('تم تحديث بياناتك بنجاح', 'success');
       },
-      error: () => {
+      error: (error) => {
         this.isLoading = false;
         this.showAlert(
           'فشل تحديث البيانات, حاول وقت اخر',

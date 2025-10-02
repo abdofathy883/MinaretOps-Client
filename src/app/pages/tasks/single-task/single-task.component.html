@@ -81,7 +81,7 @@
             <h3><i class="bi bi-clock-history"></i> سجل التغييرات</h3>
           </div>
 
-          @if (task.taskHistory.length) {
+          @if (task.taskHistory && task.taskHistory.length > 0) {
           <ul class="timeline">
             @for (h of task.taskHistory; track h.id) {
             <li class="timeline-item">
