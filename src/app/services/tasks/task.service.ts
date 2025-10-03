@@ -5,6 +5,7 @@ import {
   CustomTaskStatus,
   ICreateTask,
   ICreateTaskGroup,
+  ICreateTaskResources,
   ITask,
   ITaskGroup,
   IUpdateTask,
@@ -17,9 +18,9 @@ export class TaskService {
   private endpoint = 'tasks';
   constructor(private api: ApiService) {}
 
-  getAll(): Observable<ITask[]> {
-    return this.api.get<ITask[]>(`${this.endpoint}/un-archived-tasks`);
-  }
+  // getAll(): Observable<ITask[]> {
+  //   return this.api.get<ITask[]>(`${this.endpoint}/un-archived-tasks`);
+  // }
 
   getArchivedTasks(): Observable<ITask[]> {
     return this.api.get<ITask[]>(`${this.endpoint}/archived-tasks`);
@@ -37,25 +38,29 @@ export class TaskService {
     taskId: number,
     empId: string,
     updateTask: IUpdateTask
-  ): Observable<any> {
-    return this.api.put<any>(
+  ): Observable<ITask> {
+    return this.api.put<ITask>(
       `${this.endpoint}/update-task/${taskId}/${empId}`,
       updateTask
     );
   }
 
-  changeStatus(taskId: number, empId: string, status: CustomTaskStatus): Observable<any> {
-    return this.api.patch<any>(
+  changeStatus(taskId: number, empId: string, status: CustomTaskStatus): Observable<boolean> {
+    return this.api.patch<boolean>(
       `${this.endpoint}/change-status/${taskId}/${empId}`,
       status
     );
   }
 
-  archive(taskId: number): Observable<boolean> {
-    return this.api.patch<boolean>(
+  archive(taskId: number): Observable<ITask> {
+    return this.api.patch<ITask>(
       `${this.endpoint}/toggle-archive/${taskId}`,
       null
     );
+  }
+
+  complete(taskId: number, userId: string, taskResource: ICreateTaskResources): Observable<ITask>{
+    return this.api.patch<ITask>(`${this.endpoint}/complete/${taskId}/${userId}`, taskResource);
   }
 
   addTask(createTask: ICreateTask): Observable<ITask> {

@@ -1,37 +1,11 @@
+@if (loadingUser) {
+  <section class="container">
+    <app-shimmer></app-shimmer>
+  
+  </section>
+
+}
 @if (currentUser) {
-<!-- <section class="container my-4">
-    <img src="./assets/background.png" height="200px" alt="">
-    <img [src]="currentUser.profilePicture" alt="">
-  </section> -->
-<!-- <section class="container my-4">
-  <div class="card mb-4 px-3 py-3">
-    <div class="row align-items-center">
-      <div class="col-md-8 text-center text-md-end">
-        <h5 class="mb-1">
-          اهلا يا,
-          {{ currentUser.firstName + " " + currentUser.lastName }}
-        </h5>
-        <p class="mb-0">تقدر تعدل بياناتك من هنا</p>
-        <p class="mb-0">
-          ومتنساش تشوف تاسكاتك من هنا <a routerLink="/tasks">التاسكات</a>
-        </p>
-      </div>
-      <div class="col-md-4 text-center text-md-start">
-        <button
-          class="mt-1 text-decoration-none text-dark btn border-0"
-          (click)="logout()"
-        >
-          <div class="">
-            <i class="bi bi-box-arrow-right fs-2 mb-2 text-danger"></i>
-            <h6 class="card-title text-danger">تسجيل الخروج</h6>
-          </div>
-        </button>
-      </div>
-    </div>
-  </div>
-</section> -->
-
-
 <section class="container my-4">
   <div class="profile-header">
     <!-- Cover Image -->

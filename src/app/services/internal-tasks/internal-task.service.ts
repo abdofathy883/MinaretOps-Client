@@ -11,9 +11,9 @@ export class InternalTaskService {
   private endpoint = 'internaltask';
   constructor(private api: ApiService) { }
 
-  getAll(): Observable<InternalTask[]> {
-    return this.api.get<InternalTask[]>(`${this.endpoint}/un-archived-tasks`);
-  }
+  // getAll(): Observable<InternalTask[]> {
+  //   return this.api.get<InternalTask[]>(`${this.endpoint}/un-archived-tasks`);
+  // }
 
   getArchivedTasks(): Observable<InternalTask[]> {
     return this.api.get<InternalTask[]>(`${this.endpoint}/archived-tasks`)

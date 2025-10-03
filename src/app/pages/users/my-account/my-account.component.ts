@@ -16,6 +16,7 @@ import { AttendanceComponent } from '../../attendance/attendance.component';
 import { SubmitLeaveRequestComponent } from '../../leave-requests/submit-leave-request/submit-leave-request.component';
 import { MyKpisManagementComponent } from '../../kpis/my-kpis-management/my-kpis-management.component';
 import { AlertService } from '../../../services/helper-services/alert.service';
+import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
 @Component({
   selector: 'app-my-account',
   imports: [
@@ -26,7 +27,8 @@ import { AlertService } from '../../../services/helper-services/alert.service';
     AttendanceComponent,
     SubmitLeaveRequestComponent,
     MyKpisManagementComponent,
-  ],
+    ShimmerComponent
+],
   standalone: true,
   templateUrl: './my-account.component.html',
   styleUrl: './my-account.component.css',
@@ -34,6 +36,7 @@ import { AlertService } from '../../../services/helper-services/alert.service';
 export class MyAccountComponent implements OnInit {
   currentUser!: User;
   isLoading: boolean = false;
+  loadingUser: boolean = false;
   isPasswordLoading: boolean = false;
   profilePictureFile!: File;
 
@@ -83,11 +86,12 @@ export class MyAccountComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadingUser = true;
     const userId = this.route.snapshot.paramMap.get('id') ?? '';
     this.authService.getById(userId).subscribe({
       next: (response) => {
         this.currentUser = response;
-        console.log(response);
+        this.loadingUser = false;
         this.updateFormValues();
       },
     });

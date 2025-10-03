@@ -1,4 +1,5 @@
 <div class="task-container">
+  @if (task) {
   <!-- Header Section -->
   <div class="task-header d-flex align-items-center flex-wrap">
     <div class="task-title-section">
@@ -109,48 +110,6 @@
           }
         </div>
       </div>
-
-      <div class="col-lg-6">
-        <!-- <div class="demonstration-section mt-4">
-    <div class="card">
-      <div class="card-header">
-        <h3><i class="bi bi-plus-circle"></i> انهاء التاسك</h3>
-      </div>
-      <div class="card-body">
-        <div class="dynamic-inputs-section mb-4">
-          <label class="form-label">إضافة رابط</label>
-          <div class="input-group mb-2">
-            <input 
-              type="text" 
-              class="form-control" 
-              placeholder="أدخل الرابط"
-            />
-            <button class="btn btn-outline-primary" type="button">
-              <i class="bi bi-plus"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="text-area-section mb-4">
-          <label for="demoTextArea" class="form-label">نص إضافي</label>
-          <textarea 
-            class="form-control" 
-            id="demoTextArea" 
-            rows="4" 
-            placeholder="أدخل النص الإضافي هنا..."
-          ></textarea>
-        </div>
-
-        <div class="submit-section">
-          <button type="button" class="btn btn-success">
-            <i class="bi bi-check-circle me-1"></i>
-            إرسال
-          </button>
-        </div>
-      </div>
-    </div>
-  </div> -->
-      </div>
     </div>
 
     <div class="col-lg-6">
@@ -245,6 +204,11 @@
               {{ status.label }}
             </button>
 
+            } @if (task.status !== CustomTaskStatus.Completed) {
+            <button class="status-option-btn" (click)="openCompleteTaskModal()">
+              <i class="bi bi-check-circle me-1"></i>
+              إكمال التاسك
+            </button>
             }
           </div>
           @if (isUserAdmin || isUserAccountManager) {
@@ -258,19 +222,42 @@
             جار الارشفة... } @if(!isArchiveLoading) { ارشفة التاسك }
           </button>
           @if (task.isArchived) {
-            <small class="text-muted">التاسك مؤرشفة. اضغط مرة اخرى لالغاء الارشفة</small>
-          }
-          }
+          <small class="text-muted"
+            >التاسك مؤرشفة. اضغط مرة اخرى لالغاء الارشفة</small
+          >
+          } }
 
           <div class="update-feedback" *ngIf="updatingStatus">
             <div class="spinner"></div>
             <span>جاري التحديث...</span>
           </div>
 
-          <!-- <div class="error-message" *ngIf="error">
-            <i class="fas fa-exclamation-circle"></i>
-            {{ error }}
-          </div> -->
+          @if (task.taskResources && task.taskResources.length > 0) {
+          <div class="task-history-card mt-4">
+            <div class="card-header mb-3">
+              <h3><i class="bi bi-check-circle"></i> بيانات انهاء التاسك</h3>
+            </div>
+            <ul class="timeline">
+              @for (r of task.taskResources; track r.id) {
+              <li class="timeline-item">
+                <!-- <div class="timeline-time">
+                {{ h.updatedAt | date : "short" }}
+              </div> -->
+                <div class="timeline-content">
+                  <div class="change-summary">
+                    <a [href]="r.url" target="_blank">عرض الرابط</a>
+                  </div>
+                  <!-- <div class="byline">
+                  <i class="bi bi-person"></i>
+                  <span>تم التعديل بواسطة: {{ r.updatedByName }}</span>
+                </div> -->
+                </div>
+              </li>
+              }
+            </ul>
+            <p>{{ task.completionNotes }}</p>
+          </div>
+          }
         </div>
       </div>
     </div>
@@ -452,5 +439,107 @@
       <button class="btn btn-danger" (click)="deleteTask()">حذف التاسك</button>
     </div>
   </form>
-  }
+  } }
+</div>
+
+<!-- Complete Task Modal -->
+<div
+  class="modal fade"
+  id="completeTaskModal"
+  tabindex="-1"
+  aria-labelledby="completeTaskModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="completeTaskModalLabel">إكمال التاسك</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="completeTaskForm" (ngSubmit)="completeTask()">
+          <!-- URLs Section -->
+          <div class="mb-4">
+            <label class="form-label fw-bold">روابط التسليم</label>
+            <div formArrayName="urls">
+              @for (urlControl of urlControls.controls; track $index) {
+              <div class="input-group mb-2" [formGroupName]="$index">
+                <input
+                  type="url"
+                  class="form-control"
+                  formControlName="url"
+                  placeholder="أدخل رابط التسليم"
+                  [class.is-invalid]="
+                    urlControl.get('url')?.invalid &&
+                    urlControl.get('url')?.touched
+                  "
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  (click)="removeUrl($index)"
+                  [disabled]="urlControls.length === 1"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+              @if (urlControl.get('url')?.invalid &&
+              urlControl.get('url')?.touched) {
+              <div class="invalid-feedback">
+                الرابط مطلوب ويجب أن يكون صحيحاً
+              </div>
+              } }
+            </div>
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm"
+              (click)="addUrl()"
+            >
+              <i class="bi bi-plus"></i> إضافة رابط آخر
+            </button>
+          </div>
+
+          <!-- Completion Notes -->
+          <div class="mb-3">
+            <label for="completionNotes" class="form-label fw-bold"
+              >ملاحظات الإكمال</label
+            >
+            <textarea
+              class="form-control"
+              id="completionNotes"
+              formControlName="completionNotes"
+              rows="4"
+              placeholder="أدخل ملاحظات حول إكمال التاسك (اختياري)"
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          إلغاء
+        </button>
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="completeTask()"
+          [disabled]="isCompletingTask"
+        >
+          @if (isCompletingTask) {
+          <span
+            class="spinner-border spinner-border-sm me-2"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          جاري الإكمال... } @if (!isCompletingTask) {
+          <i class="bi bi-check-circle me-1"></i>
+          إكمال التاسك }
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

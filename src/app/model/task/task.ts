@@ -20,6 +20,8 @@ export interface ITask {
   completedAt?: Date;
   isCompletedOnDeadLine: boolean;
   taskHistory: ITaskHistory[];
+  taskResources: ITaskResources[];
+  completionNotes: string;
 }
 
 export enum CustomTaskStatus {
@@ -107,6 +109,18 @@ export interface ITaskHistory {
   updatedById: string;
   updatedByName: string;
   updatedAt: Date;
+}
+
+export interface ICreateTaskResources {
+  taskId: number;
+  urls: string[];
+  completionNotes?: string;
+}
+
+export interface ITaskResources {
+  id: number;
+  taskId: number;
+  url: string;
 }
 
 // export interface CreateTaskItem {

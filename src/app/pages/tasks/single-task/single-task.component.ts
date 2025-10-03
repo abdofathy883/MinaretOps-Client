@@ -4,12 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
   CustomTaskStatus,
+  ICreateTaskResources,
   ITask,
   IUpdateTask,
   TaskType,
 } from '../../../model/task/task';
 import { AuthService } from '../../../services/auth/auth.service';
 import {
+  FormArray,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
@@ -47,6 +49,9 @@ export class SingleTaskComponent implements OnInit {
   currentUserId: string = '';
   isLoading: boolean = false;
   isArchiveLoading: boolean = false;
+
+  completeTaskForm!: FormGroup;
+  isCompletingTask: boolean = false;
 
   availableStatuses = [
     { value: CustomTaskStatus.Open, label: 'لم تبدأ', icon: 'bi bi-clock' },
@@ -95,6 +100,20 @@ export class SingleTaskComponent implements OnInit {
       status: ['', Validators.required],
       refrence: [''],
     });
+
+    // Initialize complete task form
+    this.completeTaskForm = this.fb.group({
+      urls: this.fb.array([]),
+      completionNotes: ['']
+    });
+    // this.completeTaskForm = this.fb.group({
+    //   urls: this.fb.array([
+    //     this.fb.group({
+    //       url: ['', Validators.required]
+    //     })
+    //   ]),
+    //   completionNotes: ['']
+    // });
   }
 
   ngOnInit(): void {
@@ -103,10 +122,61 @@ export class SingleTaskComponent implements OnInit {
     this.taskService.getById(taskId).subscribe({
       next: (response) => {
         this.task = response;
+        console.log(response)
       },
     });
 
     this.loadUser();
+  }
+
+  get urlControls() {
+    return this.completeTaskForm.get('urls') as FormArray;
+  }
+
+  addUrl() {
+    const urlGroup = this.fb.group({
+      url: [null, Validators.required]
+    });
+    this.urlControls.push(urlGroup);
+  }
+
+  
+
+  openCompleteTaskModal() {
+    // Reset form
+    // this.completeTaskForm.reset();
+    // this.urlControls.clear();
+    // this.addUrl(); // Add at least one URL field
+
+    // Clear the form array completely
+  while (this.urlControls.length !== 0) {
+    this.urlControls.removeAt(0);
+  }
+  
+  // Add fresh URL field
+  this.addUrl();
+  
+  // Reset completion notes
+  this.completeTaskForm.patchValue({
+    completionNotes: ''
+  });
+
+  // Mark form as pristine and untouched
+  this.completeTaskForm.markAsPristine();
+  this.completeTaskForm.markAsUntouched();
+    
+    // Show modal using Bootstrap
+    const modalElement = document.getElementById('completeTaskModal');
+    if (modalElement) {
+      const modal = new (window as any).bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
+  removeUrl(index: number) {
+    if (this.urlControls.length > 1) {
+      this.urlControls.removeAt(index);
+    }
   }
   
   loadUser() {
@@ -296,11 +366,9 @@ export class SingleTaskComponent implements OnInit {
       status: Number(formValue.status),
       refrence: formValue.refrence,
     };
-    console.log(updatedTask);
     this.isLoading = false;
 
     this.taskService.update(this.task.id, this.currentUserId, updatedTask).subscribe({
-
       next: (response) => {
         this.isLoading = false;
         this.task = response;
@@ -327,14 +395,60 @@ export class SingleTaskComponent implements OnInit {
   archiveTask() {
     this.isArchiveLoading = true;
     this.taskService.archive(this.task.id).subscribe({
-      next: () => {
+      next: (res) => {
         this.isArchiveLoading = false;
+        this.task = res;
         this.showAlert('تم أرشفة المهمة بنجاح', 'success');
       },
       error: () => {
         this.isArchiveLoading = false;
         this.showAlert('فشل ارشفة التاسك', 'error');
       }
+    });
+  }
+
+  completeTask() {
+    if (this.completeTaskForm.invalid) {
+      this.completeTaskForm.markAllAsTouched();
+
+    this.urlControls.controls.forEach(control => {
+      control.get('url')?.markAsTouched();
+    });
+
+      this.showAlert('يرجى ملء جميع الحقول المطلوبة بشكل صحيح', 'error');
+      return;
+    }
+
+    this.isCompletingTask = true;
+    
+    const formValue = this.completeTaskForm.value;
+    const urls = formValue.urls.map((urlGroup: any) => urlGroup.url)
+    .filter((url: string) => url && url.trim() !== '');
+    
+    const taskResources: ICreateTaskResources = {
+      taskId: this.task.id,
+      urls: urls,
+      completionNotes: formValue.completionNotes || undefined
+    };
+    this.taskService.complete(this.task.id, this.currentUserId, taskResources).subscribe({
+      next: (response) => {
+        this.isCompletingTask = false;
+        this.task = response;
+        this.showAlert('تم إكمال التاسك بنجاح', 'success');
+        
+        // Hide modal
+        const modalElement = document.getElementById('completeTaskModal');
+        if (modalElement) {
+          const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
+          if (modal) {
+            modal.hide();
+          }
+        }
+      },
+      error: (err) => {
+        this.isCompletingTask = false;
+        this.showAlert('فشل إكمال التاسك', 'error');
+      },
     });
   }
 

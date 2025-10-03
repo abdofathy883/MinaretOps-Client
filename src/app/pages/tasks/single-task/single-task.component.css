@@ -110,3 +110,55 @@
   font-style: italic;
   padding: 8px 0;
 }
+
+/* Modal styles */
+.modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-title {
+  font-weight: 600;
+}
+
+.btn-close {
+  filter: invert(1);
+}
+
+.input-group .btn-outline-danger {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.input-group .btn-outline-danger:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+.btn-outline-primary {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.btn-outline-primary:hover {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.form-label.fw-bold {
+  color: #495057;
+  margin-bottom: 8px;
+}
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
