@@ -76,9 +76,11 @@
               >
             </li>
             @if (isUserAdmin || isUserAccountManager) {
-              <li class="nav-item">
-                <a class="nav-link" routerLink="/internal-tasks/archive">الارشيف</a>
-              </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/internal-tasks/archive"
+                >الارشيف</a
+              >
+            </li>
             <li class="nav-item">
               <a class="nav-link" routerLink="/internal-tasks/add"
                 >إضافة مهمة داخلية</a
@@ -242,6 +244,43 @@
           </a>
         </li>
         }
+        <!-- <li class="nav-item">
+          <button class="text-white menu-toggler" (click)="toggleMenu('blog')">
+            <span class="nav-text" [class.hidden]="isCollapsed">بلوج</span>
+          </button>
+          <ul
+            class="submenu blog-menu"
+            [class.open]="openMenu === 'blog'"
+            [class.hidden]="isCollapsed"
+          >
+          <li class="nav-item">
+            <a routerLink="/blog-category" class="nav-link">التصنيفات</a>
+          </li>
+            <li class="nav-item">
+              <a routerLink="/blog" class="nav-link">جميع المقالات</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/blog/add" class="nav-link">اضافة مقالة</a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <button class="text-white menu-toggler" (click)="toggleMenu('portfolio')">
+            <span class="nav-text" [class.hidden]="isCollapsed">بورتفوليو</span>
+          </button>
+          <ul
+            class="submenu portfolio-menu"
+            [class.open]="openMenu === 'portfolio'"
+            [class.hidden]="isCollapsed"
+          >
+            <li class="nav-item">
+              <a routerLink="/portfolio" class="nav-link">جميع المشاريع</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/portfolio/add" class="nav-link">اضافة مشروع</a>
+            </li>
+          </ul>
+        </li>
         <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
           <a routerLink="/contact-form-entries" class="nav-link">
             <i class="bi bi-file-text ms-3"></i>
@@ -249,7 +288,7 @@
               >فورم التواصل</span
             >
           </a>
-        </li>
+        </li> -->
       </ul>
     </div>
 

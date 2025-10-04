@@ -1,0 +1,58 @@
+<section class="container my-4">
+    <div class="mb-3">
+        <h2 class="mb-0">
+      <i class="bi bi-megaphone me-2"></i>
+      إضافة تصنيف جديد
+    </h2>
+    </div>
+
+    <form [formGroup]="catForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="title" class="form-label">اسم التصنيف</label>
+                <input type="text" name="title" id="title" formControlName="title" class="form-control">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="lang" class="form-label">اللغة</label>
+                <select name="lang" id="lang" class="form-select" formControlName="language">
+                    <option value="0">العربية</option>
+                    <option value="1">English</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="add-btn mt-3">
+            @if (isLoading) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                جار الاضافة...
+            } @else {
+                <i class="bi bi-check-circle me-2"></i>
+                اضافة تصنيف
+            }
+        </button>
+    </form>
+</section>
+
+<section class="container my-2">
+    <!-- @if (posts.length > 0) {
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @for (post of posts; track post.id) {
+    <div class="col">
+      <div class="card h-100 announcement-card" (click)="goToCat(post.title)">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-megaphone ms-2 text-primary"></i>
+            <small class="text-muted">{{ formatDate(post.createdAt) }}</small>
+          </div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title text-primary mb-3">{{ post.title }}</h5>
+          <p class="card-text text-muted">{{ truncateText(post.content, 120) }}</p>
+        </div>
+        
+      </div>
+    </div>
+    }
+  </div>
+  } -->
+</section>

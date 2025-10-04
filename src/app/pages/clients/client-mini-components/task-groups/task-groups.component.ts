@@ -290,7 +290,7 @@ export class TaskGroupsComponent implements OnInit {
       },
       error: (error) => {
         this.isSaving = false;
-        this.showAlert('حدث خطأ في تحديث المهمة', 'error');
+        this.showAlert(error.message, 'error');
       },
     });
   }
@@ -321,7 +321,7 @@ export class TaskGroupsComponent implements OnInit {
       },
       error: (error) => {
         this.isSaving = false;
-        this.showAlert('فشل اضافة التاسك, حاول مرة اخرى', 'error');
+        this.showAlert(error.message, 'error');
       },
     });
   }

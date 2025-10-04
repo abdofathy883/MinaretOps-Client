@@ -181,7 +181,7 @@ export class NewTaskGroupComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          this.showAlert('فشل في إضافة الشهر الجديد, حاول مرة اخرى', 'error');
+          this.showAlert(error.message, 'error');
         },
       });
     } else {

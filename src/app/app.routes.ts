@@ -37,6 +37,13 @@ import { SubmitLeaveRequestComponent } from './pages/leave-requests/submit-leave
 import { MyKpisManagementComponent } from './pages/kpis/my-kpis-management/my-kpis-management.component';
 import { ArchiveComponent } from './pages/tasks/archive/archive.component';
 import { InternalArchiveComponent } from './pages/internal-tasks/internal-archive/internal-archive.component';
+import { AllBlogsComponent } from './pages/blog/all-blogs/all-blogs.component';
+import { AddBlogComponent } from './pages/blog/add-blog/add-blog.component';
+import { SingleBlogComponent } from './pages/blog/single-blog/single-blog.component';
+import { AllProjectsComponent } from './pages/portfolio/all-projects/all-projects.component';
+import { AddProjectComponent } from './pages/portfolio/add-project/add-project.component';
+import { SingleProjectComponent } from './pages/portfolio/single-project/single-project.component';
+import { CategoryComponent } from './pages/blog/category/category.component';
 
 export const routes: Routes = [
     // {
@@ -211,7 +218,42 @@ export const routes: Routes = [
     {
         path: 'reset-password',
         component: ResetPasswordComponent,
-        canActivate: [authGuard] // This should be accessible without authentication
+        canActivate: [authGuard]
+    },
+    {
+        path: 'blog',
+        component: AllBlogsComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'blog/add',
+        component: AddBlogComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'blog/:title',
+        component: SingleBlogComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'blog-category',
+        component: CategoryComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'portfolio',
+        component: AllProjectsComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'portfolio/add',
+        component: AddProjectComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'portfolio/:title',
+        component: SingleProjectComponent,
+        canActivate: [noauthGuard]
     },
     {
         path: '**',
