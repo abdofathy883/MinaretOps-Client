@@ -99,7 +99,7 @@ export class NewTaskGroupComponent implements OnInit {
     this.clientServicesArray.push(clientService);
 
     // Add initial task
-    this.addTask(this.clientServicesArray.length - 1);
+    // this.addTask(this.clientServicesArray.length - 1);
   }
 
   removeClientService(serviceIndex: number) {
@@ -110,6 +110,7 @@ export class NewTaskGroupComponent implements OnInit {
 
   addTask(serviceIndex: number) {
     const task = this.fb.group({
+      taskType: ['', Validators.required],
       title: ['', Validators.required],
       description: ['', Validators.required],
       employeeId: ['', Validators.required],
@@ -149,8 +150,11 @@ export class NewTaskGroupComponent implements OnInit {
       const formData = this.taskGroupForm.value;
 
       const taskGroup: ICreateTaskGroup = {
-        clientServiceId: formData.clientServices[0].serviceId,
+        clientId: this.clientId,
+        serviceId: Number(formData.clientServices[0].serviceId),
+        clientServiceId: 0,
         tasks: formData.clientServices[0].tasks.map((task: any) => ({
+          taskType: Number(task.taskType),
           title: task.title,
           description: task.description,
           employeeId: task.employeeId,
@@ -159,6 +163,8 @@ export class NewTaskGroupComponent implements OnInit {
           refrence: task.refrence,
         })),
       };
+
+      console.log(taskGroup);
 
       this.taskService.addTaskGroup(taskGroup).subscribe({
         next: (response) => {
@@ -182,6 +188,8 @@ export class NewTaskGroupComponent implements OnInit {
         error: (error) => {
           this.isLoading = false;
           this.showAlert(error.message, 'error');
+
+          console.log(error);
         },
       });
     } else {

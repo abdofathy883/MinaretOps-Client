@@ -85,6 +85,8 @@ export interface IUpdateTask {
 
 // Task Groups
 export interface ICreateTaskGroup {
+  clientId: number;
+  serviceId: number;
   clientServiceId: number;
   tasks: ICreateTask[];
 }

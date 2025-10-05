@@ -321,7 +321,7 @@ export class TaskGroupsComponent implements OnInit {
       },
       error: (error) => {
         this.isSaving = false;
-        this.showAlert(error.message, 'error');
+        this.showAlert(error, 'error');
       },
     });
   }

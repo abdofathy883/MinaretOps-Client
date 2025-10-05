@@ -21,12 +21,12 @@
       </div>
       <div class="modal-body">
         <!-- Alert Messages -->
-  @if (alertMessage) {
-  <div class="alert" [class]="'alert-' + alertType">
-    {{ alertMessage }}
-    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
-  </div>
-  }
+        @if (alertMessage) {
+        <div class="alert" [class]="'alert-' + alertType">
+          {{ alertMessage }}
+          <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
+        </div>
+        }
 
         <form [formGroup]="taskGroupForm" (ngSubmit)="onSubmit()">
           <div class="me-2 mb-3">
@@ -112,16 +112,46 @@
                     id="task-{{ serviceIndex }}-{{ taskIndex }}"
                     class="task-details"
                     [class.collapsed]="isTaskCollapsed(serviceIndex, taskIndex)"
-                    
                   >
-                    <div class="mb-2">
-                      <label class="form-label">عنوان المهمة</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        formControlName="title"
-                        placeholder="ادخل عنوان المهمة"
-                      />
+                    <div class="row">
+                      <div class="col-md-6 mb-2">
+                        <label for="type" class="form-label">نوع التاسك</label>
+                        <select name="type" id="type" class="form-select" formControlName="taskType">
+                          <option [value]="0">Planning</option>
+                          <option [value]="1">Content Strategy</option>
+                          <option [value]="2">Content Writing</option>
+                          <option [value]="3">Logo Design</option>
+                          <option [value]="4">Visual Identity</option>
+                          <option [value]="5">Design Directions</option>
+                          <option [value]="6">SM Design</option>
+                          <option [value]="7">Printings Design</option>
+                          <option [value]="8">Illustrations</option>
+                          <option [value]="9">Voiceover</option>
+                          <option [value]="10">Motion</option>
+                          <option [value]="11">Video Editing</option>
+                          <option [value]="12">Publishing</option>
+                          <option [value]="13">Moderation</option>
+                          <option [value]="14">Ad Management</option>
+                          <option [value]="15">E Mail Marketing</option>
+                          <option [value]="16">WhatsApp Marketing</option>
+                          <option [value]="17">UI UX</option>
+                          <option [value]="18">WordPress</option>
+                          <option [value]="19">Backend</option>
+                          <option [value]="20">Frontend</option>
+                          <option [value]="21">SEO</option>
+                          <option [value]="22">Meeting</option>
+                          <option [value]="23">Hosting Management</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6 mb-2">
+                        <label class="form-label">عنوان المهمة</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          formControlName="title"
+                          placeholder="ادخل عنوان المهمة"
+                        />
+                      </div>
                     </div>
                     <div class="mb-2">
                       <label class="form-label">وصف المهمة</label>
@@ -132,8 +162,8 @@
                         placeholder="اكتب وصفا مفصلا للمهمة"
                       ></textarea>
                     </div>
-                    <div class="row mb-2">
-                      <div class="col-md-6">
+                    <div class="row">
+                      <div class="col-md-6 mb-2">
                         <label class="form-label">الموظف</label>
                         <select
                           class="form-select"
@@ -147,17 +177,17 @@
                           }
                         </select>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-md-6 mb-2">
                         <label class="form-label">موعد التسليم</label>
                         <input
-                          type="date"
+                          type="datetime-local"
                           class="form-control"
                           formControlName="deadline"
                         />
                       </div>
                     </div>
-                    <div class="row mb-2">
-                      <div class="col-md-6">
+                    <div class="row">
+                      <div class="col-md-6 mb-2">
                         <label class="form-label">الأولوية</label>
                         <select class="form-select" formControlName="priority">
                           <option value="عادي">عادي</option>
@@ -165,7 +195,7 @@
                           <option value="مستعجل">مستعجل</option>
                         </select>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-md-6 mb-2">
                         <label class="form-label">المرجع (اختياري)</label>
                         <input
                           type="text"
