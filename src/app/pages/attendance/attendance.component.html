@@ -17,7 +17,7 @@
         } @if (!isCheckingIn) {
         <i class="bi bi-calendar-plus ms-3"></i>
         <span>تسجيل الحضور</span>
-        } 
+        }
         <!-- @else {
         <i class="bi bi-calendar-check ms-3"></i>
         <span>تم التسجيل اليوم</span>
@@ -31,9 +31,9 @@
   <div class="card pt-3 px-4">
     <h2>حالة الحضور اليوم</h2>
     @if (attendanceErrorMessage) {
-      <div class="alert alert-danger">
-        {{ attendanceErrorMessage }}
-      </div>
+    <div class="alert alert-danger">
+      {{ attendanceErrorMessage }}
+    </div>
     }
     <div class="status-info">
       <p>
@@ -42,12 +42,12 @@
       </p>
       <p>
         <strong class="ms-3">الحالة:</strong>
-        <span class="status-badge status-present">{{ getAttendanceStatusLabel(todayRecord?.status ?? null) }}</span>
-
+        <span class="status-badge status-present">{{
+          getAttendanceStatusLabel(todayRecord?.status ?? null)
+        }}</span>
       </p>
     </div>
-    @if (todayRecord) {
-    }
+    @if (todayRecord) { }
   </div>
 </section>
 
@@ -55,6 +55,5 @@
 @if (alertMessage) {
 <div class="alert" [class]="'alert-' + alertType">
   {{ alertMessage }}
-  <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
 </div>
 }

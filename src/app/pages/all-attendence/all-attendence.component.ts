@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AttendanceRecord } from '../../model/attendance-record/attendance-record';
+import { AttendanceRecord, AttendanceStatus } from '../../model/attendance-record/attendance-record';
 import { AttendanceService } from '../../services/attendance/attendance.service';
 import { User } from '../../model/auth/user';
 import { AuthService } from '../../services/auth/auth.service';
@@ -28,7 +28,13 @@ export class AllAttendenceComponent implements OnInit{
     this.filterForm = this.fb.group({
       date: [null],
       employeeId: [null]
-    })
+    });
+
+    // Subscribe to form changes for live filtering
+    this.filterForm.valueChanges.subscribe(() => {
+      this.applyFilters();
+    });
+
     this.authService.getAll().subscribe({
       next: (response) => {
         this.employees = response;
@@ -38,6 +44,7 @@ export class AllAttendenceComponent implements OnInit{
       next: (response) => {
         this.attendanceRecords = response;
         this.filteredAttendanceRecords = [...this.attendanceRecords];
+        this.applyFilters();
       },
       error: (error) => {
         console.error('Error fetching attendance records:', error);
@@ -59,5 +66,16 @@ export class AllAttendenceComponent implements OnInit{
       }
       return matches;
     });
+  }
+
+  mapAttendanceStatus(status: AttendanceStatus): string {
+    switch(status){
+      case AttendanceStatus.Absent:
+        return 'غياب';
+      case AttendanceStatus.Leave: 
+        return 'اجازة';
+      case AttendanceStatus.Present:
+        return 'حاضر';
+    }
   }
 }

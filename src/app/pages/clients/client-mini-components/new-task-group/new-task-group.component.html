@@ -116,7 +116,7 @@
                     <div class="row">
                       <div class="col-md-6 mb-2">
                         <label for="type" class="form-label">نوع التاسك</label>
-                        <select name="type" id="type" class="form-select" formControlName="taskType">
+                        <select name="type" id="type" class="form-select" formControlName="taskType"  [class.is-invalid]="hasError('taskType')">
                           <option [value]="0">Planning</option>
                           <option [value]="1">Content Strategy</option>
                           <option [value]="2">Content Writing</option>
@@ -150,6 +150,7 @@
                           class="form-control"
                           formControlName="title"
                           placeholder="ادخل عنوان المهمة"
+                           [class.is-invalid]="hasError('title')"
                         />
                       </div>
                     </div>
@@ -160,6 +161,7 @@
                         rows="2"
                         formControlName="description"
                         placeholder="اكتب وصفا مفصلا للمهمة"
+                         [class.is-invalid]="hasError('description')"
                       ></textarea>
                     </div>
                     <div class="row">
@@ -168,6 +170,7 @@
                         <select
                           class="form-select"
                           formControlName="employeeId"
+                           [class.is-invalid]="hasError('employeeId')"
                         >
                           <option value="" disabled selected>اختر موظف</option>
                           @for (emp of employees; track emp.id) {
@@ -183,13 +186,14 @@
                           type="datetime-local"
                           class="form-control"
                           formControlName="deadline"
+                           [class.is-invalid]="hasError('deadline')"
                         />
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-md-6 mb-2">
                         <label class="form-label">الأولوية</label>
-                        <select class="form-select" formControlName="priority">
+                        <select class="form-select" formControlName="priority"  [class.is-invalid]="hasError('priority')">
                           <option value="عادي">عادي</option>
                           <option value="مهم">مهم</option>
                           <option value="مستعجل">مستعجل</option>
@@ -202,6 +206,7 @@
                           class="form-control"
                           formControlName="refrence"
                           placeholder="أدخل مرجع للمهمة"
+                           [class.is-invalid]="hasError('reference')"
                         />
                       </div>
                     </div>

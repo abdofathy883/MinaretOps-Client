@@ -238,6 +238,8 @@ export class NewTaskGroupComponent implements OnInit {
     }
   }
 
+  
+
   showAlert(message: string, type: string) {
     this.alertMessage = message;
     this.alertType = type;

@@ -17,9 +17,9 @@
               }
             </select>
           </div>
-          <div class="col">
+          <!-- <div class="col">
             <button class="add-btn w-100" (click)="applyFilters()">تصفية</button>
-          </div>
+          </div> -->
         </div>
       </form>
     </div>
@@ -41,7 +41,7 @@
           <td data-cell="تاريخ التسجيل">{{ record.checkInTime | date : "shortDate" }}</td>
           <td data-cell="وقت التسجيل">{{ record.checkInTime | date : "shortTime" }}</td>
           <td data-cell="الحالة">
-            <span class="status-badge status-present">حاضر</span>
+            <span class="status-badge status-present">{{ mapAttendanceStatus(record.status) }}</span>
           </td>
           <td data-cell="جهاز التسجيل">{{ record.deviceId }}</td>
           <td data-cell="الشبكة">{{ record.ipAddress }}</td>
