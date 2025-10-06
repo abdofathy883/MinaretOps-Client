@@ -63,8 +63,8 @@ export class TaskService {
     return this.api.patch<ITask>(`${this.endpoint}/complete/${taskId}/${userId}`, taskResource);
   }
 
-  addTask(createTask: ICreateTask): Observable<ITask> {
-    return this.api.post<ITask>(`${this.endpoint}/create-task`, createTask);
+  addTask(createTask: ICreateTask, userId: string): Observable<ITask> {
+    return this.api.post<ITask>(`${this.endpoint}/create-task/${userId}`, createTask);
   }
 
   deleteTask(taskId: number): Observable<boolean> {

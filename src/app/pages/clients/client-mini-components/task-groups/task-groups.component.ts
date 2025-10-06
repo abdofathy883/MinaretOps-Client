@@ -126,6 +126,7 @@ export class TaskGroupsComponent implements OnInit {
   }
 
   private loadEmployees() {
+    this.currentUserId = this.authService.getCurrentUserId();
     this.authService.getAll().subscribe({
       next: (users) => {
         this.employees = users;
@@ -311,8 +312,9 @@ export class TaskGroupsComponent implements OnInit {
       taskGroupId: this.selectedTaskGroupId!,
     };
 
+
     this.isSaving = true;
-    this.taskService.addTask(newTask).subscribe({
+    this.taskService.addTask(newTask, this.currentUserId).subscribe({
       next: (response) => {
         this.isSaving = false;
         this.hideModal();
@@ -322,6 +324,7 @@ export class TaskGroupsComponent implements OnInit {
       error: (error) => {
         this.isSaving = false;
         this.showAlert(error, 'error');
+        console.log(error)
       },
     });
   }

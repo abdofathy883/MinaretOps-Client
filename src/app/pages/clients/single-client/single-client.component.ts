@@ -110,7 +110,7 @@ export class SingleClientComponent implements OnInit {
   onTaskCreated(createTask: ICreateTask): void {
     this.loading = true;
 
-    this.taskService.addTask(createTask).subscribe({
+    this.taskService.addTask(createTask, this.currentUserId).subscribe({
       next: (response) => {
         // Add the new task to local data
         this.addTaskToLocalData(response);
