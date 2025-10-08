@@ -27,24 +27,23 @@
       <thead>
         <tr>
           <th>الموظف</th>
-          <th>تاريخ التسجيل</th>
-          <th>وقت التسجيل</th>
+          <th>اليوم</th>
+          <th>وقت الحضور</th>
+          <th>وقت الانصراف</th>
           <th>الحالة</th>
-          <th>جهاز التسجيل</th>
-          <th>الشبكة</th>
         </tr>
       </thead>
       <tbody>
         @for (record of filteredAttendanceRecords; track $index) {
         <tr>
           <td data-cell="الموظف">{{ record.employeeName }}</td>
-          <td data-cell="تاريخ التسجيل">{{ record.checkInTime | date : "shortDate" }}</td>
-          <td data-cell="وقت التسجيل">{{ record.checkInTime | date : "shortTime" }}</td>
+          <td data-cell="تاريخ التسجيل">{{ record.clockIn | date : "shortDate" }}</td>
+          <td data-cell="وقت التسجيل">{{ record.clockIn | date : "shortTime" }}</td>
+          <td data-cell="وقت التسجيل">{{ record.clockOut | date : "shortTime" }}</td>
           <td data-cell="الحالة">
             <span class="status-badge status-present">{{ mapAttendanceStatus(record.status) }}</span>
           </td>
-          <td data-cell="جهاز التسجيل">{{ record.deviceId }}</td>
-          <td data-cell="الشبكة">{{ record.ipAddress }}</td>
+          
         </tr>
         } @if (attendanceRecords.length === 0) {
         <tr>

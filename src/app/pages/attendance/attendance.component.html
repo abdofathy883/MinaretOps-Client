@@ -9,19 +9,15 @@
     <div class="card-body">
       <button
         class="check-in-btn"
-        (click)="onCheckIn()"
-        [disabled]="todayRecord"
+        (click)="onAttendanceAction()"
+        [disabled]="isProcessing || (!canClockIn() && !canClockOut())"
       >
-        @if (isCheckingIn) {
-        <span>جاري التسجيل...</span>
-        } @if (!isCheckingIn) {
-        <i class="bi bi-calendar-plus ms-3"></i>
-        <span>تسجيل الحضور</span>
+        @if (isProcessing) {
+          <span>جاري التسجيل...</span>
+        } @else {
+          <i [class]="getButtonIcon()"></i>
+          <span>{{ getButtonText() }}</span>
         }
-        <!-- @else {
-        <i class="bi bi-calendar-check ms-3"></i>
-        <span>تم التسجيل اليوم</span>
-        } -->
       </button>
     </div>
   </div>
@@ -31,23 +27,41 @@
   <div class="card pt-3 px-4">
     <h2>حالة الحضور اليوم</h2>
     @if (attendanceErrorMessage) {
-    <div class="alert alert-danger">
-      {{ attendanceErrorMessage }}
-    </div>
+      <div class="alert alert-danger">
+        {{ attendanceErrorMessage }}
+      </div>
     }
-    <div class="status-info">
-      <p>
-        <strong>وقت التسجيل:</strong>
-        {{ todayRecord?.checkInTime | date : "shortTime" }}
-      </p>
-      <p>
-        <strong class="ms-3">الحالة:</strong>
-        <span class="status-badge status-present">{{
-          getAttendanceStatusLabel(todayRecord?.status ?? null)
-        }}</span>
-      </p>
-    </div>
-    @if (todayRecord) { }
+    
+    @if (todayRecord) {
+      <div class="status-info">
+        <p>
+          <strong>وقت التسجيل:</strong>
+          {{ todayRecord.clockIn | date : "shortTime" }}
+        </p>
+        @if (todayRecord.clockOut) {
+          <p>
+            <strong>وقت الانصراف:</strong>
+            {{ todayRecord.clockOut | date : "shortTime" }}
+          </p>
+        }
+        <p>
+          <strong class="ms-3">الحالة:</strong>
+          <span class="status-badge status-present">
+            {{ getAttendanceStatusLabel(todayRecord.status) }}
+          </span>
+        </p>
+        @if (todayRecord.clockIn && todayRecord.clockOut) {
+          <p>
+            <strong>مدة العمل:</strong>
+            {{ calculateWorkDuration(todayRecord.clockIn, todayRecord.clockOut) }}
+          </p>
+        }
+      </div>
+    } @else {
+      <div class="alert alert-info">
+        لم يتم تسجيل الحضور اليوم بعد
+      </div>
+    }
   </div>
 </section>
 

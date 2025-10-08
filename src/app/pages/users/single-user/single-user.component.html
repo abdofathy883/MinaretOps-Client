@@ -435,19 +435,17 @@
             <th>تاريخ التسجيل</th>
             <th>وقت التسجيل</th>
             <th>الحالة</th>
-            <th>جهاز التسجيل</th>
           </tr>
         </thead>
         <tbody>
           @for (record of attendanceRecords; track $index) {
           <tr>
             <td>{{ record.employeeName }}</td>
-            <td>{{ record.checkInTime | date : "shortDate" }}</td>
-            <td>{{ record.checkInTime | date : "shortTime" }}</td>
+            <td>{{ record.clockIn | date : "shortDate" }}</td>
+            <td>{{ record.clockIn | date : "shortTime" }}</td>
             <td>
               <span class="status-badge status-present">حاضر</span>
             </td>
-            <td>{{ record.deviceId }}</td>
           </tr>
           } @if (attendanceRecords.length === 0) {
           <tr>

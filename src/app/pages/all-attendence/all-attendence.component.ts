@@ -37,12 +37,12 @@ export class AllAttendenceComponent implements OnInit{
 
     this.authService.getAll().subscribe({
       next: (response) => {
-        this.employees = response;
+        this.employees = response.reverse();
       }
     })
     this.attendanceService.getAllAttendance().subscribe({
       next: (response) => {
-        this.attendanceRecords = response;
+        this.attendanceRecords = response.reverse();
         this.filteredAttendanceRecords = [...this.attendanceRecords];
         this.applyFilters();
       },
@@ -61,7 +61,7 @@ export class AllAttendenceComponent implements OnInit{
       if (filterEmpId && record.employeeId !== filterEmpId) {
         matches = false;
       }
-      if (filterDate && record.checkInTime !== filterDate) {
+      if (filterDate && record.clockIn !== filterDate) {
         matches = false;
       }
       return matches;

@@ -10,7 +10,7 @@ export class LeaveRequestService {
   private endpoint = 'leaverequest';
   constructor(private api: ApiService) { }
 
-  newLeaveRequest(request: NewLeaveRequest): Observable<LeaveRequest> {
+  newLeaveRequest(request: FormData): Observable<LeaveRequest> {
     return this.api.post<LeaveRequest>(
       `${this.endpoint}/submit-leave-request`,
       request

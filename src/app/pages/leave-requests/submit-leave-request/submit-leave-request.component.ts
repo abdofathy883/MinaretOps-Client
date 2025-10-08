@@ -25,6 +25,8 @@ export class SubmitLeaveRequestComponent implements OnInit {
   alertMessage = '';
   alertType = 'info';
 
+  proofFile!: File;
+
   constructor(
     private leaveRequestService: LeaveRequestService,
     private alertService: AlertService,
@@ -36,7 +38,16 @@ export class SubmitLeaveRequestComponent implements OnInit {
       employeeId: [''],
       fromDate: ['', Validators.required],
       toDate: ['', Validators.required],
+      type: ['', Validators.required],
+      proofFile: [''],
+      reason: ['', [Validators.required, Validators.maxLength(3000)]]
     });
+  }
+
+  onFileChange(event: any) {
+    if (event.target.files.length > 0) {
+      this.proofFile = event.target.files[0];
+    }
   }
 
   onSubmit() {
@@ -45,11 +56,14 @@ export class SubmitLeaveRequestComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    const formData: NewLeaveRequest = {
-      employeeId: this.currentUser.id,
-      fromDate: this.leaveRequestForm.value.fromDate,
-      toDate: this.leaveRequestForm.value.toDate,
-    };
+    const formData: FormData = new FormData();
+    formData.append('employeeId', this.currentUser.id);
+    formData.append('fromDate', this.leaveRequestForm.value.fromDate);
+    formData.append('toDate', this.leaveRequestForm.value.toDate);
+    formData.append('type', this.leaveRequestForm.value.type);
+    formData.append('reason', this.leaveRequestForm.value.reason);
+    formData.append('proofFile', this.proofFile);
+
     this.leaveRequestService.newLeaveRequest(formData).subscribe({
       next: (response) => {
         this.isLoading = false;

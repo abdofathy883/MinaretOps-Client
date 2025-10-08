@@ -40,7 +40,6 @@ export class AllTasksComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.filterForm = this.fb.group({
-      serviceId: [null],
       clientId: [null],
       employeeId: [null],
       priority: [null],
@@ -117,7 +116,6 @@ export class AllTasksComponent implements OnInit {
     this.isSearching = false;
     this.filteredTasks = [...this.tasks];
     this.filterForm.patchValue({
-    serviceId: null,
     clientId: null,
     employeeId: null,
     priority: null
@@ -128,7 +126,7 @@ export class AllTasksComponent implements OnInit {
   loadTasks() {
     this.taskService.getTasksByEmployee(this.currentUserId).subscribe({
       next: (response) => {
-        this.tasks = response;
+        this.tasks = response.reverse();
         this.filteredTasks = [...this.tasks];
         this.applyFilters(); // Apply initial filters
       },
@@ -152,9 +150,7 @@ export class AllTasksComponent implements OnInit {
     const formValues = this.filterForm.value;
 
     // Convert string IDs to numbers
-    const serviceId = formValues.serviceId
-      ? Number(formValues.serviceId)
-      : null;
+
     const clientId = formValues.clientId ? Number(formValues.clientId) : null;
     const employeeId = formValues.employeeId;
     const priority = formValues.priority;
@@ -165,10 +161,7 @@ export class AllTasksComponent implements OnInit {
     this.filteredTasks = tasksToFilter.filter((task) => {
       let matches = true;
 
-      // Filter by service ID
-      if (serviceId && task.serviceId !== serviceId) {
-        matches = false;
-      }
+
 
       // Filter by client ID
       if (clientId && task.clientId !== clientId) {

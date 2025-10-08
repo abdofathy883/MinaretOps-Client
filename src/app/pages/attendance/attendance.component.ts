@@ -23,7 +23,7 @@ export class AttendanceComponent {
   currentTime = new Date();
 
   todayRecord: AttendanceRecord | null = null;
-  isCheckingIn = false;
+  isProcessing = false;
 
   alertMessage = '';
   attendanceErrorMessage = '';
@@ -54,6 +54,13 @@ export class AttendanceComponent {
     });
   }
 
+  calculateWorkDuration(clockIn: Date, clockOut: Date): string {
+  const duration = new Date(clockOut).getTime() - new Date(clockIn).getTime();
+  const hours = Math.floor(duration / (1000 * 60 * 60));
+  const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+  return `${hours} ساعة و ${minutes} دقيقة`;
+}
+
   async getFingerPrient() {
     this.deviceID = await this.fp.getOrCreateDeviceId();
   }
@@ -75,6 +82,8 @@ export class AttendanceComponent {
     this.attendanceService.getTodayAttendanceByEmployeeId(empId).subscribe({
       next: (response) => {
         this.todayRecord = response;
+        console.log(this.todayRecord)
+        console.log(response);
         this.logger.log('Getting Today Attendance For Employee:', empId);
       },
     });
@@ -86,9 +95,50 @@ export class AttendanceComponent {
     }, 1000);
   }
 
-  onCheckIn() {
-    this.isCheckingIn = true;
+  // Determine if user can clock in (no record today or has clocked out)
+  canClockIn(): boolean {
+    return !this.todayRecord || !!this.todayRecord.clockOut;
+  }
 
+  // Determine if user can clock out (has record today and hasn't clocked out)
+  canClockOut(): boolean {
+    return !!this.todayRecord && !!this.todayRecord.clockIn && !this.todayRecord.clockOut;
+  }
+
+  // Get button text based on current state
+  getButtonText(): string {
+    if (this.canClockIn()) {
+      return 'تسجيل الحضور';
+    } else if (this.canClockOut()) {
+      return 'تسجيل الانصراف';
+    }
+    return 'تم التسجيل اليوم';
+  }
+
+  // Get button icon based on current state
+  getButtonIcon(): string {
+    if (this.canClockIn()) {
+      return 'bi bi-calendar-plus ms-3';
+    } else if (this.canClockOut()) {
+      return 'bi bi-calendar-minus ms-3';
+    }
+    return 'bi bi-calendar-check ms-3';
+  }
+
+  // Unified method for clock in/out
+  onAttendanceAction() {
+    if (this.isProcessing) return;
+
+    this.isProcessing = true;
+
+    if (this.canClockIn()) {
+      this.onCheckIn();
+    } else if (this.canClockOut()) {
+      this.onClockOut();
+    }
+  }
+
+  onCheckIn() {
     const checkInData: NewAttendanceRecord = {
       employeeId: this.currentUser!.id,
       deviceId: this.deviceID,
@@ -104,7 +154,7 @@ export class AttendanceComponent {
           response
         );
         this.showAlert('تم تسجيل الحضور بنجاح', 'success');
-        this.isCheckingIn = false;
+        this.isProcessing = false;
       },
       error: (error) => {
         this.logger.log(
@@ -113,9 +163,30 @@ export class AttendanceComponent {
           error
         );
         this.showAlert('حدث خطأ أثناء تسجيل الحضور', 'error');
-        this.isCheckingIn = false;
+        this.isProcessing = false;
       },
     });
+  }
+
+  onClockOut() {
+    if (!this.currentUser?.id) {
+      this.isProcessing = false;
+      return;
+    }
+
+    this.attendanceService.clockOut(this.currentUser.id).subscribe({
+      next: (response) => {
+        this.todayRecord = response;
+        console.log(response);
+        this.showAlert('تم تسجيل الانصراف', 'success');
+        this.isProcessing = false;
+      },
+      error: (err) => {
+        console.log(err);
+        this.showAlert('فشل تسجيل الانصراف', 'error');
+        this.isProcessing = false;
+      }
+    })
   }
 
   getIpAddress(): Observable<string> {

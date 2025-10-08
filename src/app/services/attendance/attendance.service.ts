@@ -16,11 +16,15 @@ export class AttendanceService {
 
   checkIn(attendanceRecoed: NewAttendanceRecord): Observable<AttendanceRecord> {
     return this.api.post<AttendanceRecord>(
-      `${this.endpoint}/new-attendance`,
+      `${this.endpoint}/clock-in`,
       attendanceRecoed
     );
   }
 
+  clockOut(empId: string): Observable<any> {
+    return this.api.post<any>(`${this.endpoint}/clock-out/${empId}`, null);
+  }
+ 
   getAttendanceByEmployeeId(employeeId: string): Observable<AttendanceRecord[]> {
     return this.api.get<AttendanceRecord[]>(
       `${this.endpoint}/employee-attendance/${employeeId}`

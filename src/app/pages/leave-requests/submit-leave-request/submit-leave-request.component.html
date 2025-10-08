@@ -11,7 +11,11 @@
       <h2 class="mb-0 fs-4"><i class="bi bi-cup-hot ms-3"></i>طلب إجازة</h2>
     </div>
     <div class="card-body p-4">
-      <form [formGroup]="leaveRequestForm" (ngSubmit)="onSubmit()">
+      <form
+        [formGroup]="leaveRequestForm"
+        enctype="multipart/form-data"
+        (ngSubmit)="onSubmit()"
+      >
         <div class="row g-4 align-items-end">
           <div class="col-12 col-md-6">
             <label for="fromDate" class="form-label fw-semibold">من</label>
@@ -43,19 +47,55 @@
               "
             />
           </div>
-          <div class="col-12 col-md-6 text-end">
-            <button type="submit" class="add-btn btn-md">
-              @if (isLoading) {
-              <span
-                class="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              جاري الإرسال... } @else {
-              <i class="bi bi-send me-2"></i>
-              إرسال طلب الإجازة }
-            </button>
+        </div>
+        <div class="row g-4 align-items-end">
+          <div class="col-12 col-md-6">
+            <label for="type" class="form-label">نوع الاجازة</label>
+            <select
+              name="type"
+              id="type"
+              class="form-select"
+              formControlName="type"
+            >
+              <option value="0">سنوي</option>
+              <option value="1">مرضي</option>
+            </select>
           </div>
+          <div class="col-12 col-md-6">
+            <label for="proofFile" class="form-label">المرفق</label>
+            <input
+              type="file"
+              name="proofFile"
+              id="proofFile"
+              formControlName="proofFile"
+              class="form-control"
+              (change)="onFileChange($event)"
+            />
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label for="reason" class="form-label">سبب الاجازة</label>
+          <textarea
+            name="reason"
+            id="reason"
+            class="form-control"
+            formControlName="reason"
+          ></textarea>
+        </div>
+
+        <div class="col-12 col-md-6 text-end">
+          <button type="submit" class="add-btn btn-md">
+            @if (isLoading) {
+            <span
+              class="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            جاري الإرسال... } @else {
+            <i class="bi bi-send me-2"></i>
+            إرسال طلب الإجازة }
+          </button>
         </div>
       </form>
     </div>

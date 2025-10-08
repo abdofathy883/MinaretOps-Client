@@ -1,10 +1,9 @@
 export interface AttendanceRecord {
     employeeId: string;
     employeeName: string;
-    checkInTime: Date;
+    clockIn: Date;
+    clockOut: Date;
     status: AttendanceStatus;
-    deviceId: string;
-    ipAddress: string;
 }
 
 export interface NewAttendanceRecord {
@@ -33,10 +32,18 @@ export interface NewLeaveRequest {
     employeeId: string;
     fromDate: Date;
     toDate: Date;
+    type: LeaveType;
+    reason: string;
+    proofFile: File;
 }
 
 export enum LeaveStatus {
     Pending = 0,
     Approved = 1,
     Rejected = 2
+}
+
+export enum LeaveType {
+    Annual = 0,
+    Sick = 1
 }

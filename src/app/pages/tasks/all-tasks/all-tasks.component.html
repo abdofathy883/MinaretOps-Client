@@ -39,20 +39,10 @@
     <form [formGroup]="filterForm">
       <p>تصفية حسب:</p>
       <div class="row">
-        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
-          <label for="service" class="form-label">الخدمة</label>
-          <select
-            name="service"
-            id="service"
-            class="form-select"
-            formControlName="serviceId"
-          >
-            <option value="">جميع الخدمات</option>
-            @for (service of services; track $index) {
-            <option [value]="service.id">{{ service.title }}</option>
-            }
-          </select>
-        </div>
+        <!-- <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+          <label for="service" class="form-label">من</label>
+          <input type="date" name="" id="">
+        </div> -->
         <div class="col-6 col-lg-2 mb-2 mb-lg-0">
           <label for="client" class="form-label">العميل</label>
           <select
