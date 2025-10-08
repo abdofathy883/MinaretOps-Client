@@ -97,7 +97,7 @@ export class AttendanceComponent {
 
   // Determine if user can clock in (no record today or has clocked out)
   canClockIn(): boolean {
-    return !this.todayRecord || !!this.todayRecord.clockOut;
+    return !this.todayRecord || !this.todayRecord.clockOut;
   }
 
   // Determine if user can clock out (has record today and hasn't clocked out)
@@ -162,7 +162,7 @@ export class AttendanceComponent {
           'Sent Attendance Record and Got Error Response: ',
           error
         );
-        this.showAlert('حدث خطأ أثناء تسجيل الحضور', 'error');
+        this.showAlert(error.error, 'error');
         this.isProcessing = false;
       },
     });
@@ -182,8 +182,7 @@ export class AttendanceComponent {
         this.isProcessing = false;
       },
       error: (err) => {
-        console.log(err);
-        this.showAlert('فشل تسجيل الانصراف', 'error');
+        this.showAlert(err.error, 'error');
         this.isProcessing = false;
       }
     })
