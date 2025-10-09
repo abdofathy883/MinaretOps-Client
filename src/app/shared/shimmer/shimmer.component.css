@@ -1,5 +1,4 @@
-/* shimmer-placeholder.component.css */
-.shimmer {
+.shimmer-box {
   background: linear-gradient(
     90deg,
     #f0f0f0 25%,
@@ -8,6 +7,9 @@
   );
   background-size: 400% 100%;
   animation: shimmer 1.4s ease infinite;
+  height: 350px;
+  border-radius: 0.5rem;
+  border: 1px solid #e9ecef;
 }
 
 @keyframes shimmer {

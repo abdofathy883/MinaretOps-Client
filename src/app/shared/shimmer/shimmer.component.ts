@@ -8,7 +8,4 @@ import { Component, Input } from '@angular/core';
   styleUrl: './shimmer.component.css'
 })
 export class ShimmerComponent {
-  @Input() width: string = '100%';
-  @Input() height: string = '160px';
-  @Input() borderRadius: string = '4px';
 }

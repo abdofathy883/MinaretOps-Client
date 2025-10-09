@@ -1,5 +1,7 @@
-<!-- shimmer-placeholder.component.html -->
-<div 
-  class="shimmer" 
-  [ngStyle]="{ width: width, height: height, borderRadius: borderRadius }">
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+  @for (item of [1,2,3,4,5,6]; track item) {
+  <div class="col">
+    <div class="shimmer-box"></div>
+  </div>
+  }
 </div>

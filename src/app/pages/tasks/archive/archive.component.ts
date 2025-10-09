@@ -12,10 +12,11 @@ import { Service } from '../../../model/service/service';
 import { CommonModule } from '@angular/common';
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
+import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
 
 @Component({
   selector: 'app-archive',
-  imports: [CommonModule, ReactiveFormsModule, MapTaskStatusClassPipe, MapTaskStatusPipe],
+  imports: [CommonModule, ReactiveFormsModule, MapTaskStatusClassPipe, MapTaskStatusPipe, ShimmerComponent],
   templateUrl: './archive.component.html',
   styleUrl: './archive.component.css'
 })
@@ -26,6 +27,7 @@ services: Service[] = [];
   tasks: ITask[] = [];
   filteredTasks: ITask[] = [];
   filterForm!: FormGroup;
+  isLoadingTasks: boolean = false;
 
   constructor(
     private serviceService: ServicesService,
@@ -75,8 +77,10 @@ services: Service[] = [];
   }
 
   loadTasks() {
+    this.isLoadingTasks = true;
     this.taskService.getArchivedTasks().subscribe({
       next: (response) => {
+        this.isLoadingTasks = false;
         this.tasks = response;
         this.filteredTasks = [...this.tasks];
       },

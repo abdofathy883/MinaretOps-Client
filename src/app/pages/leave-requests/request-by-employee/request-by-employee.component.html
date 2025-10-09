@@ -1,0 +1,22 @@
+<section class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>من</th>
+                <th>الى</th>
+                <th>الحالة</th>
+                <th>تاريخ الاجراء</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (item of leaves; track $index) {
+                <tr>
+                    <td>{{ item.fromDate | date : "shortDate" }}</td>
+                    <td>{{ item.toDate | date : "shortDate" }}</td>
+                    <td>{{ item.status | leaveStatus}}</td>
+                    <td>{{ item.actionDate | date : "shortDate" }}</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

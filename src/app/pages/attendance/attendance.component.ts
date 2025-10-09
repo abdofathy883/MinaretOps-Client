@@ -45,7 +45,7 @@ export class AttendanceComponent {
       if (this.currentUser) {
         this.loadToadayAttendance(this.currentUser.id);
       }
-    }, 3000);
+    }, 1500);
 
     this.getFingerPrient();
     this.getIpAddress().subscribe((ip) => {
@@ -97,7 +97,7 @@ export class AttendanceComponent {
 
   // Determine if user can clock in (no record today or has clocked out)
   canClockIn(): boolean {
-    return !this.todayRecord || !this.todayRecord.clockOut;
+    return !this.todayRecord || !this.todayRecord.clockIn;
   }
 
   // Determine if user can clock out (has record today and hasn't clocked out)

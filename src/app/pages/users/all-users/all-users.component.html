@@ -1,4 +1,7 @@
 <section class="container my-4">
+  @if (isLoadingUsers) {
+    <app-shimmer></app-shimmer>
+  }
   <div class="row row-cols-1 row-cols-md-3 g-4">
     @for (user of users; track $index) {
     <div class="col">

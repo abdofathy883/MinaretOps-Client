@@ -44,6 +44,9 @@ import { AllProjectsComponent } from './pages/portfolio/all-projects/all-project
 import { AddProjectComponent } from './pages/portfolio/add-project/add-project.component';
 import { SingleProjectComponent } from './pages/portfolio/single-project/single-project.component';
 import { CategoryComponent } from './pages/blog/category/category.component';
+import { AllJdsComponent } from './pages/jds/all-jds/all-jds.component';
+import { AddJdComponent } from './pages/jds/add-jd/add-jd.component';
+import { SingleJdComponent } from './pages/jds/single-jd/single-jd.component';
 
 export const routes: Routes = [
     // {
@@ -253,6 +256,21 @@ export const routes: Routes = [
     {
         path: 'portfolio/:title',
         component: SingleProjectComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'job-descriptions',
+        component: AllJdsComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'job-descriptions/add',
+        component: AddJdComponent,
+        canActivate: [noauthGuard]
+    },
+    {
+        path: 'job-descriptions/:id',
+        component: SingleJdComponent,
         canActivate: [noauthGuard]
     },
     {

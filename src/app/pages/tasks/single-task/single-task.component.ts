@@ -1,3 +1,4 @@
+import { MapTaskPriorityPipe } from './../../../core/pipes/task-priority/map-task-priority.pipe';
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../../../services/tasks/task.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,6 +23,7 @@ import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 import { AlertService } from '../../../services/helper-services/alert.service';
 import { hasError } from '../../../services/helper-services/utils';
+import { MapTaskTypePipe } from '../../../core/pipes/task-type/map-task-type.pipe';
 
 @Component({
   selector: 'app-single-task',
@@ -30,6 +32,8 @@ import { hasError } from '../../../services/helper-services/utils';
     ReactiveFormsModule,
     MapTaskStatusPipe,
     MapTaskStatusClassPipe,
+    MapTaskPriorityPipe,
+    MapTaskTypePipe
   ],
   templateUrl: './single-task.component.html',
   styleUrl: './single-task.component.css',
@@ -223,61 +227,6 @@ export class SingleTaskComponent implements OnInit {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
-  getTypeLabel(type: TaskType): string {
-    switch (type) {
-      case TaskType.Ad_Management:
-        return 'Ad Management';
-      case TaskType.Backend:
-        return 'Backend';
-      case TaskType.ContentStrategy:
-        return 'Content Strategy';
-      case TaskType.ContentWriting:
-        return 'Content Writing';
-      case TaskType.DesignDirections:
-        return 'Design Directions';
-      case TaskType.E_mailMarketing:
-        return 'E-mail Marketing';
-      case TaskType.Frontend:
-        return 'Frontend';
-      case TaskType.HostingManagement:
-        return 'Hosting Management';
-      case TaskType.Illustrations:
-        return 'Illustrations';
-      case TaskType.LogoDesign:
-        return 'Logo Design';
-      case TaskType.Meeting:
-        return 'Meeting';
-      case TaskType.Moderation:
-        return 'Moderation';
-      case TaskType.Motion:
-        return 'Motion';
-      case TaskType.Planning:
-        return 'Planning';
-      case TaskType.PrintingsDesign:
-        return 'Printings Design';
-      case TaskType.Publishing:
-        return 'Publishing';
-      case TaskType.SEO:
-        return 'SEO';
-      case TaskType.SM_Design:
-        return 'SM Design';
-      case TaskType.UI_UX:
-        return 'UI/UX';
-      case TaskType.VideoEditing:
-        return 'Video Editing';
-      case TaskType.VisualIdentity:
-        return 'Visual Identity';
-      case TaskType.Voiceover:
-        return 'Voiceover';
-      case TaskType.WhatsAppMarketing:
-        return 'WhatsApp Marketing';
-      case TaskType.WordPress:
-        return 'WordPress';
-      default:
-        return 'غير محدد';
-    }
-  }
-
   updateTaskStatus(newStatus: CustomTaskStatus): void {
     if (!this.task) return;
 
@@ -303,19 +252,6 @@ export class SingleTaskComponent implements OnInit {
         this.showAlert('فشل تحديث حالة التاسك', 'error');
       },
     });
-  }
-
-  getPriorityClass(priority: string): string {
-    switch (priority.toLowerCase()) {
-      case 'عالي':
-        return 'priority-high';
-      case 'متوسط':
-        return 'priority-medium';
-      case 'عادي':
-        return 'priority-normal';
-      default:
-        return 'priority-normal';
-    }
   }
 
   isOverdue(): boolean {
@@ -398,11 +334,14 @@ export class SingleTaskComponent implements OnInit {
       next: (res) => {
         this.isArchiveLoading = false;
         this.task = res;
-        this.showAlert('تم أرشفة المهمة بنجاح', 'success');
+        this.showAlert(
+          res.isArchived ? 'تم أرشفة المهمة بنجاح' : 'تم إلغاء أرشفة المهمة بنجاح',
+          'success'
+        );
       },
-      error: () => {
+      error: (error) => {
         this.isArchiveLoading = false;
-        this.showAlert('فشل ارشفة التاسك', 'error');
+        this.showAlert(error.error, 'error');
       }
     });
   }

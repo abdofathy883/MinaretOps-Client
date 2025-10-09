@@ -3,15 +3,17 @@ import { ClientService } from '../../../services/clients/client.service';
 import { LightWieghtClient, ClientStatus } from '../../../model/client/client';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
 
 @Component({
   selector: 'app-all-clients',
-  imports: [CommonModule],
+  imports: [CommonModule, ShimmerComponent],
   templateUrl: './all-clients.component.html',
   styleUrl: './all-clients.component.css'
 })
 export class AllClientsComponent implements OnInit{
   clients: LightWieghtClient[] = [];
+  isLoadingClients: boolean = false;
   
   constructor(
     private clientService: ClientService,
@@ -19,8 +21,10 @@ export class AllClientsComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
+    this.isLoadingClients = true;
     this.clientService.getAll().subscribe({
       next: (response) => {
+        this.isLoadingClients = false;
         this.clients = response;
       }
     })

@@ -7,10 +7,12 @@
       <p class="current-time">{{ currentTime | date : "medium" }}</p>
     </div>
     <div class="card-body">
-      <button
+            <button
         class="check-in-btn"
         (click)="onAttendanceAction()"
         [disabled]="isProcessing || (!canClockIn() && !canClockOut())"
+        [class.terquiese]="canClockIn()"
+        [class.lime]="canClockOut()"
       >
         @if (isProcessing) {
           <span>جاري التسجيل...</span>

@@ -12,10 +12,11 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
+import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
 
 @Component({
   selector: 'app-all-tasks',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, MapTaskStatusClassPipe, MapTaskStatusPipe],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, MapTaskStatusClassPipe, MapTaskStatusPipe, ShimmerComponent],
   templateUrl: './all-tasks.component.html',
   styleUrl: './all-tasks.component.css',
 })
@@ -30,6 +31,7 @@ export class AllTasksComponent implements OnInit {
   isSearching: boolean = false;
   filterForm!: FormGroup;
   currentUserId: string = '';
+  isLoadingTasks: boolean = false;
 
   constructor(
     private serviceService: ServicesService,
@@ -43,6 +45,9 @@ export class AllTasksComponent implements OnInit {
       clientId: [null],
       employeeId: [null],
       priority: [null],
+      fromDate: [null],     // Add this
+    toDate: [null],       // Add this
+    status: [null]        // Add this
     });
   }
 
@@ -118,14 +123,19 @@ export class AllTasksComponent implements OnInit {
     this.filterForm.patchValue({
     clientId: null,
     employeeId: null,
-    priority: null
+    priority: null,
+    fromDate: null,      // Add this
+    toDate: null,        // Add this
+    status: null         // Add this
   });
   this.filteredTasks = [...this.tasks];
   }
 
   loadTasks() {
+    this.isLoadingTasks = true;
     this.taskService.getTasksByEmployee(this.currentUserId).subscribe({
       next: (response) => {
+        this.isLoadingTasks = false;
         this.tasks = response.reverse();
         this.filteredTasks = [...this.tasks];
         this.applyFilters(); // Apply initial filters
@@ -154,6 +164,9 @@ export class AllTasksComponent implements OnInit {
     const clientId = formValues.clientId ? Number(formValues.clientId) : null;
     const employeeId = formValues.employeeId;
     const priority = formValues.priority;
+    const fromDate = formValues.fromDate;
+  const toDate = formValues.toDate;
+  const status = formValues.status;
 
     // Use search results if searching, otherwise use original tasks
     const tasksToFilter = this.isSearching ? this.searchResults : this.tasks;
@@ -177,6 +190,25 @@ export class AllTasksComponent implements OnInit {
       if (priority && task.priority !== priority) {
         matches = false;
       }
+
+      // Filter by status
+    if (status !== null && status !== '' && task.status !== Number(status)) {
+      matches = false;
+    }
+
+    // Filter by date range
+    if (fromDate || toDate) {
+      const taskDate = new Date(task.deadline);
+      const from = fromDate ? new Date(fromDate) : null;
+      const to = toDate ? new Date(toDate) : null;
+
+      if (from && taskDate < from) {
+        matches = false;
+      }
+      if (to && taskDate > to) {
+        matches = false;
+      }
+    }
 
       return matches;
     });

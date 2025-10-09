@@ -17,8 +17,8 @@
         (ngSubmit)="onSubmit()"
       >
         <div class="row g-4 align-items-end">
-          <div class="col-12 col-md-6">
-            <label for="fromDate" class="form-label fw-semibold">من</label>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="fromDate" class="form-label">من</label>
             <input
               type="date"
               id="fromDate"
@@ -32,8 +32,8 @@
               "
             />
           </div>
-          <div class="col-12 col-md-6">
-            <label for="toDate" class="form-label fw-semibold">الى</label>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="toDate" class="form-label">الى</label>
             <input
               type="date"
               id="toDate"
@@ -49,19 +49,23 @@
           </div>
         </div>
         <div class="row g-4 align-items-end">
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-6 mb-3">
             <label for="type" class="form-label">نوع الاجازة</label>
             <select
               name="type"
               id="type"
               class="form-select"
               formControlName="type"
+              [class.is-invaled]="
+                leaveRequestForm.get('type')?.invalid &&
+                leaveRequestForm.get('type')?.touched
+              "
             >
               <option value="0">سنوي</option>
               <option value="1">مرضي</option>
             </select>
           </div>
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-6 mb-3">
             <label for="proofFile" class="form-label">المرفق</label>
             <input
               type="file"
@@ -74,13 +78,18 @@
           </div>
         </div>
 
-        <div class="mb-2">
+        <div class="mb-3">
           <label for="reason" class="form-label">سبب الاجازة</label>
           <textarea
             name="reason"
             id="reason"
             class="form-control"
+            rows="3"
             formControlName="reason"
+            [class.is-invalid]="
+              leaveRequestForm.get('reason')?.invalid &&
+              leaveRequestForm.get('reason')?.touched
+            "
           ></textarea>
         </div>
 

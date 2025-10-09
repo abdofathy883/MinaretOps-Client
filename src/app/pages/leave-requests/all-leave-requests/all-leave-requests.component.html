@@ -21,7 +21,7 @@
         <td data-cell="الى">
           {{ request.toDate | date: 'shortDate' }}
         </td>
-        <td data-cell="الحالة">{{ getStatusLabel(request.status) }}</td>
+        <td data-cell="الحالة">{{ request.status | leaveStatus }}</td>
         <td data-cell="تاريخ الاجراء">
           {{ request.actionDate | date : "shortTime" }}
         </td>

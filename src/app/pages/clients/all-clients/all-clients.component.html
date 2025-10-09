@@ -3,6 +3,9 @@
     <h1>عملاؤنا</h1>
     <p class="subtitle">ادارة العملاء بامتياز</p>
   </div>
+  @if (isLoadingClients) {
+    <app-shimmer></app-shimmer>
+  }
 
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     @for (client of clients; track client.id) {

@@ -1,5 +1,9 @@
+
 <section class="container my-4">
   <h1 class="text-center">جميع التاسكات الداخلية</h1>
+  @if (isLoadingTasks) {
+    <app-shimmer></app-shimmer>
+}
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-3">
     @for (task of internalTasks; track $index) {
     <div class="col">

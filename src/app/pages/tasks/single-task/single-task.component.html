@@ -42,7 +42,7 @@
 
         <div class="detail-item">
           <label>نوع التاسك :</label>
-          <p>{{ getTypeLabel(task.taskType) }}</p>
+          <p>{{ task.taskType | mapTaskType }}</p>
         </div>
 
         <div class="detail-item">
@@ -134,7 +134,7 @@
           <label>الأولوية:</label>
           <div
             class="priority-badge me-3"
-            [ngClass]="getPriorityClass(task.priority)"
+            [ngClass]="task.priority | mapTaskPriority"
           >
             {{ task.priority }}
           </div>
@@ -219,7 +219,10 @@
               role="status"
               aria-hidden="true"
             ></span>
-            جار الارشفة... } @if(!isArchiveLoading) { ارشفة التاسك }
+            {{ task.isArchived ? 'جاري إلغاء الأرشفة...' : 'جاري الأرشفة...' }}
+            } @if (!isArchiveLoading) {
+            {{ task.isArchived ? 'إلغاء الأرشفة' : 'أرشفة التاسك' }}
+            }
           </button>
           @if (task.isArchived) {
           <small class="text-muted"

@@ -102,3 +102,11 @@ h2, h3 {
   }
 }
 
+.terquiese {
+  background-color: var(--terquoise-color);
+}
+
+.lime {
+  background-color: var(--lime-color);
+  color: var(--terquoise-color);
+}

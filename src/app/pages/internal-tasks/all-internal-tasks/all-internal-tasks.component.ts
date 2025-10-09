@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
+import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
 
 @Component({
   selector: 'app-all-internal-tasks',
@@ -15,14 +16,16 @@ import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-
     CommonModule,
     ReactiveFormsModule,
     MapTaskStatusClassPipe,
-    MapTaskStatusPipe
-  ],
+    MapTaskStatusPipe,
+    ShimmerComponent
+],
   templateUrl: './all-internal-tasks.component.html',
   styleUrl: './all-internal-tasks.component.css',
 })
 export class AllInternalTasksComponent implements OnInit {
   internalTasks: InternalTask[] = [];
   currentUserId: string = '';
+  isLoadingTasks: boolean = false;
 
   constructor(
     private internalTaskService: InternalTaskService,
@@ -36,8 +39,10 @@ export class AllInternalTasksComponent implements OnInit {
   }
 
   loadInternalTasks() {
+    this.isLoadingTasks = true;
     this.internalTaskService.getTasksByEmp(this.currentUserId).subscribe({
       next: (response) => {
+        this.isLoadingTasks = false;
         this.internalTasks = response;
       },
     });

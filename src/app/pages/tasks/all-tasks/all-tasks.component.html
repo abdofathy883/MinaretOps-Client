@@ -24,7 +24,10 @@
         </div>
         <div *ngIf="isSearching" class="mt-2">
           <div class="d-flex align-items-center">
-            <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+            <div
+              class="spinner-border spinner-border-sm text-primary me-2"
+              role="status"
+            >
               <span class="visually-hidden">جاري البحث...</span>
             </div>
             <small class="text-muted">جاري البحث...</small>
@@ -39,10 +42,38 @@
     <form [formGroup]="filterForm">
       <p>تصفية حسب:</p>
       <div class="row">
-        <!-- <div class="col-6 col-lg-2 mb-2 mb-lg-0">
-          <label for="service" class="form-label">من</label>
-          <input type="date" name="" id="">
-        </div> -->
+        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+          <label for="fromDate" class="form-label">من</label>
+          <input
+            type="date"
+            name="fromDate"
+            id="fromDate"
+            class="form-control"
+            formControlName="fromDate"
+          />
+        </div>
+        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+          <label for="service" class="form-label">الى</label>
+          <input
+            type="date"
+            name="toDate"
+            id="toDate"
+            class="form-control"
+            formControlName="toDate"
+          />
+        </div>
+        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+          <label for="service" class="form-label">الحالة</label>
+          <select name="" id="" class="form-select" formControlName="status">
+            <option value="">جميع الحالات</option>
+            <option value="0">لم يبدأ</option>
+            <option value="1">تم الإقرار</option>
+            <option value="2">قيد التنفيذ</option>
+            <option value="3">قيد المراجعة</option>
+            <option value="4">تحتاج تعديلات</option>
+            <option value="5">مكتمل</option>
+          </select>
+        </div>
         <div class="col-6 col-lg-2 mb-2 mb-lg-0">
           <label for="client" class="form-label">العميل</label>
           <select
@@ -97,9 +128,14 @@
     </form>
   </div>
 </section>
+@if (isLoadingTasks) {
+<section class="container">
+  <app-shimmer></app-shimmer>
+</section>
+}
 <section class="container mb-4">
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-    @for (task of filteredTasks; track $index) {
+    @if (filteredTasks) { @for (task of filteredTasks; track $index) {
     <div class="col">
       <div
         class="task-card card h-100 position-relative"
@@ -188,14 +224,13 @@
         </div>
       </div>
     </div>
+    } } @else {
+    <div class="text-center mt-4 h-50">
+      <div class="empty-state">
+        <h3>لا توجد مهام تطابق الفلاتر المحددة</h3>
+        <p>جرب تغيير معايير البحث أو مسح الفلاتر</p>
+      </div>
+    </div>
     }
   </div>
-  @if (filteredTasks.length === 0) {
-  <div class="text-center mt-4 h-50">
-    <div class="empty-state">
-      <h3>لا توجد مهام تطابق الفلاتر المحددة</h3>
-      <p>جرب تغيير معايير البحث أو مسح الفلاتر</p>
-    </div>
-  </div>
-  }
 </section>

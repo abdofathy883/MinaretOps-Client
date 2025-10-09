@@ -6,10 +6,11 @@ import {
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
 import { LeaveRequestService } from '../../../services/leave-request/leave-request.service';
+import { LeaveStatusPipe } from '../../../core/pipes/leave-request/leave-status.pipe';
 
 @Component({
   selector: 'app-all-leave-requests',
-  imports: [DatePipe],
+  imports: [DatePipe, LeaveStatusPipe],
   templateUrl: './all-leave-requests.component.html',
   styleUrl: './all-leave-requests.component.css',
 })
@@ -46,18 +47,5 @@ export class AllLeaveRequestsComponent implements OnInit {
           this.isProcessing = false;
         },
       });
-  }
-
-  getStatusLabel(status: LeaveStatus) {
-    switch (status) {
-      case LeaveStatus.Pending:
-        return 'قيد التنفيذ';
-      case LeaveStatus.Approved:
-        return 'تم الموافقة';
-      case LeaveStatus.Rejected:
-        return 'مرفوضة';
-      default:
-        return 'غير محدد';
-    }
   }
 }

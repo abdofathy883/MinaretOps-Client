@@ -1,7 +1,12 @@
+@if (isLoadingTasks) {
+<section class="container">
+  <app-shimmer></app-shimmer>
+</section>
+}
 <section class="container my-4">
   <h1 class="text-center mb-3">جميع التاسكات المؤرشفة</h1>
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-    @for (task of filteredTasks; track $index) {
+    @if (filteredTasks) { @for (task of filteredTasks; track $index) {
     <div class="col">
       <div
         class="card h-100"
@@ -17,8 +22,12 @@
           </div>
           <h5 class="card-title text-center mt-2">{{ task.title }}</h5>
           <p class="card-text text-center">{{ task.description }}</p>
-          <p class="card-text">رقم التاسك: <strong>{{ task.id }}</strong></p>
-          <p class="card-text">نوع التاسك: <strong>{{ getTypeLabel(task.taskType) }}</strong> </p>
+          <p class="card-text">
+            رقم التاسك: <strong>{{ task.id }}</strong>
+          </p>
+          <p class="card-text">
+            نوع التاسك: <strong>{{ getTypeLabel(task.taskType) }}</strong>
+          </p>
           <p class="card-text">العميل: {{ task.clientName }}</p>
           <p class="card-text">الخدمة: {{ task.serviceName }}</p>
           <p class="card-text">الموظف: {{ task.employeeName }}</p>
@@ -37,9 +46,7 @@
         </div>
       </div>
     </div>
-    } 
-  </div>
-  @if (filteredTasks.length === 0) {
+    } } @else {
     <div class="text-center mt-4 h-50">
       <div class="empty-state">
         <h3>لا توجد مهام تطابق الفلاتر المحددة</h3>
@@ -47,4 +54,5 @@
       </div>
     </div>
     }
+  </div>
 </section>
