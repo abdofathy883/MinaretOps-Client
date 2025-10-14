@@ -2,10 +2,10 @@
     <form [formGroup]="jdForm" (ngSubmit)="onSubmit()">
         <label for="role" class="form-label">اختر الدور</label>
         <select name="role" id="role" class="form-select">
-            <option value="">1</option>
-            <option value="">1</option>
-            <option value="">1</option>
-            <option value="">1</option>
+            <option value=""></option>
+            @for (role of roles; track $index) {
+                <option [value]="role.id">{{ role.name | mapUserRole}}</option>
+            }
         </select>
 
 

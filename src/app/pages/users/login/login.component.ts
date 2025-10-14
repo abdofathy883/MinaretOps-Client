@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'حدث خطأ أثناء تسجيل الدخول';
+        this.errorMessage = error;
       },
     });
   }

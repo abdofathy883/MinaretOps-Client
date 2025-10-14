@@ -76,6 +76,10 @@
             <span class="no-reference">لا يوجد مرجع</span>
           </ng-template>
         </div>
+        <div class="detail-item">
+          <label>تاريخ انشاء التاسك:</label>
+          <span>{{ task.createdAt | date }}</span>
+        </div>
 
         <div class="task-history-card mt-4">
           <div class="card-header mb-2">
@@ -166,18 +170,18 @@
           <span
             class="on-time-status mt-2"
             [ngClass]="{
-              'on-time': task.isCompletedOnDeadLine,
-              late: !task.isCompletedOnDeadLine
+              'on-time': task.isCompletedOnDeadline,
+              late: !task.isCompletedOnDeadline
             }"
           >
             <i
               [class]="
-                task.isCompletedOnDeadLine
+                task.isCompletedOnDeadline
                   ? 'bi bi-check-circle'
                   : 'bi bi-x-circle'
               "
             ></i>
-            {{ task.isCompletedOnDeadLine ? "نعم" : "لا" }}
+            {{ task.isCompletedOnDeadline ? "نعم" : "لا" }}
           </span>
         </div>
 

@@ -47,7 +47,8 @@ export class AllTasksComponent implements OnInit {
       priority: [null],
       fromDate: [null],     // Add this
     toDate: [null],       // Add this
-    status: [null]        // Add this
+    status: [null],        // Add this
+    onDeadline: [null]
     });
   }
 
@@ -124,9 +125,10 @@ export class AllTasksComponent implements OnInit {
     clientId: null,
     employeeId: null,
     priority: null,
-    fromDate: null,      // Add this
-    toDate: null,        // Add this
-    status: null         // Add this
+    fromDate: null,
+    toDate: null,
+    status: null,
+    onDeadline: [null]
   });
   this.filteredTasks = [...this.tasks];
   }
@@ -135,6 +137,7 @@ export class AllTasksComponent implements OnInit {
     this.isLoadingTasks = true;
     this.taskService.getTasksByEmployee(this.currentUserId).subscribe({
       next: (response) => {
+        console.log(response)
         this.isLoadingTasks = false;
         this.tasks = response.reverse();
         this.filteredTasks = [...this.tasks];
@@ -167,6 +170,7 @@ export class AllTasksComponent implements OnInit {
     const fromDate = formValues.fromDate;
   const toDate = formValues.toDate;
   const status = formValues.status;
+  const onDeadline = formValues.onDeadline;
 
     // Use search results if searching, otherwise use original tasks
     const tasksToFilter = this.isSearching ? this.searchResults : this.tasks;
@@ -198,7 +202,7 @@ export class AllTasksComponent implements OnInit {
 
     // Filter by date range
     if (fromDate || toDate) {
-      const taskDate = new Date(task.deadline);
+      const taskDate = new Date(task.createdAt);
       const from = fromDate ? new Date(fromDate) : null;
       const to = toDate ? new Date(toDate) : null;
 
@@ -206,6 +210,15 @@ export class AllTasksComponent implements OnInit {
         matches = false;
       }
       if (to && taskDate > to) {
+        matches = false;
+      }
+    }
+
+    if (onDeadline !== null && onDeadline !== '') {
+      const isCompletedOnDeadline = task.isCompletedOnDeadline;
+      const filterValue = onDeadline === 'true';
+      
+      if (isCompletedOnDeadline !== filterValue) {
         matches = false;
       }
     }

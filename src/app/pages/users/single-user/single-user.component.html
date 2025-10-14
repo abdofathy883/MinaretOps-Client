@@ -363,7 +363,14 @@
   </div>
   }
   <div class="mt-3">
-    <button class="add-btn" (click)="requestPasswordReset()">ارسال ايميل لاعادة تعيين كلمة المرور</button>
+    <button class="add-btn" (click)="requestPasswordReset()">
+      @if (isResetPasswordLoading) {
+        <span class="spinner-border spinner-border-sm me-1"></span>
+        جار ارسال ايميل للمستخدم...
+      } @else {
+        ارسال ايميل لاعادة تعيين كلمة المرور
+      }
+    </button>
   </div>
 </section>
 

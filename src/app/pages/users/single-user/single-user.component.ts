@@ -28,6 +28,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   attendanceRecords: AttendanceRecord[] = [];
   isLoading = false;
   isResetPasswordLoading: boolean = false;
+  isDeleteUserLoading: boolean = false;
   isEditMode = false;
   currentLoggedInUserId: string = '';
   isUserAdmin: boolean = false;
@@ -225,9 +226,11 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       this.showAlert('لا يمكن حذف حسابك', 'error');
       return;
     }
+    this.isDeleteUserLoading = true;
     this.authService.delete(this.user?.id || '').subscribe({
       next: (response) => {
         if (response) {
+          this.isDeleteUserLoading = false;
           this.showAlert('تم حذف المستخدم بنجاح', 'success');
           this.router.navigate(['/users']);
         } else {
@@ -235,7 +238,8 @@ export class SingleUserComponent implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
-        this.showAlert('حدث خطأ أثناء حذف المستخدم', 'error');
+        this.isDeleteUserLoading = false;
+        this.showAlert(error.error, 'error');
       },
     });
   }

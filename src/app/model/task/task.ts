@@ -18,10 +18,11 @@ export interface ITask {
   clientId: number;
   clientName: string;
   completedAt?: Date;
-  isCompletedOnDeadLine: boolean;
+  isCompletedOnDeadline: boolean;
   taskHistory: ITaskHistory[];
   taskResources: ITaskResources[];
   completionNotes: string;
+  createdAt: Date;
 }
 
 export enum CustomTaskStatus {

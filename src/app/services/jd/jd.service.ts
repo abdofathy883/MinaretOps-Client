@@ -7,11 +7,15 @@ import { ICreateJD, IJD } from '../../model/jds/i-create-jd';
   providedIn: 'root'
 })
 export class JdService {
-  private endpoint = '';
+  private endpoint = 'jd';
   constructor(private api: ApiService) { }
 
   getAll(): Observable<IJD[]> {
     return this.api.get<IJD[]>(`${this.endpoint}`);
+  }
+
+  getAllRoles(): Observable<any> {
+    return this.api.get<any>(`${this.endpoint}/roles`);
   }
 
   create(jd: ICreateJD): Observable<IJD> {

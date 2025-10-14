@@ -219,7 +219,6 @@ export class AuthService {
       }
     }
     
-    console.error('AuthService Error:', errorMessage);
     return throwError(() => new Error(errorMessage));
   };
 

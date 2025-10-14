@@ -118,6 +118,14 @@
             <option value="مستعجل">مستعجل</option>
           </select>
         </div>
+        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+          <label for="" class="form-label">الاكتمال في الموعد</label>
+          <select name="onDeadline" id="onDeadline" class="form-select" formControlName="onDeadline">
+    <option value="">جميع المهام</option>
+    <option value="true">مكتمل في الموعد</option>
+    <option value="false">غير مكتمل في الموعد</option>
+  </select>
+        </div>
         <div class="col">
           <br />
           <button class="add-btn w-100 mt-1" (click)="clearSearch()">
