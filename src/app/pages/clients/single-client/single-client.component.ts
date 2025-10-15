@@ -128,7 +128,7 @@ export class SingleClientComponent implements OnInit {
   onTaskGroupCreated(createTaskGroup: ICreateTaskGroup): void {
     this.loading = true;
 
-    this.taskService.addTaskGroup(createTaskGroup).subscribe({
+    this.taskService.addTaskGroup(createTaskGroup, this.currentUserId).subscribe({
       next: (response) => {
         // Add the new task group to local data
         this.addTaskGroupToLocalData(response);

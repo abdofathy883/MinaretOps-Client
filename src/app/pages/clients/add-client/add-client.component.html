@@ -125,12 +125,13 @@
 
         <div class="mb-3">
           <label for="discordId" class="form-label">معرف ديسكورد</label>
+          <span class="text-danger me-2">*</span>
           <input
             type="text"
             class="form-control"
             id="discordId"
             formControlName="discordChannelId"
-            placeholder="أدخل معرف ديسكورد الخاص بالعميل (اختياري)"
+            placeholder="أدخل معرف ديسكورد الخاص بالعميل"
           />
           <small class="text-muted">كليك يمين على القناة واختار copy Id</small>
         </div>
@@ -171,6 +172,7 @@
             <i class="bi bi-gear"></i>
             الخدمات والمهام
           </h6>
+          <small class="text-muted">يجب اضافة خدمة واحدة على الاقل ويمكن اضافة التاسكات فيما بعد</small>
         </div>
 
         <div formArrayName="clientServices">
@@ -281,7 +283,7 @@
                       </select>
                     </div>
                     <div class="col-12 col-md-6">
-                      <label class="form-label">عنوان المهمة</label>
+                      <label class="form-label">عنوان التاسك</label>
                       <input
                         type="text"
                         class="form-control"
@@ -292,7 +294,7 @@
                     </div>
                   </div>
                   <div class="mb-2">
-                    <label class="form-label">وصف المهمة</label>
+                    <label class="form-label">وصف التاسك</label>
                     <textarea
                       class="form-control"
                       rows="2"

@@ -71,9 +71,9 @@ export class TaskService {
     return this.api.delete<boolean>(`${this.endpoint}/delete-task/${taskId}`);
   }
 
-  addTaskGroup(createTaskGroup: ICreateTaskGroup): Observable<ITaskGroup> {
+  addTaskGroup(createTaskGroup: ICreateTaskGroup, userId: string): Observable<ITaskGroup> {
     return this.api.post<ITaskGroup>(
-      `${this.endpoint}/create-task-group`,
+      `${this.endpoint}/create-task-group/${userId}`,
       createTaskGroup
     );
   }

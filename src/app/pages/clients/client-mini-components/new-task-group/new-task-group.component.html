@@ -116,7 +116,14 @@
                     <div class="row">
                       <div class="col-md-6 mb-2">
                         <label for="type" class="form-label">نوع التاسك</label>
-                        <select name="type" id="type" class="form-select" formControlName="taskType"  [class.is-invalid]="hasError('taskType')">
+                        <span class="text-danger me-2">*</span>
+                        <select
+                          name="type"
+                          id="type"
+                          class="form-select"
+                          formControlName="taskType"
+                          [class.is-invalid]="hasError('taskType')"
+                        >
                           <option [value]="0">Planning</option>
                           <option [value]="1">Content Strategy</option>
                           <option [value]="2">Content Writing</option>
@@ -142,16 +149,27 @@
                           <option [value]="22">Meeting</option>
                           <option [value]="23">Hosting Management</option>
                         </select>
+                        @if (hasError('taskType')) {
+                        <div class="invalid-feedback">
+                          {{ getErrorMessage("taskType") }}
+                        </div>
+                        }
                       </div>
                       <div class="col-md-6 mb-2">
                         <label class="form-label">عنوان المهمة</label>
+                        <span class="text-danger me-2">*</span>
                         <input
                           type="text"
                           class="form-control"
                           formControlName="title"
                           placeholder="ادخل عنوان المهمة"
-                           [class.is-invalid]="hasError('title')"
+                          [class.is-invalid]="hasError('title')"
                         />
+                        @if (hasError('title')) {
+                        <div class="invalid-feedback">
+                          {{ getErrorMessage("title") }}
+                        </div>
+                        }
                       </div>
                     </div>
                     <div class="mb-2">
@@ -161,8 +179,13 @@
                         rows="2"
                         formControlName="description"
                         placeholder="اكتب وصفا مفصلا للمهمة"
-                         [class.is-invalid]="hasError('description')"
+                        [class.is-invalid]="hasError('description')"
                       ></textarea>
+                      @if (hasError('description')) {
+                      <div class="invalid-feedback">
+                        {{ getErrorMessage("description") }}
+                      </div>
+                      }
                     </div>
                     <div class="row">
                       <div class="col-md-6 mb-2">
@@ -170,7 +193,6 @@
                         <select
                           class="form-select"
                           formControlName="employeeId"
-                           [class.is-invalid]="hasError('employeeId')"
                         >
                           <option value="" disabled selected>اختر موظف</option>
                           @for (emp of employees; track emp.id) {
@@ -182,22 +204,38 @@
                       </div>
                       <div class="col-md-6 mb-2">
                         <label class="form-label">موعد التسليم</label>
+                        <span class="text-danger me-2">*</span>
                         <input
                           type="datetime-local"
                           class="form-control"
                           formControlName="deadline"
-                           [class.is-invalid]="hasError('deadline')"
+                          [class.is-invalid]="hasError('deadline')"
                         />
+                        @if (hasError('deadline')) {
+                        <div class="invalid-feedback">
+                          {{ getErrorMessage("deadline") }}
+                        </div>
+                        }
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-md-6 mb-2">
                         <label class="form-label">الأولوية</label>
-                        <select class="form-select" formControlName="priority"  [class.is-invalid]="hasError('priority')">
+                        <span class="text-danger me-2">*</span>
+                        <select
+                          class="form-select"
+                          formControlName="priority"
+                          [class.is-invalid]="hasError('priority')"
+                        >
                           <option value="عادي">عادي</option>
                           <option value="مهم">مهم</option>
                           <option value="مستعجل">مستعجل</option>
                         </select>
+                        @if (hasError('priority')) {
+                        <div class="invalid-feedback">
+                          {{ getErrorMessage("priority") }}
+                        </div>
+                        }
                       </div>
                       <div class="col-md-6 mb-2">
                         <label class="form-label">المرجع (اختياري)</label>
@@ -206,8 +244,13 @@
                           class="form-control"
                           formControlName="refrence"
                           placeholder="أدخل مرجع للمهمة"
-                           [class.is-invalid]="hasError('reference')"
+                          [class.is-invalid]="hasError('reference')"
                         />
+                        @if (hasError('reference')) {
+                        <div class="invalid-feedback">
+                          {{ getErrorMessage("reference") }}
+                        </div>
+                        }
                       </div>
                     </div>
                   </div>

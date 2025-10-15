@@ -19,6 +19,7 @@ export class AddTaskComponent implements OnInit {
   clients: LightWieghtClient[] = [];
   currentClient!: IClient;
   clientForm!: FormGroup;
+  isLoadingClientService: boolean = false;
   constructor(private clientService: ClientService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
@@ -38,8 +39,10 @@ export class AddTaskComponent implements OnInit {
 
   onFilterSubmit() {
     const selectedClientId = this.clientForm.get('clientId')?.value;
+    this.isLoadingClientService = true;
     this.clientService.getById(selectedClientId).subscribe({
       next: (response) => {
+        this.isLoadingClientService = false;
         this.currentClient = response;
       },
     });

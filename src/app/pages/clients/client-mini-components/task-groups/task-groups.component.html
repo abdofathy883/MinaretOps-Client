@@ -54,7 +54,9 @@
                 {{ task.priority }}
               </span>
             </td>
-            <td data-cell="موعد التسليم">{{ task.deadline | date : "dd/MM/yyyy" }}</td>
+            <td data-cell="موعد التسليم">
+              {{ task.deadline | date : "dd/MM/yyyy" }}
+            </td>
             <td data-cell="الحالة">
               <span class="badge" [ngClass]="task.status | mapTaskStatusClass">
                 {{ task.status | mapTaskStatus }}
@@ -195,10 +197,7 @@
 </section>
 
 <!-- New Task Group Modal -->
-<app-new-task-group
-  #newTaskGroupModal
-  [clientId]="clientId"
->
+<app-new-task-group #newTaskGroupModal [clientId]="clientId" [currentUserId]="currentUserId">
 </app-new-task-group>
 
 <!-- Single Task Modal for both Add and Edit -->
@@ -227,16 +226,17 @@
 
       <div class="modal-body">
         <!-- Alert Messages -->
-  @if (alertMessage) {
-  <div class="alert" [class]="'alert-' + alertType">
-    {{ alertMessage }}
-    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
-  </div>
-  }
+        @if (alertMessage) {
+        <div class="alert" [class]="'alert-' + alertType">
+          {{ alertMessage }}
+          <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
+        </div>
+        }
         <form [formGroup]="editTaskForm" (ngSubmit)="saveTask()">
           <div class="row">
             <div class="mb-3">
               <label for="taskType" class="form-label">نوع التاسك</label>
+              <span class="text-danger me-2">*</span>
               <select
                 name="taskType"
                 id="taskType"
@@ -269,9 +269,15 @@
                 <option [value]="22">Meeting</option>
                 <option [value]="23">Hosting Management</option>
               </select>
+              @if (hasError('taskType')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage("taskType") }}
+              </div>
+              }
             </div>
             <div class="col-md-6 mb-3">
               <label for="title" class="form-label">عنوان التاسك</label>
+              <span class="text-danger me-2">*</span>
               <input
                 type="text"
                 class="form-control"
@@ -289,6 +295,7 @@
 
             <div class="col-md-6 mb-3">
               <label for="priority" class="form-label">الأولوية</label>
+              <span class="text-danger me-2">*</span>
               <select
                 class="form-select"
                 id="priority"
@@ -310,6 +317,7 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="deadline" class="form-label">موعد التسليم</label>
+              <span class="text-danger me-2">*</span>
               <input
                 type="datetime-local"
                 class="form-control"
@@ -325,28 +333,28 @@
             </div>
             @if (modalMode === 'edit') {
 
-              <div class="col-md-6 mb-3">
-                <label for="status" class="form-label">الحالة</label>
-                <select
-                  class="form-select"
-                  id="status"
-                  formControlName="status"
-                  [class.is-invalid]="hasError('status')"
-                >
-                  <option value="">اختر الحالة</option>
-                  <option [value]="0">لم يبدأ</option>
-                  <option [value]="1">تم الاقرار</option>
-                  <option [value]="2">قيد التنفيذ</option>
-                  <option [value]="3">قيد المراجعة</option>
-                  <option [value]="4">تحتاج تعديلات</option>
-                  <option [value]="5">مكتمل</option>
-                </select>
-                @if (hasError('status')) {
-                <div class="invalid-feedback">
-                  {{ getErrorMessage("status") }}
-                </div>
-                }
+            <div class="col-md-6 mb-3">
+              <label for="status" class="form-label">الحالة</label>
+              <select
+                class="form-select"
+                id="status"
+                formControlName="status"
+                [class.is-invalid]="hasError('status')"
+              >
+                <option value="">اختر الحالة</option>
+                <option [value]="0">لم يبدأ</option>
+                <option [value]="1">تم الاقرار</option>
+                <option [value]="2">قيد التنفيذ</option>
+                <option [value]="3">قيد المراجعة</option>
+                <option [value]="4">تحتاج تعديلات</option>
+                <option [value]="5">مكتمل</option>
+              </select>
+              @if (hasError('status')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage("status") }}
               </div>
+              }
+            </div>
             }
           </div>
 
@@ -375,7 +383,13 @@
                 id="reference"
                 formControlName="refrence"
                 placeholder="أدخل المرجع"
+                [class.is-invalid]="hasError('reference')"
               />
+              @if (hasError('reference')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage("reference") }}
+              </div>
+              }
             </div>
           </div>
 
@@ -387,7 +401,13 @@
               rows="3"
               formControlName="description"
               placeholder="أدخل وصف المهمة"
+              [class.is-invalid]="hasError('description')"
             ></textarea>
+            @if (hasError('description')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage("description") }}
+              </div>
+              }
           </div>
 
           <div class="modal-footer">
@@ -401,7 +421,6 @@
             <button
               type="submit"
               class="add-btn"
-              [disabled]="editTaskForm.invalid || isSaving"
             >
               @if (isSaving) {
               <span

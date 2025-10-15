@@ -75,17 +75,16 @@ export class TaskGroupsComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private taskService: TaskService,
-    private alertService: AlertService
   ) {
     this.editTaskForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3)]],
+      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
       taskType: ['', Validators.required],
-      description: [''],
+      description: ['', Validators.maxLength(2000)],
       priority: ['', Validators.required],
       deadline: ['', Validators.required],
       employeeId: [''],
       status: ['', Validators.required],
-      refrence: [''],
+      refrence: ['', Validators.maxLength(1000)]
     });
   }
 
@@ -255,6 +254,7 @@ export class TaskGroupsComponent implements OnInit {
 
   saveTask(): void {
     if (this.editTaskForm.invalid || !this.selectedTaskGroupId) {
+      this.editTaskForm.markAllAsTouched();
       return;
     }
 
@@ -323,7 +323,7 @@ export class TaskGroupsComponent implements OnInit {
       },
       error: (error) => {
         this.isSaving = false;
-        this.showAlert(error, 'error');
+        this.showAlert(error.error, 'error');
         console.log(error)
       },
     });
@@ -351,6 +351,9 @@ export class TaskGroupsComponent implements OnInit {
     if (control.errors['required']) return 'هذا الحقل مطلوب';
     if (control.errors['minlength']) {
       return `يجب أن يكون ${control.errors['minlength'].requiredLength} أحرف على الأقل`;
+    }
+    if (control.errors['maxlength']) {
+      return `يجب ان يكون ${control.errors['maxlength'].requiredLength} أحرف على الاكثر`
     }
 
     return 'قيمة غير صحيحة';

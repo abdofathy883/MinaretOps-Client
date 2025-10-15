@@ -7,7 +7,6 @@ import {
   ReactiveFormsModule,
   FormArray,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { Service } from '../../../model/service/service';
 import { ServicesService } from '../../../services/services/services.service';
@@ -20,7 +19,6 @@ import {
   getErrorMessage,
   hasError,
 } from '../../../services/helper-services/utils';
-import { AlertService } from '../../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-add-client',
@@ -33,6 +31,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
   clientForm: FormGroup;
   availableServices: Service[] = [];
   employees: User[] = [];
+  currentUserId: string = '';
 
   isLoading = false;
   alertMessage = '';
@@ -46,8 +45,6 @@ export class AddClientComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private servicesService: ServicesService,
     private authService: AuthService,
-    private router: Router,
-    private alertService: AlertService,
     private clientService: ClientService
   ) {
     this.clientForm = this.fb.group({
@@ -71,7 +68,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
         ],
       ],
       driveLink: ['', Validators.required],
-      discordChannelId: [''],
+      discordChannelId: ['', [Validators.required, Validators.maxLength(20)]],
       status: [ClientStatus.Active],
       clientServices: this.fb.array([]),
     });
@@ -183,6 +180,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
     this.loadAvailableServices();
     this.loadEmployees();
     this.addClientService();
+    this.currentUserId = this.authService.getCurrentUserId();
   }
 
   ngOnDestroy(): void {
@@ -244,14 +242,14 @@ export class AddClientComponent implements OnInit, OnDestroy {
       })),
     };
 
-    this.clientService.add(clientData).subscribe({
+    this.clientService.add(clientData, this.currentUserId).subscribe({
       next: () => {
         this.isLoading = false;
         this.showAlert('تم اضافة العميل بنجاح', 'success');
       },
       error: (err) => {
         this.isLoading = false;
-        this.showAlert('فشل اضافة عميل, حاول مرة اخرى', 'error');
+        this.showAlert(err.error, 'error');
       },
     });
   }

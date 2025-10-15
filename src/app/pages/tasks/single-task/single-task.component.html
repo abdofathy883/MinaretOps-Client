@@ -1,5 +1,7 @@
 <div class="task-container">
-  @if (task) {
+  @if (isLoadingTask) {
+  <app-task-shimmer></app-task-shimmer>
+  } @if (task) {
   <!-- Header Section -->
   <div class="task-header d-flex align-items-center flex-wrap">
     <div class="task-title-section">
@@ -32,7 +34,11 @@
     </div>
   </div>
 
-  @if (!isEditMode) {
+  @if (!isEditMode) { @if (!task.employeeId) {
+  <div class="alert alert-danger" role="alert">
+    التاسك غير مفعل لموظف - كل الاجراءات معطلة حتى تحديث التاسك واضافة موظف
+  </div>
+  }
   <div class="row">
     <div class="col-lg-6 mb-md-3">
       <div class="task-details-card">
@@ -97,9 +103,17 @@
                 <div class="change-summary">
                   <span class="prop">{{ h.propertyName }}</span>
                   <span class="arrow">←</span>
-                  <span class="old">{{ h.oldValue || "-" }}</span>
+                  @if (h.propertyName === 'الموعد النهائي') {
+                    <span class="old">{{ h.oldValue | date : 'short' }}</span>
+                  } @else {
+                    <span class="old">{{ h.oldValue || "-" }}</span>
+                  }
                   <span class="to">إلى</span>
-                  <span class="new">{{ h.newValue || "-" }}</span>
+                  @if (h.propertyName === 'الموعد النهائي') {
+                    <span class="new">{{ h.newValue | date : 'short' }}</span>
+                  } @else {
+                    <span class="new">{{ h.newValue || "-" }}</span>
+                  }
                 </div>
                 <div class="byline">
                   <i class="bi bi-person"></i>
@@ -149,7 +163,7 @@
           <label>الموعد النهائي:</label>
           <div class="deadline-info mt-2" [ngClass]="{ overdue: isOverdue() }">
             <i class="fas fa-calendar-alt"></i>
-            <span>{{ task.deadline | date : "dd/MM/yyyy" }}</span>
+            <span>{{ task.deadline | date : "short" }}</span>
             <span class="overdue-warning" *ngIf="isOverdue()">
               <i class="fas fa-exclamation-triangle"></i>
               متأخر
@@ -161,7 +175,7 @@
         <div class="completion-section" *ngIf="task.completedAt">
           <label>تاريخ الإنجاز:</label>
           <span class="completion-date">
-            {{ task.completedAt | date : "dd/MM/yyyy" }}
+            {{ task.completedAt | date : "short" }}
           </span>
         </div>
 
@@ -201,7 +215,7 @@
                 updatingStatus ||
                 task.status === status.value ||
                 (status.value === CustomTaskStatus.Open &&
-                  task.status !== CustomTaskStatus.Open)
+                  task.status !== CustomTaskStatus.Open) || !task.employeeId
               "
             >
               <i [class]="status.icon"></i>
@@ -209,7 +223,7 @@
             </button>
 
             } @if (task.status !== CustomTaskStatus.Completed) {
-            <button class="status-option-btn" (click)="openCompleteTaskModal()">
+            <button class="status-option-btn" (click)="openCompleteTaskModal()" [disabled]="!task.employeeId">
               <i class="bi bi-check-circle me-1"></i>
               إكمال التاسك
             </button>
@@ -223,16 +237,12 @@
               role="status"
               aria-hidden="true"
             ></span>
-            {{ task.isArchived ? 'جاري إلغاء الأرشفة...' : 'جاري الأرشفة...' }}
+            {{ task.isArchived ? "جاري إلغاء الأرشفة..." : "جاري الأرشفة..." }}
             } @if (!isArchiveLoading) {
-            {{ task.isArchived ? 'إلغاء الأرشفة' : 'أرشفة التاسك' }}
+            {{ task.isArchived ? "إلغاء الأرشفة" : "أرشفة التاسك" }}
             }
           </button>
-          @if (task.isArchived) {
-          <small class="text-muted"
-            >التاسك مؤرشفة. اضغط مرة اخرى لالغاء الارشفة</small
-          >
-          } }
+          }
 
           <div class="update-feedback" *ngIf="updatingStatus">
             <div class="spinner"></div>
@@ -281,11 +291,13 @@
     <div class="row">
       <div class="mb-3">
         <label for="taskType" class="form-label">نوع التاسك</label>
+        <span class="text-danger me-2">*</span>
         <select
           name="taskType"
           id="taskType"
           formControlName="taskType"
           class="form-select"
+          [class.is-invalid]="hasError('taskType')"
         >
           <option [value]="0">Planning</option>
           <option [value]="1">Content Strategy</option>
@@ -312,9 +324,15 @@
           <option [value]="22">Meeting</option>
           <option [value]="23">Hosting Management</option>
         </select>
+        @if (hasError('taskType')) {
+        <div class="invalid-feedback">
+          {{ getErrorMessage("taskType") }}
+        </div>
+        }
       </div>
       <div class="col-md-6 mb-3">
         <label for="title" class="form-label">عنوان التاسك</label>
+        <span class="text-danger me-2">*</span>
         <input
           type="text"
           class="form-control"
@@ -332,6 +350,7 @@
 
       <div class="col-md-6 mb-3">
         <label for="priority" class="form-label">الأولوية</label>
+        <span class="text-danger me-2">*</span>
         <select
           class="form-select"
           id="priority"
@@ -353,6 +372,7 @@
     <div class="row">
       <div class="col-md-6 mb-3">
         <label for="deadline" class="form-label">موعد التسليم</label>
+        <span class="text-danger me-2">*</span>
         <input
           type="datetime-local"
           class="form-control"
@@ -369,6 +389,7 @@
 
       <div class="col-md-6 mb-3">
         <label for="status" class="form-label">الحالة</label>
+        <span class="text-danger me-2">*</span>
         <select
           class="form-select"
           id="status"
@@ -394,7 +415,13 @@
     <div class="row">
       <div class="col-md-6 mb-3">
         <label for="employee" class="form-label">الموظف</label>
-        <select class="form-select" id="employee" formControlName="employeeId">
+        <span class="text-danger me-2">*</span>
+        <select
+          class="form-select"
+          id="employee"
+          formControlName="employeeId"
+          [class.is-invalid]="hasError('employeeId')"
+        >
           <option value="">اختر الموظف</option>
           @for (employee of employees; track employee.id) {
           <option [value]="employee.id">
@@ -402,6 +429,11 @@
           </option>
           }
         </select>
+        @if (hasError('employeeId')) {
+        <div class="invalid-feedback">
+          {{ getErrorMessage("employeeId") }}
+        </div>
+        }
       </div>
 
       <div class="col-md-6 mb-3">
@@ -412,7 +444,13 @@
           id="reference"
           formControlName="refrence"
           placeholder="أدخل المرجع"
+          [class.is-invalid]="hasError('reference')"
         />
+        @if (hasError('reference')) {
+        <div class="invalid-feedback">
+          {{ getErrorMessage("reference") }}
+        </div>
+        }
       </div>
     </div>
 
@@ -424,15 +462,17 @@
         rows="3"
         formControlName="description"
         placeholder="أدخل وصف المهمة"
+        [class.is-invalid]="hasError('description')"
       ></textarea>
+      @if (hasError('description')) {
+      <div class="invalid-feedback">
+        {{ getErrorMessage("description") }}
+      </div>
+      }
     </div>
 
     <div class="">
-      <button
-        type="submit"
-        class="add-btn"
-        [disabled]="editTaskForm.invalid || isLoading"
-      >
+      <button type="submit" class="add-btn" [disabled]="isLoading">
         @if (isLoading) {
         <span
           class="spinner-border spinner-border-sm me-2"

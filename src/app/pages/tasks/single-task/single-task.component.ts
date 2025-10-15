@@ -24,6 +24,7 @@ import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-clas
 import { AlertService } from '../../../services/helper-services/alert.service';
 import { hasError } from '../../../services/helper-services/utils';
 import { MapTaskTypePipe } from '../../../core/pipes/task-type/map-task-type.pipe';
+import { TaskShimmerComponent } from "../../../shared/task-shimmer/task-shimmer.component";
 
 @Component({
   selector: 'app-single-task',
@@ -33,8 +34,9 @@ import { MapTaskTypePipe } from '../../../core/pipes/task-type/map-task-type.pip
     MapTaskStatusPipe,
     MapTaskStatusClassPipe,
     MapTaskPriorityPipe,
-    MapTaskTypePipe
-  ],
+    MapTaskTypePipe,
+    TaskShimmerComponent
+],
   templateUrl: './single-task.component.html',
   styleUrl: './single-task.component.css',
 })
@@ -44,15 +46,18 @@ export class SingleTaskComponent implements OnInit {
   isEditMode: boolean = false;
   alertMessage = '';
   alertType = 'info';
-  isUserAdmin: boolean = false;
-  isUserAccountManager: boolean = false;
-  isUserContentLeader: boolean = false;
-  isUserDesignLeader: boolean = false;
   editTaskForm!: FormGroup;
   employees: User[] = [];
   currentUserId: string = '';
   isLoading: boolean = false;
   isArchiveLoading: boolean = false;
+  isDeletingLoading: boolean = false;
+  isLoadingTask: boolean = false;
+
+  isUserAdmin: boolean = false;
+  isUserAccountManager: boolean = false;
+  isUserContentLeader: boolean = false;
+  isUserDesignLeader: boolean = false;
 
   completeTaskForm!: FormGroup;
   isCompletingTask: boolean = false;
@@ -89,20 +94,19 @@ export class SingleTaskComponent implements OnInit {
   constructor(
     private taskService: TaskService,
     private authService: AuthService,
-    private alertService: AlertService,
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder
   ) {
     this.editTaskForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3)]],
+      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
       taskType: ['', Validators.required],
-      description: [''],
+      description: ['', Validators.maxLength(2000)],
       priority: ['', Validators.required],
       deadline: ['', Validators.required],
-      employeeId: [''],
+      employeeId: ['', Validators.required],
       status: ['', Validators.required],
-      refrence: [''],
+      refrence: ['', Validators.maxLength(1000)]
     });
 
     // Initialize complete task form
@@ -110,26 +114,19 @@ export class SingleTaskComponent implements OnInit {
       urls: this.fb.array([]),
       completionNotes: ['']
     });
-    // this.completeTaskForm = this.fb.group({
-    //   urls: this.fb.array([
-    //     this.fb.group({
-    //       url: ['', Validators.required]
-    //     })
-    //   ]),
-    //   completionNotes: ['']
-    // });
   }
 
   ngOnInit(): void {
+    this.isLoadingTask = true;
     const taskIdParam = this.route.snapshot.paramMap.get('id');
     const taskId = Number(taskIdParam);
     this.taskService.getById(taskId).subscribe({
       next: (response) => {
+        console.log(response);
+        this.isLoadingTask = false;
         this.task = response;
-        console.log(response)
       },
     });
-
     this.loadUser();
   }
 
@@ -143,8 +140,6 @@ export class SingleTaskComponent implements OnInit {
     });
     this.urlControls.push(urlGroup);
   }
-
-  
 
   openCompleteTaskModal() {
     // Reset form
@@ -191,10 +186,14 @@ export class SingleTaskComponent implements OnInit {
     });
 
     this.authService.isAdmin().subscribe((isAdmin) => {
-      if (isAdmin) this.isUserAdmin = true;
+      if (isAdmin) {
+        this.isUserAdmin = true;
+      }
     });
     this.authService.isAccountManager().subscribe((isAccountManager) => {
-      if (isAccountManager) this.isUserAccountManager = true;
+      if (isAccountManager) {
+        this.isUserAccountManager = true;
+      }
     });
     this.authService.isContentLeader().subscribe((isLeader) => {
       if (isLeader) this.isUserContentLeader = true;
@@ -229,14 +228,11 @@ export class SingleTaskComponent implements OnInit {
 
   updateTaskStatus(newStatus: CustomTaskStatus): void {
     if (!this.task) return;
-
     this.updatingStatus = true;
-
     this.taskService.changeStatus(this.task.id, this.currentUserId, newStatus).subscribe({
       next: () => {
         if (this.task) {
           this.task.status = newStatus;
-
           // Update CompletedAt field
           if (newStatus === CustomTaskStatus.Completed) {
             this.task.completedAt = new Date();
@@ -247,9 +243,9 @@ export class SingleTaskComponent implements OnInit {
         }
         this.updatingStatus = false;
       },
-      error: () => {
+      error: (error) => {
         this.updatingStatus = false;
-        this.showAlert('فشل تحديث حالة التاسك', 'error');
+        this.showAlert(error.error, 'error');
       },
     });
   }
@@ -283,12 +279,18 @@ export class SingleTaskComponent implements OnInit {
     if (control.errors['minlength']) {
       return `يجب أن يكون ${control.errors['minlength'].requiredLength} أحرف على الأقل`;
     }
+    if (control.errors['maxlength']) {
+      return `يجب ان يكون ${control.errors['maxlength'].requiredLength} أحرف على الاكثر`
+    }
 
     return 'قيمة غير صحيحة';
   }
 
   saveTask() {
-    if (this.editTaskForm.invalid) return;
+    if (this.editTaskForm.invalid) {
+      this.editTaskForm.markAllAsTouched();
+      return;
+    };
 
     this.isLoading = true;
     const formValue = this.editTaskForm.value;
@@ -302,7 +304,8 @@ export class SingleTaskComponent implements OnInit {
       status: Number(formValue.status),
       refrence: formValue.refrence,
     };
-    this.isLoading = false;
+    this.isLoading = true;
+
 
     this.taskService.update(this.task.id, this.currentUserId, updatedTask).subscribe({
       next: (response) => {
@@ -310,20 +313,23 @@ export class SingleTaskComponent implements OnInit {
         this.task = response;
         this.showAlert('تم تحديث التاسك بنجاح', 'success');
       },
-      error: () => {
+      error: (error) => {
         this.isLoading = false;
-        this.showAlert('فشل تحديث التاسك', 'error');
+        this.showAlert(error.error, 'error');
       },
     });
   }
 
   deleteTask() {
+    this.isDeletingLoading = true;
     this.taskService.deleteTask(this.task.id).subscribe({
       next: () => {
+        this.isDeletingLoading = false;
         this.router.navigate(['/tasks']);
       },
-      error: () => {
-        this.showAlert('فشل حذف التاسك', 'error');
+      error: (error) => {
+        this.isDeletingLoading = false;
+        this.showAlert(error.error, 'error');
       },
     });
   }
@@ -386,7 +392,7 @@ export class SingleTaskComponent implements OnInit {
       },
       error: (err) => {
         this.isCompletingTask = false;
-        this.showAlert('فشل إكمال التاسك', 'error');
+        this.showAlert(err.error, 'error');
       },
     });
   }

@@ -17,7 +17,15 @@
           <option [value]="client.id">{{ client.name }}</option>
           }
         </select>
-        <button class="add-btn mt-3">اختر</button>
+        <button class="add-btn mt-3">
+          @if (isLoadingClientService) {
+          <span
+            class="spinner-border spinner-border-sm me-2"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          جار تحميل البيانات... } @if (!isLoadingClientService) { اختر العميل }
+        </button>
       </form>
     </div>
   </div>

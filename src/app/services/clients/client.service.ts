@@ -18,8 +18,8 @@ export class ClientService {
     return this.api.get<IClient>(`${this.endpoint}/${id}`);
   }
 
-  add(client: ICreateClient): Observable<IClient>{
-    return this.api.post<IClient>(`${this.endpoint}`, client)
+  add(client: ICreateClient, userId: string): Observable<IClient>{
+    return this.api.post<IClient>(`${this.endpoint}/${userId}`, client)
   }
 
   update(clientId: number, updateClient: IUpdateClient): Observable<IClient> {

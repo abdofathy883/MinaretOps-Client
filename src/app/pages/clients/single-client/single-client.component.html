@@ -3,11 +3,8 @@
   @if (alertMessage) {
   <div class="alert" [class]="'alert-' + alertType">
     {{ alertMessage }}
-    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
   </div>
   }
-
-  <!-- Client Information -->
   <app-client-info [client]="client"></app-client-info>
 
   @if (client != null) {

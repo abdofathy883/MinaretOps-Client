@@ -17,7 +17,6 @@ import { ServicesService } from '../../../../services/services/services.service'
 import { TaskService } from '../../../../services/tasks/task.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { ICreateTaskGroup } from '../../../../model/task/task';
-import { AlertService } from '../../../../services/helper-services/alert.service';
 import { hasError } from '../../../../services/helper-services/utils';
 
 @Component({
@@ -29,6 +28,7 @@ import { hasError } from '../../../../services/helper-services/utils';
 })
 export class NewTaskGroupComponent implements OnInit {
   @Input() clientId: number = 0;
+  @Input() currentUserId: string = '';
   @Output() taskGroupCreated = new EventEmitter<any>();
 
   constructor(
@@ -36,7 +36,6 @@ export class NewTaskGroupComponent implements OnInit {
     private servicesService: ServicesService,
     private taskService: TaskService,
     private authService: AuthService,
-    private alertService: AlertService
   ) {}
 
   taskGroupForm!: FormGroup;
@@ -97,9 +96,6 @@ export class NewTaskGroupComponent implements OnInit {
     });
 
     this.clientServicesArray.push(clientService);
-
-    // Add initial task
-    // this.addTask(this.clientServicesArray.length - 1);
   }
 
   removeClientService(serviceIndex: number) {
@@ -110,13 +106,22 @@ export class NewTaskGroupComponent implements OnInit {
 
   addTask(serviceIndex: number) {
     const task = this.fb.group({
-      taskType: ['', Validators.required],
-      title: ['', Validators.required],
-      description: ['', Validators.required],
-      employeeId: ['', Validators.required],
-      deadline: ['', Validators.required],
-      priority: ['عادي', Validators.required],
-      refrence: [''],
+      // title: ['', [Validators.minLength(3), Validators.maxLength(200)]],
+      // taskType: [''],
+      // description: ['', Validators.maxLength(2000)],
+      // priority: [''],
+      // deadline: [''],
+      // employeeId: [''],
+      // status: [''],
+      // refrence: ['', Validators.maxLength(1000)]
+      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
+            taskType: ['', Validators.required],
+            description: ['', Validators.maxLength(2000)],
+            priority: ['', Validators.required],
+            deadline: ['', Validators.required],
+            employeeId: [''],
+            status: ['', Validators.required],
+            refrence: ['', Validators.maxLength(1000)]
     });
 
     this.getTasksArray(serviceIndex).push(task);
@@ -158,7 +163,7 @@ export class NewTaskGroupComponent implements OnInit {
           title: task.title,
           description: task.description,
           employeeId: task.employeeId,
-          deadline: task.deadline,
+          deadline: new Date(task.deadline),
           priority: task.priority,
           refrence: task.refrence,
         })),
@@ -166,7 +171,7 @@ export class NewTaskGroupComponent implements OnInit {
 
       console.log(taskGroup);
 
-      this.taskService.addTaskGroup(taskGroup).subscribe({
+      this.taskService.addTaskGroup(taskGroup, this.currentUserId).subscribe({
         next: (response) => {
           this.isLoading = false;
           this.showAlert('تم إضافة الشهر الجديد بنجاح', 'success');
@@ -210,12 +215,17 @@ export class NewTaskGroupComponent implements OnInit {
 
   getErrorMessage(controlName: string): string {
     const control = this.taskGroupForm.get(controlName);
-    if (control && control.errors) {
-      if (control.errors['required']) {
-        return 'هذا الحقل مطلوب';
-      }
+    if (!control || !control.errors || !control.touched) return '';
+
+    if (control.errors['required']) return 'هذا الحقل مطلوب';
+    if (control.errors['minlength']) {
+      return `يجب أن يكون ${control.errors['minlength'].requiredLength} أحرف على الأقل`;
     }
-    return '';
+    if (control.errors['maxlength']) {
+      return `يجب ان يكون ${control.errors['maxlength'].requiredLength} أحرف على الاكثر`
+    }
+
+    return 'قيمة غير صحيحة';
   }
 
   private initializeModal() {
