@@ -1,1 +1,86 @@
-<p>single-jd works!</p>
+<section class="container my-4">
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+  </div>
+  }
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">
+        <i class="bi bi-card-checklist"></i>
+        عرض وتعديل الوصف الوظيفي
+      </h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="jdForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="role" class="form-label">الدور</label>
+          <select
+            name="role"
+            id="role"
+            class="form-select"
+            formControlName="roleId"
+            [disabled]="true"
+            [class.is-invalid]="
+              jdForm.get('roleId')?.invalid && jdForm.get('roleId')?.touched
+            "
+          >
+            <option value="">اختر الدور</option>
+            @for (role of roles; track $index) {
+            <option [value]="role.id" [disabled]="true">
+              {{ role.name | mapUserRole }}
+            </option>
+            }
+          </select>
+        </div>
+    
+        <div class="mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label">المسؤوليات الوظيفية</label>
+          </div>
+    
+          <div formArrayName="jobResponsibilities">
+            @for (responsibility of jobResponsibilities.controls; track $index) {
+            <div class="input-group mb-2" [formGroupName]="$index">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="أدخل المسؤولية الوظيفية"
+                formControlName="text"
+                [class.is-invalid]="
+                  responsibility.get('text')?.invalid &&
+                  responsibility.get('text')?.touched
+                "
+              />
+              <button
+                type="button"
+                class="btn btn-danger"
+                (click)="removeResponsibility($index)"
+                [disabled]="jobResponsibilities.length === 1"
+              >
+                <i class="bi bi-trash-fill"></i>
+              </button>
+              @if (responsibility.get('text')?.invalid &&
+              responsibility.get('text')?.touched) {
+              <div class="invalid-feedback">يجب إدخال المسؤولية الوظيفية</div>
+              }
+            </div>
+            }
+          </div>
+          <button
+            type="button"
+            class="btn btn-outline-success"
+            (click)="addResponsibility()"
+          >
+            <i class="bi bi-plus-circle"></i> اضافة
+          </button>
+        </div>
+    
+        <button type="submit" class="add-btn" [disabled]="jdForm.invalid">
+          حفظ التغييرات
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

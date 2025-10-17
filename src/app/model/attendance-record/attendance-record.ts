@@ -1,9 +1,21 @@
 export interface AttendanceRecord {
+    id: number;
     employeeId: string;
     employeeName: string;
     clockIn: Date;
     clockOut: Date;
+    totalWorkingTime?: string;
+    totalBreakTime?: string;
     status: AttendanceStatus;
+    breakPeriods: BreakPeriod[];
+}
+
+export interface BreakPeriod {
+    id: number;
+    attendanceRecordId: number;
+    startTime: Date;
+    endTime?: Date;
+    duration?: string;
 }
 
 export interface NewAttendanceRecord {

@@ -62,6 +62,8 @@ export class SingleTaskComponent implements OnInit {
   completeTaskForm!: FormGroup;
   isCompletingTask: boolean = false;
 
+  currentTime: Date = new Date();
+
   availableStatuses = [
     { value: CustomTaskStatus.Open, label: 'لم تبدأ', icon: 'bi bi-clock' },
     {
@@ -117,6 +119,7 @@ export class SingleTaskComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.currentTime)
     this.isLoadingTask = true;
     const taskIdParam = this.route.snapshot.paramMap.get('id');
     const taskId = Number(taskIdParam);
@@ -229,7 +232,8 @@ export class SingleTaskComponent implements OnInit {
   updateTaskStatus(newStatus: CustomTaskStatus): void {
     if (!this.task) return;
     this.updatingStatus = true;
-    this.taskService.changeStatus(this.task.id, this.currentUserId, newStatus).subscribe({
+    const now = new Date();
+    this.taskService.changeStatus(this.task.id, this.currentUserId, newStatus, now).subscribe({
       next: () => {
         if (this.task) {
           this.task.status = newStatus;

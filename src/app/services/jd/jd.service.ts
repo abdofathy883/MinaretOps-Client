@@ -11,7 +11,7 @@ export class JdService {
   constructor(private api: ApiService) { }
 
   getAll(): Observable<IJD[]> {
-    return this.api.get<IJD[]>(`${this.endpoint}`);
+    return this.api.get<IJD[]>(`${this.endpoint}/jds`);
   }
 
   getAllRoles(): Observable<any> {
@@ -24,5 +24,9 @@ export class JdService {
 
   getById(jdId: number): Observable<IJD> {
     return this.api.get<IJD>(`${this.endpoint}/${jdId}`);
+  }
+
+  update(jdId: number, jd: ICreateJD): Observable<IJD> {
+    return this.api.put<IJD>(`${this.endpoint}/${jdId}`, jd);
   }
 }

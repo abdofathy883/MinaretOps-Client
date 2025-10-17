@@ -10,6 +10,7 @@ import { MyKpisManagementComponent } from '../../kpis/my-kpis-management/my-kpis
 import { RequestByEmployeeComponent } from '../../leave-requests/request-by-employee/request-by-employee.component';
 import { UpdateProfileComponent } from '../update-profile/update-profile.component';
 import { MyAccountShimmerComponent } from '../../../shared/my-account-shimmer/my-account-shimmer.component';
+import { JdForEmpComponent } from "../../jds/jd-for-emp/jd-for-emp.component";
 @Component({
   selector: 'app-my-account',
   imports: [
@@ -23,7 +24,8 @@ import { MyAccountShimmerComponent } from '../../../shared/my-account-shimmer/my
     RequestByEmployeeComponent,
     UpdateProfileComponent,
     MyAccountShimmerComponent,
-  ],
+    JdForEmpComponent
+],
   standalone: true,
   templateUrl: './my-account.component.html',
   styleUrl: './my-account.component.css',

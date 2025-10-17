@@ -110,3 +110,39 @@ h2, h3 {
   background-color: var(--lime-color);
   color: var(--terquoise-color);
 }
+
+.break-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.break-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.break-info {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.break-item {
+  margin-bottom: 10px;
+}
+
+.break-item hr {
+  margin: 10px 0;
+  border-color: #dee2e6;
+}

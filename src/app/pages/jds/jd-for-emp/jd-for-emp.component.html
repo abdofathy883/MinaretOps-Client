@@ -1,0 +1,21 @@
+<section class="container my-4">
+  @if (jd) {
+      <div id="printable">
+        <h3 class="mb-3">الوصف الوظيفي</h3>
+        <div class="mb-2">
+          <strong>الدور:</strong> {{ jd.role }}
+        </div>
+        <div class="mb-2">
+          <strong>المسؤوليات:</strong>
+        </div>
+        <ul class="list-group">
+          @for (r of jd.jobResponsibilities; track r.id) {
+            <li class="list-group-item">
+              {{ r.text }}
+            </li>
+          }
+        </ul>
+      </div>
+    } 
+  
+</section>

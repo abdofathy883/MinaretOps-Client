@@ -1,1 +1,18 @@
-<p>all-jds works!</p>
+<section class="container my-4">
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>الدور</th>
+                <th>المسؤوليات الوظيفية</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (jd of jds; track $index) {
+                <tr (click)="goToJd(jd.id)" style="cursor: pointer;">
+                    <td>{{ jd.role | mapUserRole}}</td>
+                    <td>{{ jd.jobResponsibilities.length }}</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

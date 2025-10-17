@@ -112,16 +112,16 @@
             }
           </ul>
         </li>
-        <!-- @if (isUserAdmin) {
+        @if (isUserAdmin) {
         <li class="nav-item">
           <button class="text-white menu-toggler" (click)="toggleMenu('jds')">
-            <i class="bi bi-gear-fill ms-3"></i>
+            <i class="bi bi-card-checklist ms-3"></i>
             <span class="nav-text" [class.hidden]="isCollapsed"
               >المهام الوظيفية</span
             >
           </button>
           <ul
-            class="sunmenu jds-menu"
+            class="submenu jds-menu"
             [class.open]="openMenu === 'jds'"
             [class.hidden]="isCollapsed"
           >
@@ -135,7 +135,7 @@
             </li>
           </ul>
         </li>
-        } -->
+        }
         <li class="nav-item">
           <button
             class="text-white menu-toggler"

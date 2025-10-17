@@ -31,6 +31,9 @@
           <th>وقت الحضور</th>
           <th>وقت الانصراف</th>
           <th>الحالة</th>
+          <th>إجمالي وقت العمل</th>
+          <th>إجمالي وقت الاستراحة</th>
+          <th>عدد فترات الاستراحة</th>
         </tr>
       </thead>
       <tbody>
@@ -43,6 +46,9 @@
           <td data-cell="الحالة">
             <span class="status-badge status-present">{{ mapAttendanceStatus(record.status) }}</span>
           </td>
+          <td>{{ record.totalWorkingTime | date: 'shortTime' }}</td>
+          <td>{{ record.totalBreakTime }}</td>
+          <td>{{ record.breakPeriods.length }}</td>
           
         </tr>
         } @if (attendanceRecords.length === 0) {

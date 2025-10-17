@@ -45,12 +45,13 @@ export class TaskService {
     );
   }
 
-  changeStatus(taskId: number, empId: string, status: CustomTaskStatus): Observable<boolean> {
-    return this.api.patch<boolean>(
-      `${this.endpoint}/change-status/${taskId}/${empId}`,
-      status
-    );
-  }
+  changeStatus(taskId: number, empId: string, status: CustomTaskStatus, actionTime: Date): Observable<boolean> {
+  const formattedTime = actionTime.toISOString(); // Convert to ISO string
+  return this.api.patch<boolean>(
+    `${this.endpoint}/change-status/${taskId}/${empId}/${encodeURIComponent(formattedTime)}`,
+    status
+  );
+}
 
   archive(taskId: number): Observable<ITask> {
     return this.api.patch<ITask>(

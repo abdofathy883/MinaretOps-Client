@@ -3,6 +3,7 @@ import { ApiService } from '../api-service/api.service';
 import {
   AttendanceRecord,
   AttendanceStatus,
+  BreakPeriod,
   NewAttendanceRecord,
 } from '../../model/attendance-record/attendance-record';
 import { Observable } from 'rxjs';
@@ -24,8 +25,10 @@ export class AttendanceService {
   clockOut(empId: string): Observable<any> {
     return this.api.post<any>(`${this.endpoint}/clock-out/${empId}`, null);
   }
- 
-  getAttendanceByEmployeeId(employeeId: string): Observable<AttendanceRecord[]> {
+
+  getAttendanceByEmployeeId(
+    employeeId: string
+  ): Observable<AttendanceRecord[]> {
     return this.api.get<AttendanceRecord[]>(
       `${this.endpoint}/employee-attendance/${employeeId}`
     );
@@ -35,8 +38,12 @@ export class AttendanceService {
     return this.api.get<AttendanceRecord[]>(`${this.endpoint}/all-attendance`);
   }
 
-  getTodayAttendanceByEmployeeId(employeeId: string): Observable<AttendanceRecord>{
-    return this.api.get<AttendanceRecord>(`${this.endpoint}/today-attendance/${employeeId}`);
+  getTodayAttendanceByEmployeeId(
+    employeeId: string
+  ): Observable<AttendanceRecord> {
+    return this.api.get<AttendanceRecord>(
+      `${this.endpoint}/today-attendance/${employeeId}`
+    );
   }
 
   changeAttendanceStatus(
@@ -50,4 +57,21 @@ export class AttendanceService {
     );
   }
 
+  startBreak(employeeId: string): Observable<BreakPeriod> {
+    return this.api.post<BreakPeriod>(`${this.endpoint}/start-break`, {
+      employeeId: employeeId,
+    });
+  }
+
+  endBreak(employeeId: string): Observable<BreakPeriod> {
+    return this.api.post<BreakPeriod>(`${this.endpoint}/end-break`, {
+      employeeId: employeeId,
+    });
+  }
+
+  getActiveBreak(employeeId: string): Observable<BreakPeriod | null> {
+    return this.api.get<BreakPeriod | null>(
+      `${this.endpoint}/active-break/${employeeId}`
+    );
+  }
 }

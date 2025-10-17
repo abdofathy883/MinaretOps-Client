@@ -1,17 +1,11 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
   FormArray,
   Validators,
-  ReactiveFormsModule
+  ReactiveFormsModule,
 } from '@angular/forms';
 import { ServicesService } from '../../../../services/services/services.service';
 import { TaskService } from '../../../../services/tasks/task.service';
@@ -35,7 +29,7 @@ export class NewTaskGroupComponent implements OnInit {
     private fb: FormBuilder,
     private servicesService: ServicesService,
     private taskService: TaskService,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   taskGroupForm!: FormGroup;
@@ -66,19 +60,15 @@ export class NewTaskGroupComponent implements OnInit {
   }
 
   private loadAvailableServices() {
-    this.servicesService.getAll().subscribe({
-      next: (services) => {
-        this.availableServices = services;
-      }
-    });
+    this.servicesService
+      .getAll()
+      .subscribe((response) => (this.availableServices = response));
   }
 
   private loadEmployees() {
-    this.authService.getAll().subscribe({
-      next: (users) => {
-        this.employees = users.filter((user: any) => user.role !== 'Admin');
-      }
-    });
+    this.authService
+      .getAll()
+      .subscribe((response) => (this.employees = response));
   }
 
   get clientServicesArray() {
@@ -106,22 +96,20 @@ export class NewTaskGroupComponent implements OnInit {
 
   addTask(serviceIndex: number) {
     const task = this.fb.group({
-      // title: ['', [Validators.minLength(3), Validators.maxLength(200)]],
-      // taskType: [''],
-      // description: ['', Validators.maxLength(2000)],
-      // priority: [''],
-      // deadline: [''],
-      // employeeId: [''],
-      // status: [''],
-      // refrence: ['', Validators.maxLength(1000)]
-      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
-            taskType: ['', Validators.required],
-            description: ['', Validators.maxLength(2000)],
-            priority: ['', Validators.required],
-            deadline: ['', Validators.required],
-            employeeId: [''],
-            status: ['', Validators.required],
-            refrence: ['', Validators.maxLength(1000)]
+      title: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(200),
+        ],
+      ],
+      taskType: ['', Validators.required],
+      description: ['', Validators.maxLength(2000)],
+      priority: ['', Validators.required],
+      deadline: ['', Validators.required],
+      employeeId: [''],
+      refrence: ['', Validators.maxLength(1000)],
     });
 
     this.getTasksArray(serviceIndex).push(task);
@@ -149,57 +137,56 @@ export class NewTaskGroupComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.taskGroupForm.valid) {
-      this.isLoading = true;
-
-      const formData = this.taskGroupForm.value;
-
-      const taskGroup: ICreateTaskGroup = {
-        clientId: this.clientId,
-        serviceId: Number(formData.clientServices[0].serviceId),
-        clientServiceId: 0,
-        tasks: formData.clientServices[0].tasks.map((task: any) => ({
-          taskType: Number(task.taskType),
-          title: task.title,
-          description: task.description,
-          employeeId: task.employeeId,
-          deadline: new Date(task.deadline),
-          priority: task.priority,
-          refrence: task.refrence,
-        })),
-      };
-
-      console.log(taskGroup);
-
-      this.taskService.addTaskGroup(taskGroup, this.currentUserId).subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          this.showAlert('تم إضافة الشهر الجديد بنجاح', 'success');
-          this.resetForm();
-
-          // Close modal after successful submission
-          setTimeout(() => {
-            const modal = document.getElementById('taskModal');
-            if (modal) {
-              const bootstrapModal = (
-                window as any
-              ).bootstrap?.Modal?.getInstance(modal);
-              if (bootstrapModal) {
-                bootstrapModal.hide();
-              }
-            }
-          }, 2000);
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.showAlert(error.message, 'error');
-
-          console.log(error);
-        },
-      });
-    } else {
+    if (this.taskGroupForm.invalid) {
       this.taskGroupForm.markAllAsTouched();
+      return;
     }
+    this.isLoading = true;
+
+    const formData = this.taskGroupForm.value;
+
+    const taskGroup: ICreateTaskGroup = {
+      clientId: this.clientId,
+      serviceId: Number(formData.clientServices[0].serviceId),
+      clientServiceId: 0,
+      tasks: formData.clientServices[0].tasks.map((task: any) => ({
+        taskType: Number(task.taskType),
+        title: task.title,
+        description: task.description,
+        employeeId: task.employeeId,
+        deadline: new Date(task.deadline),
+        priority: task.priority,
+        refrence: task.refrence,
+      })),
+    };
+    console.log(taskGroup);
+
+    this.taskService.addTaskGroup(taskGroup, this.currentUserId).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.showAlert('تم إضافة الشهر الجديد بنجاح', 'success');
+        this.resetForm();
+
+        // Close modal after successful submission
+        setTimeout(() => {
+          const modal = document.getElementById('taskModal');
+          if (modal) {
+            const bootstrapModal = (
+              window as any
+            ).bootstrap?.Modal?.getInstance(modal);
+            if (bootstrapModal) {
+              bootstrapModal.hide();
+            }
+          }
+        }, 2000);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.showAlert(error.message, 'error');
+
+        console.log(error);
+      },
+    });
   }
 
   resetForm() {
@@ -222,7 +209,7 @@ export class NewTaskGroupComponent implements OnInit {
       return `يجب أن يكون ${control.errors['minlength'].requiredLength} أحرف على الأقل`;
     }
     if (control.errors['maxlength']) {
-      return `يجب ان يكون ${control.errors['maxlength'].requiredLength} أحرف على الاكثر`
+      return `يجب ان يكون ${control.errors['maxlength'].requiredLength} أحرف على الاكثر`;
     }
 
     return 'قيمة غير صحيحة';
@@ -247,8 +234,6 @@ export class NewTaskGroupComponent implements OnInit {
       this.modal.hide();
     }
   }
-
-  
 
   showAlert(message: string, type: string) {
     this.alertMessage = message;

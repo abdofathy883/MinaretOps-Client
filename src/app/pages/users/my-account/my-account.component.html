@@ -1,5 +1,5 @@
 @if (loadingUser) {
-  <section class="container">
+<section class="container">
   <app-my-account-shimmer></app-my-account-shimmer>
 </section>
 } @if (currentUser) {
@@ -106,6 +106,20 @@
       تعديل بيانات الحساب
     </button>
   </li>
+  <li class="nav-item" role="presentation">
+    <button
+      class="nav-link tab-btn"
+      id="jd-tab"
+      data-bs-toggle="tab"
+      data-bs-target="#jd-tab-pane"
+      type="button"
+      role="tab"
+      aria-controls="jd-tab-pane"
+      aria-selected="false"
+    >
+      المسئوليات الوظيفية
+    </button>
+  </li>
 </ul>
 
 <div class="tab-content" id="myTabContent">
@@ -151,6 +165,15 @@
     tabindex="0"
   >
     <app-update-profile [currentUser]="currentUser"></app-update-profile>
+  </div>
+  <div
+    class="tab-pane fade"
+    id="jd-tab-pane"
+    role="tabpanel"
+    aria-labelledby="jd-tab"
+    tabindex="0"
+  >
+    <app-jd-for-emp [currentUserId]="currentUser.id"></app-jd-for-emp>
   </div>
 </div>
 

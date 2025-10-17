@@ -26,6 +26,30 @@
 </section>
 
 <section class="container mb-4">
+  <div class="card">
+    <div class="d-flex justify-content-between align-items-center mb-3 pt-3 px-4">
+      <h2>الاستراحات</h2>
+    </div>
+    <div class="card-body">
+      <button
+        class="break-btn"
+        (click)="onBreakAction()"
+        [disabled]="isBreakProcessing || (!canStartBreak() && !canEndBreak())"
+        [class.btn-secondary]="canStartBreak()"
+        [class.btn-warning]="canEndBreak()"
+      >
+        @if (isBreakProcessing) {
+          <span>جاري المعالجة...</span>
+        } @else {
+          <i [class]="getBreakButtonIcon()"></i>
+          <span>{{ getBreakButtonText() }}</span>
+        }
+      </button>
+    </div>
+  </div>
+</section>
+
+<section class="container mb-4">
   <div class="card pt-3 px-4">
     <h2>حالة الحضور اليوم</h2>
     @if (attendanceErrorMessage) {
@@ -57,6 +81,46 @@
             <strong>مدة العمل:</strong>
             {{ calculateWorkDuration(todayRecord.clockIn, todayRecord.clockOut) }}
           </p>
+        }
+        
+        @if (todayRecord.breakPeriods && todayRecord.breakPeriods.length > 0) {
+          <div class="break-info mt-3">
+            <h5>الاستراحات اليوم:</h5>
+            @for (breakPeriod of todayRecord.breakPeriods; track breakPeriod.id) {
+              <div class="break-item">
+                <p>
+                  <strong>بداية الاستراحة:</strong>
+                  {{ formatBreakTime(breakPeriod.startTime) }}
+                </p>
+                @if (breakPeriod.endTime) {
+                  <p>
+                    <strong>نهاية الاستراحة:</strong>
+                    {{ formatBreakTime(breakPeriod.endTime) }}
+                  </p>
+                  <p>
+                    <strong>مدة الاستراحة:</strong>
+                    {{ calculateBreakDuration(breakPeriod.startTime, breakPeriod.endTime) }}
+                  </p>
+                } @else {
+                  <p class="text-warning">
+                    <strong>استراحة نشطة</strong>
+                  </p>
+                }
+                <hr>
+              </div>
+            }
+            <p>
+              <strong>إجمالي وقت الاستراحات:</strong>
+              {{ todayRecord.totalBreakTime || '0 دقيقة' }}
+            </p>
+          </div>
+        }
+        
+        @if (activeBreak) {
+          <div class="alert alert-info mt-3">
+            <strong>استراحة نشطة منذ:</strong>
+            {{ formatBreakTime(activeBreak.startTime) }}
+          </div>
         }
       </div>
     } @else {

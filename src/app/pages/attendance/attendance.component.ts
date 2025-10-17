@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import {
   AttendanceRecord,
   AttendanceStatus,
+  BreakPeriod,
   NewAttendanceRecord,
 } from '../../model/attendance-record/attendance-record';
 import { User } from '../../model/auth/user';
@@ -32,6 +33,9 @@ export class AttendanceComponent {
   deviceID = '';
   ipAddress = '';
 
+  activeBreak: BreakPeriod | null = null;
+  isBreakProcessing = false;
+
   constructor(
     private attendanceService: AttendanceService,
     private alertService: AlertService,
@@ -52,6 +56,11 @@ export class AttendanceComponent {
       this.ipAddress = ip;
       this.logger.log('info', 'Current IP Address: ', ip);
     });
+
+    // Load active break
+    if (this.currentUser) {
+      this.loadActiveBreak(this.currentUser.id);
+    }
   }
 
   calculateWorkDuration(clockIn: Date, clockOut: Date): string {
@@ -220,5 +229,111 @@ export class AttendanceComponent {
 
   closeAlert() {
     this.alertMessage = '';
+  }
+
+  loadActiveBreak(empId: string) {
+    this.attendanceService.getActiveBreak(empId).subscribe({
+      next: (response) => {
+        this.activeBreak = response;
+        console.log('Active break:', response);
+      },
+      error: (error) => {
+        console.error('Error loading active break:', error);
+        this.activeBreak = null;
+      }
+    });
+  }
+
+  // Break-related methods
+  canStartBreak(): boolean {
+    return !!this.todayRecord && !!this.todayRecord.clockIn && !this.todayRecord.clockOut && !this.activeBreak;
+  }
+
+  canEndBreak(): boolean {
+    return !!this.activeBreak;
+  }
+
+  getBreakButtonText(): string {
+    if (this.canStartBreak()) {
+      return 'بدء الاستراحة';
+    } else if (this.canEndBreak()) {
+      return 'إنهاء الاستراحة';
+    }
+    return 'لا يمكن بدء استراحة';
+  }
+
+  getBreakButtonIcon(): string {
+    if (this.canStartBreak()) {
+      return 'bi bi-pause-circle ms-3';
+    } else if (this.canEndBreak()) {
+      return 'bi bi-play-circle ms-3';
+    }
+    return 'bi bi-pause-circle ms-3';
+  }
+
+  onBreakAction() {
+    if (this.isBreakProcessing) return;
+
+    this.isBreakProcessing = true;
+
+    if (this.canStartBreak()) {
+      this.startBreak();
+    } else if (this.canEndBreak()) {
+      this.endBreak();
+    }
+  }
+
+  startBreak() {
+    if (!this.currentUser?.id) {
+      this.isBreakProcessing = false;
+      return;
+    }
+
+    this.attendanceService.startBreak(this.currentUser.id).subscribe({
+      next: (response) => {
+        this.activeBreak = response;
+        this.showAlert('تم بدء الاستراحة', 'success');
+        this.isBreakProcessing = false;
+      },
+      error: (error) => {
+        this.showAlert(error.error, 'error');
+        this.isBreakProcessing = false;
+      }
+    });
+  }
+
+  endBreak() {
+    if (!this.currentUser?.id) {
+      this.isBreakProcessing = false;
+      return;
+    }
+
+    this.attendanceService.endBreak(this.currentUser.id).subscribe({
+      next: (response) => {
+        this.activeBreak = null;
+        // Refresh today's attendance to get updated break periods
+        this.loadToadayAttendance(this.currentUser!.id);
+        this.showAlert('تم إنهاء الاستراحة', 'success');
+        this.isBreakProcessing = false;
+      },
+      error: (error) => {
+        this.showAlert(error.error, 'error');
+        this.isBreakProcessing = false;
+      }
+    });
+  }
+
+  calculateBreakDuration(startTime: Date, endTime: Date): string {
+    const duration = new Date(endTime).getTime() - new Date(startTime).getTime();
+    const hours = Math.floor(duration / (1000 * 60 * 60));
+    const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours} ساعة و ${minutes} دقيقة`;
+  }
+
+  formatBreakTime(date: Date): string {
+    return new Date(date).toLocaleTimeString('ar-EG', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 }

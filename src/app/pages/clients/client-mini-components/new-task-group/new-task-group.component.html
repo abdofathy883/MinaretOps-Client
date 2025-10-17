@@ -24,7 +24,6 @@
         @if (alertMessage) {
         <div class="alert" [class]="'alert-' + alertType">
           {{ alertMessage }}
-          <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
         </div>
         }
 
@@ -55,7 +54,7 @@
 
               <div class="mb-3">
                 <label class="form-label">اختر الخدمة</label>
-                <select class="form-select" formControlName="serviceId">
+                <select class="form-select" formControlName="serviceId" [class.is-invalid]="hasError('serviceId')">
                   <option value="" disabled selected>اختر الخدمة</option>
                   @for(service of availableServices; track service.id) {
                   <option [value]="service.id">{{ service.title }}</option>
@@ -281,7 +280,7 @@
           <div class="row">
             <div class="col-12">
               <div class="d-flex justify-content-start gap-2">
-                <button type="submit" class="add-btn">
+                <button class="add-btn">
                   @if (isLoading) {
                   <span class="spinner-border spinner-border-sm me-2"></span>
                   جاري اضافة الشهر الجديد... } @else { إضافة الشهر الجديد }

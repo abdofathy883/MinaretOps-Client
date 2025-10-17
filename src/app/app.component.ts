@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./shared/header/header.component";
 import { AuthService } from './services/auth/auth.service';
+import { PushNotificationService } from './services/push-notification/push-notification.service';
 
 @Component({
   selector: 'app-root',
@@ -13,9 +14,9 @@ export class AppComponent implements OnInit {
   isSidebarCollapsed = false;
   isAuthenticated: boolean = false;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private pushNotificationService: PushNotificationService) { }
   
-  ngOnInit(): void {
+  async ngOnInit() {
     this.authService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isAuthenticated = isLoggedIn;
     })
@@ -23,6 +24,14 @@ export class AppComponent implements OnInit {
     
     // Set initial sidebar state based on screen width
     this.checkScreenSize();
+    // Request notification permission
+    const hasPermission = await this.pushNotificationService.requestNotificationPermission();
+    
+    if (hasPermission) {
+      // Get current user ID (from your auth service)
+      const userId = this.authService.getCurrentUserId(); // Implement this method
+      await this.pushNotificationService.subscribeToNotifications(userId);
+    }
   }
 
   @HostListener('window:resize', ['$event'])
