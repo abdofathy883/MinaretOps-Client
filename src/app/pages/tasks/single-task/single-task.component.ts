@@ -125,7 +125,6 @@ export class SingleTaskComponent implements OnInit {
     const taskId = Number(taskIdParam);
     this.taskService.getById(taskId).subscribe({
       next: (response) => {
-        console.log(response);
         this.isLoadingTask = false;
         this.task = response;
       },
@@ -232,8 +231,7 @@ export class SingleTaskComponent implements OnInit {
   updateTaskStatus(newStatus: CustomTaskStatus): void {
     if (!this.task) return;
     this.updatingStatus = true;
-    const now = new Date();
-    this.taskService.changeStatus(this.task.id, this.currentUserId, newStatus, now).subscribe({
+    this.taskService.changeStatus(this.task.id, this.currentUserId, newStatus).subscribe({
       next: () => {
         if (this.task) {
           this.task.status = newStatus;

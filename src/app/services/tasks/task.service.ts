@@ -45,10 +45,9 @@ export class TaskService {
     );
   }
 
-  changeStatus(taskId: number, empId: string, status: CustomTaskStatus, actionTime: Date): Observable<boolean> {
-  const formattedTime = actionTime.toISOString(); // Convert to ISO string
+  changeStatus(taskId: number, empId: string, status: CustomTaskStatus): Observable<boolean> {
   return this.api.patch<boolean>(
-    `${this.endpoint}/change-status/${taskId}/${empId}/${encodeURIComponent(formattedTime)}`,
+    `${this.endpoint}/change-status/${taskId}/${empId}`,
     status
   );
 }
