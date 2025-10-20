@@ -59,14 +59,20 @@ h2, h3 {
 
 .alert {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 35px;
+  right: 200px;
   padding: 15px 20px;
   border-radius: 8px;
   color: white;
   font-weight: bold;
   z-index: 1000;
   animation: slideIn 0.3s ease;
+}
+
+@media (max-width: 750px) {
+  .alert {
+    right: 20px
+  }
 }
 
 .alert-success {

@@ -40,15 +40,19 @@
         @for (record of filteredAttendanceRecords; track $index) {
         <tr>
           <td data-cell="الموظف">{{ record.employeeName }}</td>
-          <td data-cell="تاريخ التسجيل">{{ record.clockIn | date : "shortDate" }}</td>
-          <td data-cell="وقت التسجيل">{{ record.clockIn | date : "shortTime" }}</td>
-          <td data-cell="وقت التسجيل">{{ record.clockOut | date : "shortTime" }}</td>
+          <td data-cell="اليوم">{{ record.clockIn | date : "shortDate" }}</td>
+          <td data-cell="وقت الحضور">{{ record.clockIn | date : "shortTime" }}</td>
+          <td data-cell="وقت الانصراف">{{ record.clockOut | date : "shortTime" }}</td>
           <td data-cell="الحالة">
             <span class="status-badge status-present">{{ mapAttendanceStatus(record.status) }}</span>
           </td>
-          <td>{{ record.totalWorkingTime | date: 'shortTime' }}</td>
-          <td>{{ record.totalBreakTime }}</td>
-          <td>{{ record.breakPeriods.length }}</td>
+          <td data-cell="اجمالي وقت العمل">{{ shortTimeSpan(record.totalWorkingTime)}}</td>
+          <td data-cell="اجمالي وقت الاستراحة">{{ shortTimeSpan(record.totalBreakTime) }}</td>
+          @if (record.breakPeriods) {
+            <td data-cell="عدد فترات الاستراحة">{{ record.breakPeriods.length }}</td>
+          }@else {
+            <td data-cell="عدد فترات الاستراحة">0</td>
+          }
           
         </tr>
         } @if (attendanceRecords.length === 0) {

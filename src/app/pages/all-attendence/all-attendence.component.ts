@@ -42,6 +42,7 @@ export class AllAttendenceComponent implements OnInit{
     })
     this.attendanceService.getAllAttendance().subscribe({
       next: (response) => {
+        console.log('Fetched attendance records:', response);
         this.attendanceRecords = response.reverse();
         this.filteredAttendanceRecords = [...this.attendanceRecords];
         this.applyFilters();
@@ -78,4 +79,13 @@ export class AllAttendenceComponent implements OnInit{
         return 'حاضر';
     }
   }
+
+  shortTimeSpan(timespan?: string): string {
+    if (timespan) {
+      return timespan.split('.')[0].substring(0, 5); // "00:00"
+    } else {
+      return '00:00';
+    }
+}
+
 }

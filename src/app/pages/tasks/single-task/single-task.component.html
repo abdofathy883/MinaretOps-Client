@@ -172,12 +172,14 @@
         </div>
 
         <!-- Completion Date -->
-        <div class="completion-section" *ngIf="task.completedAt">
-          <label>تاريخ الإنجاز:</label>
-          <span class="completion-date">
-            {{ task.completedAt | date : "short" }}
-          </span>
-        </div>
+         @if (task.completedAt) {
+           <div class="completion-section">
+             <label>تاريخ الإنجاز:</label>
+             <span class="completion-date">
+               {{ task.completedAt | date : "short" }}
+             </span>
+           </div>
+         }
 
         <div class="info-item">
           <label>تم الإنجاز في الموعد:</label>
