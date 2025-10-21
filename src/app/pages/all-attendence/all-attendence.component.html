@@ -1,68 +1,188 @@
 <section class="container py-4">
-    <h2>سجل الحضور</h2>
-    <div>
-      <h4>تصفية حسب:</h4>
-      <form [formGroup]="filterForm">
-        <div class="row">
-          <div class="col">
-            <label for="" class="form-label">اليوم</label>
-            <input type="date" class="form-control" formControlName="date">
-          </div>
-          <div class="col">
-            <label for="" class="form-label">الموظف</label>
-            <select name="" id="" class="form-select" formControlName="employeeId">
-              <option disabled selected>اختر موظف</option>
-              @for (emp of employees; track $index) {
-                <option [value]="emp.id">{{ emp.firstName + ' ' + emp.lastName }}</option>
-              }
-            </select>
-          </div>
-          <!-- <div class="col">
-            <button class="add-btn w-100" (click)="applyFilters()">تصفية</button>
-          </div> -->
-        </div>
-      </form>
-    </div>
-    <table class="content-table">
-      <thead>
-        <tr>
-          <th>الموظف</th>
-          <th>اليوم</th>
-          <th>وقت الحضور</th>
-          <th>وقت الانصراف</th>
-          <th>الحالة</th>
-          <th>إجمالي وقت العمل</th>
-          <th>إجمالي وقت الاستراحة</th>
-          <th>عدد فترات الاستراحة</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (record of filteredAttendanceRecords; track $index) {
-        <tr>
-          <td data-cell="الموظف">{{ record.employeeName }}</td>
-          <td data-cell="اليوم">{{ record.clockIn | date : "shortDate" }}</td>
-          <td data-cell="وقت الحضور">{{ record.clockIn | date : "shortTime" }}</td>
-          <td data-cell="وقت الانصراف">{{ record.clockOut | date : "shortTime" }}</td>
-          <td data-cell="الحالة">
-            <span class="status-badge status-present">{{ mapAttendanceStatus(record.status) }}</span>
-          </td>
-          <td data-cell="اجمالي وقت العمل">{{ shortTimeSpan(record.totalWorkingTime)}}</td>
-          <td data-cell="اجمالي وقت الاستراحة">{{ shortTimeSpan(record.totalBreakTime) }}</td>
-          @if (record.breakPeriods) {
-            <td data-cell="عدد فترات الاستراحة">{{ record.breakPeriods.length }}</td>
-          }@else {
-            <td data-cell="عدد فترات الاستراحة">0</td>
-          }
-          
-        </tr>
-        } @if (attendanceRecords.length === 0) {
-        <tr>
-          <td colspan="5" class="no-records">لا توجد سجلات حضور</td>
-        </tr>
-        }
-      </tbody>
-    </table>
-    <div class="records-table">
-    </div>
+  <h2>سجل الحضور</h2>
 
+  <div class="filter-section mb-4">
+    <h4>تصفية حسب:</h4>
+    <form [formGroup]="filterForm">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label for="fromDate" class="form-label">من تاريخ</label>
+          <input
+            type="date"
+            class="form-control"
+            formControlName="fromDate"
+            id="fromDate"
+          />
+        </div>
+        <div class="col-md-3">
+          <label for="toDate" class="form-label">إلى تاريخ</label>
+          <input
+            type="date"
+            class="form-control"
+            formControlName="toDate"
+            id="toDate"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="employeeId" class="form-label">الموظف</label>
+          <select
+            class="form-select"
+            formControlName="employeeId"
+            id="employeeId"
+          >
+            <option value="">جميع الموظفين</option>
+            @for (emp of employees; track emp.id) {
+            <option [value]="emp.id">
+              {{ emp.firstName + " " + emp.lastName }}
+            </option>
+            }
+          </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end gap-2">
+          <button
+            class="btn btn-primary"
+            (click)="applyFilters()"
+            [disabled]="loading"
+          >
+            تصفية
+          </button>
+          <button
+            class="btn btn-secondary"
+            (click)="clearFilters()"
+            [disabled]="loading"
+          >
+            إعادة تعيين
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Quick navigation -->
+    <div class="row mt-3">
+      <div class="col-12 d-flex gap-2">
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="loadPreviousDay()"
+          [disabled]="loading"
+        >
+          اليوم السابق
+        </button>
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="loadNextDay()"
+          [disabled]="loading"
+        >
+          اليوم التالي
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  @if (loading) {
+  <div class="text-center my-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">جاري التحميل...</span>
+    </div>
+  </div>
+  }
+
+  <!-- Results info -->
+  <div class="mb-3">
+    <p class="text-muted">
+      عرض {{ attendanceRecords.length }} من أصل {{ totalRecords }} سجل
+    </p>
+  </div>
+
+  <!-- Table -->
+  <table class="content-table">
+    <thead>
+      <tr>
+        <th>الموظف</th>
+        <th>اليوم</th>
+        <th>وقت الحضور</th>
+        <th>وقت الانصراف</th>
+        <th>الحالة</th>
+        <th>إجمالي وقت العمل</th>
+        <th>إجمالي وقت الاستراحة</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (record of attendanceRecords; track record.id) {
+      <tr>
+        <td data-cell="الموظف">{{ record.employeeName }}</td>
+        <td data-cell="اليوم">{{ record.workDate | date : "shortDate" }}</td>
+        <td data-cell="وقت الحضور">
+          {{ record.clockIn | date : "shortTime" }}
+        </td>
+        <td data-cell="وقت الانصراف">
+          {{ record.clockOut | date : "shortTime" }}
+        </td>
+        <td data-cell="الحالة">
+          <!-- <span class="status-badge status-present">{{
+            mapAttendanceStatus(record.status)
+          }}</span> -->
+          <span class="status-badge" [ngClass]="{
+    'status-present': record.status === 0,
+    'status-absent': record.status === 1,
+    'status-leave': record.status === 2
+  }">
+    {{ mapAttendanceStatus(record.status) }}
+    @if (record.missingClockOut) {
+      <span class="badge bg-warning text-dark ms-1" title="لم يسجل الانصراف">⚠</span>
+    }
+  </span>
+        </td>
+        <td data-cell="اجمالي وقت العمل">
+          {{ shortTimeSpan(record.totalWorkingTime) }}
+        </td>
+        <td data-cell="اجمالي وقت الاستراحة">
+          {{ shortTimeSpan(record.totalBreakTime) }}
+        </td>
+      </tr>
+      } @if (attendanceRecords.length === 0 && !loading) {
+      <tr>
+        <td colspan="8" class="no-records">لا توجد سجلات حضور</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  @if (totalPages > 1) {
+  <div class="pagination-container mt-4 d-flex justify-content-center">
+    <nav>
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button
+            class="page-link"
+            (click)="goToPage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            السابق
+          </button>
+        </li>
+
+        @for (page of [].constructor(totalPages); track $index; let i = $index)
+        {
+        <li class="page-item" [class.active]="currentPage === i + 1">
+          <button class="page-link" (click)="goToPage(i + 1)">
+            {{ i + 1 }}
+          </button>
+        </li>
+        }
+
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button
+            class="page-link"
+            (click)="goToPage(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+          >
+            التالي
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  }
 </section>

@@ -4,10 +4,28 @@ export interface AttendanceRecord {
     employeeName: string;
     clockIn: Date;
     clockOut: Date;
+    workDate: string;
     totalWorkingTime?: string;
     totalBreakTime?: string;
     status: AttendanceStatus;
+    missingClockOut?: boolean;
     breakPeriods: BreakPeriod[];
+}
+
+export interface AttendanceFilter {
+  fromDate?: string;
+  toDate?: string;
+  employeeId?: string;
+  pageNumber: number;
+  pageSize: number;
+}
+
+export interface PaginatedAttendanceResult {
+  records: AttendanceRecord[];
+  totalRecords: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
 }
 
 export interface BreakPeriod {
@@ -27,7 +45,7 @@ export interface NewAttendanceRecord {
 export enum AttendanceStatus {
     Present = 0,
     Absent = 1,
-    Leave = 2,
+    Leave = 2
 }
 
 export interface LeaveRequest {
