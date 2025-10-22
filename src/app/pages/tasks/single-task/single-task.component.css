@@ -30,6 +30,12 @@
   color: #dc3545;
 }
 
+/* Add at the end of the file */
+.on-time-status.not-yet {
+  color: #6c757d;
+  background-color: #e9ecef;
+}
+
 /* Timeline */
 .timeline {
   list-style: none;

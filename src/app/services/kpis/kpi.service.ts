@@ -30,8 +30,17 @@ export class KpiService {
   }
 
   // Admin
-  getSummaries(): Observable<IKpiSummary[]> {
-    return this.api.get<IKpiSummary[]>(`${this.endpoint}/all-summaries`);
+  getSummaries(month?: number, year?: number): Observable<IKpiSummary[]> {
+    let params = new HttpParams();
+    if (month !== undefined && month !== null) {
+      params = params.set('month', month.toString());
+    }
+    if (year !== undefined && year !== null) {
+      params = params.set('year', year.toString());
+    }
+    const url = `${this.endpoint}/all-summaries/`;
+    const query = params.keys().length ? `?${params.toString()}` : '';
+    return this.api.get<IKpiSummary[]>(`${url}${query}`);
   }
 
   getAllIncidents(): Observable<IIncedint[]> {

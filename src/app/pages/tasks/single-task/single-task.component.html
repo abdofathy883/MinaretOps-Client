@@ -181,7 +181,7 @@
            </div>
          }
 
-        <div class="info-item">
+        <!-- <div class="info-item">
           <label>تم الإنجاز في الموعد:</label>
           <span
             class="on-time-status mt-2"
@@ -198,6 +198,17 @@
               "
             ></i>
             {{ task.isCompletedOnDeadline ? "نعم" : "لا" }}
+          </span>
+        </div> -->
+
+        <div class="info-item">
+          <label>تم الإنجاز في الموعد:</label>
+          <span
+            class="on-time-status mt-2"
+            [ngClass]="getDeadlineStatusClass()"
+          >
+            <i [class]="getDeadlineStatusIcon()"></i>
+            {{ getDeadlineStatusText() }}
           </span>
         </div>
 

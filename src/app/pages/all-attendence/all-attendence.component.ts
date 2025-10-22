@@ -66,14 +66,12 @@ export class AllAttendenceComponent implements OnInit {
     this.attendanceService.getPaginatedAttendance(filter).subscribe({
       next: (response: PaginatedAttendanceResult) => {
         this.attendanceRecords = response.records;
-        console.log(this.attendanceRecords);
         this.totalRecords = response.totalRecords;
         this.totalPages = response.totalPages;
         this.currentPage = response.pageNumber;
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error fetching attendance records:', error);
         this.loading = false;
       }
     });

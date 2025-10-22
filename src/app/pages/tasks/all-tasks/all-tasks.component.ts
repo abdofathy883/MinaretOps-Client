@@ -214,12 +214,40 @@ export class AllTasksComponent implements OnInit {
       }
     }
 
-    if (onDeadline !== null && onDeadline !== '') {
-      const isCompletedOnDeadline = task.isCompletedOnDeadline;
-      const filterValue = onDeadline === 'true';
+    // if (onDeadline !== null && onDeadline !== '') {
+    //   const isCompletedOnDeadline = task.isCompletedOnDeadline;
+    //   const filterValue = onDeadline === 'true';
       
-      if (isCompletedOnDeadline !== filterValue) {
-        matches = false;
+    //   if (isCompletedOnDeadline !== filterValue) {
+    //     matches = false;
+    //   }
+    // }
+
+    if (onDeadline !== null && onDeadline !== '') {
+      const currentDate = new Date();
+      const taskDeadline = new Date(task.deadline);
+      
+      // Three states: yes, no, not-yet
+      if (onDeadline === 'yes') {
+        // Task completed on deadline: must have completedAt AND isCompletedOnDeadline = true
+        if (!task.completedAt || !task.isCompletedOnDeadline) {
+          matches = false;
+        }
+      } else if (onDeadline === 'no') {
+        // Task completed late OR deadline passed but not completed
+        // Completed late: has completedAt AND isCompletedOnDeadline = false
+        // Deadline passed: no completedAt AND current date >= deadline
+        const isCompletedLate = task.completedAt && !task.isCompletedOnDeadline;
+        const isDeadlinePassed = !task.completedAt && currentDate >= taskDeadline;
+        
+        if (!isCompletedLate && !isDeadlinePassed) {
+          matches = false;
+        }
+      } else if (onDeadline === 'not-yet') {
+        // Task not completed and deadline hasn't arrived yet
+        if (task.completedAt || currentDate >= taskDeadline) {
+          matches = false;
+        }
       }
     }
 

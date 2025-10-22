@@ -85,12 +85,7 @@ export class SingleTaskComponent implements OnInit {
       value: CustomTaskStatus.NeedsEdits,
       label: 'تحتاج إلى تعديلات',
       icon: 'bi bi-pencil-fill',
-    },
-    // {
-    //   value: CustomTaskStatus.Completed,
-    //   label: 'مكتمل',
-    //   icon: 'bi bi-rocket-takeoff-fill',
-    // },
+    }
   ];
   CustomTaskStatus = CustomTaskStatus;
   constructor(
@@ -119,7 +114,6 @@ export class SingleTaskComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.currentTime)
     this.isLoadingTask = true;
     const taskIdParam = this.route.snapshot.paramMap.get('id');
     const taskId = Number(taskIdParam);
@@ -410,5 +404,56 @@ export class SingleTaskComponent implements OnInit {
 
   closeAlert() {
     this.alertMessage = '';
+  }
+
+  getDeadlineStatusText(): string {
+    if (!this.task) return '';
+    
+    // If task is completed
+    if (this.task.completedAt) {
+      return this.task.isCompletedOnDeadline ? 'نعم' : 'لا';
+    }
+    
+    // If task is not completed but deadline hasn't arrived yet
+    if (new Date() < new Date(this.task.deadline)) {
+      return 'لم يحن الموعد';
+    }
+    
+    // If task is not completed and deadline has passed
+    return 'لا';
+  }
+
+  getDeadlineStatusClass(): string {
+    if (!this.task) return '';
+    
+    // If task is completed
+    if (this.task.completedAt) {
+      return this.task.isCompletedOnDeadline ? 'on-time' : 'late';
+    }
+    
+    // If task is not completed but deadline hasn't arrived yet
+    if (new Date() < new Date(this.task.deadline)) {
+      return 'not-yet';
+    }
+    
+    // If task is not completed and deadline has passed
+    return 'late';
+  }
+
+  getDeadlineStatusIcon(): string {
+    if (!this.task) return '';
+    
+    // If task is completed
+    if (this.task.completedAt) {
+      return this.task.isCompletedOnDeadline ? 'bi bi-check-circle' : 'bi bi-x-circle';
+    }
+    
+    // If task is not completed but deadline hasn't arrived yet
+    if (new Date() < new Date(this.task.deadline)) {
+      return 'bi bi-clock';
+    }
+    
+    // If task is not completed and deadline has passed
+    return 'bi bi-x-circle';
   }
 }
