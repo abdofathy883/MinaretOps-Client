@@ -134,3 +134,110 @@ export interface ITaskResources {
 //   priority: string;
 //   refrence?: string;
 // }
+
+export enum TaskTeam {
+  All = 'all',
+  ContentCreation = 'content-creation',
+  Design = 'design',
+  Software = 'software',
+  Video = 'video',
+  SEO = 'seo',
+  ADs = 'ads',
+  Management = 'management'
+}
+
+export interface TaskTeamMapping {
+  team: TaskTeam;
+  name: string;
+  taskTypes: TaskType[];
+}
+
+export const TASK_TEAM_MAPPINGS: TaskTeamMapping[] = [
+  {
+    team: TaskTeam.ContentCreation,
+    name: 'فريق إنشاء المحتوى',
+    taskTypes: [
+      TaskType.ContentStrategy,
+      TaskType.ContentWriting
+    ]
+  },
+  {
+    team: TaskTeam.Video,
+    name: 'فريق الفيديو',
+    taskTypes: [
+      TaskType.Voiceover,
+      TaskType.VideoEditing,
+      TaskType.Motion
+    ]
+  },
+  {
+    team: TaskTeam.SEO,
+    name: 'فريق تحسين محركات البحث',
+    taskTypes: [
+      TaskType.SEO
+    ]
+  },
+  {
+    team: TaskTeam.ADs,
+    name: 'فريق الإعلانات',
+    taskTypes: [
+      TaskType.Ad_Management,
+      TaskType.E_mailMarketing,
+      TaskType.WhatsAppMarketing
+    ]
+  },
+  {
+    team: TaskTeam.Design,
+    name: 'فريق التصميم',
+    taskTypes: [
+      TaskType.LogoDesign,
+      TaskType.VisualIdentity,
+      TaskType.DesignDirections,
+      TaskType.SM_Design,
+      TaskType.PrintingsDesign,
+      TaskType.Illustrations,
+      TaskType.UI_UX
+    ]
+  },
+  {
+    team: TaskTeam.Software,
+    name: 'فريق البرمجيات',
+    taskTypes: [
+      TaskType.WordPress,
+      TaskType.Backend,
+      TaskType.Frontend,
+    ]
+  },
+  {
+    team: TaskTeam.Management,
+    name: 'فريق الإدارة',
+    taskTypes: [
+      TaskType.Planning,
+      TaskType.Meeting,
+      TaskType.HostingManagement,
+      TaskType.Publishing,
+      TaskType.Moderation
+    ]
+  }
+];
+
+export interface TaskFilter {
+  fromDate?: string;
+  toDate?: string;
+  employeeId?: string;
+  clientId?: number;
+  status?: number;
+  priority?: string;
+  onDeadline?: string;
+  team?: TaskTeam; // Add team filter
+  pageNumber: number;
+  pageSize: number;
+}
+
+export interface PaginatedTaskResult {
+  records: ITask[];
+  totalRecords: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+}

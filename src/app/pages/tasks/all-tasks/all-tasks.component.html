@@ -127,11 +127,26 @@
             formControlName="onDeadline"
           >
             <option value="">جميع المهام</option>
-            <option value="true">مكتمل في الموعد</option>
-            <option value="false">غير مكتمل في الموعد</option>
+            <option value="yes">مكتمل في الموعد</option>
+            <option value="no">غير مكتمل في الموعد</option>
             <option value="not-yet">لم يحن الموعد</option>
           </select>
         </div>
+        <!-- Add the team filter back to the filters section -->
+<div class="col-6 col-lg-2 mb-2 mb-lg-0">
+  <label for="team" class="form-label">الفريق</label>
+  <select
+    name="team"
+    id="team"
+    class="form-select"
+    formControlName="team"
+  >
+    <option value="">جميع الفرق</option>
+    @for (teamMapping of taskTeams; track teamMapping.team) {
+    <option [value]="teamMapping.team">{{ teamMapping.name }}</option>
+    }
+  </select>
+</div>
         <div class="col">
           <br />
           <button class="add-btn w-100 mt-1" (click)="clearSearch()">
@@ -140,13 +155,51 @@
         </div>
       </div>
     </form>
+
+    <!-- Quick navigation -->
+    <div class="row mt-3">
+      <div class="col-12 d-flex gap-2">
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="loadPreviousDay()"
+          [disabled]="loading"
+        >
+          اليوم السابق
+        </button>
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="loadNextDay()"
+          [disabled]="loading"
+        >
+          اليوم التالي
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  @if (loading) {
+  <div class="text-center my-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">جاري التحميل...</span>
+    </div>
+  </div>
+  }
+
+  <!-- Results info -->
+  <div class="mb-3">
+    <p class="text-muted">
+      عرض {{ filteredTasks.length }} من أصل {{ totalRecords }} مهمة
+    </p>
   </div>
 </section>
+
 @if (isLoadingTasks) {
 <section class="container">
   <app-shimmer></app-shimmer>
 </section>
 }
+
 <section class="container mb-4">
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     @if (filteredTasks) { @for (task of filteredTasks; track $index) {
@@ -185,6 +238,11 @@
           <h5 class="card-title text-center mt-2 mb-2 text-truncate-2">
             {{ task.title }}
           </h5>
+          <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+              <i class="bi bi-diagram-3"></i>
+              <span class="text-muted">النوع:</span>
+              <span class="fw-medium">{{ getTypeLabel(task.taskType) }}</span>
+            </div>
 
           <!-- Description -->
           <p class="card-text text-center text-muted text-truncate-3">
@@ -193,11 +251,7 @@
 
           <!-- Meta grid -->
           <div class="mt-2 small">
-            <div class="d-flex align-items-center gap-2 mb-2">
-              <i class="bi bi-diagram-3"></i>
-              <span class="text-muted">النوع:</span>
-              <span class="fw-medium">{{ getTypeLabel(task.taskType) }}</span>
-            </div>
+            
             <div class="d-flex align-items-center gap-2 mb-2">
               <i class="bi bi-person-badge"></i>
               <span class="text-muted">الموظف:</span>
@@ -247,4 +301,42 @@
     </div>
     }
   </div>
+
+  <!-- Pagination -->
+  @if (totalPages > 1) {
+  <div class="pagination-container mt-4 d-flex justify-content-center">
+    <nav>
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button
+            class="page-link"
+            (click)="goToPage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+          >
+            السابق
+          </button>
+        </li>
+
+        @for (page of [].constructor(totalPages); track $index; let i = $index)
+        {
+        <li class="page-item" [class.active]="currentPage === i + 1">
+          <button class="page-link" (click)="goToPage(i + 1)">
+            {{ i + 1 }}
+          </button>
+        </li>
+        }
+
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button
+            class="page-link"
+            (click)="goToPage(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+          >
+            التالي
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  }
 </section>

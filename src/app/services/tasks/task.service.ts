@@ -9,7 +9,30 @@ import {
   ITask,
   ITaskGroup,
   IUpdateTask,
+  PaginatedTaskResult,
+  TaskFilter,
 } from '../../model/task/task';
+
+// export interface TaskFilter {
+//   fromDate?: string;
+//   toDate?: string;
+//   employeeId?: string;
+//   clientId?: number;
+//   status?: number;
+//   priority?: string;
+//   onDeadline?: string;
+//   team?: string;
+//   pageNumber: number;
+//   pageSize: number;
+// }
+
+// export interface PaginatedTaskResult {
+//   records: ITask[];
+//   totalRecords: number;
+//   pageNumber: number;
+//   pageSize: number;
+//   totalPages: number;
+// }
 
 @Injectable({
   providedIn: 'root',
@@ -45,12 +68,16 @@ export class TaskService {
     );
   }
 
-  changeStatus(taskId: number, empId: string, status: CustomTaskStatus): Observable<boolean> {
-  return this.api.patch<boolean>(
-    `${this.endpoint}/change-status/${taskId}/${empId}`,
-    status
-  );
-}
+  changeStatus(
+    taskId: number,
+    empId: string,
+    status: CustomTaskStatus
+  ): Observable<boolean> {
+    return this.api.patch<boolean>(
+      `${this.endpoint}/change-status/${taskId}/${empId}`,
+      status
+    );
+  }
 
   archive(taskId: number): Observable<ITask> {
     return this.api.patch<ITask>(
@@ -59,19 +86,32 @@ export class TaskService {
     );
   }
 
-  complete(taskId: number, userId: string, taskResource: ICreateTaskResources): Observable<ITask>{
-    return this.api.patch<ITask>(`${this.endpoint}/complete/${taskId}/${userId}`, taskResource);
+  complete(
+    taskId: number,
+    userId: string,
+    taskResource: ICreateTaskResources
+  ): Observable<ITask> {
+    return this.api.patch<ITask>(
+      `${this.endpoint}/complete/${taskId}/${userId}`,
+      taskResource
+    );
   }
 
   addTask(createTask: ICreateTask, userId: string): Observable<ITask> {
-    return this.api.post<ITask>(`${this.endpoint}/create-task/${userId}`, createTask);
+    return this.api.post<ITask>(
+      `${this.endpoint}/create-task/${userId}`,
+      createTask
+    );
   }
 
   deleteTask(taskId: number): Observable<boolean> {
     return this.api.delete<boolean>(`${this.endpoint}/delete-task/${taskId}`);
   }
 
-  addTaskGroup(createTaskGroup: ICreateTaskGroup, userId: string): Observable<ITaskGroup> {
+  addTaskGroup(
+    createTaskGroup: ICreateTaskGroup,
+    userId: string
+  ): Observable<ITaskGroup> {
     return this.api.post<ITaskGroup>(
       `${this.endpoint}/create-task-group/${userId}`,
       createTaskGroup
@@ -90,5 +130,42 @@ export class TaskService {
     return this.api.get<ITask[]>(
       `${this.endpoint}/search/${query}/${currentUserId}`
     );
+  }
+
+  // Update the getPaginatedTasks method to include team parameter
+
+  getPaginatedTasks(
+    filter: TaskFilter,
+    currentUserId: string
+  ): Observable<PaginatedTaskResult> {
+    let url = `${this.endpoint}/paginated?pageNumber=${filter.pageNumber}&pageSize=${filter.pageSize}&currentUserId=${currentUserId}`;
+
+    if (filter.fromDate) {
+      url += `&fromDate=${filter.fromDate}`;
+    }
+    if (filter.toDate) {
+      url += `&toDate=${filter.toDate}`;
+    }
+    if (filter.employeeId) {
+      url += `&employeeId=${filter.employeeId}`;
+    }
+    if (filter.clientId) {
+      url += `&clientId=${filter.clientId}`;
+    }
+    if (filter.status !== undefined) {
+      url += `&status=${filter.status}`;
+    }
+    if (filter.priority) {
+      url += `&priority=${filter.priority}`;
+    }
+    if (filter.onDeadline) {
+      url += `&onDeadline=${filter.onDeadline}`;
+    }
+    if (filter.team) {
+      // Add team parameter back
+      url += `&team=${filter.team}`;
+    }
+
+    return this.api.get<PaginatedTaskResult>(url);
   }
 }

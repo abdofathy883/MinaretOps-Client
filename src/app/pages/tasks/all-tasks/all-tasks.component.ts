@@ -5,18 +5,18 @@ import { User } from '../../../model/auth/user';
 import { LightWieghtClient } from '../../../model/client/client';
 import { ServicesService } from '../../../services/services/services.service';
 import { ClientService } from '../../../services/clients/client.service';
-import { ITask, TaskType } from '../../../model/task/task';
+import { ITask, TaskType, TaskFilter, PaginatedTaskResult, TASK_TEAM_MAPPINGS } from '../../../model/task/task';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TaskService } from '../../../services/tasks/task.service';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
 import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
 
 @Component({
   selector: 'app-all-tasks',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, MapTaskStatusClassPipe, MapTaskStatusPipe, ShimmerComponent],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, MapTaskStatusClassPipe, MapTaskStatusPipe, ShimmerComponent, DatePipe],
   templateUrl: './all-tasks.component.html',
   styleUrl: './all-tasks.component.css',
 })
@@ -33,6 +33,15 @@ export class AllTasksComponent implements OnInit {
   currentUserId: string = '';
   isLoadingTasks: boolean = false;
 
+  // Pagination properties
+  currentPage: number = 1;
+  pageSize: number = 20;
+  totalRecords: number = 0;
+  totalPages: number = 0;
+  loading: boolean = false;
+
+  taskTeams = TASK_TEAM_MAPPINGS;
+
   constructor(
     private serviceService: ServicesService,
     private authService: AuthService,
@@ -45,19 +54,28 @@ export class AllTasksComponent implements OnInit {
       clientId: [null],
       employeeId: [null],
       priority: [null],
-      fromDate: [null],     // Add this
-    toDate: [null],       // Add this
-    status: [null],        // Add this
-    onDeadline: [null]
+      fromDate: [null],
+      toDate: [null],
+      status: [null],
+      onDeadline: [null],
+      team: [null] // Add team to form
     });
   }
 
   ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUserId();
+    
+    // Initialize form with today's date
+    const today = new Date().toISOString().split('T')[0];
+    this.filterForm.patchValue({
+      fromDate: today,
+      toDate: today
+    });
+    
     this.loadClients();
     this.loadEmployees();
     this.loadServices();
-    this.loadTasks();
+    this.loadTasks(); // This will now load today's tasks with pagination
 
     // Subscribe to form changes for live filtering
     this.filterForm.valueChanges.subscribe(() => {
@@ -120,30 +138,105 @@ export class AllTasksComponent implements OnInit {
     this.searchQuery = '';
     this.searchResults = [];
     this.isSearching = false;
-    this.filteredTasks = [...this.tasks];
+    
+    // Reset to today's date
+    const today = new Date().toISOString().split('T')[0];
     this.filterForm.patchValue({
-    clientId: null,
-    employeeId: null,
-    priority: null,
-    fromDate: null,
-    toDate: null,
-    status: null,
-    onDeadline: [null]
-  });
-  this.filteredTasks = [...this.tasks];
+      clientId: null,
+      employeeId: null,
+      priority: null,
+      fromDate: today,
+      toDate: today,
+      status: null,
+      onDeadline: null,
+      team: null // Reset team filter
+    });
+    
+    this.currentPage = 1;
+    this.loadTasks();
   }
 
   loadTasks() {
+    this.loading = true;
     this.isLoadingTasks = true;
-    this.taskService.getTasksByEmployee(this.currentUserId).subscribe({
-      next: (response) => {
-        console.log(response)
-        this.isLoadingTasks = false;
-        this.tasks = response.reverse();
+    
+    const formValue = this.filterForm.value;
+    
+    // Create filter object for server-side pagination
+    const filter: TaskFilter = {
+      fromDate: formValue.fromDate || undefined,
+      toDate: formValue.toDate || undefined,
+      employeeId: formValue.employeeId || undefined,
+      clientId: formValue.clientId || undefined,
+      status: formValue.status || undefined,
+      priority: formValue.priority || undefined,
+      onDeadline: formValue.onDeadline || undefined,
+      team: formValue.team || undefined, // Add team to filter
+      pageNumber: this.currentPage,
+      pageSize: this.pageSize
+    };
+
+    this.taskService.getPaginatedTasks(filter, this.currentUserId).subscribe({
+      next: (response: PaginatedTaskResult) => {
+        this.tasks = response.records;
+        this.totalRecords = response.totalRecords;
+        this.totalPages = response.totalPages;
+        this.currentPage = response.pageNumber;
         this.filteredTasks = [...this.tasks];
-        this.applyFilters(); // Apply initial filters
+        this.loading = false;
+        this.isLoadingTasks = false;
       },
+      error: (error) => {
+        this.loading = false;
+        this.isLoadingTasks = false;
+      }
     });
+  }
+
+  // Add day navigation methods
+  loadPreviousDay(): void {
+    const fromDate = new Date(this.filterForm.value.fromDate);
+    fromDate.setDate(fromDate.getDate() - 1);
+    
+    const toDate = new Date(this.filterForm.value.toDate);
+    toDate.setDate(toDate.getDate() - 1);
+
+    this.filterForm.patchValue({
+      fromDate: fromDate.toISOString().split('T')[0],
+      toDate: toDate.toISOString().split('T')[0]
+    });
+
+    this.currentPage = 1; // Reset to first page
+    this.loadTasks();
+  }
+
+  loadNextDay(): void {
+    const fromDate = new Date(this.filterForm.value.fromDate);
+    fromDate.setDate(fromDate.getDate() + 1);
+    
+    const toDate = new Date(this.filterForm.value.toDate);
+    toDate.setDate(toDate.getDate() + 1);
+
+    this.filterForm.patchValue({
+      fromDate: fromDate.toISOString().split('T')[0],
+      toDate: toDate.toISOString().split('T')[0]
+    });
+
+    this.currentPage = 1; // Reset to first page
+    this.loadTasks();
+  }
+
+  // Add pagination methods
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadTasks();
+    }
+  }
+
+  applyFilters(): void {
+    this.currentPage = 1; // Reset to first page
+    this.loadTasks();
   }
 
   getPriorityClass(priority: string): string {
@@ -157,102 +250,6 @@ export class AllTasksComponent implements OnInit {
       default:
         return 'priority-normal';
     }
-  }
-
-  applyFilters() {
-    const formValues = this.filterForm.value;
-
-    // Convert string IDs to numbers
-
-    const clientId = formValues.clientId ? Number(formValues.clientId) : null;
-    const employeeId = formValues.employeeId;
-    const priority = formValues.priority;
-    const fromDate = formValues.fromDate;
-  const toDate = formValues.toDate;
-  const status = formValues.status;
-  const onDeadline = formValues.onDeadline;
-
-    // Use search results if searching, otherwise use original tasks
-    const tasksToFilter = this.isSearching ? this.searchResults : this.tasks;
-
-    this.filteredTasks = tasksToFilter.filter((task) => {
-      let matches = true;
-
-
-
-      // Filter by client ID
-      if (clientId && task.clientId !== clientId) {
-        matches = false;
-      }
-
-      // Filter by employee ID
-      if (employeeId && task.employeeId !== employeeId) {
-        matches = false;
-      }
-
-      // Filter by priority
-      if (priority && task.priority !== priority) {
-        matches = false;
-      }
-
-      // Filter by status
-    if (status !== null && status !== '' && task.status !== Number(status)) {
-      matches = false;
-    }
-
-    // Filter by date range
-    if (fromDate || toDate) {
-      const taskDate = new Date(task.createdAt);
-      const from = fromDate ? new Date(fromDate) : null;
-      const to = toDate ? new Date(toDate) : null;
-
-      if (from && taskDate < from) {
-        matches = false;
-      }
-      if (to && taskDate > to) {
-        matches = false;
-      }
-    }
-
-    // if (onDeadline !== null && onDeadline !== '') {
-    //   const isCompletedOnDeadline = task.isCompletedOnDeadline;
-    //   const filterValue = onDeadline === 'true';
-      
-    //   if (isCompletedOnDeadline !== filterValue) {
-    //     matches = false;
-    //   }
-    // }
-
-    if (onDeadline !== null && onDeadline !== '') {
-      const currentDate = new Date();
-      const taskDeadline = new Date(task.deadline);
-      
-      // Three states: yes, no, not-yet
-      if (onDeadline === 'yes') {
-        // Task completed on deadline: must have completedAt AND isCompletedOnDeadline = true
-        if (!task.completedAt || !task.isCompletedOnDeadline) {
-          matches = false;
-        }
-      } else if (onDeadline === 'no') {
-        // Task completed late OR deadline passed but not completed
-        // Completed late: has completedAt AND isCompletedOnDeadline = false
-        // Deadline passed: no completedAt AND current date >= deadline
-        const isCompletedLate = task.completedAt && !task.isCompletedOnDeadline;
-        const isDeadlinePassed = !task.completedAt && currentDate >= taskDeadline;
-        
-        if (!isCompletedLate && !isDeadlinePassed) {
-          matches = false;
-        }
-      } else if (onDeadline === 'not-yet') {
-        // Task not completed and deadline hasn't arrived yet
-        if (task.completedAt || currentDate >= taskDeadline) {
-          matches = false;
-        }
-      }
-    }
-
-      return matches;
-    });
   }
 
   goToTask(taskId: number) {
