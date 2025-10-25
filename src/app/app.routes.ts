@@ -138,7 +138,7 @@ export const routes: Routes = [
         canActivate: [noauthGuard]
     },
     {
-        path: 'tasks/:id',
+        path: 'tasks/:id/:isArchived',
         component: SingleTaskComponent,
         canActivate: [noauthGuard]
     },

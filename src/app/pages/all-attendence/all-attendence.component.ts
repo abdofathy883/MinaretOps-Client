@@ -1,6 +1,6 @@
 import { DatePipe, CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { AttendanceRecord, AttendanceStatus, PaginatedAttendanceResult } from '../../model/attendance-record/attendance-record';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AttendanceRecord, AttendanceStatus, PaginatedAttendanceResult, ToggleEarlyLeave } from '../../model/attendance-record/attendance-record';
 import { AttendanceService } from '../../services/attendance/attendance.service';
 import { User } from '../../model/auth/user';
 import { AuthService } from '../../services/auth/auth.service';
@@ -24,10 +24,13 @@ export class AllAttendenceComponent implements OnInit {
   totalPages: number = 0;
   loading: boolean = false;
 
+  // Modal properties
+  selectedRecord: AttendanceRecord | null = null;
+
   constructor(
     private attendanceService: AttendanceService,
     private authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) { }
 
   ngOnInit(): void {
@@ -147,5 +150,50 @@ export class AllAttendenceComponent implements OnInit {
     } else {
       return '00:00';
     }
+  }
+
+  toggleEarlyLeave(record: AttendanceRecord) {
+    this.selectedRecord = record;
+    // Show the modal using Bootstrap's modal API
+    const modalElement = document.getElementById('earlyLeaveModal');
+    if (modalElement) {
+      const modal = new (window as any).bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
+  confirmEarlyLeave() {
+    if (this.selectedRecord) {
+      const earlyLeave: ToggleEarlyLeave = {
+        employeeId: this.selectedRecord.employeeId,
+        workDate: this.selectedRecord.workDate
+      };
+      this.attendanceService.toggleEarlyLeave(earlyLeave).subscribe({
+        next: (success) => {
+          if (success) {
+            // Update the local record
+            this.selectedRecord!.earlyLeave = !this.selectedRecord!.earlyLeave;
+            // Refresh the data to ensure consistency
+            this.loadAttendance();
+          }
+          this.closeModal();
+        },
+        error: (error) => {
+          console.error('Error toggling early leave:', error);
+          this.closeModal();
+        }
+      });
+    }
+  }
+
+  closeModal() {
+    const modalElement = document.getElementById('earlyLeaveModal');
+    if (modalElement) {
+      const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
+      }
+    }
+    this.selectedRecord = null;
   }
 }

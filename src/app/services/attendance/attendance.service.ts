@@ -7,6 +7,7 @@ import {
   BreakPeriod,
   NewAttendanceRecord,
   PaginatedAttendanceResult,
+  ToggleEarlyLeave,
 } from '../../model/attendance-record/attendance-record';
 import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
@@ -93,5 +94,10 @@ export class AttendanceService {
       `${this.endpoint}/active-break/${employeeId}`
     );
   }
+
+  toggleEarlyLeave(earlyLeave: ToggleEarlyLeave): Observable<any> {
+    return this.api.put<any>(`${this.endpoint}/submit-early-leave`, earlyLeave);
+  }
+
 }
 

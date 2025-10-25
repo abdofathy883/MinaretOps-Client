@@ -10,7 +10,6 @@ import { ClientInfoComponent } from '../client-mini-components/client-info/clien
 import { TaskGroupsComponent } from "../client-mini-components/task-groups/task-groups.component";
 import { IClient } from '../../../model/client/client';
 import { ICreateTask, ICreateTaskGroup, ITask } from '../../../model/task/task';
-import { AlertService } from '../../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-single-client',
@@ -45,7 +44,6 @@ export class SingleClientComponent implements OnInit {
     private clientService: ClientService,
     private taskService: TaskService,
     private authService: AuthService,
-    private alertService: AlertService,
     private route: ActivatedRoute
   ) {}
 

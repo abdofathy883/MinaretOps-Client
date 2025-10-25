@@ -19,14 +19,30 @@ export class KpiService {
     return this.api.post<IIncedint>(this.endpoint, incedint);
   }
 
-  getMySummary(employeeId: string): Observable<IKpiSummary> {
-    return this.api.get<IKpiSummary>(`${this.endpoint}/summary/${employeeId}`);
+  getMySummary(employeeId: string, month?: number, year?: number): Observable<IKpiSummary> {
+    let params = new HttpParams();
+    if (month !== undefined && month !== null) {
+      params = params.set('month', month.toString());
+    }
+    if (year !== undefined && year !== null) {
+      params = params.set('year', year.toString());
+    }
+    const url = `${this.endpoint}/summary/${employeeId}`;
+    const query = params.keys().length ? `?${params.toString()}` : '';
+    return this.api.get<IKpiSummary>(`${url}${query}`);
   }
 
-  getIncidentsByEmpId(employeeId: string): Observable<IIncedint[]> {
-    return this.api.get<IIncedint[]>(
-      `${this.endpoint}/incidents/${employeeId}`
-    );
+  getIncidentsByEmpId(employeeId: string, month?: number, year?: number): Observable<IIncedint[]> {
+    let params = new HttpParams();
+    if (month !== undefined && month !== null) {
+      params = params.set('month', month.toString());
+    }
+    if (year !== undefined && year !== null) {
+      params = params.set('year', year.toString());
+    }
+    const url = `${this.endpoint}/incidents/${employeeId}`;
+    const query = params.keys().length ? `?${params.toString()}` : '';
+    return this.api.get<IIncedint[]>(`${url}${query}`);
   }
 
   // Admin

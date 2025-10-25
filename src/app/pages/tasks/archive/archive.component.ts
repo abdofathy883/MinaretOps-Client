@@ -139,7 +139,7 @@ services: Service[] = [];
   }
 
   goToTask(taskId: number) {
-    this.router.navigate(['tasks', taskId]);
+    this.router.navigate(['tasks', taskId, true]);
   }
 
   getTypeLabel(type: TaskType): string {

@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { NewLeaveRequest } from '../../../model/attendance-record/attendance-record';
 import { LeaveRequestService } from '../../../services/leave-request/leave-request.service';
+import { hasError } from '../../../services/helper-services/utils';
 
 @Component({
   selector: 'app-submit-leave-request',
@@ -38,7 +39,7 @@ export class SubmitLeaveRequestComponent implements OnInit {
       employeeId: [''],
       fromDate: ['', Validators.required],
       toDate: ['', Validators.required],
-      type: ['', Validators.required],
+      type: ['0', Validators.required],
       proofFile: [''],
       reason: ['', [Validators.required, Validators.maxLength(3000)]]
     });
@@ -52,6 +53,7 @@ export class SubmitLeaveRequestComponent implements OnInit {
 
   onSubmit() {
     if (this.leaveRequestForm.invalid) {
+      this.leaveRequestForm.markAllAsTouched();
       this.isLoading = false;
       return;
     }
@@ -76,6 +78,10 @@ export class SubmitLeaveRequestComponent implements OnInit {
       },
     });
   }
+
+  hasError(controlName: string): boolean {
+      return hasError(this.leaveRequestForm, controlName);
+    }
 
   showAlert(message: string, type: string) {
     this.alertMessage = message;

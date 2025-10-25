@@ -8,7 +8,6 @@ export interface ITask {
   clientServiceId: number;
   deadline: Date;
   priority: string;
-  isArchived: boolean;
   refrence?: string;
   employeeId: string;
   employeeName: string;

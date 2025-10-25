@@ -105,6 +105,7 @@
         <th>الحالة</th>
         <th>إجمالي وقت العمل</th>
         <th>إجمالي وقت الاستراحة</th>
+        <th>اذن</th>
       </tr>
     </thead>
     <tbody>
@@ -122,22 +123,41 @@
           <!-- <span class="status-badge status-present">{{
             mapAttendanceStatus(record.status)
           }}</span> -->
-          <span class="status-badge" [ngClass]="{
-    'status-present': record.status === 0,
-    'status-absent': record.status === 1,
-    'status-leave': record.status === 2
-  }">
-    {{ mapAttendanceStatus(record.status) }}
-    @if (record.missingClockOut) {
-      <span class="badge bg-warning text-dark ms-1" title="لم يسجل الانصراف">⚠</span>
-    }
-  </span>
+          <span
+            class="status-badge"
+            [ngClass]="{
+              'status-present': record.status === 0,
+              'status-absent': record.status === 1,
+              'status-leave': record.status === 2
+            }"
+          >
+            {{ mapAttendanceStatus(record.status) }}
+            @if (record.missingClockOut) {
+            <span
+              class="badge bg-warning text-dark ms-1"
+              title="لم يسجل الانصراف"
+              >⚠</span
+            >
+            }
+          </span>
         </td>
         <td data-cell="اجمالي وقت العمل">
           {{ shortTimeSpan(record.totalWorkingTime) }}
         </td>
         <td data-cell="اجمالي وقت الاستراحة">
           {{ shortTimeSpan(record.totalBreakTime) }}
+        </td>
+        <td data-cell="انصراف مبكر">
+          <div class="form-check form-switch">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              [checked]="record.earlyLeave"
+              (change)="toggleEarlyLeave(record)"
+            />
+            <!-- <label class="form-check-label" for="switchCheckDefault">Default switch checkbox input</label> -->
+          </div>
         </td>
       </tr>
       } @if (attendanceRecords.length === 0 && !loading) {
@@ -147,6 +167,33 @@
       }
     </tbody>
   </table>
+
+  <!-- Early Leave Confirmation Modal -->
+  <div class="modal fade" id="earlyLeaveModal" tabindex="-1" aria-labelledby="earlyLeaveModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="earlyLeaveModalLabel">تأكيد تغيير حالة الاذن</h5>
+          <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          @if (selectedRecord) {
+          <p>هل أنت متأكد من تغيير حالة الاذن للموظف التالي؟</p>
+          <div class="alert alert-info">
+            <strong>الموظف:</strong> {{ selectedRecord.employeeName }}<br>
+            <strong>التاريخ:</strong> {{ selectedRecord.workDate | date : "shortDate" }}<br>
+            <strong>الحالة الحالية:</strong> {{ selectedRecord.earlyLeave ? 'انصراف مبكر' : 'انصراف عادي' }}<br>
+            <strong>الحالة الجديدة:</strong> {{ !selectedRecord.earlyLeave ? 'انصراف مبكر' : 'انصراف عادي' }}
+          </div>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">إلغاء</button>
+          <button type="button" class="btn btn-primary" (click)="confirmEarlyLeave()">تأكيد التغيير</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Pagination -->
   @if (totalPages > 1) {

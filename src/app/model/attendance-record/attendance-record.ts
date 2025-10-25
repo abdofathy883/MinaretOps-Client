@@ -9,6 +9,7 @@ export interface AttendanceRecord {
     totalBreakTime?: string;
     status: AttendanceStatus;
     missingClockOut?: boolean;
+    earlyLeave: boolean;
     breakPeriods: BreakPeriod[];
 }
 
@@ -46,6 +47,11 @@ export enum AttendanceStatus {
     Present = 0,
     Absent = 1,
     Leave = 2
+}
+
+export interface ToggleEarlyLeave {
+    employeeId: string;
+    workDate: string;
 }
 
 export interface LeaveRequest {

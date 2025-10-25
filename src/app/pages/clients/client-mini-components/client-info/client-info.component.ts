@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { ClientStatus, IClient, IUpdateClient } from '../../../../model/client/client';
-import { AlertService } from '../../../../services/helper-services/alert.service';
 import { hasError } from '../../../../services/helper-services/utils';
 
 @Component({
@@ -27,7 +26,6 @@ export class ClientInfoComponent implements OnInit, OnChanges {
   constructor(
     private clientService: ClientService, 
     private authService: AuthService,
-    private alertService: AlertService,
     private fb: FormBuilder) 
     {}
 

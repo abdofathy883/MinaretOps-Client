@@ -53,6 +53,7 @@ export class SingleTaskComponent implements OnInit {
   isArchiveLoading: boolean = false;
   isDeletingLoading: boolean = false;
   isLoadingTask: boolean = false;
+  isTaskArchived: boolean = false; // Add this property to track archive status
 
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
@@ -116,14 +117,30 @@ export class SingleTaskComponent implements OnInit {
   ngOnInit(): void {
     this.isLoadingTask = true;
     const taskIdParam = this.route.snapshot.paramMap.get('id');
+    const isArchivedParam = this.route.snapshot.paramMap.get('isArchived'); // Changed from queryParamMap to paramMap
     const taskId = Number(taskIdParam);
-    this.taskService.getById(taskId).subscribe({
+    const isArchived = isArchivedParam === 'true';
+    
+    // Use the unified endpoint instead of separate calls
+    this.loadTaskUnified(taskId, isArchived);
+    this.loadUser();
+  }
+
+  private loadTaskUnified(taskId: number, isArchived: boolean): void {
+    this.taskService.getTaskUnified(taskId, isArchived).subscribe({
       next: (response) => {
         this.isLoadingTask = false;
         this.task = response;
+        this.isTaskArchived = isArchived;
       },
+      error: (error) => {
+        this.isLoadingTask = false;
+        const errorMessage = isArchived 
+          ? 'لم يتم العثور على التاسك المؤرشف' 
+          : 'لم يتم العثور على التاسك';
+        this.showAlert(errorMessage, 'error');
+      }
     });
-    this.loadUser();
   }
 
   get urlControls() {
@@ -336,10 +353,26 @@ export class SingleTaskComponent implements OnInit {
       next: (res) => {
         this.isArchiveLoading = false;
         this.task = res;
-        this.showAlert(
-          res.isArchived ? 'تم أرشفة المهمة بنجاح' : 'تم إلغاء أرشفة المهمة بنجاح',
-          'success'
-        );
+        this.isTaskArchived = true;
+        this.showAlert('تم أرشفة المهمة بنجاح', 'success');
+        this.router.navigate(['/tasks', res.id, 'true']); // Updated to use route segments
+      },
+      error: (error) => {
+        this.isArchiveLoading = false;
+        this.showAlert(error.error, 'error');
+      }
+    });
+  }
+
+  restoreTask() {
+    this.isArchiveLoading = true;
+    this.taskService.restore(this.task.id).subscribe({
+      next: (res) => {
+        this.isArchiveLoading = false;
+        this.task = res;
+        this.isTaskArchived = false;
+        this.showAlert('تم إلغاء أرشفة المهمة بنجاح', 'success');
+        this.router.navigate(['/tasks', res.id, 'false']); // Updated to use route segments
       },
       error: (error) => {
         this.isArchiveLoading = false;

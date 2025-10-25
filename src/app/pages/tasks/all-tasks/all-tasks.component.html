@@ -210,9 +210,15 @@
         style="cursor: pointer"
       >
         <!-- Status ribbon -->
-        <div class="status-ribbon" [ngClass]="task.status | mapTaskStatusClass">
-          {{ task.status | mapTaskStatus }}
-        </div>
+        
+        @if (task.isCompletedOnDeadline) {
+          
+        } @else if (!task.isCompletedOnDeadline) {
+          <div class="status-ribbon" [ngClass]="task.status | mapTaskStatusClass">
+            {{ (task.status | mapTaskStatus) + ' - متأخر' }}
+          </div>
+          
+        }
 
         <div class="card-body">
           <!-- Top row: Priority + ID -->

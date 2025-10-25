@@ -179,7 +179,7 @@
           حفظ التغييرات }
         </button>
         <div class="mt-3">
-          <button class="btn btn-danger">
+          <button class="btn btn-danger" (click)="deleteClient()">
             @if (isDeleteLoading) {
             <span class="spinner-border spinner-border-sm me-1"></span>
             جاري الحذف... } @else {

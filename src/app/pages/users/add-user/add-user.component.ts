@@ -10,12 +10,9 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
-import { RegisterUser } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
 import { hasError } from '../../../services/helper-services/utils';
-import { AlertService } from '../../../services/helper-services/alert.service';
+import { RegisterUser } from '../../../model/auth/user';
 
 @Component({
   selector: 'app-add-user',
@@ -36,9 +33,7 @@ export class AddUserComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
-    private alertService: AlertService,
-    private router: Router
+    private authService: AuthService
   ) {
     this.newUser = this.fb.group({
       firstName: [

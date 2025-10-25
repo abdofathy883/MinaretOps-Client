@@ -49,10 +49,6 @@ export class TaskService {
     return this.api.get<ITask[]>(`${this.endpoint}/archived-tasks`);
   }
 
-  getById(taskId: number): Observable<ITask> {
-    return this.api.get<ITask>(`${this.endpoint}/task/${taskId}`);
-  }
-
   getTasksByEmployee(employeeId: string): Observable<ITask[]> {
     return this.api.get<ITask[]>(`${this.endpoint}/emp-tasks/${employeeId}`);
   }
@@ -80,10 +76,11 @@ export class TaskService {
   }
 
   archive(taskId: number): Observable<ITask> {
-    return this.api.patch<ITask>(
-      `${this.endpoint}/toggle-archive/${taskId}`,
-      null
-    );
+    return this.api.put<ITask>(`${this.endpoint}/archive-task/${taskId}`, null);
+  }
+
+  restore(taskId: number): Observable<ITask> {
+    return this.api.put<ITask>(`${this.endpoint}/restore-task/${taskId}`, null);
   }
 
   complete(
@@ -167,5 +164,9 @@ export class TaskService {
     }
 
     return this.api.get<PaginatedTaskResult>(url);
+  }
+
+  getTaskUnified(taskId: number, isArchived: boolean): Observable<ITask> {
+    return this.api.get<ITask>(`${this.endpoint}/task-unified/${taskId}/${isArchived}`);
   }
 }

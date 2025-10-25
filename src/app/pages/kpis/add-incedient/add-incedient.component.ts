@@ -9,8 +9,6 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { ICreateIncedint } from '../../../model/kpis/icreate-incedint';
-import { AlertService } from '../../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-add-incedient',
@@ -31,7 +29,6 @@ export class AddIncedientComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private kpiService: KpiService,
-    private alertService: AlertService,
     private fb: FormBuilder
   ) {}
 
