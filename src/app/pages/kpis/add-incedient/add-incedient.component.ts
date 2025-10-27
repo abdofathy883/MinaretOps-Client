@@ -9,6 +9,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { hasError } from '../../../services/helper-services/utils';
 
 @Component({
   selector: 'app-add-incedient',
@@ -80,6 +81,10 @@ export class AddIncedientComponent implements OnInit {
         this.showAlert('فشل اضافة المخالفة', 'error');
       }
     });
+  }
+
+  hasError(controlName: string): boolean {
+    return hasError(this.kpiForm, controlName);
   }
 
   showAlert(message: string, type: string) {

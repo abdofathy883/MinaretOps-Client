@@ -24,6 +24,7 @@
               id="aspect"
               class="form-select"
               formControlName="aspect"
+              [class.is-invalid]="hasError('aspect')"
             >
               <option disabled selected>choose</option>
               <option value="1">الالتزام</option>
@@ -41,6 +42,7 @@
               id="employee"
               formControlName="employeeId"
               class="form-select"
+              [class.is-invalid]="hasError('employeeId')"
             >
               <option disabled selected>اختر الموظف</option>
               @for (emp of employees; track $index) {
@@ -66,7 +68,7 @@
           </div>
           <div class="col-12 col-md-6 mb-3">
             <label for="date" class="form-label">تاريخ المخالفة</label>
-            <input type="date" name="date" id="date" class="form-control" formControlName="date">
+            <input type="date" name="date" id="date" class="form-control" formControlName="date" >
           </div>
         </div>
 

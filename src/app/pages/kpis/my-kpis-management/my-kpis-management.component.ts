@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './my-kpis-management.component.css',
 })
 export class MyKpisManagementComponent implements OnInit {
-  @Input() currentUserId!: string;
+  @Input() userId!: string;
   incedients: IIncedint[] = [];
   summary: IKpiSummary | null = null;
   selectedMonthYear: string = '';
@@ -26,7 +26,7 @@ export class MyKpisManagementComponent implements OnInit {
 
   loadSummaries(month?: number, year?: number): void {
     this.loading = true;
-    this.kpiService.getMySummary(this.currentUserId, month, year).subscribe({
+    this.kpiService.getMySummary(this.userId, month, year).subscribe({
       next: (response) => {
         this.loading = false;
         this.summary = response;
@@ -36,7 +36,7 @@ export class MyKpisManagementComponent implements OnInit {
 
   loadIncedients(month?: number, year?: number): void {
     this.loading = true;
-    this.kpiService.getIncidentsByEmpId(this.currentUserId, month, year).subscribe({
+    this.kpiService.getIncidentsByEmpId(this.userId, month, year).subscribe({
       next: (response) => {
         this.loading = false;
         this.incedients = response;

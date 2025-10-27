@@ -83,3 +83,28 @@ export enum LeaveType {
     Annual = 0,
     Sick = 1
 }
+
+
+// Dashboard
+
+export interface AttendanceDashboard {
+  currentlyActiveTotal: number;
+  currentlyActiveEmployees: ActiveEmployee[];
+  absentTotal: number;
+  absentEmployees: Employee[];
+  onLeaveTotal: number;
+  onLeaveEmployees: Employee[];
+}
+
+export interface ActiveEmployee {
+  employeeId: string;
+  employeeName: string;
+  isOnBreak: boolean;
+  clockInTime?: Date;
+  workingDuration?: string;
+}
+
+export interface Employee {
+  employeeId: string;
+  employeeName: string;
+}

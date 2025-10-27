@@ -18,7 +18,8 @@ import { ChangePassword, User } from '../../../model/auth/user';
   styleUrl: './update-profile.component.css',
 })
 export class UpdateProfileComponent implements OnInit {
-  @Input() currentUser!: User;
+  @Input() userId!: string;
+  currentUser!: User;
   isLoading: boolean = false;
   isPasswordLoading: boolean = false;
   profilePictureFile!: File;
@@ -37,7 +38,10 @@ export class UpdateProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.updateFormValues();
+    this.authService.getById(this.userId).subscribe(user => {
+      this.currentUser = user;
+      this.updateFormValues();
+    });
   }
 
   initializeForms(): void {

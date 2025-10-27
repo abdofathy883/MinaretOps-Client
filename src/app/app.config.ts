@@ -4,7 +4,7 @@ import {
   isDevMode,
   importProvidersFrom,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
@@ -18,7 +18,7 @@ import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(),
     ...(LoggerModule.forRoot({
       level: NgxLoggerLevel.DEBUG,          // console level

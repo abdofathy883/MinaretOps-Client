@@ -11,7 +11,7 @@ import { AddClientComponent } from './pages/clients/add-client/add-client.compon
 import { AllClientsComponent } from './pages/clients/all-clients/all-clients.component';
 import { SingleClientComponent } from './pages/clients/single-client/single-client.component';
 import { MyAccountComponent } from './pages/users/my-account/my-account.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { DashboardComponent } from './pages/reports/dashboard/dashboard.component';
 import { AllTasksComponent } from './pages/tasks/all-tasks/all-tasks.component';
 import { SingleTaskComponent } from './pages/tasks/single-task/single-task.component';
 import { authGuard } from './core/guards/auth.guard';
@@ -29,8 +29,8 @@ import { AllEntriesComponent } from './pages/contact/all-entries/all-entries.com
 import { SingleEntryComponent } from './pages/contact/single-entry/single-entry.component';
 import { KpisManagementComponent } from './pages/kpis/kpis-management/kpis-management.component';
 import { roleGuard } from './core/guards/role.guard';
-import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
-import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { AccessDeniedComponent } from './shared/access-denied/access-denied.component';
+import { NotFoundComponent } from './shared/not-found/not-found.component';
 import { ResetPasswordComponent } from './pages/users/reset-password/reset-password.component';
 import { AttendanceComponent } from './pages/attendance/attendance.component';
 import { SubmitLeaveRequestComponent } from './pages/leave-requests/submit-leave-request/submit-leave-request.component';
@@ -47,13 +47,12 @@ import { CategoryComponent } from './pages/blog/category/category.component';
 import { AllJdsComponent } from './pages/jds/all-jds/all-jds.component';
 import { AddJdComponent } from './pages/jds/add-jd/add-jd.component';
 import { SingleJdComponent } from './pages/jds/single-jd/single-jd.component';
+import { UpdateProfileComponent } from './pages/users/update-profile/update-profile.component';
+import { TaskDashboardComponent } from './pages/reports/task-dashboard/task-dashboard.component';
+import { AttendanceReportComponent } from './pages/reports/attendance-report/attendance-report.component';
+import { JdForEmpComponent } from './pages/jds/jd-for-emp/jd-for-emp.component';
 
 export const routes: Routes = [
-    // {
-    //     path: 'dashboard',
-    //     component: DashboardComponent,
-    //     canActivate: [noauthGuard]
-    // },
     {
         path: 'login',
         component: LoginComponent,
@@ -85,9 +84,11 @@ export const routes: Routes = [
         component: MyAccountComponent,
         canActivate: [noauthGuard], 
         children: [
-            { path: 'attendance', component: AttendanceComponent},
-            { path: 'leave-requests', component: SubmitLeaveRequestComponent},
-            { path: 'my-kpis', component: MyKpisManagementComponent}
+            { path: 'attendance/:userId', component: AttendanceComponent},
+            { path: 'leave-requests/:userId', component: SubmitLeaveRequestComponent},
+            { path: 'my-kpis/:userId', component: MyKpisManagementComponent},
+            { path: 'profile/:userId', component: UpdateProfileComponent},
+            { path: 'jd/:userId', component: JdForEmpComponent}
         ]
     },
     {
@@ -222,6 +223,15 @@ export const routes: Routes = [
         path: 'reset-password',
         component: ResetPasswordComponent,
         canActivate: [authGuard]
+    },
+    {
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate: [noauthGuard],
+        children: [
+            { path: 'task-report', component: TaskDashboardComponent },
+            { path: 'attendance-report', component: AttendanceReportComponent }
+        ]
     },
     {
         path: 'blog',

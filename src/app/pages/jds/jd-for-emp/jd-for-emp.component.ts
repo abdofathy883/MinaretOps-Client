@@ -11,7 +11,7 @@ import { forkJoin } from 'rxjs';
   styleUrl: './jd-for-emp.component.css'
 })
 export class JdForEmpComponent implements OnInit{
-  @Input() currentUserId: string = '';
+  @Input() userId: string = '';
   jd!: IJD | null;
   constructor(
     private jdService: JdService,
@@ -19,13 +19,18 @@ export class JdForEmpComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
+    console.log('userId received:', this.userId);
+  if (!this.userId) {
+    console.error('userId is empty or null!');
+    return;
+  }
     this.loadEmployeeJD();
   }
 
   private loadEmployeeJD(): void {
     // Load employee, roles list, and all JDs in parallel
     forkJoin({
-      user: this.authService.getById(this.currentUserId),
+      user: this.authService.getById(this.userId),
       roles: this.jdService.getAllRoles(),
       jds: this.jdService.getAll()
     }).subscribe({

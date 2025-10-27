@@ -40,141 +40,48 @@
   </div>
 </section>
 
-<!-- <ul class="nav nav-tabs">
-  <li><a routerLink="attendance" routerLinkActive="active" class="nav-link">الحضور</a></li>
-  <li><a routerLink="leave" routerLinkActive="active" class="nav-link">الاجازات</a></li>
-  <li><a routerLink="kpis" routerLinkActive="active" class="nav-link">KPIs</a></li>
-  <li><a routerLink="profile" routerLinkActive="active" class="nav-link">تعديل الحساب</a></li>
+<ul class="nav nav-tabs">
+  <li>
+    <a
+      [routerLink]="['attendance', currentUser.id]"
+      routerLinkActive="active"
+      class="nav-link"
+      >الحضور</a
+    >
+  </li>
+  <li>
+    <a
+      [routerLink]="['leave-requests', currentUser.id]"
+      routerLinkActive="active"
+      class="nav-link"
+      >الاجازات</a
+    >
+  </li>
+  <li>
+    <a
+      [routerLink]="['my-kpis', currentUser.id]"
+      routerLinkActive="active"
+      class="nav-link"
+      >KPIs</a
+    >
+  </li>
+  <li>
+    <a
+      [routerLink]="['profile', currentUser.id]"
+      routerLinkActive="active"
+      class="nav-link"
+      >تعديل الحساب</a
+    >
+  </li>
+  <!-- <li>
+    <a
+      [routerLink]="['jd', currentUser.id]"
+      routerLinkActive="active"
+      class="nav-link"
+      >المسئوليات الوظيفية</a
+    >
+  </li> -->
 </ul>
 
-<router-outlet></router-outlet> -->
-
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item" role="presentation">
-    <button
-      class="nav-link active tab-btn"
-      id="attendance-tab"
-      data-bs-toggle="tab"
-      data-bs-target="#attendance-tab-pane"
-      type="button"
-      role="tab"
-      aria-controls="attendance-tab-pane"
-      aria-selected="true"
-    >
-      الحضور
-    </button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button
-      class="nav-link tab-btn"
-      id="leave-requests-tab"
-      data-bs-toggle="tab"
-      data-bs-target="#leave-requests-tab-pane"
-      type="button"
-      role="tab"
-      aria-controls="leave-requests-tab-pane"
-      aria-selected="false"
-    >
-      الاجازات
-    </button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button
-      class="nav-link tab-btn"
-      id="kpis-tab"
-      data-bs-toggle="tab"
-      data-bs-target="#kpis-tab-pane"
-      type="button"
-      role="tab"
-      aria-controls="kpis-tab-pane"
-      aria-selected="false"
-    >
-      KPIs
-    </button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button
-      class="nav-link tab-btn"
-      id="profile-tab"
-      data-bs-toggle="tab"
-      data-bs-target="#profile-tab-pane"
-      type="button"
-      role="tab"
-      aria-controls="profile-tab-pane"
-      aria-selected="false"
-    >
-      تعديل بيانات الحساب
-    </button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button
-      class="nav-link tab-btn"
-      id="jd-tab"
-      data-bs-toggle="tab"
-      data-bs-target="#jd-tab-pane"
-      type="button"
-      role="tab"
-      aria-controls="jd-tab-pane"
-      aria-selected="false"
-    >
-      المسئوليات الوظيفية
-    </button>
-  </li>
-</ul>
-
-<div class="tab-content" id="myTabContent">
-  <div
-    class="tab-pane fade show active"
-    id="attendance-tab-pane"
-    role="tabpanel"
-    aria-labelledby="attendance-tab"
-    tabindex="0"
-  >
-    <app-attendance [currentUser]="currentUser"></app-attendance>
-  </div>
-  <div
-    class="tab-pane fade"
-    id="leave-requests-tab-pane"
-    role="tabpanel"
-    aria-labelledby="leave-requests-tab"
-    tabindex="0"
-  >
-    <app-submit-leave-request
-      [currentUser]="currentUser"
-    ></app-submit-leave-request>
-    <app-request-by-employee
-      [currentUserId]="currentUser.id"
-    ></app-request-by-employee>
-  </div>
-  <div
-    class="tab-pane fade"
-    id="kpis-tab-pane"
-    role="tabpanel"
-    aria-labelledby="kpis-tab"
-    tabindex="0"
-  >
-    <app-my-kpis-management
-      [currentUserId]="currentUser.id"
-    ></app-my-kpis-management>
-  </div>
-  <div
-    class="tab-pane fade"
-    id="profile-tab-pane"
-    role="tabpanel"
-    aria-labelledby="profile-tab"
-    tabindex="0"
-  >
-    <app-update-profile [currentUser]="currentUser"></app-update-profile>
-  </div>
-  <div
-    class="tab-pane fade"
-    id="jd-tab-pane"
-    role="tabpanel"
-    aria-labelledby="jd-tab"
-    tabindex="0"
-  >
-    <app-jd-for-emp [currentUserId]="currentUser.id"></app-jd-for-emp>
-  </div>
-</div>
-
+<router-outlet></router-outlet>
 }

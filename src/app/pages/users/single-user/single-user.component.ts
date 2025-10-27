@@ -1,5 +1,5 @@
-import { AttendanceComponent } from './../../attendance/attendance.component';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {  } from './../../attendance/attendance.component';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -7,23 +7,21 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { UpdateUser, User } from '../../../model/auth/user';
+import { User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
-import { AttendanceService } from '../../../services/attendance/attendance.service';
 import { AttendanceRecord } from '../../../model/attendance-record/attendance-record';
-import { MyKpisManagementComponent } from '../../kpis/my-kpis-management/my-kpis-management.component';
-import { AlertService } from '../../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-single-user',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MyKpisManagementComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './single-user.component.html',
   styleUrl: './single-user.component.css',
 })
 export class SingleUserComponent implements OnInit, OnDestroy {
+  @Input() id!: string;
   user!: User;
   attendanceRecords: AttendanceRecord[] = [];
   isLoading = false;
@@ -43,9 +41,6 @@ export class SingleUserComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private alertService: AlertService,
-    private route: ActivatedRoute,
-    private attendanceService: AttendanceService,
     private router: Router,
     private fb: FormBuilder
   ) {
@@ -64,17 +59,9 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadAttendance(empId: string) {
-    this.attendanceService.getAttendanceByEmployeeId(empId).subscribe({
-      next: (response) => {
-        this.attendanceRecords = response;
-      },
-    });
-  }
-
   ngOnInit(): void {
     this.loadUser();
-    this.currentLoggedInUserId = this.authService.getCurrentUserId();
+    // this.currentLoggedInUserId = this.authService.getCurrentUserId();
     this.authService.isAdmin().subscribe((isAdmin) => {
       if (isAdmin) {
         this.isUserAdmin = true;
@@ -93,21 +80,20 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   }
 
   loadUser(): void {
-    const userId = this.route.snapshot.paramMap.get('id');
-    if (!userId) {
+    // const userId = this.route.snapshot.paramMap.get('id');
+    if (!this.id) {
       this.showAlert('معرف المستخدم غير صالح', 'error');
       return;
     }
 
     this.authService
-      .getById(userId)
+      .getById(this.id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (user) => {
           this.user = user;
           this.populateForm(user);
           this.isLoading = false;
-          this.loadAttendance(userId);
         },
         error: (error) => {
           this.showAlert(
@@ -161,16 +147,16 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     }
   }
 
-  getRoleDisplayName(roleValue: string): string {
-    switch (roleValue) {
-      case '1':
-        return 'مدير';
-      case '2':
-        return 'موظف';
-      default:
-        return 'غير محدد';
-    }
-  }
+  // getRoleDisplayName(roleValue: string): string {
+  //   switch (roleValue) {
+  //     case '1':
+  //       return 'مدير';
+  //     case '2':
+  //       return 'موظف';
+  //     default:
+  //       return 'غير محدد';
+  //   }
+  // }
 
   toggleEditMode(): void {
     this.isEditMode = true;
@@ -244,23 +230,23 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     });
   }
 
-  private passwordMatchValidator(
-    form: FormGroup
-  ): { [key: string]: any } | null {
-    const password = form.get('password');
-    const confirmPassword = form.get('confirmPassword');
+  // private passwordMatchValidator(
+  //   form: FormGroup
+  // ): { [key: string]: any } | null {
+  //   const password = form.get('password');
+  //   const confirmPassword = form.get('confirmPassword');
 
-    if (password && confirmPassword) {
-      if (password.value && !confirmPassword.value) {
-        return { passwordMismatch: true };
-      }
-      if (password.value !== confirmPassword.value) {
-        return { passwordMismatch: true };
-      }
-    }
+  //   if (password && confirmPassword) {
+  //     if (password.value && !confirmPassword.value) {
+  //       return { passwordMismatch: true };
+  //     }
+  //     if (password.value !== confirmPassword.value) {
+  //       return { passwordMismatch: true };
+  //     }
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 
   // Helper method to check if a form control has a specific error
   hasError(controlName: string, errorType: string): boolean {

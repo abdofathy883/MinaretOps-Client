@@ -1,13 +1,10 @@
-import { AlertService } from './../../../services/helper-services/alert.service';
 import { Component, Input, OnInit } from '@angular/core';
-import { User } from '../../../model/auth/user';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { NewLeaveRequest } from '../../../model/attendance-record/attendance-record';
 import { LeaveRequestService } from '../../../services/leave-request/leave-request.service';
 import { hasError } from '../../../services/helper-services/utils';
 
@@ -18,7 +15,7 @@ import { hasError } from '../../../services/helper-services/utils';
   styleUrl: './submit-leave-request.component.css',
 })
 export class SubmitLeaveRequestComponent implements OnInit {
-  @Input() currentUser!: User;
+  @Input() userId: string = '';
   today: string = new Date().toISOString().split('T')[0];
   leaveRequestForm!: FormGroup;
   isLoading: boolean = false;
@@ -30,13 +27,12 @@ export class SubmitLeaveRequestComponent implements OnInit {
 
   constructor(
     private leaveRequestService: LeaveRequestService,
-    private alertService: AlertService,
     private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
     this.leaveRequestForm = this.fb.group({
-      employeeId: [''],
+      employeeId: [this.userId, Validators.required],
       fromDate: ['', Validators.required],
       toDate: ['', Validators.required],
       type: ['0', Validators.required],
@@ -59,7 +55,7 @@ export class SubmitLeaveRequestComponent implements OnInit {
     }
     this.isLoading = true;
     const formData: FormData = new FormData();
-    formData.append('employeeId', this.currentUser.id);
+    formData.append('employeeId', this.leaveRequestForm.value.employeeId);
     formData.append('fromDate', this.leaveRequestForm.value.fromDate);
     formData.append('toDate', this.leaveRequestForm.value.toDate);
     formData.append('type', this.leaveRequestForm.value.type);

@@ -5,13 +5,10 @@ import {
   BreakPeriod,
   NewAttendanceRecord,
 } from '../../model/attendance-record/attendance-record';
-import { User } from '../../model/auth/user';
 import { AttendanceService } from '../../services/attendance/attendance.service';
-import { LogService } from '../../services/logging/log.service';
-import { map, Observable, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { FingerPrientService } from '../../services/finger-prient/finger-prient.service';
-import { AlertService } from '../../services/helper-services/alert.service';
 
 @Component({
   selector: 'app-attendance',
@@ -20,7 +17,7 @@ import { AlertService } from '../../services/helper-services/alert.service';
   styleUrl: './attendance.component.css',
 })
 export class AttendanceComponent {
-  @Input() currentUser: User | null = null;
+  @Input() userId: string = '';
   currentTime = new Date();
 
   todayRecord: AttendanceRecord | null = null;
@@ -38,29 +35,20 @@ export class AttendanceComponent {
 
   constructor(
     private attendanceService: AttendanceService,
-    private alertService: AlertService,
     private fp: FingerPrientService,
-    private logger: LogService
   ) {}
 
   ngOnInit() {
     this.startTimeUpdate();
-    setTimeout(() => {
-      if (this.currentUser) {
-        this.loadToadayAttendance(this.currentUser.id);
-      }
-    }, 1500);
+    this.loadToadayAttendance(this.userId);
 
     this.getFingerPrient();
     this.getIpAddress().subscribe((ip) => {
       this.ipAddress = ip;
-      this.logger.log('info', 'Current IP Address: ', ip);
     });
 
     // Load active break
-    if (this.currentUser) {
-      this.loadActiveBreak(this.currentUser.id);
-    }
+    this.loadActiveBreak(this.userId);
   }
 
   calculateWorkDuration(clockIn: Date, clockOut: Date): string {
@@ -91,9 +79,6 @@ export class AttendanceComponent {
     this.attendanceService.getTodayAttendanceByEmployeeId(empId).subscribe({
       next: (response) => {
         this.todayRecord = response;
-        console.log(this.todayRecord)
-        console.log(response);
-        this.logger.log('Getting Today Attendance For Employee:', empId);
       },
     });
   }
@@ -149,7 +134,7 @@ export class AttendanceComponent {
 
   onCheckIn() {
     const checkInData: NewAttendanceRecord = {
-      employeeId: this.currentUser!.id,
+      employeeId: this.userId,
       deviceId: this.deviceID,
       ipAddress: this.ipAddress,
     };
@@ -157,20 +142,10 @@ export class AttendanceComponent {
     this.attendanceService.checkIn(checkInData).subscribe({
       next: (response) => {
         this.todayRecord = response;
-        this.logger.log(
-          'info',
-          'Sent Attendance Record and Got Response: ',
-          response
-        );
         this.showAlert('تم تسجيل الحضور بنجاح', 'success');
         this.isProcessing = false;
       },
       error: (error) => {
-        this.logger.log(
-          'error',
-          'Sent Attendance Record and Got Error Response: ',
-          error
-        );
         this.showAlert(error.error, 'error');
         this.isProcessing = false;
       },
@@ -178,15 +153,14 @@ export class AttendanceComponent {
   }
 
   onClockOut() {
-    if (!this.currentUser?.id) {
+    if (!this.userId) {
       this.isProcessing = false;
       return;
     }
 
-    this.attendanceService.clockOut(this.currentUser.id).subscribe({
+    this.attendanceService.clockOut(this.userId).subscribe({
       next: (response) => {
         this.todayRecord = response;
-        console.log(response);
         this.showAlert('تم تسجيل الانصراف', 'success');
         this.isProcessing = false;
       },
@@ -202,16 +176,10 @@ export class AttendanceComponent {
       fetch('https://api.ipify.org?format=json')
         .then((response) => response.json())
         .then((data) => {
-          this.logger.log(
-            'debug',
-            'Check In From Get Network IP Method with ip: ',
-            data.ip
-          );
           observer.next(data.ip);
           observer.complete();
         })
         .catch((error) => {
-          this.logger.log('error', 'Error Getting IP Address');
           observer.next('127.0.0.1'); // Fallback
           observer.complete();
         });
@@ -235,10 +203,8 @@ export class AttendanceComponent {
     this.attendanceService.getActiveBreak(empId).subscribe({
       next: (response) => {
         this.activeBreak = response;
-        console.log('Active break:', response);
       },
       error: (error) => {
-        console.error('Error loading active break:', error);
         this.activeBreak = null;
       }
     });
@@ -284,12 +250,12 @@ export class AttendanceComponent {
   }
 
   startBreak() {
-    if (!this.currentUser?.id) {
+    if (!this.userId) {
       this.isBreakProcessing = false;
       return;
     }
 
-    this.attendanceService.startBreak(this.currentUser.id).subscribe({
+    this.attendanceService.startBreak(this.userId).subscribe({
       next: (response) => {
         this.activeBreak = response;
         this.showAlert('تم بدء الاستراحة', 'success');
@@ -303,16 +269,16 @@ export class AttendanceComponent {
   }
 
   endBreak() {
-    if (!this.currentUser?.id) {
+    if (!this.userId) {
       this.isBreakProcessing = false;
       return;
     }
 
-    this.attendanceService.endBreak(this.currentUser.id).subscribe({
+    this.attendanceService.endBreak(this.userId).subscribe({
       next: (response) => {
         this.activeBreak = null;
         // Refresh today's attendance to get updated break periods
-        this.loadToadayAttendance(this.currentUser!.id);
+        this.loadToadayAttendance(this.userId);
         this.showAlert('تم إنهاء الاستراحة', 'success');
         this.isBreakProcessing = false;
       },
