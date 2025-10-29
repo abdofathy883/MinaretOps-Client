@@ -5,8 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
   CustomTaskStatus,
+  ICreateTaskComment,
   ICreateTaskResources,
   ITask,
+  ITaskComment,
   IUpdateTask,
   TaskType,
 } from '../../../model/task/task';
@@ -15,6 +17,7 @@ import {
   FormArray,
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -35,7 +38,8 @@ import { TaskShimmerComponent } from "../../../shared/task-shimmer/task-shimmer.
     MapTaskStatusClassPipe,
     MapTaskPriorityPipe,
     MapTaskTypePipe,
-    TaskShimmerComponent
+    TaskShimmerComponent,
+    FormsModule
 ],
   templateUrl: './single-task.component.html',
   styleUrl: './single-task.component.css',
@@ -63,7 +67,8 @@ export class SingleTaskComponent implements OnInit {
   completeTaskForm!: FormGroup;
   isCompletingTask: boolean = false;
 
-  currentTime: Date = new Date();
+  newComment: string = '';
+  isSubmittingComment: boolean = false;
 
   availableStatuses = [
     { value: CustomTaskStatus.Open, label: 'لم تبدأ', icon: 'bi bi-clock' },
@@ -488,5 +493,46 @@ export class SingleTaskComponent implements OnInit {
     
     // If task is not completed and deadline has passed
     return 'bi bi-x-circle';
+  }
+
+  addComment() {
+    if (!this.newComment || this.newComment.trim() === '') {
+      return;
+    }
+
+    this.isSubmittingComment = true;
+    
+    const commentData: ICreateTaskComment = {
+      taskId: this.task.id,
+      employeeId: this.currentUserId,
+      comment: this.newComment.trim()
+    };
+
+    this.taskService.addComment(commentData).subscribe({
+      next: (response) => {
+        // Add the new comment to the task's comments array
+        if (!this.task.taskComments) {
+          this.task.taskComments = [];
+        }
+        
+        // Map the response to match ITaskComment interface
+        const newComment: ITaskComment = {
+          employeeId: response.employeeId,
+          employeeName: response.employeeName || 'غير معروف',
+          comment: response.comment,
+          taskId: response.taskId,
+          createdAt: response.createdAt
+        };
+        
+        this.task.taskComments.push(newComment);
+        this.newComment = '';
+        this.isSubmittingComment = false;
+        this.showAlert('تم إضافة التعليق بنجاح', 'success');
+      },
+      error: (error) => {
+        this.isSubmittingComment = false;
+        this.showAlert(error.error || 'حدث خطأ أثناء إضافة التعليق', 'error');
+      }
+    });
   }
 }

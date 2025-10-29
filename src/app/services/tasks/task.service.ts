@@ -4,9 +4,11 @@ import { Observable } from 'rxjs';
 import {
   CustomTaskStatus,
   ICreateTask,
+  ICreateTaskComment,
   ICreateTaskGroup,
   ICreateTaskResources,
   ITask,
+  ITaskComment,
   ITaskGroup,
   IUpdateTask,
   PaginatedTaskResult,
@@ -168,5 +170,9 @@ export class TaskService {
 
   getTaskUnified(taskId: number, isArchived: boolean): Observable<ITask> {
     return this.api.get<ITask>(`${this.endpoint}/task-unified/${taskId}/${isArchived}`);
+  }
+
+  addComment(comment: ICreateTaskComment) : Observable<ITaskComment>{
+    return this.api.post<ITaskComment>(`${this.endpoint}/new-comment`, comment);
   }
 }

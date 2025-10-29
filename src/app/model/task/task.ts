@@ -20,6 +20,7 @@ export interface ITask {
   isCompletedOnDeadline: boolean;
   taskHistory: ITaskHistory[];
   taskResources: ITaskResources[];
+  taskComments: ITaskComment[];
   completionNotes: string;
   createdAt: Date;
 }
@@ -239,4 +240,18 @@ export interface PaginatedTaskResult {
   pageNumber: number;
   pageSize: number;
   totalPages: number;
+}
+
+export interface ICreateTaskComment {
+  employeeId: string;
+  taskId: number;
+  comment: string;
+}
+
+export interface ITaskComment {
+  employeeId: string;
+  employeeName: string;
+  comment: string;
+  taskId: number;
+  createdAt: Date;
 }
