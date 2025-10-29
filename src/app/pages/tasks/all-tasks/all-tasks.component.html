@@ -133,20 +133,20 @@
           </select>
         </div>
         <!-- Add the team filter back to the filters section -->
-<div class="col-6 col-lg-2 mb-2 mb-lg-0">
-  <label for="team" class="form-label">الفريق</label>
-  <select
-    name="team"
-    id="team"
-    class="form-select"
-    formControlName="team"
-  >
-    <option value="">جميع الفرق</option>
-    @for (teamMapping of taskTeams; track teamMapping.team) {
-    <option [value]="teamMapping.team">{{ teamMapping.name }}</option>
-    }
-  </select>
-</div>
+        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+          <label for="team" class="form-label">الفريق</label>
+          <select
+            name="team"
+            id="team"
+            class="form-select"
+            formControlName="team"
+          >
+            <option value="">جميع الفرق</option>
+            @for (teamMapping of taskTeams; track teamMapping.team) {
+            <option [value]="teamMapping.team">{{ teamMapping.name }}</option>
+            }
+          </select>
+        </div>
         <div class="col">
           <br />
           <button class="add-btn w-100 mt-1" (click)="clearSearch()">
@@ -210,15 +210,24 @@
         style="cursor: pointer"
       >
         <!-- Status ribbon -->
-        
-        @if (task.isCompletedOnDeadline) {
-          
+
+        <!-- @if (task.isCompletedOnDeadline) {
+          <div class="status-ribbon" [ngClass]="task.status | mapTaskStatusClass">
+            {{ (task.status | mapTaskStatus) }}
+          </div>
         } @else if (!task.isCompletedOnDeadline) {
           <div class="status-ribbon" [ngClass]="task.status | mapTaskStatusClass">
             {{ (task.status | mapTaskStatus) + ' - متأخر' }}
           </div>
-          
-        }
+        } -->
+
+        <!-- Status ribbon -->
+        <div class="status-ribbon" [ngClass]="task.status | mapTaskStatusClass">
+          {{
+            (task.status | mapTaskStatus) +
+              (isCompletedAfterDeadline(task) ? " - متأخر" : "")
+          }}
+        </div>
 
         <div class="card-body">
           <!-- Top row: Priority + ID -->
@@ -244,11 +253,13 @@
           <h5 class="card-title text-center mt-2 mb-2 text-truncate-2">
             {{ task.title }}
           </h5>
-          <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
-              <i class="bi bi-diagram-3"></i>
-              <span class="text-muted">النوع:</span>
-              <span class="fw-medium">{{ getTypeLabel(task.taskType) }}</span>
-            </div>
+          <div
+            class="d-flex align-items-center justify-content-center gap-2 mb-2"
+          >
+            <i class="bi bi-diagram-3"></i>
+            <span class="text-muted">النوع:</span>
+            <span class="fw-medium">{{ getTypeLabel(task.taskType) }}</span>
+          </div>
 
           <!-- Description -->
           <p class="card-text text-center text-muted text-truncate-3">
@@ -257,7 +268,6 @@
 
           <!-- Meta grid -->
           <div class="mt-2 small">
-            
             <div class="d-flex align-items-center gap-2 mb-2">
               <i class="bi bi-person-badge"></i>
               <span class="text-muted">الموظف:</span>

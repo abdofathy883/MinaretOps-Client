@@ -51,6 +51,7 @@ import { UpdateProfileComponent } from './pages/users/update-profile/update-prof
 import { TaskDashboardComponent } from './pages/reports/task-dashboard/task-dashboard.component';
 import { AttendanceReportComponent } from './pages/reports/attendance-report/attendance-report.component';
 import { JdForEmpComponent } from './pages/jds/jd-for-emp/jd-for-emp.component';
+import { TaskEmpReportComponent } from './pages/reports/task-emp-report/task-emp-report.component';
 
 export const routes: Routes = [
     {
@@ -230,7 +231,8 @@ export const routes: Routes = [
         canActivate: [noauthGuard],
         children: [
             { path: 'task-report', component: TaskDashboardComponent },
-            { path: 'attendance-report', component: AttendanceReportComponent }
+            { path: 'attendance-report', component: AttendanceReportComponent },
+            { path: 'task-emp-report', component: TaskEmpReportComponent}
         ]
     },
     {

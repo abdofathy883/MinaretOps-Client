@@ -5,7 +5,7 @@ import { User } from '../../../model/auth/user';
 import { LightWieghtClient } from '../../../model/client/client';
 import { ServicesService } from '../../../services/services/services.service';
 import { ClientService } from '../../../services/clients/client.service';
-import { ITask, TaskType, TaskFilter, PaginatedTaskResult, TASK_TEAM_MAPPINGS } from '../../../model/task/task';
+import { ITask, TaskType, TaskFilter, PaginatedTaskResult, TASK_TEAM_MAPPINGS, CustomTaskStatus } from '../../../model/task/task';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TaskService } from '../../../services/tasks/task.service';
 import { Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
 
 @Component({
   selector: 'app-all-tasks',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, MapTaskStatusClassPipe, MapTaskStatusPipe, ShimmerComponent, DatePipe],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, ShimmerComponent, DatePipe, MapTaskStatusClassPipe, MapTaskStatusPipe],
   templateUrl: './all-tasks.component.html',
   styleUrl: './all-tasks.component.css',
 })
@@ -310,4 +310,10 @@ export class AllTasksComponent implements OnInit {
         return 'غير محدد';
     }
   }
+
+  isCompletedAfterDeadline(task: ITask): boolean {
+  return task.status === CustomTaskStatus.Completed &&
+         task.completedAt != null &&
+         new Date(task.completedAt) > new Date(task.deadline);
+}
 }
