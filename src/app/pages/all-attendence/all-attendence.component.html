@@ -115,6 +115,13 @@
         <td data-cell="اليوم">{{ record.workDate | date : "shortDate" }}</td>
         <td data-cell="وقت الحضور">
           {{ record.clockIn | date : "shortTime" }}
+          @if (record.icClockedInAfterSchedule) {
+          <span
+            class="badge bg-warning text-dark ms-1"
+            title="حضور بعد الموعد المحدد"
+            >!</span
+          >
+          }
         </td>
         <td data-cell="وقت الانصراف">
           {{ record.clockOut | date : "shortTime" }}
@@ -137,6 +144,13 @@
               class="badge bg-warning text-dark ms-1"
               title="لم يسجل الانصراف"
               >⚠</span
+            >
+            }
+            @if (record.status === 1) {
+            <span
+              class="badge bg-danger ms-1"
+              title="غياب"
+              >!</span
             >
             }
           </span>
