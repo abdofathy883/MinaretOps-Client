@@ -311,7 +311,7 @@ export class AllTasksComponent implements OnInit {
     }
   }
 
-  isCompletedAfterDeadline(task: ITask): boolean {
+  isCompletedAfterDeadline(task: ILightWieghtTask): boolean {
   return task.status === CustomTaskStatus.Completed &&
          task.completedAt != null &&
          new Date(task.completedAt) > new Date(task.deadline);

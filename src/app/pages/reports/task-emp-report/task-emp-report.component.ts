@@ -9,7 +9,7 @@ import { ReportingService } from '../../../services/reporting/reporting.service'
 
 @Component({
   selector: 'app-task-emp-report',
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule],
   templateUrl: './task-emp-report.component.html',
   styleUrl: './task-emp-report.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
