@@ -1,7 +1,7 @@
 <div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">تقرير المهام والموظفين - اليوم</h2>
-    <button class="btn btn-primary" (click)="loadDashboard()" [disabled]="loading">
+    <button class="btn btn-primary" (click)="loadReport()" [disabled]="loading">
       <i class="bi bi-arrow-clockwise"></i> تحديث
     </button>
   </div>
@@ -56,9 +56,7 @@
                     </div>
                   </div>
                   <div class="d-flex align-items-center">
-                    @if (employee.tasksLoaded) {
-                      <span class="badge bg-secondary me-2">{{ employee.tasks.length }} مهمة</span>
-                    }
+                    <span class="badge bg-secondary me-2">{{ employee.tasks.length }} مهمة</span>
                     <i 
                       class="bi"
                       [class.bi-chevron-down]="!isExpanded(employee.employeeId)"
@@ -69,19 +67,12 @@
 
                 @if (isExpanded(employee.employeeId)) {
                   <div class="employee-tasks p-3 border-top">
-                    @if (employee.tasksLoading) {
-                      <div class="text-center py-3">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status">
-                          <span class="visually-hidden">جاري التحميل...</span>
-                        </div>
-                      </div>
-                    }
-                    @if (!employee.tasksLoading && employee.tasks.length === 0) {
+                    @if (employee.tasks.length === 0) {
                       <div class="text-center text-muted py-3">
                         لا توجد مهام لهذا الموظف اليوم
                       </div>
                     }
-                    @if (!employee.tasksLoading && employee.tasks.length > 0) {
+                    @if (employee.tasks.length > 0) {
                       <div class="table-responsive">
                         <table class="table table-sm table-hover">
                           <thead>
@@ -94,7 +85,7 @@
                           </thead>
                           <tbody>
                             @for (task of employee.tasks; track trackByTaskId($index, task)) {
-                              <tr [class.table-warning]="isDeadlinePassed(task.deadline, task.status)">
+                              <tr>
                                 <td>
                                   <div class="fw-bold">{{ task.title }}</div>
                                   @if (task.description) {
@@ -106,11 +97,8 @@
                                     {{ getTaskStatusText(task.status) }}
                                   </span>
                                 </td>
-                                <td [class.text-danger]="isDeadlinePassed(task.deadline, task.status)">
+                                <td>
                                   {{ formatDeadline(task.deadline) }}
-                                  @if (isDeadlinePassed(task.deadline, task.status)) {
-                                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
-                                  }
                                 </td>
                                 <td>
                                   <span class="badge bg-info">{{ task.priority }}</span>
@@ -159,9 +147,7 @@
                     </div>
                   </div>
                   <div class="d-flex align-items-center">
-                    @if (employee.tasksLoaded) {
-                      <span class="badge bg-secondary me-2">{{ employee.tasks.length }} مهمة</span>
-                    }
+                    <span class="badge bg-secondary me-2">{{ employee.tasks.length }} مهمة</span>
                     <i 
                       class="bi"
                       [class.bi-chevron-down]="!isExpanded(employee.employeeId)"
@@ -172,15 +158,10 @@
 
                 @if (isExpanded(employee.employeeId)) {
                   <div class="employee-tasks p-3 border-top">
-                    @if (employee.tasksLoading) {
-                      <div class="text-center py-3">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                      </div>
-                    }
-                    @if (!employee.tasksLoading && employee.tasks.length === 0) {
+                    @if (employee.tasks.length === 0) {
                       <div class="text-center text-muted py-3">لا توجد مهام لهذا الموظف اليوم</div>
                     }
-                    @if (!employee.tasksLoading && employee.tasks.length > 0) {
+                    @if (employee.tasks.length > 0) {
                       <div class="table-responsive">
                         <table class="table table-sm table-hover">
                           <thead>
@@ -193,7 +174,7 @@
                           </thead>
                           <tbody>
                             @for (task of employee.tasks; track trackByTaskId($index, task)) {
-                              <tr [class.table-warning]="isDeadlinePassed(task.deadline, task.status)">
+                              <tr>
                                 <td>
                                   <div class="fw-bold">{{ task.title }}</div>
                                   @if (task.description) {
@@ -205,11 +186,8 @@
                                     {{ getTaskStatusText(task.status) }}
                                   </span>
                                 </td>
-                                <td [class.text-danger]="isDeadlinePassed(task.deadline, task.status)">
+                                <td>
                                   {{ formatDeadline(task.deadline) }}
-                                  @if (isDeadlinePassed(task.deadline, task.status)) {
-                                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
-                                  }
                                 </td>
                                 <td><span class="badge bg-info">{{ task.priority }}</span></td>
                               </tr>
@@ -253,9 +231,7 @@
                     <div class="fw-bold fs-5">{{ employee.employeeName }}</div>
                   </div>
                   <div class="d-flex align-items-center">
-                    @if (employee.tasksLoaded) {
-                      <span class="badge bg-secondary me-2">{{ employee.tasks.length }} مهمة</span>
-                    }
+                    <span class="badge bg-secondary me-2">{{ employee.tasks.length }} مهمة</span>
                     <i 
                       class="bi"
                       [class.bi-chevron-down]="!isExpanded(employee.employeeId)"
@@ -266,15 +242,10 @@
 
                 @if (isExpanded(employee.employeeId)) {
                   <div class="employee-tasks p-3 border-top">
-                    @if (employee.tasksLoading) {
-                      <div class="text-center py-3">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                      </div>
-                    }
-                    @if (!employee.tasksLoading && employee.tasks.length === 0) {
+                    @if (employee.tasks.length === 0) {
                       <div class="text-center text-muted py-3">لا توجد مهام لهذا الموظف اليوم</div>
                     }
-                    @if (!employee.tasksLoading && employee.tasks.length > 0) {
+                    @if (employee.tasks.length > 0) {
                       <div class="table-responsive">
                         <table class="table table-sm table-hover">
                           <thead>
@@ -287,7 +258,7 @@
                           </thead>
                           <tbody>
                             @for (task of employee.tasks; track trackByTaskId($index, task)) {
-                              <tr [class.table-warning]="isDeadlinePassed(task.deadline, task.status)">
+                              <tr>
                                 <td>
                                   <div class="fw-bold">{{ task.title }}</div>
                                   @if (task.description) {
@@ -299,105 +270,8 @@
                                     {{ getTaskStatusText(task.status) }}
                                   </span>
                                 </td>
-                                <td [class.text-danger]="isDeadlinePassed(task.deadline, task.status)">
-                                  {{ formatDeadline(task.deadline) }}
-                                  @if (isDeadlinePassed(task.deadline, task.status)) {
-                                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
-                                  }
-                                </td>
-                                <td><span class="badge bg-info">{{ task.priority }}</span></td>
-                              </tr>
-                            }
-                          </tbody>
-                        </table>
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
-            }
-          </div>
-        </div>
-      </div>
-
-      <!-- On Leave Employees -->
-      <div class="col-12">
-        <div class="card shadow-sm">
-          <div class="card-header bg-info text-white">
-            <h5 class="mb-0">
-              <i class="bi bi-calendar-check-fill"></i> في إجازة
-              <span class="badge bg-light text-dark ms-2">{{ onLeaveEmployees.length }}</span>
-            </h5>
-          </div>
-          <div class="card-body">
-            @if (onLeaveEmployees.length === 0) {
-              <div class="text-center text-muted py-3">
-                لا يوجد موظفين في إجازة
-              </div>
-            }
-            @for (employee of onLeaveEmployees; track trackByEmployeeId($index, employee)) {
-              <div class="employee-card mb-3 border rounded">
-                <div 
-                  class="employee-header p-3 d-flex justify-content-between align-items-center cursor-pointer"
-                  (click)="toggleEmployee(employee.employeeId)"
-                  [class.bg-light]="isExpanded(employee.employeeId)"
-                >
-                  <div class="d-flex align-items-center flex-grow-1">
-                    <span class="status-circle status-leave me-3"></span>
-                    <div class="fw-bold fs-5">{{ employee.employeeName }}</div>
-                  </div>
-                  <div class="d-flex align-items-center">
-                    @if (employee.tasksLoaded) {
-                      <span class="badge bg-secondary me-2">{{ employee.tasks.length }} مهمة</span>
-                    }
-                    <i 
-                      class="bi"
-                      [class.bi-chevron-down]="!isExpanded(employee.employeeId)"
-                      [class.bi-chevron-up]="isExpanded(employee.employeeId)"
-                    ></i>
-                  </div>
-                </div>
-
-                @if (isExpanded(employee.employeeId)) {
-                  <div class="employee-tasks p-3 border-top">
-                    @if (employee.tasksLoading) {
-                      <div class="text-center py-3">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                      </div>
-                    }
-                    @if (!employee.tasksLoading && employee.tasks.length === 0) {
-                      <div class="text-center text-muted py-3">لا توجد مهام لهذا الموظف اليوم</div>
-                    }
-                    @if (!employee.tasksLoading && employee.tasks.length > 0) {
-                      <div class="table-responsive">
-                        <table class="table table-sm table-hover">
-                          <thead>
-                            <tr>
-                              <th>المهمة</th>
-                              <th>الحالة</th>
-                              <th>الموعد النهائي</th>
-                              <th>الأولوية</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            @for (task of employee.tasks; track trackByTaskId($index, task)) {
-                              <tr [class.table-warning]="isDeadlinePassed(task.deadline, task.status)">
                                 <td>
-                                  <div class="fw-bold">{{ task.title }}</div>
-                                  @if (task.description) {
-                                    <small class="text-muted">{{ task.description | slice:0:50 }}...</small>
-                                  }
-                                </td>
-                                <td>
-                                  <span [ngClass]="getTaskStatusClass(task.status)">
-                                    {{ getTaskStatusText(task.status) }}
-                                  </span>
-                                </td>
-                                <td [class.text-danger]="isDeadlinePassed(task.deadline, task.status)">
                                   {{ formatDeadline(task.deadline) }}
-                                  @if (isDeadlinePassed(task.deadline, task.status)) {
-                                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
-                                  }
                                 </td>
                                 <td><span class="badge bg-info">{{ task.priority }}</span></td>
                               </tr>

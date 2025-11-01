@@ -25,6 +25,22 @@ export interface ITask {
   createdAt: Date;
 }
 
+export interface ILightWieghtTask {
+  id: number;
+  title: string;
+  taskType: TaskType;
+  description: string;
+  status: CustomTaskStatus;
+  deadline: Date;
+  priority: string;
+  completedAt?: Date;
+  isCompletedOnDeadline: boolean;
+  employeeName: string;
+  serviceName: string;
+  clientName: string;
+  createdAt: Date;
+}
+
 export enum CustomTaskStatus {
   Open = 0,
   Acknowledged = 1,

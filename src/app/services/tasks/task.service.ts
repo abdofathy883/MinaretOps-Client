@@ -7,6 +7,7 @@ import {
   ICreateTaskComment,
   ICreateTaskGroup,
   ICreateTaskResources,
+  ILightWieghtTask,
   ITask,
   ITaskComment,
   ITaskGroup,
@@ -51,8 +52,8 @@ export class TaskService {
     return this.api.get<ITask[]>(`${this.endpoint}/archived-tasks`);
   }
 
-  getTasksByEmployee(employeeId: string): Observable<ITask[]> {
-    return this.api.get<ITask[]>(`${this.endpoint}/emp-tasks/${employeeId}`);
+  getTasksByEmployee(employeeId: string): Observable<ILightWieghtTask[]> {
+    return this.api.get<ILightWieghtTask[]>(`${this.endpoint}/emp-tasks/${employeeId}`);
   }
 
   update(
@@ -125,8 +126,8 @@ export class TaskService {
     );
   }
 
-  searchTasks(query: string, currentUserId: string): Observable<ITask[]> {
-    return this.api.get<ITask[]>(
+  searchTasks(query: string, currentUserId: string): Observable<ILightWieghtTask[]> {
+    return this.api.get<ILightWieghtTask[]>(
       `${this.endpoint}/search/${query}/${currentUserId}`
     );
   }
