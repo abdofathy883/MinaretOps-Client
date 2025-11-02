@@ -107,7 +107,7 @@
    } @if (isEditMode) {
   <!-- Edit Mode -->
   <div>
-    <form [formGroup]="editUserForm" (ngSubmit)="saveUser()">
+    <form [formGroup]="editUserForm" enctype="multipart/form-data" (ngSubmit)="saveUser()">
       <div class="card shadow-sm">
         <div class="card-header bg-warning text-dark">
           <h5 class="mb-0">
@@ -219,6 +219,7 @@
               id="profilePicture"
               class="form-control"
               formControlName="profilePicture"
+              (change)="onFileChange($event)"
               [class.is-invalid]="
                 editUserForm.get('profilePicture')?.invalid &&
                 editUserForm.get('profilePicture')?.touched

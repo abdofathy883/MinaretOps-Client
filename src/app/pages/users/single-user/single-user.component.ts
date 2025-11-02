@@ -31,6 +31,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   currentLoggedInUserId: string = '';
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
+  profilePictureFile!: File;
 
   alertMessage = '';
   alertType = 'info';
@@ -57,6 +58,12 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       city: [''],
       street: [''],
     });
+  }
+
+  onFileChange(event: any): void {
+    if (event.target.files && event.target.files.length) {
+      this.profilePictureFile = event.target.files[0];
+    }
   }
 
   ngOnInit(): void {
@@ -110,6 +117,8 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      jobTitle: user.jobTitle,
+      bio: user.bio,
       phoneNumber: user.phoneNumber,
       role: this.getRoleValue(user.roles?.[0]),
       paymentNumber: user.paymentNumber,
@@ -118,9 +127,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     });
   }
 
-  getRoleValue(role: string | undefined): string {
-    if (!role) return '';
-
+  getRoleValue(role: string): string {
     switch (role.toLowerCase()) {
       case '1':
         return 'Admin';
@@ -147,17 +154,6 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     }
   }
 
-  // getRoleDisplayName(roleValue: string): string {
-  //   switch (roleValue) {
-  //     case '1':
-  //       return 'مدير';
-  //     case '2':
-  //       return 'موظف';
-  //     default:
-  //       return 'غير محدد';
-  //   }
-  // }
-
   toggleEditMode(): void {
     this.isEditMode = true;
   }
@@ -183,7 +179,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     updateUser.append('lastName', formValue.lastName);
     updateUser.append('bio', formValue.bio);
     updateUser.append('jobTitle', formValue.jobTitle);
-    // updateUser.append('profilePicture', this.profilePictureFile);
+    updateUser.append('profilePicture', this.profilePictureFile);
     updateUser.append('email', formValue.email);
     updateUser.append('phoneNumber', formValue.phoneNumber);
     updateUser.append('city', formValue.city);
@@ -193,12 +189,14 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     this.authService.update(updateUser).subscribe({
       next: (response) => {
         this.user = response;
+        this.isLoading = false;
         this.showAlert(
           'تم تحديث بيانات المستخدم بنجاح',
           'success'
         );
       },
       error: () => {
+        this.isLoading = false;
         this.showAlert(
           'حدث خطأ أثناء تحديث بيانات المستخدم',
           'error'

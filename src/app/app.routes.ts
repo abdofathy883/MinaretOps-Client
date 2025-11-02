@@ -232,7 +232,7 @@ export const routes: Routes = [
         children: [
             { path: 'task-report', component: TaskDashboardComponent },
             { path: 'attendance-report', component: AttendanceReportComponent },
-            { path: 'task-emp-report', component: TaskEmpReportComponent}
+            // { path: 'task-emp-report', component: TaskEmpReportComponent}
         ]
     },
     {
