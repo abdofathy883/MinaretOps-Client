@@ -253,7 +253,7 @@ export class AllTasksComponent implements OnInit {
   }
 
   goToTask(taskId: number) {
-    this.router.navigate(['tasks', taskId, false]);
+    this.router.navigate(['tasks', taskId]);
   }
 
   getTypeLabel(type: TaskType): string {

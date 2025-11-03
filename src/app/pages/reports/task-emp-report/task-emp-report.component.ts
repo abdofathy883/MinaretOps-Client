@@ -6,6 +6,7 @@ import { CustomTaskStatus, ILightWieghtTask } from '../../../model/task/task';
 import { AuthService } from '../../../services/auth/auth.service';
 import { EmployeeWithTasks } from '../../../model/reporting/i-task-employee-report';
 import { ReportingService } from '../../../services/reporting/reporting.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-emp-report',
@@ -29,7 +30,8 @@ export class TaskEmpReportComponent implements OnInit {
   constructor(
     private reportingService: ReportingService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -124,5 +126,9 @@ export class TaskEmpReportComponent implements OnInit {
     if (!duration) return '';
     // Handle TimeSpan format like "HH:mm:ss" or "HH:mm:ss.fffffff"
     return duration.split('.')[0].substring(0, 5);
+  }
+
+  goToTask(id: number) {
+    this.router.navigate(['tasks', id]);
   }
 }

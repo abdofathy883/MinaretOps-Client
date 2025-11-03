@@ -139,7 +139,7 @@
             }"
           >
             {{ mapAttendanceStatus(record.status) }}
-            @if (record.missingClockOut) {
+            @if (record.missingClockOut && record.status === 0) {
             <span
               class="badge bg-warning text-dark ms-1"
               title="لم يسجل الانصراف"

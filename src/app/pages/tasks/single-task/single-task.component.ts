@@ -122,7 +122,7 @@ export class SingleTaskComponent implements OnInit {
   ngOnInit(): void {
     this.isLoadingTask = true;
     const taskIdParam = this.route.snapshot.paramMap.get('id');
-    const isArchivedParam = this.route.snapshot.paramMap.get('isArchived'); // Changed from queryParamMap to paramMap
+    const isArchivedParam = this.route.snapshot.queryParamMap.get('isArchived'); // Changed from queryParamMap to paramMap
     const taskId = Number(taskIdParam);
     const isArchived = isArchivedParam === 'true';
     
@@ -131,12 +131,12 @@ export class SingleTaskComponent implements OnInit {
     this.loadUser();
   }
 
-  private loadTaskUnified(taskId: number, isArchived: boolean): void {
+  private loadTaskUnified(taskId: number, isArchived?: boolean): void {
     this.taskService.getTaskUnified(taskId, isArchived).subscribe({
       next: (response) => {
         this.isLoadingTask = false;
         this.task = response;
-        this.isTaskArchived = isArchived;
+        this.isTaskArchived = isArchived === true;
       },
       error: (error) => {
         this.isLoadingTask = false;
@@ -360,7 +360,7 @@ export class SingleTaskComponent implements OnInit {
         this.task = res;
         this.isTaskArchived = true;
         this.showAlert('تم أرشفة المهمة بنجاح', 'success');
-        this.router.navigate(['/tasks', res.id, 'true']); // Updated to use route segments
+        this.router.navigate(['/tasks', res.id], { queryParams: { isArchived: true } });
       },
       error: (error) => {
         this.isArchiveLoading = false;
@@ -377,7 +377,7 @@ export class SingleTaskComponent implements OnInit {
         this.task = res;
         this.isTaskArchived = false;
         this.showAlert('تم إلغاء أرشفة المهمة بنجاح', 'success');
-        this.router.navigate(['/tasks', res.id, 'false']); // Updated to use route segments
+        this.router.navigate(['/tasks', res.id]); // Updated to use route segments
       },
       error: (error) => {
         this.isArchiveLoading = false;

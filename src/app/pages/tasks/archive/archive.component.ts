@@ -139,8 +139,8 @@ services: Service[] = [];
   }
 
   goToTask(taskId: number) {
-    this.router.navigate(['tasks', taskId, true]);
-  }
+  this.router.navigate(['/tasks', taskId], { queryParams: { isArchived: true } });
+}
 
   getTypeLabel(type: TaskType): string {
     switch (type) {

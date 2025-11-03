@@ -53,7 +53,9 @@ export class TaskService {
   }
 
   getTasksByEmployee(employeeId: string): Observable<ILightWieghtTask[]> {
-    return this.api.get<ILightWieghtTask[]>(`${this.endpoint}/emp-tasks/${employeeId}`);
+    return this.api.get<ILightWieghtTask[]>(
+      `${this.endpoint}/emp-tasks/${employeeId}`
+    );
   }
 
   update(
@@ -126,7 +128,10 @@ export class TaskService {
     );
   }
 
-  searchTasks(query: string, currentUserId: string): Observable<ILightWieghtTask[]> {
+  searchTasks(
+    query: string,
+    currentUserId: string
+  ): Observable<ILightWieghtTask[]> {
     return this.api.get<ILightWieghtTask[]>(
       `${this.endpoint}/search/${query}/${currentUserId}`
     );
@@ -169,11 +174,15 @@ export class TaskService {
     return this.api.get<PaginatedTaskResult>(url);
   }
 
-  getTaskUnified(taskId: number, isArchived: boolean): Observable<ITask> {
-    return this.api.get<ITask>(`${this.endpoint}/task-unified/${taskId}/${isArchived}`);
+  getTaskUnified(taskId: number, isArchived?: boolean): Observable<ITask> {
+    let url = `${this.endpoint}/task-unified/${taskId}`;
+    if (isArchived === true) {
+      url += `?isArchived=true`;
+    }
+    return this.api.get<ITask>(url);
   }
 
-  addComment(comment: ICreateTaskComment) : Observable<ITaskComment>{
+  addComment(comment: ICreateTaskComment): Observable<ITaskComment> {
     return this.api.post<ITaskComment>(`${this.endpoint}/new-comment`, comment);
   }
 }
