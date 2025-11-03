@@ -3,7 +3,7 @@ export interface AttendanceRecord {
     employeeId: string;
     employeeName: string;
     clockIn: Date;
-    icClockedInAfterSchedule: boolean;
+    isClockedInAfterSchedule: boolean;
     clockOut: Date;
     workDate: string;
     totalWorkingTime?: string;

@@ -73,6 +73,7 @@ export class AllAttendenceComponent implements OnInit {
         this.totalPages = response.totalPages;
         this.currentPage = response.pageNumber;
         this.loading = false;
+        console.log("attendance", this.attendanceRecords)
       },
       error: (error) => {
         this.loading = false;

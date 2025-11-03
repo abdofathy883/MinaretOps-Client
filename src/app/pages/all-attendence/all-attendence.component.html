@@ -115,7 +115,7 @@
         <td data-cell="اليوم">{{ record.workDate | date : "shortDate" }}</td>
         <td data-cell="وقت الحضور">
           {{ record.clockIn | date : "shortTime" }}
-          @if (record.icClockedInAfterSchedule) {
+          @if (record.isClockedInAfterSchedule) {
           <span
             class="badge bg-warning text-dark ms-1"
             title="حضور بعد الموعد المحدد"

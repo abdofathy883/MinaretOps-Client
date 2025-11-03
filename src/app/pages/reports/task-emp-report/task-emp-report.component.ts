@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { TaskService } from '../../../services/tasks/task.service';
@@ -28,7 +28,8 @@ export class TaskEmpReportComponent implements OnInit {
 
   constructor(
     private reportingService: ReportingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +40,7 @@ export class TaskEmpReportComponent implements OnInit {
   loadReport(): void {
     this.loading = true;
     this.error = null;
+    this.cdr.markForCheck(); // Trigger change detection for loading state
 
     this.reportingService.getTaskEmployeeReport(this.currentUserId).subscribe({
       next: (report) => {
@@ -46,10 +48,12 @@ export class TaskEmpReportComponent implements OnInit {
         this.onBreakEmployees = report.onBreakEmployees;
         this.absentEmployees = report.absentEmployees;
         this.loading = false;
+        this.cdr.markForCheck(); // Trigger change detection after data is loaded
       },
       error: (err) => {
         this.error = 'فشل تحميل التقرير';
         this.loading = false;
+        this.cdr.markForCheck(); // Trigger change detection on error
         console.error(err);
       }
     });
@@ -61,6 +65,7 @@ export class TaskEmpReportComponent implements OnInit {
     } else {
       this.expandedEmployees.add(employeeId);
     }
+    this.cdr.markForCheck(); // Trigger change detection for toggle
   }
 
   isExpanded(employeeId: string): boolean {

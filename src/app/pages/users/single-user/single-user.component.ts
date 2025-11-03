@@ -50,7 +50,7 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       lastName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
       bio: ['', Validators.required],
       jobTitle: ['', Validators.required],
-      profilePicture: ['', Validators.required],
+      profilePicture: [''],
       email: ['', [Validators.email]],
       phoneNumber: [''],
       role: [''],
@@ -87,7 +87,6 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   }
 
   loadUser(): void {
-    // const userId = this.route.snapshot.paramMap.get('id');
     if (!this.id) {
       this.showAlert('معرف المستخدم غير صالح', 'error');
       return;
@@ -120,12 +119,41 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       jobTitle: user.jobTitle,
       bio: user.bio,
       phoneNumber: user.phoneNumber,
-      role: this.getRoleValue(user.roles?.[0]),
+      role: this.getRoleValueFromName(user.roles?.[0]),
       paymentNumber: user.paymentNumber,
       city: user.city,
       street: user.street,
     });
   }
+
+  getRoleValueFromName(roleName: string | undefined): string {
+  if (!roleName) return '';
+  
+  switch (roleName) {
+    case 'Admin':
+      return '1';
+    case 'AccountManager':
+      return '2';
+    case 'GraphicDesigner':
+      return '3';
+    case 'GraphicDesignerTeamLeader':
+      return '4';
+    case 'ContentCreator':
+      return '5';
+    case 'ContentCreatorTeamLeader':
+      return '6';
+    case 'AdsSpecialest':
+      return '7';
+    case 'SEOSpecialest':
+      return '8';
+    case 'WebDeveloper':
+      return '9';
+    case 'VideoEditor':
+      return '10';
+    default:
+      return '';
+  }
+}
 
   getRoleValue(role: string): string {
     switch (role.toLowerCase()) {
@@ -179,12 +207,17 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     updateUser.append('lastName', formValue.lastName);
     updateUser.append('bio', formValue.bio);
     updateUser.append('jobTitle', formValue.jobTitle);
-    updateUser.append('profilePicture', this.profilePictureFile);
     updateUser.append('email', formValue.email);
     updateUser.append('phoneNumber', formValue.phoneNumber);
     updateUser.append('city', formValue.city);
     updateUser.append('street', formValue.street);
     updateUser.append('paymentNumber', formValue.paymentNumber);
+    // In saveUser() method, around line 182:
+if (this.profilePictureFile) {
+  updateUser.append('profilePicture', this.profilePictureFile);
+}
+// In saveUser() method, add after line 187:
+updateUser.append('role', formValue.role);
 
     this.authService.update(updateUser).subscribe({
       next: (response) => {
