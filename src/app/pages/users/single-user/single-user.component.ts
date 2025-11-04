@@ -1,4 +1,4 @@
-import {  } from './../../attendance/attendance.component';
+import {} from './../../attendance/attendance.component';
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -9,14 +9,15 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { User } from '../../../model/auth/user';
+import { User, UserRoles } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
 import { AttendanceRecord } from '../../../model/attendance-record/attendance-record';
+import { MapUserRolePipe } from '../../../core/pipes/map-user-role/map-user-role.pipe';
 
 @Component({
   selector: 'app-single-user',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, MapUserRolePipe],
   templateUrl: './single-user.component.html',
   styleUrl: './single-user.component.css',
 })
@@ -48,8 +49,8 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     this.editUserForm = this.fb.group({
       firstName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
       lastName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
-      bio: ['', Validators.required],
-      jobTitle: ['', Validators.required],
+      bio: [''],
+      jobTitle: [''],
       profilePicture: [''],
       email: ['', [Validators.email]],
       phoneNumber: [''],
@@ -59,6 +60,25 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       street: [''],
     });
   }
+
+  UserRoles = UserRoles;
+  
+  // Add this method to get enum keys/values for iteration
+  // get rolesList(): Array<{key: string, value: number}> {
+  //   return Object.entries(UserRoles)
+  //     .filter(([key, value]) => typeof value === 'number')
+  //     .map(([key, value]) => ({
+  //       key: key,
+  //       value: value as number
+  //     }));
+  // }
+  get rolesList(): Array<{ key: string; value: string }> {
+  return Object.keys(UserRoles)
+    .filter(key => isNaN(Number(key)))
+    .map(key => ({ key, value: key }));
+}
+
+  
 
   onFileChange(event: any): void {
     if (event.target.files && event.target.files.length) {
@@ -98,14 +118,12 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (user) => {
           this.user = user;
+          console.log(user)
           this.populateForm(user);
           this.isLoading = false;
         },
         error: (error) => {
-          this.showAlert(
-            'حدث خطأ أثناء تحميل بيانات المستخدم',
-            'error'
-          );
+          this.showAlert('حدث خطأ أثناء تحميل بيانات المستخدم', 'error');
           this.isLoading = false;
         },
       });
@@ -119,67 +137,11 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       jobTitle: user.jobTitle,
       bio: user.bio,
       phoneNumber: user.phoneNumber,
-      role: this.getRoleValueFromName(user.roles?.[0]),
+      role: user.roles[0],
       paymentNumber: user.paymentNumber,
       city: user.city,
       street: user.street,
     });
-  }
-
-  getRoleValueFromName(roleName: string | undefined): string {
-  if (!roleName) return '';
-  
-  switch (roleName) {
-    case 'Admin':
-      return '1';
-    case 'AccountManager':
-      return '2';
-    case 'GraphicDesigner':
-      return '3';
-    case 'GraphicDesignerTeamLeader':
-      return '4';
-    case 'ContentCreator':
-      return '5';
-    case 'ContentCreatorTeamLeader':
-      return '6';
-    case 'AdsSpecialest':
-      return '7';
-    case 'SEOSpecialest':
-      return '8';
-    case 'WebDeveloper':
-      return '9';
-    case 'VideoEditor':
-      return '10';
-    default:
-      return '';
-  }
-}
-
-  getRoleValue(role: string): string {
-    switch (role.toLowerCase()) {
-      case '1':
-        return 'Admin';
-      case '2':
-        return 'Account Manager';
-      case '3':
-        return 'Graphic Designer';
-      case '4':
-        return 'Graphic Designer Team Leader';
-      case '5':
-        return 'Content Creator';
-      case '6':
-        return 'Content Creator Team Leader';
-      case '7':
-        return 'Ads Specialist';
-      case '8':
-        return 'SEO Specialist';
-      case '9':
-        return 'Web Developer';
-      case '10':
-        return 'Video Editor';
-      default:
-        return 'اختر الدور';
-    }
   }
 
   toggleEditMode(): void {
@@ -213,27 +175,26 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     updateUser.append('street', formValue.street);
     updateUser.append('paymentNumber', formValue.paymentNumber);
     // In saveUser() method, around line 182:
-if (this.profilePictureFile) {
-  updateUser.append('profilePicture', this.profilePictureFile);
-}
-// In saveUser() method, add after line 187:
-updateUser.append('role', formValue.role);
+    if (this.profilePictureFile) {
+      updateUser.append('profilePicture', this.profilePictureFile);
+    }
+    updateUser.append('role', formValue.role);
+
+    // Convert numeric role value to role name before sending
+    // const roleName = this.getRoleNameFromValue(formValue.role);
+    // if (roleName) {
+    //   updateUser.append('role', roleName);
+    // }
 
     this.authService.update(updateUser).subscribe({
       next: (response) => {
         this.user = response;
         this.isLoading = false;
-        this.showAlert(
-          'تم تحديث بيانات المستخدم بنجاح',
-          'success'
-        );
+        this.showAlert('تم تحديث بيانات المستخدم بنجاح', 'success');
       },
       error: () => {
         this.isLoading = false;
-        this.showAlert(
-          'حدث خطأ أثناء تحديث بيانات المستخدم',
-          'error'
-        );
+        this.showAlert('حدث خطأ أثناء تحديث بيانات المستخدم', 'error');
       },
     });
   }
@@ -260,24 +221,6 @@ updateUser.append('role', formValue.role);
       },
     });
   }
-
-  // private passwordMatchValidator(
-  //   form: FormGroup
-  // ): { [key: string]: any } | null {
-  //   const password = form.get('password');
-  //   const confirmPassword = form.get('confirmPassword');
-
-  //   if (password && confirmPassword) {
-  //     if (password.value && !confirmPassword.value) {
-  //       return { passwordMismatch: true };
-  //     }
-  //     if (password.value !== confirmPassword.value) {
-  //       return { passwordMismatch: true };
-  //     }
-  //   }
-
-  //   return null;
-  // }
 
   // Helper method to check if a form control has a specific error
   hasError(controlName: string, errorType: string): boolean {

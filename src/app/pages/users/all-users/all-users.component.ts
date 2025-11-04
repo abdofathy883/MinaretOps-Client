@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
-import { MapUserRolePipe } from '../../../core/pipes/map-task-user-role/map-user-role.pipe';
+import { MapUserRolePipe } from '../../../core/pipes/map-user-role/map-user-role.pipe';
 import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
 
 @Component({

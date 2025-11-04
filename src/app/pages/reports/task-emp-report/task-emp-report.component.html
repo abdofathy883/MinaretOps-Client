@@ -85,7 +85,7 @@
                           </thead>
                           <tbody>
                             @for (task of employee.tasks; track trackByTaskId($index, task)) {
-                              <tr>
+                              <tr (click)="goToTask(task.id)" style="cursor: pointer;">
                                 <td>
                                   <div class="fw-bold">{{ task.title }}</div>
                                   @if (task.description) {

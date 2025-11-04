@@ -4,7 +4,7 @@ import { JdService } from '../../../services/jd/jd.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MapUserRolePipe } from '../../../core/pipes/map-task-user-role/map-user-role.pipe';
+import { MapUserRolePipe } from '../../../core/pipes/map-user-role/map-user-role.pipe';
 
 @Component({
   selector: 'app-single-jd',

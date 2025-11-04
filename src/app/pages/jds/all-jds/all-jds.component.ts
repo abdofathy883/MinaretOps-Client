@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { JdService } from '../../../services/jd/jd.service';
 import { IJD } from '../../../model/jds/i-create-jd';
 import { Router } from '@angular/router';
-import { MapUserRolePipe } from '../../../core/pipes/map-task-user-role/map-user-role.pipe';
+import { MapUserRolePipe } from '../../../core/pipes/map-user-role/map-user-role.pipe';
 
 @Component({
   selector: 'app-all-jds',

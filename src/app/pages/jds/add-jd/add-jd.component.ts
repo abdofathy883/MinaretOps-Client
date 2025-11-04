@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { JdService } from '../../../services/jd/jd.service';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MapUserRolePipe } from '../../../core/pipes/map-task-user-role/map-user-role.pipe';
+import { MapUserRolePipe } from '../../../core/pipes/map-user-role/map-user-role.pipe';
 import { ICreateJD, ICreateJR } from '../../../model/jds/i-create-jd';
 
 @Component({
