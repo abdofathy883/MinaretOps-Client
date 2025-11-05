@@ -62,23 +62,12 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   }
 
   UserRoles = UserRoles;
-  
-  // Add this method to get enum keys/values for iteration
-  // get rolesList(): Array<{key: string, value: number}> {
-  //   return Object.entries(UserRoles)
-  //     .filter(([key, value]) => typeof value === 'number')
-  //     .map(([key, value]) => ({
-  //       key: key,
-  //       value: value as number
-  //     }));
-  // }
-  get rolesList(): Array<{ key: string; value: string }> {
-  return Object.keys(UserRoles)
-    .filter(key => isNaN(Number(key)))
-    .map(key => ({ key, value: key }));
-}
 
-  
+  get rolesList(): Array<{ key: string; value: string }> {
+    return Object.keys(UserRoles)
+      .filter((key) => isNaN(Number(key)))
+      .map((key) => ({ key, value: key }));
+  }
 
   onFileChange(event: any): void {
     if (event.target.files && event.target.files.length) {
@@ -118,7 +107,6 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (user) => {
           this.user = user;
-          console.log(user)
           this.populateForm(user);
           this.isLoading = false;
         },

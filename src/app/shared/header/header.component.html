@@ -111,6 +111,14 @@
               <a class="nav-link" routerLink="/users/add">إضافة مستخدم</a>
             </li>
 
+            } @if (isUserAdmin) {
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/employee-invitations/create">دعوة موظف</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/employee-invitations">دعوات قيد الانتظار</a>
+              </li>
+
             }
           </ul>
         </li>

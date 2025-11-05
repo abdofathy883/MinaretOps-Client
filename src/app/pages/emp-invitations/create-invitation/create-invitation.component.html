@@ -1,0 +1,120 @@
+<div class="container mt-4">
+  <!-- Header Section -->
+  <div class="mb-4">
+    <h2>
+      <i class="bi bi-envelope-paper me-2"></i>
+      إرسال دعوة موظف جديد
+    </h2>
+  </div>
+
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+  <div class="alert" [class]="'alert-' + alertType">
+    {{ alertMessage }}
+    <button class="alert-close" (click)="showAlert('', 'info')">×</button>
+  </div>
+  }
+
+  <!-- Invitation Form -->
+  <div class="card shadow-sm">
+    <div class="card-header form-header">
+      <h5 class="mb-0">
+        <i class="bi bi-person-plus me-2"></i>
+        معلومات الدعوة
+      </h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="invitationForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="email" class="form-label">البريد الإلكتروني</label>
+            <span class="text-danger me-2">*</span>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              name="email"
+              formControlName="email"
+              [class.is-invalid]="
+                invitationForm.get('email')?.invalid &&
+                invitationForm.get('email')?.touched
+              "
+              placeholder="أدخل البريد الإلكتروني"
+              required
+            />
+            @if (invitationForm.get('email')?.invalid &&
+            invitationForm.get('email')?.touched) {
+            <div class="invalid-feedback">
+              @if (invitationForm.get('email')?.errors?.['required']) {
+              <span>البريد الإلكتروني مطلوب</span>
+              } @if (invitationForm.get('email')?.errors?.['email']) {
+              <span>صيغة البريد الإلكتروني غير صحيحة</span>
+              }
+            </div>
+            }
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="role" class="form-label">الدور</label>
+            <span class="text-danger me-2">*</span>
+            <select
+              class="form-select"
+              id="role"
+              name="role"
+              formControlName="role"
+              [class.is-invalid]="
+                invitationForm.get('role')?.invalid &&
+                invitationForm.get('role')?.touched
+              "
+              required
+            >
+              <option value="" disabled selected>اختر الدور</option>
+              @for (role of rolesList; track role.value) {
+                <option [value]="role.value">
+                  {{ role.key | mapUserRole }}
+                </option>
+                }
+            </select>
+            @if (invitationForm.get('role')?.invalid &&
+            invitationForm.get('role')?.touched) {
+            <div class="invalid-feedback">
+              @if (invitationForm.get('role')?.errors?.['required']) {
+              <span>الدور مطلوب</span>
+              }
+            </div>
+            }
+          </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="alert alert-info mt-3">
+          <i class="bi bi-info-circle me-2"></i>
+          سيتم إرسال رابط دعوة إلى البريد الإلكتروني المحدد. يجب على الموظف
+          إكمال معلوماته الشخصية قبل الموافقة على الحساب.
+        </div>
+
+        <!-- Submit Button Section -->
+        <div class="d-flex justify-content-start flex-wrap gap-3 mt-4">
+          <button type="submit" class="add-btn" [disabled]="isLoading || invitationForm.invalid">
+            @if (isLoading) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            جاري إرسال الدعوة...
+            } @if (!isLoading) {
+            <i class="bi bi-send me-2"></i>
+            إرسال الدعوة
+            }
+          </button>
+          <button
+            type="button"
+            class="reset-btn"
+            (click)="invitationForm.reset()"
+            [disabled]="isLoading"
+          >
+            <i class="bi bi-arrow-clockwise me-2"></i>
+            إعادة تعيين
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

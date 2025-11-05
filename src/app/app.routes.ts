@@ -49,245 +49,265 @@ import { AddJdComponent } from './pages/jds/add-jd/add-jd.component';
 import { SingleJdComponent } from './pages/jds/single-jd/single-jd.component';
 import { UpdateProfileComponent } from './pages/users/update-profile/update-profile.component';
 import { TaskDashboardComponent } from './pages/reports/task-dashboard/task-dashboard.component';
-import { AttendanceReportComponent } from './pages/reports/attendance-report/attendance-report.component';
 import { JdForEmpComponent } from './pages/jds/jd-for-emp/jd-for-emp.component';
 import { TaskEmpReportComponent } from './pages/reports/task-emp-report/task-emp-report.component';
+import { CreateInvitationComponent } from './pages/emp-invitations/create-invitation/create-invitation.component';
+import { PendingInvitationsComponent } from './pages/emp-invitations/pending-invitations/pending-invitations.component';
+import { CompleteInvitationComponent } from './pages/emp-invitations/complete-invitation/complete-invitation.component';
 
 export const routes: Routes = [
-    {
-        path: 'login',
-        component: LoginComponent,
-        canActivate: [authGuard]
-    },
-    {
-        path: '',
-        redirectTo: 'login',
-        pathMatch: 'full'
-    },
-    {
-        path: 'users/add',
-        component: AddUserComponent,
-        canActivate: [noauthGuard, roleGuard],
-        data: {roles: ['Admin', 'AccountManager']}
-    },
-    {
-        path: 'users',
-        component: AllUsersComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'users/:id',
-        component: SingleUserComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'users/my-account/:id',
-        component: MyAccountComponent,
-        canActivate: [noauthGuard], 
-        children: [
-            { path: 'attendance/:userId', component: AttendanceComponent},
-            { path: 'leave-requests/:userId', component: SubmitLeaveRequestComponent},
-            { path: 'my-kpis/:userId', component: MyKpisManagementComponent},
-            { path: 'profile/:userId', component: UpdateProfileComponent},
-            { path: 'jd/:userId', component: JdForEmpComponent}
-        ]
-    },
-    {
-        path: 'services/add',
-        component: AddServiceComponent,
-        canActivate: [noauthGuard, roleGuard],
-        data: {roles: ['Admin', 'AccountManager']}
-    },
-    {
-        path: 'services',
-        component: AllServicesComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'services/:id',
-        component: SingleServiceComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'clients/add',
-        component: AddClientComponent,
-        canActivate: [noauthGuard, roleGuard],
-        data: {roles: ['Admin', 'AccountManager']}
-    },
-    {
-        path: 'clients',
-        component: AllClientsComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'clients/:id',
-        component: SingleClientComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'tasks',
-        component: AllTasksComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'tasks/archive',
-        component: ArchiveComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'tasks/add',
-        component: AddTaskComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'tasks/:id',
-        component: SingleTaskComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'internal-tasks',
-        component: AllInternalTasksComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'internal-tasks/archive',
-        component: InternalArchiveComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'internal-tasks/add',
-        component: AddInternalTaskComponent,
-        canActivate: [noauthGuard, roleGuard],
-        data: {roles: ['Admin', 'AccountManager']}
-    },
-    {
-        path: 'internal-tasks/:id',
-        component: SingleInternalTaskComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'attendance',
-        component: AllAttendenceComponent,
-        canActivate: [noauthGuard, roleGuard],
-        data: {roles: ['Admin']}
-    },
-    {
-        path: 'announcements',
-        component: AllAnnouncementsComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'announcements/add',
-        component: AddAnnouncementComponent,
-        canActivate: [noauthGuard, roleGuard],
-        data: {roles: ['Admin', 'AccountManager']}
-    },
-    {
-        path: 'leave-requests',
-        component: AllLeaveRequestsComponent,
-        canActivate: [noauthGuard, roleGuard],
-        data: {roles: ['Admin']}
-    },
-    {
-        path: 'complaints',
-        component: AllComplaintsComponent,
-        canActivate: [noauthGuard, roleGuard],
-        data: {roles: ['Admin']}
-    },
-    {
-        path: 'complaints/add',
-        component: AddComplaintComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'contact-form-entries',
-        component: AllEntriesComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'contact-form-entries/:id',
-        component: SingleEntryComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'kpis-management',
-        component: KpisManagementComponent,
-        canActivate: [noauthGuard, roleGuard],
-        data: {roles: ['Admin']}
-    },
-    {
-        path: 'access-denied',
-        component: AccessDeniedComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'reset-password',
-        component: ResetPasswordComponent,
-        canActivate: [authGuard]
-    },
-    {
-        path: 'dashboard',
-        component: DashboardComponent,
-        canActivate: [noauthGuard],
-        children: [
-            { path: 'task-report', component: TaskDashboardComponent },
-            { path: 'attendance-report', component: AttendanceReportComponent },
-            // { path: 'task-emp-report', component: TaskEmpReportComponent}
-        ]
-    },
-    {
-        path: 'blog',
-        component: AllBlogsComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'blog/add',
-        component: AddBlogComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'blog/:title',
-        component: SingleBlogComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'blog-category',
-        component: CategoryComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'portfolio',
-        component: AllProjectsComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'portfolio/add',
-        component: AddProjectComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'portfolio/:title',
-        component: SingleProjectComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'job-descriptions',
-        component: AllJdsComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'job-descriptions/add',
-        component: AddJdComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: 'job-descriptions/:id',
-        component: SingleJdComponent,
-        canActivate: [noauthGuard]
-    },
-    {
-        path: '**',
-        component: NotFoundComponent,
-        canActivate: [noauthGuard]
-    }
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
+  },
+  {
+    path: 'users/add',
+    component: AddUserComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin', 'AccountManager'] },
+  },
+  {
+    path: 'users',
+    component: AllUsersComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'users/:id',
+    component: SingleUserComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'users/my-account/:id',
+    component: MyAccountComponent,
+    canActivate: [noauthGuard],
+    children: [
+      { path: 'attendance/:userId', component: AttendanceComponent },
+      {
+        path: 'leave-requests/:userId',
+        component: SubmitLeaveRequestComponent,
+      },
+      { path: 'my-kpis/:userId', component: MyKpisManagementComponent },
+      { path: 'profile/:userId', component: UpdateProfileComponent },
+      { path: 'jd/:userId', component: JdForEmpComponent },
+    ],
+  },
+  {
+    path: 'services/add',
+    component: AddServiceComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin', 'AccountManager'] },
+  },
+  {
+    path: 'services',
+    component: AllServicesComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'services/:id',
+    component: SingleServiceComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'clients/add',
+    component: AddClientComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin', 'AccountManager'] },
+  },
+  {
+    path: 'clients',
+    component: AllClientsComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'clients/:id',
+    component: SingleClientComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'tasks',
+    component: AllTasksComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'tasks/archive',
+    component: ArchiveComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'tasks/add',
+    component: AddTaskComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'tasks/:id',
+    component: SingleTaskComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'internal-tasks',
+    component: AllInternalTasksComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'internal-tasks/archive',
+    component: InternalArchiveComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'internal-tasks/add',
+    component: AddInternalTaskComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin', 'AccountManager'] },
+  },
+  {
+    path: 'internal-tasks/:id',
+    component: SingleInternalTaskComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'attendance',
+    component: AllAttendenceComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] },
+  },
+  {
+    path: 'announcements',
+    component: AllAnnouncementsComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'announcements/add',
+    component: AddAnnouncementComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin', 'AccountManager'] },
+  },
+  {
+    path: 'leave-requests',
+    component: AllLeaveRequestsComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] },
+  },
+  {
+    path: 'complaints',
+    component: AllComplaintsComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] },
+  },
+  {
+    path: 'complaints/add',
+    component: AddComplaintComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'contact-form-entries',
+    component: AllEntriesComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'contact-form-entries/:id',
+    component: SingleEntryComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'kpis-management',
+    component: KpisManagementComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] },
+  },
+  {
+    path: 'access-denied',
+    component: AccessDeniedComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'reset-password',
+    component: ResetPasswordComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [noauthGuard],
+    children: [
+      { path: 'task-report', component: TaskDashboardComponent },
+      // { path: 'task-emp-report', component: TaskEmpReportComponent}
+    ],
+  },
+  {
+    path: 'blog',
+    component: AllBlogsComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'blog/add',
+    component: AddBlogComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'blog/:title',
+    component: SingleBlogComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'blog-category',
+    component: CategoryComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'portfolio',
+    component: AllProjectsComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'portfolio/add',
+    component: AddProjectComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'portfolio/:title',
+    component: SingleProjectComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'job-descriptions',
+    component: AllJdsComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'job-descriptions/add',
+    component: AddJdComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'job-descriptions/:id',
+    component: SingleJdComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'employee-invitations/create',
+    component: CreateInvitationComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] },
+  },
+  {
+    path: 'employee-invitations',
+    component: PendingInvitationsComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] },
+  },
+  {
+    path: 'complete-invitation',
+    component: CompleteInvitationComponent,
+  },
+  {
+    path: '**',
+    component: NotFoundComponent,
+    canActivate: [noauthGuard],
+  },
 ];

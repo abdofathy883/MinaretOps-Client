@@ -1,0 +1,427 @@
+<section
+  class="d-flex align-items-center justify-content-center flex-column min-vh-100"
+>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <!-- Card -->
+        <div class="card shadow-lg border-0">
+          <div class="card-header form-header text-center">
+            <img
+              src="./assets/The Minaret Agency.png"
+              class="d-block mx-auto mb-3"
+              width="30%"
+              alt="Minaret Agency Logo"
+            />
+            <h3 class="mb-0">
+              <i class="bi bi-person-check me-2"></i>
+              إكمال معلومات التسجيل
+            </h3>
+          </div>
+
+          <div class="card-body p-4">
+            <!-- Loading State -->
+            @if (!invitation && !alertMessage) {
+            <div class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">جاري التحميل...</span>
+              </div>
+            </div>
+            }
+
+            <!-- Error Message -->
+            @if (alertMessage && alertType === 'error') {
+            <div class="alert alert-danger" role="alert">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              {{ alertMessage }}
+            </div>
+            }
+
+            <!-- Success Message -->
+            @if (alertMessage && alertType === 'success') {
+            <div class="alert alert-success" role="alert">
+              <i class="bi bi-check-circle me-2"></i>
+              {{ alertMessage }}
+            </div>
+            }
+
+            <!-- Invitation Info -->
+            @if (invitation) {
+            <div class="alert alert-info mb-4">
+              <h6>
+                <i class="bi bi-info-circle me-2"></i>
+                معلومات الدعوة
+              </h6>
+              <p class="mb-1">
+                <strong>البريد الإلكتروني:</strong> {{ invitation.email }}
+              </p>
+              <p class="mb-0">
+                <strong>الدور:</strong> {{ invitation.roleName }}
+              </p>
+            </div>
+
+            <!-- Form -->
+            <form [formGroup]="invitationForm" (ngSubmit)="onSubmit()">
+              <!-- Personal Information Section -->
+              <div class="mb-3">
+                <h6 class="text-primary">
+                  <i class="bi bi-person me-2"></i>
+                  المعلومات الشخصية
+                </h6>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="firstName" class="form-label">الاسم الأول</label>
+                  <span class="text-danger me-2">*</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="firstName"
+                    formControlName="firstName"
+                    [class.is-invalid]="
+                      invitationForm.get('firstName')?.invalid &&
+                      invitationForm.get('firstName')?.touched
+                    "
+                    placeholder="أدخل الاسم الأول"
+                    required
+                  />
+                  @if (invitationForm.get('firstName')?.invalid &&
+                  invitationForm.get('firstName')?.touched) {
+                  <div class="invalid-feedback">
+                    @if (invitationForm.get('firstName')?.errors?.['required'])
+                    {
+                    <span>الاسم الأول مطلوب</span>
+                    } @if
+                    (invitationForm.get('firstName')?.errors?.['minlength']) {
+                    <span>يجب أن يكون 3 أحرف على الأقل</span>
+                    }
+                  </div>
+                  }
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="lastName" class="form-label">الاسم الأخير</label>
+                  <span class="text-danger me-2">*</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="lastName"
+                    formControlName="lastName"
+                    [class.is-invalid]="
+                      invitationForm.get('lastName')?.invalid &&
+                      invitationForm.get('lastName')?.touched
+                    "
+                    placeholder="أدخل الاسم الأخير"
+                    required
+                  />
+                  @if (invitationForm.get('lastName')?.invalid &&
+                  invitationForm.get('lastName')?.touched) {
+                  <div class="invalid-feedback">
+                    @if (invitationForm.get('lastName')?.errors?.['required']) {
+                    <span>الاسم الأخير مطلوب</span>
+                    } @if
+                    (invitationForm.get('lastName')?.errors?.['minlength']) {
+                    <span>يجب أن يكون 3 أحرف على الأقل</span>
+                    }
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="nid" class="form-label">الرقم القومي</label>
+                  <span class="text-danger me-2">*</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="nid"
+                    formControlName="nid"
+                    [class.is-invalid]="
+                      invitationForm.get('nid')?.invalid &&
+                      invitationForm.get('nid')?.touched
+                    "
+                    placeholder="14 رقم"
+                    maxlength="14"
+                    required
+                  />
+                  @if (invitationForm.get('nid')?.invalid &&
+                  invitationForm.get('nid')?.touched) {
+                  <div class="invalid-feedback">
+                    @if (invitationForm.get('nid')?.errors?.['required']) {
+                    <span>الرقم القومي مطلوب</span>
+                    } @if (invitationForm.get('nid')?.errors?.['minlength'] ||
+                    invitationForm.get('nid')?.errors?.['maxlength']) {
+                    <span>يجب أن يكون 14 رقم</span>
+                    }
+                  </div>
+                  }
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="dateOfHiring" class="form-label"
+                    >تاريخ بداية العمل</label
+                  >
+                  <span class="text-danger me-2">*</span>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="dateOfHiring"
+                    formControlName="dateOfHiring"
+                    [class.is-invalid]="
+                      invitationForm.get('dateOfHiring')?.invalid &&
+                      invitationForm.get('dateOfHiring')?.touched
+                    "
+                    required
+                  />
+                  @if (invitationForm.get('dateOfHiring')?.invalid &&
+                  invitationForm.get('dateOfHiring')?.touched) {
+                  <div class="invalid-feedback">
+                    <span>تاريخ بداية العمل مطلوب</span>
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Contact Information Section -->
+              <div class="mb-3 mt-4">
+                <h6 class="text-primary">
+                  <i class="bi bi-telephone me-2"></i>
+                  معلومات الاتصال
+                </h6>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="phoneNumber" class="form-label">رقم الهاتف</label>
+                  <span class="text-danger me-2">*</span>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="phoneNumber"
+                    formControlName="phoneNumber"
+                    [class.is-invalid]="
+                      invitationForm.get('phoneNumber')?.invalid &&
+                      invitationForm.get('phoneNumber')?.touched
+                    "
+                    placeholder="أدخل رقم الهاتف"
+                    required
+                  />
+                  @if (invitationForm.get('phoneNumber')?.invalid &&
+                  invitationForm.get('phoneNumber')?.touched) {
+                  <div class="invalid-feedback">
+                    <span>رقم الهاتف مطلوب</span>
+                  </div>
+                  }
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="paymentNumber" class="form-label"
+                    >رقم المحفظة</label
+                  >
+                  <span class="text-danger me-2">*</span>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="paymentNumber"
+                    formControlName="paymentNumber"
+                    [class.is-invalid]="
+                      invitationForm.get('paymentNumber')?.invalid &&
+                      invitationForm.get('paymentNumber')?.touched
+                    "
+                    placeholder="أدخل رقم المحفظة"
+                    required
+                  />
+                  @if (invitationForm.get('paymentNumber')?.invalid &&
+                  invitationForm.get('paymentNumber')?.touched) {
+                  <div class="invalid-feedback">
+                    <span>رقم المحفظة مطلوب</span>
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Address Section -->
+              <div class="mb-3 mt-4">
+                <h6 class="text-primary">
+                  <i class="bi bi-geo-alt me-2"></i>
+                  العنوان
+                </h6>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="city" class="form-label">المدينة</label>
+                  <span class="text-danger me-2">*</span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    formControlName="city"
+                    [class.is-invalid]="
+                      invitationForm.get('city')?.invalid &&
+                      invitationForm.get('city')?.touched
+                    "
+                    placeholder="أدخل المدينة"
+                    required
+                  />
+                  @if (invitationForm.get('city')?.invalid &&
+                  invitationForm.get('city')?.touched) {
+                  <div class="invalid-feedback">
+                    <span>المدينة مطلوبة</span>
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="street" class="form-label">العنوان التفصيلي</label>
+                <span class="text-danger me-2">*</span>
+                <textarea
+                  class="form-control"
+                  id="street"
+                  formControlName="street"
+                  [class.is-invalid]="
+                    invitationForm.get('street')?.invalid &&
+                    invitationForm.get('street')?.touched
+                  "
+                  rows="3"
+                  placeholder="أدخل العنوان التفصيلي"
+                  required
+                ></textarea>
+                @if (invitationForm.get('street')?.invalid &&
+                invitationForm.get('street')?.touched) {
+                <div class="invalid-feedback">
+                  <span>العنوان التفصيلي مطلوب</span>
+                </div>
+                }
+              </div>
+
+              <!-- Optional Fields -->
+              <div class="mb-3 mt-4">
+                <h6 class="text-primary">
+                  <i class="bi bi-info-circle me-2"></i>
+                  معلومات إضافية (اختيارية)
+                </h6>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="jobTitle" class="form-label"
+                    >المسمى الوظيفي</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="jobTitle"
+                    formControlName="jobTitle"
+                    placeholder="أدخل المسمى الوظيفي"
+                  />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="bio" class="form-label">نبذة شخصية</label>
+                <textarea
+                  class="form-control"
+                  id="bio"
+                  formControlName="bio"
+                  rows="3"
+                  placeholder="أدخل نبذة عنك"
+                ></textarea>
+              </div>
+
+              <!-- Account Security Section -->
+              <div class="mb-3 mt-4">
+                <h6 class="text-primary">
+                  <i class="bi bi-shield-lock me-2"></i>
+                  أمان الحساب
+                </h6>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="password" class="form-label">كلمة المرور</label>
+                  <span class="text-danger me-2">*</span>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    formControlName="password"
+                    [class.is-invalid]="
+                      invitationForm.get('password')?.invalid &&
+                      invitationForm.get('password')?.touched
+                    "
+                    placeholder="أدخل كلمة المرور"
+                    required
+                  />
+                  @if (invitationForm.get('password')?.invalid &&
+                  invitationForm.get('password')?.touched) {
+                  <div class="invalid-feedback">
+                    @if (invitationForm.get('password')?.errors?.['required']) {
+                    <span>كلمة المرور مطلوبة</span>
+                    } @if
+                    (invitationForm.get('password')?.errors?.['minlength']) {
+                    <span>يجب أن تكون 6 أحرف على الأقل</span>
+                    }
+                  </div>
+                  }
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="confirmPassword" class="form-label"
+                    >تأكيد كلمة المرور</label
+                  >
+                  <span class="text-danger me-2">*</span>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="confirmPassword"
+                    formControlName="confirmPassword"
+                    [class.is-invalid]="
+                      invitationForm.get('confirmPassword')?.invalid &&
+                      invitationForm.get('confirmPassword')?.touched
+                    "
+                    placeholder="أعد إدخال كلمة المرور"
+                    required
+                  />
+                  @if (invitationForm.get('confirmPassword')?.invalid &&
+                  invitationForm.get('confirmPassword')?.touched) {
+                  <div class="invalid-feedback">
+                    @if
+                    (invitationForm.get('confirmPassword')?.errors?.['required'])
+                    {
+                    <span>تأكيد كلمة المرور مطلوب</span>
+                    } @if
+                    (invitationForm.get('confirmPassword')?.errors?.['passwordMismatch'])
+                    {
+                    <span>كلمة المرور غير متطابقة</span>
+                    }
+                  </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="d-grid gap-2 mt-4">
+                <button
+                  type="submit"
+                  class="btn add-btn"
+                  [disabled]="isLoading || invitationForm.invalid"
+                >
+                  @if (isLoading) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  جاري الإرسال... } @if (!isLoading) {
+                  <i class="bi bi-check-circle me-2"></i>
+                  إكمال التسجيل }
+                </button>
+              </div>
+            </form>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
