@@ -1,9 +1,65 @@
 <div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">تقرير المهام والموظفين - اليوم</h2>
+    <h2 class="mb-0">تقرير المهام والموظفين</h2>
     <button class="btn btn-primary" (click)="loadReport()" [disabled]="loading">
       <i class="bi bi-arrow-clockwise"></i> تحديث
     </button>
+  </div>
+
+  <div class="filter-section mb-4">
+    <h4>تصفية حسب:</h4>
+    <form [formGroup]="filterForm">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label for="fromDate" class="form-label">من تاريخ</label>
+          <input
+            type="date"
+            class="form-control"
+            formControlName="fromDate"
+            id="fromDate"
+          />
+        </div>
+        <div class="col-md-3">
+          <label for="toDate" class="form-label">إلى تاريخ</label>
+          <input
+            type="date"
+            class="form-control"
+            formControlName="toDate"
+            id="toDate"
+          />
+        </div>
+        <div class="col-md-2 d-flex align-items-end gap-2">
+          <button
+            class="btn btn-primary"
+            (click)="applyFilters()"
+            [disabled]="loading"
+          >
+            تصفية
+          </button>
+
+        </div>
+      </div>
+    </form>
+
+    <!-- Quick navigation -->
+    <div class="row mt-3">
+      <div class="col-12 d-flex gap-2">
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="loadPreviousDay()"
+          [disabled]="loading"
+        >
+          اليوم السابق
+        </button>
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="loadNextDay()"
+          [disabled]="loading"
+        >
+          اليوم التالي
+        </button>
+      </div>
+    </div>
   </div>
 
   @if (loading) {
@@ -117,92 +173,94 @@
         </div>
       </div>
 
-      <!-- On Break Employees -->
-      <div class="col-12">
-        <div class="card shadow-sm">
-          <div class="card-header bg-warning text-dark">
-            <h5 class="mb-0">
-              <i class="bi bi-pause-circle-fill"></i> في استراحة
-              <span class="badge bg-dark text-light ms-2">{{ onBreakEmployees.length }}</span>
-            </h5>
-          </div>
-          <div class="card-body">
-            @if (onBreakEmployees.length === 0) {
-              <div class="text-center text-muted py-3">
-                لا يوجد موظفين في استراحة
-              </div>
-            }
-            @for (employee of onBreakEmployees; track trackByEmployeeId($index, employee)) {
-              <div class="employee-card mb-3 border rounded">
-                <div 
-                  class="employee-header p-3 d-flex justify-content-between align-items-center cursor-pointer"
-                  (click)="toggleEmployee(employee.employeeId)"
-                  [class.bg-light]="isExpanded(employee.employeeId)"
-                >
-                  <div class="d-flex align-items-center flex-grow-1">
-                    <span class="status-circle status-break me-3"></span>
-                    <div>
-                      <div class="fw-bold fs-5">{{ employee.employeeName }}</div>
-                      <small class="text-muted">في استراحة</small>
+      <!-- On Break Employees - Only show if today is in the date range -->
+      @if (isTodayInRange()) {
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark">
+              <h5 class="mb-0">
+                <i class="bi bi-pause-circle-fill"></i> في استراحة
+                <span class="badge bg-dark text-light ms-2">{{ onBreakEmployees.length }}</span>
+              </h5>
+            </div>
+            <div class="card-body">
+              @if (onBreakEmployees.length === 0) {
+                <div class="text-center text-muted py-3">
+                  لا يوجد موظفين في استراحة
+                </div>
+              }
+              @for (employee of onBreakEmployees; track trackByEmployeeId($index, employee)) {
+                <div class="employee-card mb-3 border rounded">
+                  <div 
+                    class="employee-header p-3 d-flex justify-content-between align-items-center cursor-pointer"
+                    (click)="toggleEmployee(employee.employeeId)"
+                    [class.bg-light]="isExpanded(employee.employeeId)"
+                  >
+                    <div class="d-flex align-items-center flex-grow-1">
+                      <span class="status-circle status-break me-3"></span>
+                      <div>
+                        <div class="fw-bold fs-5">{{ employee.employeeName }}</div>
+                        <small class="text-muted">في استراحة</small>
+                      </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                      <span class="badge bg-secondary me-2">{{ employee.tasks.length }} مهمة</span>
+                      <i 
+                        class="bi"
+                        [class.bi-chevron-down]="!isExpanded(employee.employeeId)"
+                        [class.bi-chevron-up]="isExpanded(employee.employeeId)"
+                      ></i>
                     </div>
                   </div>
-                  <div class="d-flex align-items-center">
-                    <span class="badge bg-secondary me-2">{{ employee.tasks.length }} مهمة</span>
-                    <i 
-                      class="bi"
-                      [class.bi-chevron-down]="!isExpanded(employee.employeeId)"
-                      [class.bi-chevron-up]="isExpanded(employee.employeeId)"
-                    ></i>
-                  </div>
-                </div>
 
-                @if (isExpanded(employee.employeeId)) {
-                  <div class="employee-tasks p-3 border-top">
-                    @if (employee.tasks.length === 0) {
-                      <div class="text-center text-muted py-3">لا توجد مهام لهذا الموظف اليوم</div>
-                    }
-                    @if (employee.tasks.length > 0) {
-                      <div class="table-responsive">
-                        <table class="table table-sm table-hover">
-                          <thead>
-                            <tr>
-                              <th>المهمة</th>
-                              <th>الحالة</th>
-                              <th>الموعد النهائي</th>
-                              <th>الأولوية</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            @for (task of employee.tasks; track trackByTaskId($index, task)) {
-                              <tr (click)="goToTask(task.id)" style="cursor: pointer;">
-                                <td>
-                                  <div class="fw-bold">{{ task.title }}</div>
-                                  @if (task.description) {
-                                    <small class="text-muted">{{ task.description | slice:0:50 }}...</small>
-                                  }
-                                </td>
-                                <td>
-                                  <span [ngClass]="getTaskStatusClass(task.status)">
-                                    {{ getTaskStatusText(task.status) }}
-                                  </span>
-                                </td>
-                                <td>
-                                  {{ formatDeadline(task.deadline) }}
-                                </td>
-                                <td><span class="badge bg-info">{{ task.priority }}</span></td>
+                  @if (isExpanded(employee.employeeId)) {
+                    <div class="employee-tasks p-3 border-top">
+                      @if (employee.tasks.length === 0) {
+                        <div class="text-center text-muted py-3">لا توجد مهام لهذا الموظف اليوم</div>
+                      }
+                      @if (employee.tasks.length > 0) {
+                        <div class="table-responsive">
+                          <table class="table table-sm table-hover">
+                            <thead>
+                              <tr>
+                                <th>المهمة</th>
+                                <th>الحالة</th>
+                                <th>الموعد النهائي</th>
+                                <th>الأولوية</th>
                               </tr>
-                            }
-                          </tbody>
-                        </table>
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
-            }
+                            </thead>
+                            <tbody>
+                              @for (task of employee.tasks; track trackByTaskId($index, task)) {
+                                <tr (click)="goToTask(task.id)" style="cursor: pointer;">
+                                  <td>
+                                    <div class="fw-bold">{{ task.title }}</div>
+                                    @if (task.description) {
+                                      <small class="text-muted">{{ task.description | slice:0:50 }}...</small>
+                                    }
+                                  </td>
+                                  <td>
+                                    <span [ngClass]="getTaskStatusClass(task.status)">
+                                      {{ getTaskStatusText(task.status) }}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    {{ formatDeadline(task.deadline) }}
+                                  </td>
+                                  <td><span class="badge bg-info">{{ task.priority }}</span></td>
+                                </tr>
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
           </div>
         </div>
-      </div>
+      }
 
       <!-- Absent Employees -->
       <div class="col-12">

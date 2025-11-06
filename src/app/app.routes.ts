@@ -54,6 +54,7 @@ import { TaskEmpReportComponent } from './pages/reports/task-emp-report/task-emp
 import { CreateInvitationComponent } from './pages/emp-invitations/create-invitation/create-invitation.component';
 import { PendingInvitationsComponent } from './pages/emp-invitations/pending-invitations/pending-invitations.component';
 import { CompleteInvitationComponent } from './pages/emp-invitations/complete-invitation/complete-invitation.component';
+import { AttendanceReportComponent } from './pages/reports/attendance-report/attendance-report.component';
 
 export const routes: Routes = [
   {
@@ -235,8 +236,9 @@ export const routes: Routes = [
     component: DashboardComponent,
     canActivate: [noauthGuard],
     children: [
-      { path: 'task-report', component: TaskDashboardComponent },
-      // { path: 'task-emp-report', component: TaskEmpReportComponent}
+      // { path: 'task-report', component: TaskDashboardComponent },
+      { path: 'task-emp-report', component: TaskEmpReportComponent},
+      { path: 'attendance-report', component: AttendanceReportComponent}
     ],
   },
   {

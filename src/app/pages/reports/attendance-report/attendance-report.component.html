@@ -1,0 +1,99 @@
+<section class="container my-4">
+  <h2 class="mb-4">تقرير الحضور الشهري</h2>
+
+  <!-- Filter Section -->
+  <form [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <label for="fromDate" class="form-label">من تاريخ</label>
+        <input
+          type="date"
+          id="fromDate"
+          class="form-control"
+          formControlName="fromDate"
+        />
+      </div>
+      <div class="col-md-3">
+        <label for="toDate" class="form-label">إلى تاريخ</label>
+        <input
+          type="date"
+          id="toDate"
+          class="form-control"
+          formControlName="toDate"
+        />
+      </div>
+      <div class="col-md-3">
+        <label for="status" class="form-label">حالة الحضور</label>
+        <select
+          id="status"
+          class="form-select"
+          formControlName="status"
+        >
+          <option [value]="null">جميع الحالات</option>
+          <option [value]="attendanceStatuses.Present">حاضر</option>
+          <option [value]="attendanceStatuses.Absent">غياب</option>
+          <option [value]="attendanceStatuses.Leave">إجازة</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <button
+          type="submit"
+          class="add-btn w-100"
+          [disabled]="loading"
+        >
+          @if (loading) {
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          }
+          تصفية
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Error Message -->
+  @if (error) {
+    <div class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+  }
+
+  <!-- Loading State -->
+  @if (loading) {
+    <div class="text-center my-4">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">جاري التحميل...</span>
+      </div>
+    </div>
+  }
+
+  <!-- Report Table -->
+  @if (attendanceReport && !loading) {
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>الموظف</th>
+            <th>أيام الحضور</th>
+            <th>أيام الغياب</th>
+            <th>أيام الإجازة</th>
+            <th>ساعات العمل</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (attendanceReport.employees.length === 0) {
+            <tr>
+              <td colspan="5" class="text-center">لا توجد بيانات للعرض</td>
+            </tr>
+          }
+          @for (employee of attendanceReport.employees; track employee.employeeId) {
+            <tr>
+              <td>{{ employee.employeeName }}</td>
+              <td>{{ employee.totalDaysPresent }}</td>
+              <td>{{ employee.totalDaysAbsent }}</td>
+              <td>{{ employee.totalDaysOnLeave }}</td>
+              <td>{{ formatHours(employee.totalHoursWorked) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+  }
+</section>
