@@ -29,4 +29,11 @@ export interface EmployeeMonthlyAttendance {
   totalDaysAbsent: number;
   totalDaysOnLeave: number;
   totalHoursWorked: number;
+  totalMissingClockout: number;
+  incidents: EmployeeMonthlyIncident[];
+}
+
+export interface EmployeeMonthlyIncident {
+  aspectType: number; // KPIAspectType enum value
+  createdAt: Date;
 }

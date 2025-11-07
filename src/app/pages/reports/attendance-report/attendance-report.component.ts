@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ReportingService } from '../../../services/reporting/reporting.service';
 import { AttendanceStatus } from '../../../model/attendance-record/attendance-record';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MonthlyAttendanceReport } from '../../../model/reporting/i-task-employee-report';
+import { KPIAspect } from '../../../model/kpis/icreate-incedint';
+import { MapKpiAspectPipe } from '../../../core/pipes/kpis/map-kpi-aspect.pipe';
 
 @Component({
   selector: 'app-attendance-report',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, MapKpiAspectPipe, DatePipe],
   templateUrl: './attendance-report.component.html',
-  styleUrl: './attendance-report.component.css'
+  styleUrl: './attendance-report.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AttendanceReportComponent implements OnInit {
   attendanceReport: MonthlyAttendanceReport | null = null;
@@ -17,10 +20,12 @@ export class AttendanceReportComponent implements OnInit {
   loading: boolean = false;
   error: string | null = null;
   attendanceStatuses = AttendanceStatus;
+  expandedEmployees: Set<string> = new Set();
 
   constructor(
     private reportingService: ReportingService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +62,7 @@ export class AttendanceReportComponent implements OnInit {
 
     this.loading = true;
     this.error = null;
+    this.cdr.markForCheck();
 
     // Convert status string to number if provided
     const status = formValue.status !== null && formValue.status !== '' 
@@ -67,10 +73,12 @@ export class AttendanceReportComponent implements OnInit {
       next: (report) => {
         this.attendanceReport = report;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.error = 'حدث خطأ أثناء تحميل التقرير';
         this.loading = false;
+        this.cdr.markForCheck();
         console.error('Error loading report:', err);
       }
     });
@@ -95,5 +103,30 @@ export class AttendanceReportComponent implements OnInit {
       default:
         return '';
     }
+  }
+
+  toggleEmployee(employeeId: string): void {
+    if (this.expandedEmployees.has(employeeId)) {
+      this.expandedEmployees.delete(employeeId);
+    } else {
+      this.expandedEmployees.add(employeeId);
+    }
+    this.cdr.markForCheck();
+  }
+
+  isExpanded(employeeId: string): boolean {
+    return this.expandedEmployees.has(employeeId);
+  }
+
+  trackByEmployeeId(index: number, employee: any): string {
+    return employee.employeeId;
+  }
+
+  trackByIncident(index: number, incident: any): number {
+    return index;
+  }
+
+  formatDate(date: Date): string {
+    return new DatePipe('en-US').transform(date, 'short') || '';
   }
 }
