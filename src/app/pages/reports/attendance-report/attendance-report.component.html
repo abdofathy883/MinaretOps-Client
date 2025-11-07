@@ -74,7 +74,9 @@
           <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
               <i class="bi bi-calendar-check-fill"></i> تقرير الحضور الشهري
-              <span class="badge bg-light text-dark ms-2">{{ attendanceReport.employees.length || 0 }} موظف</span>
+              @if (attendanceReport.employees) {
+                <span class="badge bg-light text-dark ms-2">{{ attendanceReport.employees.length }} موظف</span>
+              }
             </h5>
           </div>
           <div class="card-body">
@@ -102,7 +104,9 @@
                     </div>
                   </div>
                   <div class="d-flex align-items-center">
-                    <span class="badge bg-secondary me-2">{{ employee.incidents.length || 0 }} حادثة</span>
+                    @if (employee.incidents) {
+                      <span class="badge bg-secondary me-2">{{ employee.incidents.length }} حادثة</span>
+                    }
                     <i 
                       class="bi"
                       [class.bi-chevron-down]="!isExpanded(employee.employeeId)"
@@ -160,36 +164,40 @@
                     <!-- Incidents Section -->
                     <div class="mt-4">
                       <h6 class="mb-3">
-                        <i class="bi bi-exclamation-circle-fill"></i> الحوادث ({{ employee.incidents.length || 0 }})
+                        @if (employee.incidents) {
+                          <i class="bi bi-exclamation-circle-fill"></i> الحوادث ({{ employee.incidents.length}})
+                        }
                       </h6>
                       @if (employee.incidents && employee.incidents.length === 0) {
                         <div class="text-center text-muted py-3">
                           لا توجد حوادث لهذا الموظف
                         </div>
                       }
-                      @if (employee.incidents && employee.incidents.length > 0) {
-                        <div class="table-responsive">
-                          <table class="table table-sm table-hover">
-                            <thead>
-                              <tr>
-                                <th>نوع الحادثة</th>
-                                <th>التاريخ والوقت</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              @for (incident of employee.incidents; track trackByIncident($index, incident)) {
+                      @if (employee.incidents) {
+                        @if (employee.incidents.length > 0) {
+                          <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                              <thead>
                                 <tr>
-                                  <td>
-                                    <span class="badge bg-warning text-dark">
-                                      {{ incident.aspectType | mapKpiAspect }}
-                                    </span>
-                                  </td>
-                                  <td>{{ formatDate(incident.createdAt) }}</td>
+                                  <th>نوع الحادثة</th>
+                                  <th>التاريخ والوقت</th>
                                 </tr>
-                              }
-                            </tbody>
-                          </table>
-                        </div>
+                              </thead>
+                              <tbody>
+                                @for (incident of employee.incidents; track trackByIncident($index, incident)) {
+                                  <tr>
+                                    <td>
+                                      <span class="badge bg-warning text-dark">
+                                        {{ incident.aspectType | mapKpiAspect }}
+                                      </span>
+                                    </td>
+                                    <td>{{ formatDate(incident.createdAt) }}</td>
+                                  </tr>
+                                }
+                              </tbody>
+                            </table>
+                          </div>
+                        }
                       }
                     </div>
                   </div>
