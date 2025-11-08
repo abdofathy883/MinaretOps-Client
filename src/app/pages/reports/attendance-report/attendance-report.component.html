@@ -78,7 +78,7 @@
             </h5>
           </div>
           <div class="card-body">
-            @if (attendanceReport.employees.length === 0) {
+            @if (attendanceReport.employees && attendanceReport.employees.length === 0) {
               <div class="text-center text-muted py-3">
                 لا توجد بيانات للعرض
               </div>
@@ -162,12 +162,12 @@
                       <h6 class="mb-3">
                         <i class="bi bi-exclamation-circle-fill"></i> الحوادث ({{ employee.incidents.length }})
                       </h6>
-                      @if (employee.incidents.length === 0) {
+                      @if (employee.incidents && employee.incidents.length === 0) {
                         <div class="text-center text-muted py-3">
                           لا توجد حوادث لهذا الموظف
                         </div>
                       }
-                      @if (employee.incidents.length > 0) {
+                      @if (employee.incidents && employee.incidents.length > 0) {
                         <div class="table-responsive">
                           <table class="table table-sm table-hover">
                             <thead>
