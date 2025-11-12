@@ -21,7 +21,7 @@
 
     <div class="sidebar-nav">
       <ul class="navbar-nav text-white">
-        @if (isUserAdmin) {
+        @if (isUserAdmin || isUserAccountManager || isContentLeader || isDesignerLeader) {
           <li class="nav-item me-2">
             <a
               class="nav-link active"
@@ -29,7 +29,7 @@
               routerLink="/dashboard"
             >
               <i class="bi bi-house-door ms-3"></i>
-              <span class="nav-text" [class.hidden]="isCollapsed">الرئيسية</span>
+              <span class="nav-text" [class.hidden]="isCollapsed">التقارير</span>
             </a>
           </li>
         }

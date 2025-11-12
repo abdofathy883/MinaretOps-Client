@@ -4,12 +4,11 @@ import { AttendanceStatus } from '../../../model/attendance-record/attendance-re
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MonthlyAttendanceReport } from '../../../model/reporting/i-task-employee-report';
-import { KPIAspect } from '../../../model/kpis/icreate-incedint';
 import { MapKpiAspectPipe } from '../../../core/pipes/kpis/map-kpi-aspect.pipe';
 
 @Component({
   selector: 'app-attendance-report',
-  imports: [ReactiveFormsModule, CommonModule, MapKpiAspectPipe, DatePipe],
+  imports: [ReactiveFormsModule, CommonModule, MapKpiAspectPipe],
   templateUrl: './attendance-report.component.html',
   styleUrl: './attendance-report.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
