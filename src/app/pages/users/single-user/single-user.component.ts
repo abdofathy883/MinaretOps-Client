@@ -32,7 +32,6 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   currentLoggedInUserId: string = '';
   isUserAdmin: boolean = false;
   isUserAccountManager: boolean = false;
-  profilePictureFile!: File;
 
   alertMessage = '';
   alertType = 'info';
@@ -67,12 +66,6 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     return Object.keys(UserRoles)
       .filter((key) => isNaN(Number(key)))
       .map((key) => ({ key, value: key }));
-  }
-
-  onFileChange(event: any): void {
-    if (event.target.files && event.target.files.length) {
-      this.profilePictureFile = event.target.files[0];
-    }
   }
 
   ngOnInit(): void {
@@ -122,8 +115,6 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      jobTitle: user.jobTitle,
-      bio: user.bio,
       phoneNumber: user.phoneNumber,
       role: user.roles[0],
       paymentNumber: user.paymentNumber,
@@ -155,17 +146,13 @@ export class SingleUserComponent implements OnInit, OnDestroy {
     updateUser.append('id', this.user?.id);
     updateUser.append('firstName', formValue.firstName);
     updateUser.append('lastName', formValue.lastName);
-    updateUser.append('bio', formValue.bio);
-    updateUser.append('jobTitle', formValue.jobTitle);
     updateUser.append('email', formValue.email);
     updateUser.append('phoneNumber', formValue.phoneNumber);
     updateUser.append('city', formValue.city);
     updateUser.append('street', formValue.street);
     updateUser.append('paymentNumber', formValue.paymentNumber);
     // In saveUser() method, around line 182:
-    if (this.profilePictureFile) {
-      updateUser.append('profilePicture', this.profilePictureFile);
-    }
+
     updateUser.append('role', formValue.role);
 
     // Convert numeric role value to role name before sending

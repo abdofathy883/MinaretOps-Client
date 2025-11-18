@@ -1,0 +1,13 @@
+.form-header {
+  background-color: var(--orange-color);
+  color: white;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.modal.show {
+  display: block;
+}

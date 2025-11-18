@@ -8,6 +8,12 @@
   <app-client-info [client]="client"></app-client-info>
 
   @if (client != null) {
+    <app-checkpoints
+    [clientServices]="client.clientServices"
+    [currentUserId]="currentUserId"
+    (checkpointsChanged)="loadClient()"
+  ></app-checkpoints>
+
   <app-task-groups
     [clientServices]="client.clientServices"
     [clientId]="client.id"

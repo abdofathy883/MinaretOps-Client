@@ -1,0 +1,183 @@
+<section class="container my-3">
+  <div class="card shadow-sm">
+    <div class="card-header form-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">
+        <i class="bi bi-list-check me-2"></i>
+        نقاط التحقق للخدمة
+      </h5>
+      @if (canManageCheckpoints()) {
+        <button class="btn btn-light btn-sm" (click)="openAddModal()">
+          <i class="bi bi-plus-circle me-1"></i>
+          إضافة نقطة تحقق
+        </button>
+      }
+    </div>
+
+    <div class="card-body">
+      <!-- Alert Messages -->
+      @if (alertMessage) {
+        <div class="alert" [class]="'alert-' + alertType">
+          {{ alertMessage }}
+        </div>
+      }
+
+      @if (loading) {
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">جاري التحميل...</span>
+          </div>
+        </div>
+      } @else {
+        @if (checkpoints.length > 0) {
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>الترتيب</th>
+                  <th>الاسم</th>
+                  <th>الوصف</th>
+                  <th>تاريخ الإنشاء</th>
+                  @if (canManageCheckpoints()) {
+                    <th>الإجراءات</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (checkpoint of checkpoints; track checkpoint.id) {
+                  <tr>
+                    <td>
+                      <span class="badge bg-secondary">{{ checkpoint.order }}</span>
+                    </td>
+                    <td class="fw-bold">{{ checkpoint.name }}</td>
+                    <td>
+                      {{ checkpoint.description || 'لا يوجد وصف' }}
+                    </td>
+                    <td>{{ checkpoint.createdAt | date: 'dd/MM/yyyy' }}</td>
+                    @if (canManageCheckpoints()) {
+                      <td>
+                        <button 
+                          class="btn btn-outline-warning btn-sm me-2"
+                          (click)="openEditModal(checkpoint)"
+                          title="تعديل">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button 
+                          class="btn btn-outline-danger btn-sm"
+                          (click)="deleteCheckpoint(checkpoint)"
+                          title="حذف">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="text-center py-4">
+            <p class="text-muted">
+              <i class="bi bi-info-circle me-2"></i>
+              لا توجد نقاط تحقق لهذه الخدمة
+            </p>
+            @if (canManageCheckpoints()) {
+              <button class="btn btn-primary mt-2" (click)="openAddModal()">
+                <i class="bi bi-plus-circle me-1"></i>
+                إضافة أول نقطة تحقق
+              </button>
+            }
+          </div>
+        }
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Add/Edit Modal -->
+@if (showAddModal || showEditModal) {
+  <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);" (click)="closeModals()">
+    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            {{ selectedCheckpoint ? 'تعديل نقطة التحقق' : 'إضافة نقطة تحقق جديدة' }}
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModals()"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="checkpointForm" (ngSubmit)="saveCheckpoint()">
+            <div class="mb-3">
+              <label for="name" class="form-label">اسم نقطة التحقق</label>
+              <span class="text-danger me-2">*</span>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                formControlName="name"
+                [class.is-invalid]="hasError('name')"
+                placeholder="مثال: المحتوى، التصاميم، الصفحات..."
+              />
+              @if (hasError('name')) {
+                <div class="invalid-feedback">
+                  {{ getErrorMessage('name') }}
+                </div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">الوصف (اختياري)</label>
+              <textarea
+                class="form-control"
+                id="description"
+                formControlName="description"
+                rows="3"
+                [class.is-invalid]="hasError('description')"
+                placeholder="وصف تفصيلي لنقطة التحقق..."
+              ></textarea>
+              @if (hasError('description')) {
+                <div class="invalid-feedback">
+                  {{ getErrorMessage('description') }}
+                </div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="order" class="form-label">الترتيب</label>
+              <span class="text-danger me-2">*</span>
+              <input
+                type="number"
+                class="form-control"
+                id="order"
+                formControlName="order"
+                [class.is-invalid]="hasError('order')"
+                min="0"
+              />
+              @if (hasError('order')) {
+                <div class="invalid-feedback">
+                  {{ getErrorMessage('order') }}
+                </div>
+              }
+              <small class="form-text text-muted">
+                الترتيب الذي ستظهر به نقطة التحقق (الأقل = الأول)
+              </small>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModals()">
+                إلغاء
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="loading">
+                @if (loading) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  جاري الحفظ...
+                } @else {
+                  {{ selectedCheckpoint ? 'حفظ التغييرات' : 'إضافة' }}
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+}

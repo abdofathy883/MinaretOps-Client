@@ -1,3 +1,4 @@
+import { IClientServiceCheckpoint } from "../checkpoint/i-service-checkpoint";
 import { ICreateTaskGroup, ITask, ITaskGroup } from "../task/task";
 
 export interface LightWieghtClient {
@@ -31,7 +32,6 @@ export interface ICreateClient {
   companyNumber?: string;
   businessDescription: string;
   driveLink: string;
-  discordChannelId?: string;
   status: ClientStatus;
   clientServices: ICreateClientService[];
 }
@@ -46,6 +46,7 @@ export interface IClientService {
   endDate?: Date;
   taskItems: ITask[];
   taskGroups: ITaskGroup[];
+  clientServiceCheckpoints: IClientServiceCheckpoint[];
 }
 
 export interface IClient {

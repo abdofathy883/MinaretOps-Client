@@ -22,7 +22,6 @@ export class UpdateProfileComponent implements OnInit {
   currentUser!: User;
   isLoading: boolean = false;
   isPasswordLoading: boolean = false;
-  profilePictureFile!: File;
 
   alertMessage = '';
   alertType = 'info';
@@ -48,9 +47,6 @@ export class UpdateProfileComponent implements OnInit {
     this.editUserForm = this.fb.group({
       firstName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
       lastName: ['', [Validators.minLength(3), Validators.maxLength(30)]],
-      bio: [''],
-      jobTitle: [''],
-      profilePicture: [''],
       email: [''],
       phoneNumber: [''],
       paymentNumber: [''],
@@ -85,12 +81,6 @@ export class UpdateProfileComponent implements OnInit {
     return null;
   }
 
-  onFileChange(event: any): void {
-    if (event.target.files && event.target.files.length) {
-      this.profilePictureFile = event.target.files[0];
-    }
-  }
-
   updateFormValues(): void {
     if (this.currentUser) {
       this.editUserForm.patchValue({
@@ -101,8 +91,6 @@ export class UpdateProfileComponent implements OnInit {
         paymentNumber: this.currentUser.paymentNumber,
         city: this.currentUser.city,
         street: this.currentUser.street,
-        jobTitle: this.currentUser.jobTitle,
-        bio: this.currentUser.bio,
       });
     }
   }
@@ -118,9 +106,6 @@ export class UpdateProfileComponent implements OnInit {
     updateUser.append('id', this.currentUser?.id);
     updateUser.append('firstName', this.editUserForm.value.firstName);
     updateUser.append('lastName', this.editUserForm.value.lastName);
-    updateUser.append('bio', this.editUserForm.value.bio);
-    updateUser.append('jobTitle', this.editUserForm.value.jobTitle);
-    updateUser.append('profilePicture', this.profilePictureFile);
     updateUser.append('email', this.editUserForm.value.email);
     updateUser.append('phoneNumber', this.editUserForm.value.phoneNumber);
     updateUser.append('paymentNumber', this.editUserForm.value.paymentNumber);

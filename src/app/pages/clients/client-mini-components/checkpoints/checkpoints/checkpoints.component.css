@@ -1,0 +1,78 @@
+.form-header {
+  background-color: var(--orange-color);
+  color: white;
+}
+
+.checkpoint-item {
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.checkpoint-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.checkpoint-item.completed {
+  background-color: #d1f2eb;
+  border-color: #a8e6cf !important;
+}
+
+.checkpoint-item.pending {
+  background-color: #fff3cd;
+  border-color: #ffeaa7 !important;
+}
+
+.checkpoint-checkbox {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.checkpoint-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.checkpoint-name {
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.checkpoint-item.completed .checkpoint-name {
+  color: #0e6251;
+}
+
+.progress {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  transition: width 0.6s ease;
+}
+
+.checkpoints-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/* Scrollbar styling */
+.checkpoints-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.checkpoints-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.checkpoints-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.checkpoints-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

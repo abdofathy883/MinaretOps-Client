@@ -9,9 +9,6 @@ export interface User {
   paymentNumber: string;
   nid: string;
   dateOfHiring: Date;
-  jobTitle: string;
-  bio: string;
-  profilePicture: string;
   message: string;
   isAuthenticated: boolean;
   isDeleted: boolean;
@@ -39,9 +36,6 @@ export interface UpdateUser {
   id?: string;
   firstName?: string;
   lastName?: string;
-  jobTitle: string;
-  bio: string;
-  profilePicture: string;
   email?: string;
   phoneNumber?: string;
   city?: string;
@@ -64,9 +58,6 @@ export interface LoginUser {
 export interface RegisterUser {
   firstName: string;
   lastName: string;
-  // jobTitle: string;
-  // bio: string;
-  // profilePicture: File;
   email: string;
   phoneNumber: string;
   role: number;

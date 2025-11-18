@@ -122,5 +122,11 @@
       </div>
     </div>
   </div>
+  @if (service) {
+    <app-service-checkpoints
+      [serviceId]="service.id"
+      (checkpointsChanged)="onCheckpointsChanged()"
+    ></app-service-checkpoints>
+  }
   }
 </section>

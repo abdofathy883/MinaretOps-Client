@@ -1,0 +1,130 @@
+<section class="container my-3">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-check-circle me-2"></i>
+      نقاط التحقق
+    </h2>
+  </div>
+
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+    <div class="alert" [class]="'alert-' + alertType">
+      {{ alertMessage }}
+    </div>
+  }
+
+  <!-- Checkpoints for each client service -->
+  @for (clientService of clientServices; track clientService.id) {
+    <div class="card shadow-sm mt-3">
+      <div class="card-header form-header">
+        <h4 class="mb-0">
+          <i class="bi bi-gear me-2"></i>
+          {{ clientService.serviceTitle }}
+        </h4>
+      </div>
+      <div class="card-body">
+        @if (isLoading(clientService.id)) {
+          <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">جاري التحميل...</span>
+            </div>
+          </div>
+        } @else {
+          @if (getCheckpointsForService(clientService.id).length > 0) {
+            <!-- Progress Bar -->
+            <div class="mb-4">
+              <div class="d-flex justify-content-between mb-2">
+                <span class="fw-bold">التقدم الإجمالي</span>
+                <span class="fw-bold">{{ getCompletionPercentage(clientService.id) }}%</span>
+              </div>
+              <div class="progress" style="height: 25px;">
+                <div 
+                  class="progress-bar progress-bar-striped progress-bar-animated" 
+                  role="progressbar" 
+                  [style.width.%]="getCompletionPercentage(clientService.id)"
+                  [attr.aria-valuenow]="getCompletionPercentage(clientService.id)"
+                  aria-valuemin="0" 
+                  aria-valuemax="100">
+                  {{ getCompletionPercentage(clientService.id) }}%
+                </div>
+              </div>
+            </div>
+
+            <!-- Checkpoints List -->
+            <div class="checkpoints-list">
+              @for (checkpoint of getCheckpointsForService(clientService.id); track checkpoint.id) {
+                <div class="checkpoint-item mb-3 p-3 border rounded" 
+                     [class.completed]="checkpoint.isCompleted"
+                     [class.pending]="!checkpoint.isCompleted">
+                  <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center flex-grow-1">
+                      <!-- Checkbox -->
+                      <div class="form-check me-3">
+                        <input 
+                          class="form-check-input checkpoint-checkbox" 
+                          type="checkbox" 
+                          [id]="'checkpoint-' + checkpoint.id"
+                          [checked]="checkpoint.isCompleted"
+                          [disabled]="!canMarkCheckpoint()"
+                          (change)="toggleCheckpoint(checkpoint)">
+                        <label 
+                          class="form-check-label" 
+                          [for]="'checkpoint-' + checkpoint.id">
+                        </label>
+                      </div>
+
+                      <!-- Checkpoint Info -->
+                      <div class="flex-grow-1">
+                        <h5 class="mb-1 checkpoint-name" 
+                            [class.text-decoration-line-through]="checkpoint.isCompleted">
+                          {{ checkpoint.serviceCheckpointName }}
+                        </h5>
+                        @if (checkpoint.serviceCheckpointDescription) {
+                          <p class="text-muted mb-1 small">
+                            {{ checkpoint.serviceCheckpointDescription }}
+                          </p>
+                        }
+                        @if (checkpoint.isCompleted && checkpoint.completedByEmployeeName) {
+                          <small class="text-success">
+                            <i class="bi bi-check-circle-fill me-1"></i>
+                            تم الإكمال بواسطة: {{ checkpoint.completedByEmployeeName }}
+                            @if (checkpoint.completedAt) {
+                              في {{ checkpoint.completedAt | date: 'dd/MM/yyyy' }}
+                            }
+                          </small>
+                        }
+                      </div>
+                    </div>
+
+                    <!-- Status Badge -->
+                    <div class="ms-3">
+                      @if (checkpoint.isCompleted) {
+                        <span class="badge bg-success">
+                          <i class="bi bi-check-circle me-1"></i>
+                          مكتمل
+                        </span>
+                      } @else {
+                        <span class="badge bg-warning text-dark">
+                          <i class="bi bi-clock me-1"></i>
+                          قيد الانتظار
+                        </span>
+                      }
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="text-center py-4">
+              <p class="text-muted">
+                <i class="bi bi-info-circle me-2"></i>
+                لا توجد نقاط تحقق لهذه الخدمة
+              </p>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</section>

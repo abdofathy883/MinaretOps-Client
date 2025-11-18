@@ -1,3 +1,4 @@
+import { IServiceCheckpoint } from "../checkpoint/i-service-checkpoint";
 import { IClientService } from "../client/client";
 
 export interface Service {
@@ -7,6 +8,7 @@ export interface Service {
     createdAt: Date;
     isDeleted: boolean;
     clientServices: IClientService[];
+    serviceCheckpoints: IServiceCheckpoint[];
 }
 
 export interface CreateServiceRequest {

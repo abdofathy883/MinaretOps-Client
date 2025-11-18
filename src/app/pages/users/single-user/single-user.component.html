@@ -183,57 +183,6 @@
             </div>
           </div>
 
-          <div class="mb-3">
-            <label for="bio" class="form-label">Bio</label>
-            <textarea
-              name="bio"
-              id="bio"
-              class="form-control"
-              rows="3"
-              formControlName="bio"
-              [class.is-invalid]="
-                editUserForm.get('bio')?.invalid &&
-                editUserForm.get('bio')?.touched
-              "
-              placeholder="ادخل نبذة عن الموظف تعرض في الموقع الرئيسي"
-            ></textarea>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="jobTitle" class="form-label">المسمى الوظيفي</label>
-              <input
-                type="text"
-                name="jobTitle"
-                id="jobTitle"
-                class="form-control"
-                formControlName="jobTitle"
-                [class.is-invalid]="
-                  editUserForm.get('jobTitle')?.invalid &&
-                  editUserForm.get('jobTitle')?.touched
-                "
-              />
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="profilePicture" class="form-label"
-                >الصورة الشخصية</label
-              >
-              <input
-                type="file"
-                accept="image/*"
-                name="profilePicture"
-                id="profilePicture"
-                class="form-control"
-                formControlName="profilePicture"
-                (change)="onFileChange($event)"
-                [class.is-invalid]="
-                  editUserForm.get('profilePicture')?.invalid &&
-                  editUserForm.get('profilePicture')?.touched
-                "
-              />
-            </div>
-          </div>
-
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="editEmail" class="form-label"

@@ -10,6 +10,7 @@ import { ClientInfoComponent } from '../client-mini-components/client-info/clien
 import { TaskGroupsComponent } from "../client-mini-components/task-groups/task-groups.component";
 import { IClient } from '../../../model/client/client';
 import { ICreateTask, ICreateTaskGroup, ITask } from '../../../model/task/task';
+import { CheckpointsComponent } from "../client-mini-components/checkpoints/checkpoints/checkpoints.component";
 
 @Component({
   selector: 'app-single-client',
@@ -18,7 +19,8 @@ import { ICreateTask, ICreateTaskGroup, ITask } from '../../../model/task/task';
     CommonModule,
     ReactiveFormsModule,
     ClientInfoComponent,
-    TaskGroupsComponent
+    TaskGroupsComponent,
+    CheckpointsComponent
 ],
   templateUrl: './single-client.component.html',
   styleUrl: './single-client.component.css',

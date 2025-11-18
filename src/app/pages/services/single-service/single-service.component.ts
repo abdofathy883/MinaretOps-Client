@@ -6,10 +6,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth/auth.service';
 import { AlertService } from '../../../services/helper-services/alert.service';
+import { ServiceCheckpointsComponent } from "../service-checkpoints/service-checkpoints/service-checkpoints.component";
 
 @Component({
   selector: 'app-single-service',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ServiceCheckpointsComponent],
   templateUrl: './single-service.component.html',
   styleUrl: './single-service.component.css',
 })
@@ -45,6 +46,10 @@ export class SingleServiceComponent implements OnInit {
     this.initializeForm();
     this.loadService();
   }
+
+  onCheckpointsChanged(): void {
+  this.loadService(); // Reload service to get updated checkpoints
+}
 
   onSubmit() {
     if (this.serviceForm.invalid) {
