@@ -221,7 +221,6 @@ export class AddClientComponent implements OnInit, OnDestroy {
       companyNumber: formValue.companyNumber || undefined,
       businessDescription: formValue.businessDescription,
       driveLink: formValue.driveLink,
-      discordChannelId: formValue.discordChannelId,
       status: formValue.status,
       clientServices: formValue.clientServices.map((cs: any) => ({
         serviceId: cs.serviceId,
