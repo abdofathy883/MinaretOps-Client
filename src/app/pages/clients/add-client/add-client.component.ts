@@ -68,7 +68,6 @@ export class AddClientComponent implements OnInit, OnDestroy {
         ],
       ],
       driveLink: ['', Validators.required],
-      discordChannelId: ['', [Validators.required, Validators.maxLength(20)]],
       status: [ClientStatus.Active],
       clientServices: this.fb.array([]),
     });
