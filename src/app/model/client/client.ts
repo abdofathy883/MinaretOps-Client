@@ -19,8 +19,8 @@ export enum ClientStatus {
 
 // Client Service interfaces
 export interface ICreateClientService {
-  clientId: number;
   serviceId: number;
+  selectedCheckpointIds?: number[];
   taskGroups: ICreateTaskGroup[];
 }
 

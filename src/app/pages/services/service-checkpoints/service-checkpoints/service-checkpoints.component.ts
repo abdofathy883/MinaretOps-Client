@@ -1,17 +1,24 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ICreateServiceCheckpoint, IServiceCheckpoint } from '../../../../model/checkpoint/i-service-checkpoint';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import {
+  ICreateServiceCheckpoint,
+  IServiceCheckpoint,
+} from '../../../../model/checkpoint/i-service-checkpoint';
 import { CheckpointService } from '../../../../services/checkpoints/checkpoint.service';
 import { AuthService } from '../../../../services/auth/auth.service';
-
 
 @Component({
   selector: 'app-service-checkpoints',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './service-checkpoints.component.html',
-  styleUrl: './service-checkpoints.component.css'
+  styleUrl: './service-checkpoints.component.css',
 })
 export class ServiceCheckpointsComponent implements OnInit {
   @Input() serviceId: number = 0;
@@ -38,9 +45,16 @@ export class ServiceCheckpointsComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.checkpointForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(200),
+        ],
+      ],
       description: ['', [Validators.maxLength(1000)]],
-      order: [0, [Validators.required, Validators.min(0)]]
+      order: [0, [Validators.required, Validators.min(0)]],
     });
   }
 
@@ -64,7 +78,7 @@ export class ServiceCheckpointsComponent implements OnInit {
 
   loadCheckpoints(): void {
     if (!this.serviceId) return;
-    
+
     this.loading = true;
     this.checkpointService.getServiceCheckpoints(this.serviceId).subscribe({
       next: (checkpoints) => {
@@ -74,7 +88,7 @@ export class ServiceCheckpointsComponent implements OnInit {
       error: () => {
         this.loading = false;
         this.showAlert('حدث خطأ في تحميل نقاط التحقق', 'error');
-      }
+      },
     });
   }
 
@@ -83,9 +97,10 @@ export class ServiceCheckpointsComponent implements OnInit {
     this.checkpointForm.reset({
       name: '',
       description: '',
-      order: this.checkpoints.length > 0 
-        ? Math.max(...this.checkpoints.map(c => c.order)) + 1 
-        : 1
+      order:
+        this.checkpoints.length > 0
+          ? Math.max(...this.checkpoints.map((c) => c.order)) + 1
+          : 1,
     });
     this.showAddModal = true;
   }
@@ -95,7 +110,7 @@ export class ServiceCheckpointsComponent implements OnInit {
     this.checkpointForm.patchValue({
       name: checkpoint.name,
       description: checkpoint.description || '',
-      order: checkpoint.order
+      order: checkpoint.order,
     });
     this.showEditModal = true;
   }
@@ -123,54 +138,59 @@ export class ServiceCheckpointsComponent implements OnInit {
   }
 
   createCheckpoint(formValue: any): void {
-    debugger;
-  const newCheckpoint: ICreateServiceCheckpoint = {
-    serviceId: this.serviceId,
-    name: formValue.name,
-    description: formValue.description || undefined,
-    order: formValue.order
-  };
+    const newCheckpoint: ICreateServiceCheckpoint = {
+      serviceId: this.serviceId,
+      name: formValue.name,
+      description: formValue.description || undefined,
+      order: formValue.order,
+    };
 
-  this.loading = true;
-  this.checkpointService.createServiceCheckpoint(newCheckpoint).subscribe({
-    next: (response) => {
-      this.loading = false;
-      this.closeModals();
-      this.loadCheckpoints();
-      this.showAlert('تم إضافة نقطة التحقق بنجاح', 'success');
-      this.checkpointsChanged.emit();
-    },
-    error: (error) => {
-      this.loading = false;
-      // Show actual error message
-      const errorMessage = error?.error?.message || error?.error || error?.message || 'حدث خطأ في إضافة نقطة التحقق';
-      console.error('Error creating checkpoint:', error);
-      this.showAlert(errorMessage, 'error');
-    }
-  });
-}
+    this.loading = true;
+    this.checkpointService.createServiceCheckpoint(newCheckpoint).subscribe({
+      next: (response) => {
+        this.loading = false;
+        this.closeModals();
+        this.loadCheckpoints();
+        this.showAlert('تم إضافة نقطة التحقق بنجاح', 'success');
+        this.checkpointsChanged.emit();
+      },
+      error: (error) => {
+        this.loading = false;
+        // Show actual error message
+        const errorMessage =
+          error?.error?.message ||
+          error?.error ||
+          error?.message ||
+          'حدث خطأ في إضافة نقطة التحقق';
+        console.error('Error creating checkpoint:', error);
+        this.showAlert(errorMessage, 'error');
+      },
+    });
+  }
 
   updateCheckpoint(formValue: any): void {
     if (!this.selectedCheckpoint) return;
 
     this.loading = true;
-    this.checkpointService.updateServiceCheckpoint(this.selectedCheckpoint.id, {
-      name: formValue.name,
-      description: formValue.description || undefined,
-      order: formValue.order
-    }).subscribe({
-      next: () => {
-        this.loading = false;
-        this.closeModals();
-        this.loadCheckpoints();
-        this.showAlert('تم تحديث نقطة التحقق بنجاح', 'success');
-        this.checkpointsChanged.emit();
-      },
-      error: () => {
-        this.loading = false;
-        this.showAlert('حدث خطأ في تحديث نقطة التحقق', 'error');
-      }
-    });
+    this.checkpointService
+      .updateServiceCheckpoint(this.selectedCheckpoint.id, {
+        name: formValue.name,
+        description: formValue.description || undefined,
+        order: formValue.order,
+      })
+      .subscribe({
+        next: () => {
+          this.loading = false;
+          this.closeModals();
+          this.loadCheckpoints();
+          this.showAlert('تم تحديث نقطة التحقق بنجاح', 'success');
+          this.checkpointsChanged.emit();
+        },
+        error: () => {
+          this.loading = false;
+          this.showAlert('حدث خطأ في تحديث نقطة التحقق', 'error');
+        },
+      });
   }
 
   deleteCheckpoint(checkpoint: IServiceCheckpoint): void {
@@ -189,7 +209,7 @@ export class ServiceCheckpointsComponent implements OnInit {
       error: () => {
         this.loading = false;
         this.showAlert('حدث خطأ في حذف نقطة التحقق', 'error');
-      }
+      },
     });
   }
 

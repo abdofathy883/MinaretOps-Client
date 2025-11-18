@@ -159,7 +159,9 @@
             <i class="bi bi-gear"></i>
             الخدمات والمهام
           </h6>
-          <small class="text-muted">يجب اضافة خدمة واحدة على الاقل ويمكن اضافة التاسكات فيما بعد</small>
+          <small class="text-muted"
+            >يجب اضافة خدمة واحدة على الاقل ويمكن اضافة التاسكات فيما بعد</small
+          >
         </div>
 
         <div formArrayName="clientServices">
@@ -179,13 +181,52 @@
 
             <div class="mb-3">
               <label class="form-label">اختر الخدمة</label>
-              <select class="form-select" formControlName="serviceId">
+              <select class="form-select" 
+              formControlName="serviceId"
+              (change)="onServiceSelected(serviceIndex, $any($event.target).value)">
                 <option value="" disabled selected>اختر الخدمة</option>
                 @for(service of availableServices; track service.id) {
                 <option [value]="service.id">{{ service.title }}</option>
                 }
               </select>
             </div>
+
+            <!-- Display checkpoints for selected service -->
+            <!-- Display checkpoints for selected service with checkboxes -->
+@if (getCheckpointsForService(clientServicesArray.at(serviceIndex).get('serviceId')?.value).length > 0) {
+  <div class="mb-3 p-3 bg-light rounded border">
+    <small class="text-muted d-block mb-2 fw-bold">
+      <i class="bi bi-list-check me-1"></i>
+      اختر نقاط التحقق لهذه الخدمة:
+    </small>
+    <div class="row">
+      @for (checkpoint of getCheckpointsForService(clientServicesArray.at(serviceIndex).get('serviceId')?.value); track checkpoint.id) {
+        <div class="col-md-6 mb-2">
+          <div class="form-check">
+            <input 
+              class="form-check-input" 
+              type="checkbox" 
+              [id]="'checkpoint-' + serviceIndex + '-' + checkpoint.id"
+              [checked]="isCheckpointSelected(serviceIndex, checkpoint.id)"
+              (change)="toggleCheckpointSelection(serviceIndex, checkpoint.id)">
+            <label 
+              class="form-check-label" 
+              [for]="'checkpoint-' + serviceIndex + '-' + checkpoint.id">
+              {{ checkpoint.name }}
+              @if (checkpoint.description) {
+                <small class="text-muted d-block">{{ checkpoint.description }}</small>
+              }
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+    <small class="text-info d-block mt-2">
+      <i class="bi bi-info-circle me-1"></i>
+      تم اختيار {{ getSelectedCheckpoints(serviceIndex).length }} من {{ getCheckpointsForService(clientServicesArray.at(serviceIndex).get('serviceId')?.value).length }} نقطة تحقق
+    </small>
+  </div>
+}
 
             <!-- Tasks -->
             <div formArrayName="tasks">
@@ -229,7 +270,6 @@
                   id="task-{{ serviceIndex }}-{{ taskIndex }}"
                   class="task-details"
                   [class.collapsed]="isTaskCollapsed(serviceIndex, taskIndex)"
-                  
                 >
                   <div class="row mb-2">
                     <div class="col-12 col-md-6">
@@ -293,7 +333,11 @@
                   <div class="row mb-2">
                     <div class="col-md-6 mb-3 mb-md-0">
                       <label class="form-label">الموظف</label>
-                      <select class="form-select" formControlName="employeeId" [class.is-invalid]="hasError('employeeId')">
+                      <select
+                        class="form-select"
+                        formControlName="employeeId"
+                        [class.is-invalid]="hasError('employeeId')"
+                      >
                         <option value="" disabled selected>اختر موظف</option>
                         @for (emp of employees; track emp.id) {
                         <option [value]="emp.id">
@@ -315,7 +359,11 @@
                   <div class="row mb-2">
                     <div class="col-md-6 mb-3 mb-md-0">
                       <label class="form-label">الأولوية</label>
-                      <select class="form-select" formControlName="priority" [class.is-invalid]="hasError('priority')">
+                      <select
+                        class="form-select"
+                        formControlName="priority"
+                        [class.is-invalid]="hasError('priority')"
+                      >
                         <option value="عادي">عادي</option>
                         <option value="مهم">مهم</option>
                         <option value="مستعجل">مستعجل</option>

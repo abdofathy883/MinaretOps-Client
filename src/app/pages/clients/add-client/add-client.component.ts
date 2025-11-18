@@ -19,6 +19,8 @@ import {
   getErrorMessage,
   hasError,
 } from '../../../services/helper-services/utils';
+import { CheckpointService } from '../../../services/checkpoints/checkpoint.service';
+import { IServiceCheckpoint } from '../../../model/checkpoint/i-service-checkpoint';
 
 @Component({
   selector: 'app-add-client',
@@ -45,7 +47,8 @@ export class AddClientComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private servicesService: ServicesService,
     private authService: AuthService,
-    private clientService: ClientService
+    private clientService: ClientService,
+    private checkpointService: CheckpointService
   ) {
     this.clientForm = this.fb.group({
       name: [
@@ -73,6 +76,66 @@ export class AddClientComponent implements OnInit, OnDestroy {
     });
   }
 
+  serviceCheckpointsMap: Map<number, IServiceCheckpoint[]> = new Map();
+  selectedCheckpointsMap: Map<number, Set<number>> = new Map();
+
+  // Add method to load checkpoints when service is selected
+  // onServiceSelected(serviceIndex: number, serviceId: number): void {
+  //   if (serviceId) {
+  //     this.checkpointService.getServiceCheckpoints(serviceId).subscribe({
+  //       next: (checkpoints) => {
+  //         this.serviceCheckpointsMap.set(serviceId, checkpoints);
+  //       },
+  //       error: () => {
+  //         // Silently fail - checkpoints will be initialized on backend
+  //       },
+  //     });
+  //   }
+  // }
+
+  getCheckpointsForService(serviceId: number): IServiceCheckpoint[] {
+    return this.serviceCheckpointsMap.get(serviceId) || [];
+  }
+
+  // Add methods for checkpoint selection
+  onServiceSelected(serviceIndex: number, serviceId: number): void {
+  // Reset selected checkpoints when service changes
+  this.selectedCheckpointsMap.set(serviceIndex, new Set<number>());
+  
+  if (serviceId) {
+    this.checkpointService.getServiceCheckpoints(serviceId).subscribe({
+      next: (checkpoints) => {
+        this.serviceCheckpointsMap.set(serviceId, checkpoints);
+      },
+      error: () => {
+        // Silently fail - checkpoints will be initialized on backend
+      },
+    });
+  }
+}
+  toggleCheckpointSelection(serviceIndex: number, checkpointId: number): void {
+    if (!this.selectedCheckpointsMap.has(serviceIndex)) {
+      this.selectedCheckpointsMap.set(serviceIndex, new Set<number>());
+    }
+    
+    const selectedSet = this.selectedCheckpointsMap.get(serviceIndex)!;
+    if (selectedSet.has(checkpointId)) {
+      selectedSet.delete(checkpointId);
+    } else {
+      selectedSet.add(checkpointId);
+    }
+  }
+
+  isCheckpointSelected(serviceIndex: number, checkpointId: number): boolean {
+    const selectedSet = this.selectedCheckpointsMap.get(serviceIndex);
+    return selectedSet ? selectedSet.has(checkpointId) : false;
+  }
+
+  getSelectedCheckpoints(serviceIndex: number): number[] {
+    const selectedSet = this.selectedCheckpointsMap.get(serviceIndex);
+    return selectedSet ? Array.from(selectedSet) : [];
+  }
+
   get clientServicesArray(): FormArray {
     return this.clientForm.get('clientServices') as FormArray;
   }
@@ -83,11 +146,27 @@ export class AddClientComponent implements OnInit, OnDestroy {
       tasks: this.fb.array([]),
     });
     this.clientServicesArray.push(clientServiceGroup);
+
+    // Initialize selected checkpoints for this service
+    const serviceIndex = this.clientServicesArray.length - 1;
+    this.selectedCheckpointsMap.set(serviceIndex, new Set<number>());
   }
 
   removeClientService(index: number): void {
     this.clientServicesArray.removeAt(index);
     this.cleanupCollapsedTasks(index);
+    this.selectedCheckpointsMap.delete(index);
+
+    // Reindex the map
+    const newMap = new Map<number, Set<number>>();
+    this.selectedCheckpointsMap.forEach((value, key) => {
+      if (key < index) {
+        newMap.set(key, value);
+      } else if (key > index) {
+        newMap.set(key - 1, value);
+      }
+    });
+    this.selectedCheckpointsMap = newMap;
   }
 
   getTasksArray(clientServiceIndex: number): FormArray {
@@ -196,10 +275,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
           this.availableServices = services;
         },
         error: (error) => {
-          this.showAlert(
-            'حدث خطأ أثناء تحميل الخدمات المتاحة',
-            'error'
-          );
+          this.showAlert('حدث خطأ أثناء تحميل الخدمات المتاحة', 'error');
         },
       });
   }
@@ -221,8 +297,9 @@ export class AddClientComponent implements OnInit, OnDestroy {
       businessDescription: formValue.businessDescription,
       driveLink: formValue.driveLink,
       status: formValue.status,
-      clientServices: formValue.clientServices.map((cs: any) => ({
+      clientServices: formValue.clientServices.map((cs: any, index: number) => ({
         serviceId: cs.serviceId,
+        selectedCheckpointIds: this.getSelectedCheckpoints(index),
         taskGroups: [
           {
             tasks: cs.tasks.map((t: any) => ({
@@ -259,6 +336,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
     this.clientServicesArray.clear();
     this.addClientService();
     this.collapsedTasks.clear();
+    this.selectedCheckpointsMap.clear();
   }
 
   hasError(controlName: string): boolean {
