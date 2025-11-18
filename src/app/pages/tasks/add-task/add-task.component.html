@@ -1,4 +1,15 @@
-<section class="container py-4">
+<!-- Button trigger modal - positioned at top -->
+<section class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">اضافة تاسك</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <i class="bi bi-info-circle me-2"></i>
+      معلومات الصفحة
+    </button>
+  </div>
+</section>
+
+<section class="container pb-4">
   <div class="card">
     <div class="form-header rounded p-2">
       <h2 class="mb-0">اضافة تاسك</h2>
@@ -39,3 +50,191 @@
   ></app-task-groups>
   }
 </section>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          <i class="bi bi-info-circle me-2"></i>
+          دليل استخدام صفحة إضافة التاسكات
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Purpose Section -->
+        <div class="mb-4">
+          <h5 class="text-primary mb-3">
+            <i class="bi bi-bullseye me-2"></i>
+            الغرض من الصفحة
+          </h5>
+          <p class="text-muted">
+            تتيح هذه الصفحة إضافة وإدارة التاسكات (المهام) للعملاء. يمكنك من خلالها اختيار عميل معين وعرض جميع التاسكات الشهرية المرتبطة بخدماته المختلفة، بالإضافة إلى إمكانية إضافة تاسكات جديدة أو تعديل وحذف التاسكات الموجودة.
+          </p>
+        </div>
+
+        <!-- Fields Section -->
+        <div class="mb-4">
+          <h5 class="text-primary mb-3">
+            <i class="bi bi-list-ul me-2"></i>
+            الحقول والإدخالات
+          </h5>
+          <div class="ms-3">
+            <div class="mb-3">
+              <h6 class="fw-bold">قائمة اختيار العميل:</h6>
+              <ul class="list-unstyled ms-3">
+                <li class="mb-2">
+                  <i class="bi bi-arrow-left text-secondary me-2"></i>
+                  <strong>الوصف:</strong> قائمة منسدلة تعرض جميع العملاء المتاحين في النظام
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-arrow-left text-secondary me-2"></i>
+                  <strong>الاستخدام:</strong> اختر العميل الذي تريد إدارة تاسكاته من القائمة
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-arrow-left text-secondary me-2"></i>
+                  <strong>ملاحظة:</strong> هذا الحقل إلزامي ولا يمكن المتابعة بدونه
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions Section -->
+        <div class="mb-4">
+          <h5 class="text-primary mb-3">
+            <i class="bi bi-gear me-2"></i>
+            الإجراءات المتاحة
+          </h5>
+          <div class="ms-3">
+            <div class="mb-3">
+              <h6 class="fw-bold">1. اختيار العميل:</h6>
+              <ul class="list-unstyled ms-3">
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  بعد اختيار العميل من القائمة، اضغط على زر "اختر العميل"
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  سيتم تحميل بيانات العميل وخدماته (قد تظهر رسالة "جار تحميل البيانات...")
+                </li>
+              </ul>
+            </div>
+
+            <div class="mb-3">
+              <h6 class="fw-bold">2. عرض التاسكات الشهرية:</h6>
+              <ul class="list-unstyled ms-3">
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  بعد اختيار العميل، ستظهر جميع التاسكات الشهرية منظمة حسب الخدمات
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  كل مجموعة تاسكات تعرض: اسم الشهر، اسم الخدمة، وجدول بالتاسكات
+                </li>
+              </ul>
+            </div>
+
+            <div class="mb-3">
+              <h6 class="fw-bold">3. عرض تفاصيل التاسك:</h6>
+              <ul class="list-unstyled ms-3">
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  <strong>التاسك:</strong> عنوان المهمة
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  <strong>الموظف:</strong> اسم الموظف المسؤول (أو "غير محدد" إذا لم يتم تعيينه)
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  <strong>الأولوية:</strong> مستوى الأولوية (عالية، متوسطة، منخفضة) مع ألوان مميزة
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  <strong>موعد التسليم:</strong> التاريخ المحدد لإتمام المهمة
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  <strong>الحالة:</strong> الحالة الحالية للتاسك (معلق، قيد التنفيذ، مكتمل، إلخ)
+                </li>
+              </ul>
+            </div>
+
+            <div class="mb-3">
+              <h6 class="fw-bold">4. تعديل التاسكات (للمستخدمين المصرح لهم):</h6>
+              <ul class="list-unstyled ms-3">
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  اضغط على زر "تعديل" في أعلى صفحة التاسكات الشهرية
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  سيظهر عمود "إجراء" في الجدول يحتوي على أزرار التعديل والحذف
+                </li>
+                <li class="mb-2">
+                  <i class="bi bi-check-circle text-success me-2"></i>
+                  يمكنك تعديل تفاصيل التاسك أو حذفه من خلال الأزرار المقابلة
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expected Results Section -->
+        <div class="mb-4">
+          <h5 class="text-primary mb-3">
+            <i class="bi bi-clipboard-check me-2"></i>
+            النتائج المتوقعة
+          </h5>
+          <div class="ms-3">
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <i class="bi bi-arrow-right-circle text-info me-2"></i>
+                بعد اختيار العميل بنجاح، ستظهر جميع التاسكات الشهرية المرتبطة بخدماته
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-arrow-right-circle text-info me-2"></i>
+                التاسكات منظمة حسب الشهر والخدمة في بطاقات منفصلة
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-arrow-right-circle text-info me-2"></i>
+                كل تاسك يعرض معلوماته الكاملة في جدول منظم وسهل القراءة
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-arrow-right-circle text-info me-2"></i>
+                إذا لم توجد تاسكات لمجموعة معينة، ستظهر رسالة "لا توجد مهام لهذه المجموعة"
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-arrow-right-circle text-info me-2"></i>
+                المستخدمون المصرح لهم يمكنهم إضافة تاسكات جديدة أو تعديل وحذف التاسكات الموجودة
+              </li>
+              <li class="mb-2">
+                <i class="bi bi-arrow-right-circle text-info me-2"></i>
+                جميع التغييرات يتم حفظها في النظام وتظهر فوراً في الواجهة
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="alert alert-info">
+          <h6 class="alert-heading">
+            <i class="bi bi-lightbulb me-2"></i>
+            نصائح مهمة
+          </h6>
+          <ul class="mb-0">
+            <li>تأكد من اختيار العميل الصحيح قبل المتابعة</li>
+            <li>يمكنك إلغاء عملية التعديل في أي وقت باستخدام زر "إلغاء"</li>
+            <li>الألوان في شارات الأولوية والحالة تساعد في التمييز السريع</li>
+            <li>إذا لم تظهر التاسكات، تأكد من أن العميل لديه خدمات نشطة</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+      </div>
+    </div>
+  </div>
+</div>
