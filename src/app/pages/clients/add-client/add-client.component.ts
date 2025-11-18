@@ -325,6 +325,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.isLoading = false;
         this.showAlert(err.error, 'error');
+        console.log('Error adding client:', err);
       },
     });
   }
