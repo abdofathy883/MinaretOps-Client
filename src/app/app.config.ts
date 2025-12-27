@@ -26,7 +26,8 @@ export const appConfig: ApplicationConfig = {
       serverLoggingUrl: '/api/logs'         // your Serilog API endpoint
     }).providers ?? []),
     provideServiceWorker('ngsw-worker.js', {
-      enabled: !isDevMode(),
+      enabled: true,
+      // enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
     // importProvidersFrom(

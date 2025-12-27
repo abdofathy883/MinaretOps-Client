@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SwPush } from '@angular/service-worker';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ApiService } from '../api-service/api.service';
 
 @Injectable({
@@ -17,22 +17,6 @@ export class PushNotificationService {
     this.setupNotificationHandling();
   }
 
-  // Add this helper method to convert ArrayBuffer to base64url
-  private urlBase64ToUint8Array(base64String: string): Uint8Array {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-      .replace(/\-/g, '+')
-      .replace(/_/g, '/');
-
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-
-    for (let i = 0; i < rawData.length; ++i) {
-      outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
-  }
-
   // Add this helper method to convert ArrayBuffer to base64url string
   private arrayBufferToBase64(buffer: ArrayBuffer): string {
     const bytes = new Uint8Array(buffer);
@@ -46,42 +30,203 @@ export class PushNotificationService {
       .replace(/=/g, '');
   }
 
+    // Wait for service worker to be ready
+    private async waitForServiceWorkerReady(timeout: number = 10000): Promise<boolean> {
+      const startTime = Date.now();
+      
+      while (Date.now() - startTime < timeout) {
+        if (this.swPush.isEnabled) {
+          // Service worker is enabled, try to access subscription to verify it's ready
+          try {
+            // Check subscription observable - if SW is ready, this won't throw
+            const subscription = await firstValueFrom(this.swPush.subscription);
+            console.log('Service Worker is ready');
+            return true;
+          } catch (err) {
+            // SW might not be fully ready yet
+            await new Promise(resolve => setTimeout(resolve, 100));
+          }
+        } else {
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      }
+      
+      return this.swPush.isEnabled;
+    }
+
+  // async subscribeToNotifications(userId: string): Promise<boolean> {
+  //   console.log('=== Push Notification Subscription Start ===');
+  //   console.log('User ID:', userId);
+  //   this.currentUserId = userId;
+
+  //   // Check service worker status
+  //   console.log('Service Worker Enabled:', this.swPush.isEnabled);
+  //   console.log('Service Worker Registration:', this.swPush.subscription);
+
+
+  //   if (!this.swPush.isEnabled) {
+  //     console.error('❌ Push notifications not enabled - Service Worker is not active');
+  //     console.log('Please check:');
+  //     console.log('1. Is the app running in production mode or service worker enabled?');
+  //     console.log('2. Check browser DevTools > Application > Service Workers');
+  //     console.log('3. Hard refresh the page (Ctrl+Shift+R)');
+  //     return false;
+  //   }
+
+  //   if (!this.swPush.isEnabled) {
+  //     console.log('Push notifications not enabled');
+  //     return false;
+  //   }
+
+  //   try {
+  //     console.log('Requesting push subscription...');
+  //     const subscription = await this.swPush.requestSubscription({
+  //       serverPublicKey: this.VAPID_PUBLIC_KEY
+  //     });
+
+  //     console.log('✅ Push subscription obtained');
+  //     console.log('Endpoint:', subscription.endpoint);
+
+  //     // Get keys as ArrayBuffers and convert to base64url strings
+  //     const p256dhKey = subscription.getKey('p256dh');
+  //     const authKey = subscription.getKey('auth');
+
+  //     if (!p256dhKey || !authKey) {
+  //       console.error('Subscription keys are missing');
+  //       return false;
+  //     }
+
+  //     const p256dhString = this.arrayBufferToBase64(p256dhKey);
+  //     const authString = this.arrayBufferToBase64(authKey);
+
+  //     console.log('Keys encoded successfully');
+  //     console.log('P256DH length:', p256dhString.length);
+  //     console.log('Auth length:', authString.length);
+
+  //     // Send subscription to backend
+  //     await this.api.post('pushsubscription/subscribe', {
+  //       userId: userId,
+  //       endpoint: subscription.endpoint,
+  //       keys: {
+  //         p256dh: this.arrayBufferToBase64(p256dhKey),
+  //         auth: this.arrayBufferToBase64(authKey)
+  //       }
+  //     }).toPromise();
+
+  //     console.log('Successfully subscribed to push notifications');
+  //     return true;
+  //   } catch (err) {
+  //     console.error('Could not subscribe to notifications', err);
+  //     return false;
+  //   }
+  // }
+
   async subscribeToNotifications(userId: string): Promise<boolean> {
+    // debugger;
+    console.log('=== Push Notification Subscription Start ===');
+    console.log('User ID:', userId);
+    
     this.currentUserId = userId;
+
+    if (Notification.permission === 'default') {
+      const granted = await this.requestNotificationPermission();
+      if (!granted) {
+        console.error('❌ Notification permission denied via prompt');
+        return false;
+      }
+    }
+
+    if (Notification.permission !== 'granted') {
+      console.error('❌ Notification permission not granted. Current permission:', Notification.permission);
+      return false;
+    }
+
+    // Wait for service worker to be ready
+    console.log('Waiting for service worker to be ready...');
+    const isReady = await this.waitForServiceWorkerReady();
+    
+    if (!isReady) {
+      console.error('❌ Service Worker is not enabled or not ready');
+      return false;
+    }
+    
+    // Check service worker status
+    console.log('Service Worker Enabled:', this.swPush.isEnabled);
     
     if (!this.swPush.isEnabled) {
-      console.log('Push notifications not enabled');
+      console.error('❌ Push notifications not enabled - Service Worker is not active');
+      console.log('Please check:');
+      console.log('1. Is the app running in production mode or service worker enabled?');
+      console.log('2. Check browser DevTools > Application > Service Workers');
+      console.log('3. Hard refresh the page (Ctrl+Shift+R)');
       return false;
     }
 
     try {
+      console.log('Requesting push subscription...');
       const subscription = await this.swPush.requestSubscription({
         serverPublicKey: this.VAPID_PUBLIC_KEY
       });
+
+      console.log('✅ Push subscription obtained');
+      console.log('Endpoint:', subscription.endpoint);
 
       // Get keys as ArrayBuffers and convert to base64url strings
       const p256dhKey = subscription.getKey('p256dh');
       const authKey = subscription.getKey('auth');
 
       if (!p256dhKey || !authKey) {
-        console.error('Subscription keys are missing');
+        console.error('❌ Subscription keys are missing');
         return false;
       }
 
-      // Send subscription to backend
-      await this.api.post('pushsubscription/subscribe', {
+      const p256dhString = this.arrayBufferToBase64(p256dhKey);
+      const authString = this.arrayBufferToBase64(authKey);
+
+      console.log('Keys encoded successfully');
+      console.log('P256DH length:', p256dhString.length);
+      console.log('Auth length:', authString.length);
+
+      // Prepare subscription data
+      const subscriptionData = {
         userId: userId,
         endpoint: subscription.endpoint,
         keys: {
-          p256dh: this.arrayBufferToBase64(p256dhKey),
-          auth: this.arrayBufferToBase64(authKey)
+          p256dh: p256dhString,
+          auth: authString
         }
-      }).toPromise();
+      };
 
-      console.log('Successfully subscribed to push notifications');
+      console.log('Sending subscription to backend...');
+      console.log('Endpoint URL: pushsubscription/subscribe');
+      console.log('Data:', { ...subscriptionData, keys: { p256dh: '***', auth: '***' } });
+
+      // Use firstValueFrom instead of deprecated toPromise()
+      await firstValueFrom(
+        this.api.post('pushsubscription/subscribe', subscriptionData)
+      );
+
+      console.log('✅ Successfully subscribed to push notifications');
+      console.log('=== Push Notification Subscription Complete ===');
       return true;
-    } catch (err) {
-      console.error('Could not subscribe to notifications', err);
+    } catch (err: any) {
+      console.error('❌ Could not subscribe to notifications', err);
+      
+      // More detailed error logging
+      if (err.error) {
+        console.error('Error details:', err.error);
+      }
+      if (err.message) {
+        console.error('Error message:', err.message);
+      }
+      if (err.status) {
+        console.error('HTTP Status:', err.status);
+      }
+      if (err.statusText) {
+        console.error('HTTP Status Text:', err.statusText);
+      }
+      
+      console.log('=== Push Notification Subscription Failed ===');
       return false;
     }
   }
