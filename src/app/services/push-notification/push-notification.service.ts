@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SwPush } from '@angular/service-worker';
 import { BehaviorSubject } from 'rxjs';
+import { ApiService } from '../api-service/api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,37 @@ export class PushNotificationService {
 
   public notificationSubject = new BehaviorSubject<any>(null);
 
-  constructor(private swPush: SwPush, private http: HttpClient) { 
+  constructor(private swPush: SwPush, private http: HttpClient, private api: ApiService) { 
     this.setupNotificationHandling();
+  }
+
+  // Add this helper method to convert ArrayBuffer to base64url
+  private urlBase64ToUint8Array(base64String: string): Uint8Array {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
+  // Add this helper method to convert ArrayBuffer to base64url string
+  private arrayBufferToBase64(buffer: ArrayBuffer): string {
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
   }
 
   async subscribeToNotifications(userId: string): Promise<boolean> {
@@ -29,14 +59,23 @@ export class PushNotificationService {
         serverPublicKey: this.VAPID_PUBLIC_KEY
       });
 
+      // Get keys as ArrayBuffers and convert to base64url strings
+      const p256dhKey = subscription.getKey('p256dh');
+      const authKey = subscription.getKey('auth');
+
+      if (!p256dhKey || !authKey) {
+        console.error('Subscription keys are missing');
+        return false;
+      }
+
       // Send subscription to backend
-      await this.http.post('/api/pushsubscription/subscribe', {
+      await this.api.post('pushsubscription/subscribe', {
         userId: userId,
         endpoint: subscription.endpoint,
-        keys: subscription.getKey('p256dh') && subscription.getKey('auth') ? {
-          p256dh: subscription.getKey('p256dh'),
-          auth: subscription.getKey('auth')
-        } : null
+        keys: {
+          p256dh: this.arrayBufferToBase64(p256dhKey),
+          auth: this.arrayBufferToBase64(authKey)
+        }
       }).toPromise();
 
       console.log('Successfully subscribed to push notifications');

@@ -9,6 +9,7 @@ import { AttendanceService } from '../../services/attendance/attendance.service'
 import { Observable } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { FingerPrientService } from '../../services/finger-prient/finger-prient.service';
+import { PushNotificationService } from '../../services/push-notification/push-notification.service';
 
 @Component({
   selector: 'app-attendance',
@@ -36,9 +37,19 @@ export class AttendanceComponent {
   constructor(
     private attendanceService: AttendanceService,
     private fp: FingerPrientService,
+    private pushNotificationService: PushNotificationService
   ) {}
 
   ngOnInit() {
+    this.pushNotificationService.subscribeToNotifications(this.userId).then((success) => {
+      if (success) {
+        this.showAlert('تم الاشتراك في الاشعارات', 'success');
+      } else {
+        this.showAlert('فشل الاشتراك في الاشعارات', 'error');
+      }
+    });
+
+    
     this.startTimeUpdate();
     this.loadToadayAttendance(this.userId);
 
@@ -50,6 +61,22 @@ export class AttendanceComponent {
     // Load active break
     this.loadActiveBreak(this.userId);
   }
+
+  // In attendance.component.ts - add this method
+// async sendTestNotification() {
+//   try {
+//     await this.api.post('notification', {
+//       userId: this.userId,
+//       title: 'Test Notification',
+//       body: 'This is a test notification',
+//       url: '/attendance' // optional URL to navigate to when clicked
+//     }).toPromise();
+//     this.showAlert('تم إرسال الإشعار', 'success');
+//   } catch (error) {
+//     console.error('Error sending notification:', error);
+//     this.showAlert('فشل إرسال الإشعار', 'error');
+//   }
+// }
 
   calculateWorkDuration(clockIn: Date, clockOut: Date): string {
   const duration = new Date(clockOut).getTime() - new Date(clockIn).getTime();
@@ -138,6 +165,8 @@ export class AttendanceComponent {
       deviceId: this.deviceID,
       ipAddress: this.ipAddress,
     };
+
+
 
     this.attendanceService.checkIn(checkInData).subscribe({
       next: (response) => {
