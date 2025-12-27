@@ -190,9 +190,26 @@ export class PushNotificationService {
     });
   }
 
+  async sendTestNotification(userId: string): Promise<boolean> {
+    try {
+      await firstValueFrom(
+        this.api.post('PushSubscription', {
+          userId: userId,
+          title: 'Test Notification',
+          body: 'This is a test notification from Push Service',
+          url: '/attendance'
+        })
+      );
+      return true;
+    } catch (error) {
+      console.error('Error sending test notification:', error);
+      return false;
+    }
+  }
+
   private playNotificationSound() {
     // Create and play notification sound
-    const audio = new Audio('assets/sounds/notification.mp3'); // Add your notification sound file
+    const audio = new Audio('assets/notification.mp3'); 
     audio.volume = 0.5;
     audio.play().catch(err => console.log('Could not play notification sound:', err));
   }

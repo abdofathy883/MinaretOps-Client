@@ -10,7 +10,6 @@ import { Observable } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { FingerPrientService } from '../../services/finger-prient/finger-prient.service';
 import { PushNotificationService } from '../../services/push-notification/push-notification.service';
-import { ApiService } from '../../services/api-service/api.service';
 
 @Component({
   selector: 'app-attendance',
@@ -38,8 +37,7 @@ export class AttendanceComponent {
   constructor(
     private attendanceService: AttendanceService,
     private fp: FingerPrientService,
-    private pushNotificationService: PushNotificationService,
-    private api: ApiService
+    private pushNotificationService: PushNotificationService
   ) {}
 
   ngOnInit() {
@@ -64,23 +62,17 @@ export class AttendanceComponent {
     this.loadActiveBreak(this.userId);
   }
 
-  // In attendance.component.ts - add this method
   async sendTestNotification() {
-    try {
-      if (!this.userId) {
-        this.showAlert('User ID is missing', 'error');
-        return;
-      }
-      
-      await this.api.post('PushSubscription', {
-        userId: this.userId,
-        title: 'Test Notification',
-        body: 'This is a test notification from Attendance Page',
-        url: '/attendance' 
-      }).toPromise();
+    if (!this.userId) {
+      this.showAlert('User ID is missing', 'error');
+      return;
+    }
+
+    const success = await this.pushNotificationService.sendTestNotification(this.userId);
+    
+    if (success) {
       this.showAlert('تم إرسال الإشعار', 'success');
-    } catch (error) {
-      console.error('Error sending notification:', error);
+    } else {
       this.showAlert('فشل إرسال الإشعار', 'error');
     }
   }
