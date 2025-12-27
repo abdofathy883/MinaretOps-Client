@@ -193,7 +193,7 @@ export class PushNotificationService {
   async sendTestNotification(userId: string): Promise<boolean> {
     try {
       await firstValueFrom(
-        this.api.post('PushSubscription', {
+        this.api.post('pushsubscription', {
           userId: userId,
           title: 'Test Notification',
           body: 'This is a test notification from Push Service',

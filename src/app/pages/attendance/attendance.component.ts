@@ -41,13 +41,13 @@ export class AttendanceComponent {
   ) {}
 
   ngOnInit() {
-    this.pushNotificationService.subscribeToNotifications(this.userId).then((success) => {
-      if (success) {
-        this.showAlert('تم الاشتراك في الاشعارات', 'success');
-      } else {
-        this.showAlert('فشل الاشتراك في الاشعارات', 'error');
-      }
-    });
+    // this.pushNotificationService.subscribeToNotifications(this.userId).then((success) => {
+    //   if (success) {
+    //     this.showAlert('تم الاشتراك في الاشعارات', 'success');
+    //   } else {
+    //     this.showAlert('فشل الاشتراك في الاشعارات', 'error');
+    //   }
+    // });
 
     
     this.startTimeUpdate();
