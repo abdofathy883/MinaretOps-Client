@@ -91,6 +91,11 @@ export class SingleTaskComponent implements OnInit {
       value: CustomTaskStatus.NeedsEdits,
       label: 'تحتاج إلى تعديلات',
       icon: 'bi bi-pencil-fill',
+    },
+    {
+      value: CustomTaskStatus.Rejected,
+      label: 'مرفوضة',
+      icon: 'bi bi-x-circle-fill',
     }
   ];
   CustomTaskStatus = CustomTaskStatus;

@@ -269,6 +269,7 @@ export class TaskGroupsComponent implements OnInit {
   }
 
   private updateExistingTask(formValue: any): void {
+    debugger;
     if (!this.selectedTask) return;
 
     const updatedTask: IUpdateTask = {
@@ -277,7 +278,7 @@ export class TaskGroupsComponent implements OnInit {
       priority: formValue.priority,
       deadline: new Date(formValue.deadline),
       employeeId: formValue.employeeId || this.selectedTask.employeeId,
-      status: formValue.status,
+      status: Number(formValue.status),
       refrence: formValue.refrence,
     };
 

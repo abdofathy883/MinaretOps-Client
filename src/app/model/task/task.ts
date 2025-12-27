@@ -48,6 +48,7 @@ export enum CustomTaskStatus {
   UnderReview = 3,
   NeedsEdits = 4,
   Completed = 5,
+  Rejected = 6
 }
 
 export enum TaskType {
@@ -141,15 +142,6 @@ export interface ITaskResources {
   taskId: number;
   url: string;
 }
-
-// export interface CreateTaskItem {
-//   title: string;
-//   description: string;
-//   employeeId?: string;
-//   deadline: Date;
-//   priority: string;
-//   refrence?: string;
-// }
 
 export enum TaskTeam {
   All = 'all',
@@ -245,7 +237,7 @@ export interface TaskFilter {
   status?: number;
   priority?: string;
   onDeadline?: string;
-  team?: TaskTeam; // Add team filter
+  team?: TaskTeam;
   pageNumber: number;
   pageSize: number;
 }

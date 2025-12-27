@@ -20,6 +20,8 @@ export class MapTaskStatusPipe implements PipeTransform {
         return 'تحتاج إلى تعديلات';
       case CustomTaskStatus.Completed:
         return 'مكتمل';
+      case CustomTaskStatus.Rejected:
+        return 'مرفوضة';
       default:
         return 'غير محدد';
     }

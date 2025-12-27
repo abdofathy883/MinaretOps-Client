@@ -25,8 +25,6 @@ import { AddAnnouncementComponent } from './pages/announcements/add-announcement
 import { AllLeaveRequestsComponent } from './pages/leave-requests/all-leave-requests/all-leave-requests.component';
 import { AllComplaintsComponent } from './pages/complaints/all-complaints/all-complaints.component';
 import { AddComplaintComponent } from './pages/complaints/add-complaint/add-complaint.component';
-import { AllEntriesComponent } from './pages/contact/all-entries/all-entries.component';
-import { SingleEntryComponent } from './pages/contact/single-entry/single-entry.component';
 import { KpisManagementComponent } from './pages/kpis/kpis-management/kpis-management.component';
 import { roleGuard } from './core/guards/role.guard';
 import { AccessDeniedComponent } from './shared/access-denied/access-denied.component';
@@ -37,13 +35,6 @@ import { SubmitLeaveRequestComponent } from './pages/leave-requests/submit-leave
 import { MyKpisManagementComponent } from './pages/kpis/my-kpis-management/my-kpis-management.component';
 import { ArchiveComponent } from './pages/tasks/archive/archive.component';
 import { InternalArchiveComponent } from './pages/internal-tasks/internal-archive/internal-archive.component';
-import { AllBlogsComponent } from './pages/blog/all-blogs/all-blogs.component';
-import { AddBlogComponent } from './pages/blog/add-blog/add-blog.component';
-import { SingleBlogComponent } from './pages/blog/single-blog/single-blog.component';
-import { AllProjectsComponent } from './pages/portfolio/all-projects/all-projects.component';
-import { AddProjectComponent } from './pages/portfolio/add-project/add-project.component';
-import { SingleProjectComponent } from './pages/portfolio/single-project/single-project.component';
-import { CategoryComponent } from './pages/blog/category/category.component';
 import { AllJdsComponent } from './pages/jds/all-jds/all-jds.component';
 import { AddJdComponent } from './pages/jds/add-jd/add-jd.component';
 import { SingleJdComponent } from './pages/jds/single-jd/single-jd.component';
@@ -206,16 +197,6 @@ export const routes: Routes = [
     canActivate: [noauthGuard],
   },
   {
-    path: 'contact-form-entries',
-    component: AllEntriesComponent,
-    canActivate: [noauthGuard],
-  },
-  {
-    path: 'contact-form-entries/:id',
-    component: SingleEntryComponent,
-    canActivate: [noauthGuard],
-  },
-  {
     path: 'kpis-management',
     component: KpisManagementComponent,
     canActivate: [noauthGuard, roleGuard],
@@ -240,41 +221,6 @@ export const routes: Routes = [
       { path: 'task-emp-report', component: TaskEmpReportComponent},
       { path: 'attendance-report', component: AttendanceReportComponent}
     ],
-  },
-  {
-    path: 'blog',
-    component: AllBlogsComponent,
-    canActivate: [noauthGuard],
-  },
-  {
-    path: 'blog/add',
-    component: AddBlogComponent,
-    canActivate: [noauthGuard],
-  },
-  {
-    path: 'blog/:title',
-    component: SingleBlogComponent,
-    canActivate: [noauthGuard],
-  },
-  {
-    path: 'blog-category',
-    component: CategoryComponent,
-    canActivate: [noauthGuard],
-  },
-  {
-    path: 'portfolio',
-    component: AllProjectsComponent,
-    canActivate: [noauthGuard],
-  },
-  {
-    path: 'portfolio/add',
-    component: AddProjectComponent,
-    canActivate: [noauthGuard],
-  },
-  {
-    path: 'portfolio/:title',
-    component: SingleProjectComponent,
-    canActivate: [noauthGuard],
   },
   {
     path: 'job-descriptions',
