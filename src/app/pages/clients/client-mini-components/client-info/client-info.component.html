@@ -6,28 +6,26 @@
       معلومات العميل
     </h2>
     @if (isUserAdmin || isUserAccountManager) {
-      <div>
-        @if (!isEditMode) {
-        <button class="reset-btn" (click)="toggleEditMode()">
-          <i class="bi bi-pencil me-1"></i>
-          تعديل
-        </button>
-        } @if (isEditMode) {
-        <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
-          <i class="bi bi-x-circle me-1"></i>
-          إلغاء
-        </button>
-        }
-      </div>
+    <div>
+      @if (!isEditMode) {
+      <button class="reset-btn" (click)="toggleEditMode()">
+        <i class="bi bi-pencil me-1"></i>
+        تعديل
+      </button>
+      } @if (isEditMode) {
+      <button class="btn btn-outline-danger me-2" (click)="cancelEdit()">
+        <i class="bi bi-x-circle me-1"></i>
+        إلغاء
+      </button>
+      }
+    </div>
     }
   </div>
 
   @if (isEditMode) {
-    <!-- Alert Messages -->
   @if (alertMessage) {
   <div class="alert" [class]="'alert-' + alertType">
     {{ alertMessage }}
-    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
   </div>
   }
   <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
@@ -149,16 +147,16 @@
 
         <div class="mb-3">
           <label for="status" class="form-label">الحالة</label>
-            <select
-              name="status"
-              id="status"
-              class="form-select"
-              formControlName="status"
-            >
-              <option value="0">نشط</option>
-              <option value="1">متوقف مؤقتا</option>
-              <option value="2">الغى التعاقد</option>
-            </select>
+          <select
+            name="status"
+            id="status"
+            class="form-select"
+            formControlName="status"
+          >
+            <option value="0">نشط</option>
+            <option value="1">متوقف مؤقتا</option>
+            <option value="2">الغى التعاقد</option>
+          </select>
         </div>
 
         <div class="mb-3">
@@ -184,8 +182,7 @@
             <span class="spinner-border spinner-border-sm me-1"></span>
             جاري الحذف... } @else {
             <i class="bi bi-trash me-1"></i>
-            حذف العميل
-            }
+            حذف العميل }
           </button>
         </div>
       </div>
@@ -250,10 +247,13 @@
         <div class="col-md-6">
           <p>
             <strong>الحالة:</strong>
-            <br>
-            <span class="badge" [ngClass]="'status-' + getStatusClass(client?.status)">
-                    {{ getStatusText(client?.status) }}
-                  </span>
+            <br />
+            <span
+              class="badge"
+              [ngClass]="'status-' + getStatusClass(client?.status)"
+            >
+              {{ getStatusText(client?.status) }}
+            </span>
           </p>
         </div>
         <div class="col-md-6">

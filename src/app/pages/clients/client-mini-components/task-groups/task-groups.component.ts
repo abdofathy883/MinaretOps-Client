@@ -156,7 +156,6 @@ export class TaskGroupsComponent implements OnInit {
     this.isEditMode = false;
   }
 
-  // Open modal for editing existing task
   openEditTaskModal(task: ITask): void {
     this.modalMode = 'edit';
     this.selectedTask = task;
@@ -165,7 +164,6 @@ export class TaskGroupsComponent implements OnInit {
     this.showModal();
   }
 
-  // Open modal for adding new task
   openAddTaskModal(taskGroupId: number): void {
     this.modalMode = 'add';
     this.selectedTask = null;
@@ -184,6 +182,7 @@ export class TaskGroupsComponent implements OnInit {
       employeeId: task.employeeId || '',
       status: task.status,
       refrence: task.refrence || '',
+      numberOfSubTasks: task.numberOfSubTasks || 0
     });
   }
 
@@ -196,6 +195,7 @@ export class TaskGroupsComponent implements OnInit {
       employeeId: '',
       status: CustomTaskStatus.Open,
       refrence: '',
+      numberOfSubTasks: 0
     });
   }
 
@@ -280,6 +280,7 @@ export class TaskGroupsComponent implements OnInit {
       employeeId: formValue.employeeId || this.selectedTask.employeeId,
       status: Number(formValue.status),
       refrence: formValue.refrence,
+      numberOfSubTasks: formValue.numberOfSubTasks
     };
 
     // Update local data
@@ -311,6 +312,7 @@ export class TaskGroupsComponent implements OnInit {
       refrence: formValue.refrence,
       employeeId: formValue.employeeId,
       taskGroupId: this.selectedTaskGroupId!,
+      numberOfSubTasks: formValue.numberOfSubTasks
     };
 
 

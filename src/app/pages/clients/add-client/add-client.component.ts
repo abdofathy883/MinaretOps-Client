@@ -79,45 +79,32 @@ export class AddClientComponent implements OnInit, OnDestroy {
   serviceCheckpointsMap: Map<number, IServiceCheckpoint[]> = new Map();
   selectedCheckpointsMap: Map<number, Set<number>> = new Map();
 
-  // Add method to load checkpoints when service is selected
-  // onServiceSelected(serviceIndex: number, serviceId: number): void {
-  //   if (serviceId) {
-  //     this.checkpointService.getServiceCheckpoints(serviceId).subscribe({
-  //       next: (checkpoints) => {
-  //         this.serviceCheckpointsMap.set(serviceId, checkpoints);
-  //       },
-  //       error: () => {
-  //         // Silently fail - checkpoints will be initialized on backend
-  //       },
-  //     });
-  //   }
-  // }
-
   getCheckpointsForService(serviceId: number): IServiceCheckpoint[] {
     return this.serviceCheckpointsMap.get(serviceId) || [];
   }
 
   // Add methods for checkpoint selection
   onServiceSelected(serviceIndex: number, serviceId: number): void {
-  // Reset selected checkpoints when service changes
-  this.selectedCheckpointsMap.set(serviceIndex, new Set<number>());
-  
-  if (serviceId) {
-    this.checkpointService.getServiceCheckpoints(serviceId).subscribe({
-      next: (checkpoints) => {
-        this.serviceCheckpointsMap.set(serviceId, checkpoints);
-      },
-      error: () => {
-        // Silently fail - checkpoints will be initialized on backend
-      },
-    });
+    // Reset selected checkpoints when service changes
+    this.selectedCheckpointsMap.set(serviceIndex, new Set<number>());
+
+    if (serviceId) {
+      this.checkpointService.getServiceCheckpoints(serviceId).subscribe({
+        next: (checkpoints) => {
+          this.serviceCheckpointsMap.set(serviceId, checkpoints);
+        },
+        error: () => {
+          // Silently fail - checkpoints will be initialized on backend
+        },
+      });
+    }
   }
-}
+
   toggleCheckpointSelection(serviceIndex: number, checkpointId: number): void {
     if (!this.selectedCheckpointsMap.has(serviceIndex)) {
       this.selectedCheckpointsMap.set(serviceIndex, new Set<number>());
     }
-    
+
     const selectedSet = this.selectedCheckpointsMap.get(serviceIndex)!;
     if (selectedSet.has(checkpointId)) {
       selectedSet.delete(checkpointId);
@@ -187,6 +174,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
       refrence: [''],
       employeeId: ['', Validators.required],
       taskGroupId: [0],
+      numberOfSubTasks: [0],
     });
     this.getTasksArray(clientServiceIndex).push(task);
 
@@ -297,24 +285,27 @@ export class AddClientComponent implements OnInit, OnDestroy {
       businessDescription: formValue.businessDescription,
       driveLink: formValue.driveLink,
       status: formValue.status,
-      clientServices: formValue.clientServices.map((cs: any, index: number) => ({
-        serviceId: cs.serviceId,
-        selectedCheckpointIds: this.getSelectedCheckpoints(index),
-        taskGroups: [
-          {
-            tasks: cs.tasks.map((t: any) => ({
-              taskType: parseInt(t.taskType),
-              title: t.title,
-              description: t.description,
-              status: t.status,
-              deadline: new Date(t.deadline),
-              priority: t.priority,
-              refrence: t.refrence || undefined,
-              employeeId: t.employeeId,
-            })),
-          },
-        ],
-      })),
+      clientServices: formValue.clientServices.map(
+        (cs: any, index: number) => ({
+          serviceId: cs.serviceId,
+          selectedCheckpointIds: this.getSelectedCheckpoints(index),
+          taskGroups: [
+            {
+              tasks: cs.tasks.map((t: any) => ({
+                taskType: parseInt(t.taskType),
+                title: t.title,
+                description: t.description,
+                status: t.status,
+                deadline: new Date(t.deadline),
+                priority: t.priority,
+                refrence: t.refrence || undefined,
+                employeeId: t.employeeId,
+                numberOfSubTasks: t.numberOfSubTasks || 0,
+              })),
+            },
+          ],
+        })
+      ),
     };
 
     this.clientService.add(clientData, this.currentUserId).subscribe({

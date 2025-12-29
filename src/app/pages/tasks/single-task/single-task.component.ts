@@ -27,7 +27,7 @@ import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-clas
 import { AlertService } from '../../../services/helper-services/alert.service';
 import { hasError } from '../../../services/helper-services/utils';
 import { MapTaskTypePipe } from '../../../core/pipes/task-type/map-task-type.pipe';
-import { TaskShimmerComponent } from "../../../shared/task-shimmer/task-shimmer.component";
+import { TaskShimmerComponent } from '../../../shared/task-shimmer/task-shimmer.component';
 
 @Component({
   selector: 'app-single-task',
@@ -39,8 +39,8 @@ import { TaskShimmerComponent } from "../../../shared/task-shimmer/task-shimmer.
     MapTaskPriorityPipe,
     MapTaskTypePipe,
     TaskShimmerComponent,
-    FormsModule
-],
+    FormsModule,
+  ],
   templateUrl: './single-task.component.html',
   styleUrl: './single-task.component.css',
 })
@@ -96,7 +96,7 @@ export class SingleTaskComponent implements OnInit {
       value: CustomTaskStatus.Rejected,
       label: 'مرفوضة',
       icon: 'bi bi-x-circle-fill',
-    }
+    },
   ];
   CustomTaskStatus = CustomTaskStatus;
   constructor(
@@ -107,20 +107,28 @@ export class SingleTaskComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.editTaskForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
+      title: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(200),
+        ],
+      ],
       taskType: ['', Validators.required],
       description: ['', Validators.maxLength(2000)],
       priority: ['', Validators.required],
       deadline: ['', Validators.required],
       employeeId: ['', Validators.required],
       status: ['', Validators.required],
-      refrence: ['', Validators.maxLength(1000)]
+      refrence: ['', Validators.maxLength(1000)],
+      numberOfSubTasks: [''],
     });
 
     // Initialize complete task form
     this.completeTaskForm = this.fb.group({
       urls: this.fb.array([]),
-      completionNotes: ['']
+      completionNotes: [''],
     });
   }
 
@@ -130,7 +138,7 @@ export class SingleTaskComponent implements OnInit {
     const isArchivedParam = this.route.snapshot.queryParamMap.get('isArchived'); // Changed from queryParamMap to paramMap
     const taskId = Number(taskIdParam);
     const isArchived = isArchivedParam === 'true';
-    
+
     // Use the unified endpoint instead of separate calls
     this.loadTaskUnified(taskId, isArchived);
     this.loadUser();
@@ -145,11 +153,11 @@ export class SingleTaskComponent implements OnInit {
       },
       error: (error) => {
         this.isLoadingTask = false;
-        const errorMessage = isArchived 
-          ? 'لم يتم العثور على التاسك المؤرشف' 
+        const errorMessage = isArchived
+          ? 'لم يتم العثور على التاسك المؤرشف'
           : 'لم يتم العثور على التاسك';
         this.showAlert(errorMessage, 'error');
-      }
+      },
     });
   }
 
@@ -159,35 +167,25 @@ export class SingleTaskComponent implements OnInit {
 
   addUrl() {
     const urlGroup = this.fb.group({
-      url: [null, Validators.required]
+      url: [null, Validators.required],
     });
     this.urlControls.push(urlGroup);
   }
 
   openCompleteTaskModal() {
-    // Reset form
-    // this.completeTaskForm.reset();
-    // this.urlControls.clear();
-    // this.addUrl(); // Add at least one URL field
+    while (this.urlControls.length !== 0) {
+      this.urlControls.removeAt(0);
+    }
 
-    // Clear the form array completely
-  while (this.urlControls.length !== 0) {
-    this.urlControls.removeAt(0);
-  }
-  
-  // Add fresh URL field
-  this.addUrl();
-  
-  // Reset completion notes
-  this.completeTaskForm.patchValue({
-    completionNotes: ''
-  });
+    this.addUrl();
 
-  // Mark form as pristine and untouched
-  this.completeTaskForm.markAsPristine();
-  this.completeTaskForm.markAsUntouched();
-    
-    // Show modal using Bootstrap
+    this.completeTaskForm.patchValue({
+      completionNotes: '',
+    });
+
+    this.completeTaskForm.markAsPristine();
+    this.completeTaskForm.markAsUntouched();
+
     const modalElement = document.getElementById('completeTaskModal');
     if (modalElement) {
       const modal = new (window as any).bootstrap.Modal(modalElement);
@@ -200,7 +198,7 @@ export class SingleTaskComponent implements OnInit {
       this.urlControls.removeAt(index);
     }
   }
-  
+
   loadUser() {
     this.currentUserId = this.authService.getCurrentUserId();
 
@@ -236,6 +234,7 @@ export class SingleTaskComponent implements OnInit {
       employeeId: task.employeeId || '',
       status: task.status,
       refrence: task.refrence || '',
+      numberOfSubTasks: task.numberOfSubTasks || '',
     });
   }
 
@@ -252,25 +251,27 @@ export class SingleTaskComponent implements OnInit {
   updateTaskStatus(newStatus: CustomTaskStatus): void {
     if (!this.task) return;
     this.updatingStatus = true;
-    this.taskService.changeStatus(this.task.id, this.currentUserId, newStatus).subscribe({
-      next: () => {
-        if (this.task) {
-          this.task.status = newStatus;
-          // Update CompletedAt field
-          if (newStatus === CustomTaskStatus.Completed) {
-            this.task.completedAt = new Date();
-          } else {
-            this.task.completedAt = undefined;
+    this.taskService
+      .changeStatus(this.task.id, this.currentUserId, newStatus)
+      .subscribe({
+        next: () => {
+          if (this.task) {
+            this.task.status = newStatus;
+            // Update CompletedAt field
+            if (newStatus === CustomTaskStatus.Completed) {
+              this.task.completedAt = new Date();
+            } else {
+              this.task.completedAt = undefined;
+            }
+            this.showAlert('تم تحديث حالة التاسك', 'success');
           }
-          this.showAlert('تم تحديث حالة التاسك', 'success');
-        }
-        this.updatingStatus = false;
-      },
-      error: (error) => {
-        this.updatingStatus = false;
-        this.showAlert(error.error, 'error');
-      },
-    });
+          this.updatingStatus = false;
+        },
+        error: (error) => {
+          this.updatingStatus = false;
+          this.showAlert(error.error, 'error');
+        },
+      });
   }
 
   isOverdue(): boolean {
@@ -303,7 +304,7 @@ export class SingleTaskComponent implements OnInit {
       return `يجب أن يكون ${control.errors['minlength'].requiredLength} أحرف على الأقل`;
     }
     if (control.errors['maxlength']) {
-      return `يجب ان يكون ${control.errors['maxlength'].requiredLength} أحرف على الاكثر`
+      return `يجب ان يكون ${control.errors['maxlength'].requiredLength} أحرف على الاكثر`;
     }
 
     return 'قيمة غير صحيحة';
@@ -313,7 +314,7 @@ export class SingleTaskComponent implements OnInit {
     if (this.editTaskForm.invalid) {
       this.editTaskForm.markAllAsTouched();
       return;
-    };
+    }
 
     this.isLoading = true;
     const formValue = this.editTaskForm.value;
@@ -326,21 +327,23 @@ export class SingleTaskComponent implements OnInit {
       employeeId: formValue.employeeId,
       status: Number(formValue.status),
       refrence: formValue.refrence,
+      numberOfSubTasks: formValue.numberOfSubTasks,
     };
     this.isLoading = true;
 
-
-    this.taskService.update(this.task.id, this.currentUserId, updatedTask).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        this.task = response;
-        this.showAlert('تم تحديث التاسك بنجاح', 'success');
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.showAlert(error.error, 'error');
-      },
-    });
+    this.taskService
+      .update(this.task.id, this.currentUserId, updatedTask)
+      .subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          this.task = response;
+          this.showAlert('تم تحديث التاسك بنجاح', 'success');
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.showAlert(error.error, 'error');
+        },
+      });
   }
 
   deleteTask() {
@@ -365,12 +368,14 @@ export class SingleTaskComponent implements OnInit {
         this.task = res;
         this.isTaskArchived = true;
         this.showAlert('تم أرشفة المهمة بنجاح', 'success');
-        this.router.navigate(['/tasks', res.id], { queryParams: { isArchived: true } });
+        this.router.navigate(['/tasks', res.id], {
+          queryParams: { isArchived: true },
+        });
       },
       error: (error) => {
         this.isArchiveLoading = false;
         this.showAlert(error.error, 'error');
-      }
+      },
     });
   }
 
@@ -387,7 +392,7 @@ export class SingleTaskComponent implements OnInit {
       error: (error) => {
         this.isArchiveLoading = false;
         this.showAlert(error.error, 'error');
-      }
+      },
     });
   }
 
@@ -395,45 +400,50 @@ export class SingleTaskComponent implements OnInit {
     if (this.completeTaskForm.invalid) {
       this.completeTaskForm.markAllAsTouched();
 
-    this.urlControls.controls.forEach(control => {
-      control.get('url')?.markAsTouched();
-    });
+      this.urlControls.controls.forEach((control) => {
+        control.get('url')?.markAsTouched();
+      });
 
       this.showAlert('يرجى ملء جميع الحقول المطلوبة بشكل صحيح', 'error');
       return;
     }
 
     this.isCompletingTask = true;
-    
+
     const formValue = this.completeTaskForm.value;
-    const urls = formValue.urls.map((urlGroup: any) => urlGroup.url)
-    .filter((url: string) => url && url.trim() !== '');
-    
+    const urls = formValue.urls
+      .map((urlGroup: any) => urlGroup.url)
+      .filter((url: string) => url && url.trim() !== '');
+
     const taskResources: ICreateTaskResources = {
       taskId: this.task.id,
       urls: urls,
-      completionNotes: formValue.completionNotes || undefined
+      completionNotes: formValue.completionNotes || undefined,
     };
-    this.taskService.complete(this.task.id, this.currentUserId, taskResources).subscribe({
-      next: (response) => {
-        this.isCompletingTask = false;
-        this.task = response;
-        this.showAlert('تم إكمال التاسك بنجاح', 'success');
-        
-        // Hide modal
-        const modalElement = document.getElementById('completeTaskModal');
-        if (modalElement) {
-          const modal = (window as any).bootstrap.Modal.getInstance(modalElement);
-          if (modal) {
-            modal.hide();
+    this.taskService
+      .complete(this.task.id, this.currentUserId, taskResources)
+      .subscribe({
+        next: (response) => {
+          this.isCompletingTask = false;
+          this.task = response;
+          this.showAlert('تم إكمال التاسك بنجاح', 'success');
+
+          // Hide modal
+          const modalElement = document.getElementById('completeTaskModal');
+          if (modalElement) {
+            const modal = (window as any).bootstrap.Modal.getInstance(
+              modalElement
+            );
+            if (modal) {
+              modal.hide();
+            }
           }
-        }
-      },
-      error: (err) => {
-        this.isCompletingTask = false;
-        this.showAlert(err.error, 'error');
-      },
-    });
+        },
+        error: (err) => {
+          this.isCompletingTask = false;
+          this.showAlert(err.error, 'error');
+        },
+      });
   }
 
   showAlert(message: string, type: string) {
@@ -451,51 +461,50 @@ export class SingleTaskComponent implements OnInit {
 
   getDeadlineStatusText(): string {
     if (!this.task) return '';
-    
-    // If task is completed
+
     if (this.task.completedAt) {
       return this.task.isCompletedOnDeadline ? 'نعم' : 'لا';
     }
-    
-    // If task is not completed but deadline hasn't arrived yet
+
     if (new Date() < new Date(this.task.deadline)) {
       return 'لم يحن الموعد';
     }
-    
-    // If task is not completed and deadline has passed
+
     return 'لا';
   }
 
   getDeadlineStatusClass(): string {
     if (!this.task) return '';
-    
+
     // If task is completed
     if (this.task.completedAt) {
       return this.task.isCompletedOnDeadline ? 'on-time' : 'late';
     }
-    
+
     // If task is not completed but deadline hasn't arrived yet
     if (new Date() < new Date(this.task.deadline)) {
       return 'not-yet';
     }
-    
+
     // If task is not completed and deadline has passed
     return 'late';
   }
 
   getDeadlineStatusIcon(): string {
     if (!this.task) return '';
-    
+
     // If task is completed
     if (this.task.completedAt) {
-      return this.task.isCompletedOnDeadline ? 'bi bi-check-circle' : 'bi bi-x-circle';
+      return this.task.isCompletedOnDeadline
+        ? 'bi bi-check-circle'
+        : 'bi bi-x-circle';
     }
-    
+
     // If task is not completed but deadline hasn't arrived yet
     if (new Date() < new Date(this.task.deadline)) {
       return 'bi bi-clock';
     }
-    
+
     // If task is not completed and deadline has passed
     return 'bi bi-x-circle';
   }
@@ -506,11 +515,11 @@ export class SingleTaskComponent implements OnInit {
     }
 
     this.isSubmittingComment = true;
-    
+
     const commentData: ICreateTaskComment = {
       taskId: this.task.id,
       employeeId: this.currentUserId,
-      comment: this.newComment.trim()
+      comment: this.newComment.trim(),
     };
 
     this.taskService.addComment(commentData).subscribe({
@@ -519,16 +528,16 @@ export class SingleTaskComponent implements OnInit {
         if (!this.task.taskComments) {
           this.task.taskComments = [];
         }
-        
+
         // Map the response to match ITaskComment interface
         const newComment: ITaskComment = {
           employeeId: response.employeeId,
           employeeName: response.employeeName || 'غير معروف',
           comment: response.comment,
           taskId: response.taskId,
-          createdAt: response.createdAt
+          createdAt: response.createdAt,
         };
-        
+
         this.task.taskComments.push(newComment);
         this.newComment = '';
         this.isSubmittingComment = false;
@@ -537,7 +546,7 @@ export class SingleTaskComponent implements OnInit {
       error: (error) => {
         this.isSubmittingComment = false;
         this.showAlert(error.error || 'حدث خطأ أثناء إضافة التعليق', 'error');
-      }
+      },
     });
   }
 }

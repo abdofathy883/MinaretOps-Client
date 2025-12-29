@@ -7,7 +7,7 @@
   <h1 class="text-center mb-3">جميع التاسكات المؤرشفة</h1>
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
     @if (filteredTasks) { @for (task of filteredTasks; track $index) {
-    <div class="col">
+    <!-- <div class="col">
       <div
         class="card h-100"
         (click)="goToTask(task.id)"
@@ -45,8 +45,108 @@
           <small>وقت التسليم: {{ task.deadline | date }}</small>
         </div>
       </div>
-    </div>
-    } } @else {
+    </div> -->
+    <div class="col">
+      <div
+        class="task-card card h-100 position-relative"
+        (click)="goToTask(task.id)"
+        style="cursor: pointer"
+      >
+        <!-- Status ribbon -->
+        <div class="status-ribbon" [ngClass]="task.status | mapTaskStatusClass">
+          {{
+            (task.status | mapTaskStatus) +
+              (isCompletedAfterDeadline(task) ? " - متأخر" : "")
+          }}
+        </div>
+
+        <div class="card-body">
+          <!-- Top row: Priority + ID -->
+          <div class="d-flex align-items-center justify-content-between gap-2">
+            <span
+              class="badge priority-chip"
+              [ngClass]="getPriorityClass(task.priority)"
+            >
+              <i
+                class="bi"
+                [ngClass]="{
+                  'bi-flag': task.priority === 'عادي',
+                  'bi-lightning-charge': task.priority === 'مهم',
+                  'bi-exclamation-triangle': task.priority === 'مستعجل'
+                }"
+              ></i>
+              {{ task.priority }}
+            </span>
+            <p class="mb-0">#{{ task.id }}</p>
+          </div>
+
+          <!-- Title -->
+          <h5 class="card-title text-center mt-2 mb-2 text-truncate-2">
+            {{ task.title }}
+          </h5>
+          <div
+            class="d-flex align-items-center justify-content-center gap-2 mb-2"
+          >
+            <i class="bi bi-diagram-3"></i>
+            <span class="text-muted">النوع:</span>
+            <span class="fw-medium">{{ getTypeLabel(task.taskType) }}</span>
+          </div>
+
+          <!-- Description -->
+          <p class="card-text text-center text-muted text-truncate-3">
+            {{ task.description }}
+          </p>
+
+          <!-- Meta grid -->
+          <div class="mt-2 small">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-person-badge"></i>
+              <span class="text-muted">الموظف:</span>
+              <span class="fw-medium text-truncate">{{
+                task.employeeName
+              }}</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-briefcase"></i>
+              <span class="text-muted">الخدمة:</span>
+              <span class="fw-medium text-truncate">{{
+                task.serviceName
+              }}</span>
+            </div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="bi bi-building"></i>
+              <span class="text-muted">العميل:</span>
+              <span class="fw-medium text-truncate">{{ task.clientName }}</span>
+            </div>
+            @if (task.numberOfSubTasks) {
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="bi bi-building"></i>
+                <span class="text-muted">عدد التاسكات:</span>
+                <span class="fw-medium text-truncate">{{ task.numberOfSubTasks }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Footer with deadline and quick action -->
+        <div
+          class="card-footer d-flex align-items-center justify-content-between"
+        >
+          <small class="text-muted d-flex align-items-center gap-1">
+            <i class="bi bi-calendar-event"></i>
+            <span>التسليم: {{ task.deadline | date }}</span>
+          </small>
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            (click)="$event.stopPropagation(); goToTask(task.id)"
+          >
+            فتح
+          </button>
+        </div>
+      </div>
+    </div>  
+  } } @else {
     <div class="text-center mt-4 h-50">
       <div class="empty-state">
         <h3>لا توجد مهام تطابق الفلاتر المحددة</h3>

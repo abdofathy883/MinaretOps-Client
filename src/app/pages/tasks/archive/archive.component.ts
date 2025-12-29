@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ITask, TaskType } from '../../../model/task/task';
+import { CustomTaskStatus, ILightWieghtTask, ITask, TaskType } from '../../../model/task/task';
 import { User } from '../../../model/auth/user';
 import { LightWieghtClient } from '../../../model/client/client';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -195,5 +195,11 @@ services: Service[] = [];
       default:
         return 'غير محدد';
     }
+  }
+
+  isCompletedAfterDeadline(task: ILightWieghtTask): boolean {
+    return task.status === CustomTaskStatus.Completed &&
+           task.completedAt != null &&
+           new Date(task.completedAt) > new Date(task.deadline);
   }
 }

@@ -81,7 +81,7 @@ export class TaskEmpReportComponent implements OnInit {
   isTodayInRange(): boolean {
     const formValue = this.filterForm.value;
     if (!formValue.fromDate || !formValue.toDate) {
-      return true; // Default to showing "On Break" if dates not set
+      return true;
     }
 
     const today = new Date();
@@ -145,7 +145,7 @@ export class TaskEmpReportComponent implements OnInit {
     } else {
       this.expandedEmployees.add(employeeId);
     }
-    this.cdr.markForCheck(); // Trigger change detection for toggle
+    this.cdr.markForCheck();
   }
 
   isExpanded(employeeId: string): boolean {
@@ -171,7 +171,8 @@ export class TaskEmpReportComponent implements OnInit {
       [CustomTaskStatus.InProgress]: 'badge bg-primary',
       [CustomTaskStatus.UnderReview]: 'badge bg-warning',
       [CustomTaskStatus.NeedsEdits]: 'badge bg-danger',
-      [CustomTaskStatus.Completed]: 'badge bg-success'
+      [CustomTaskStatus.Completed]: 'badge bg-success',
+      [CustomTaskStatus.Rejected]: 'badge bg-danger'
     };
     return statusClasses[status] || 'badge bg-secondary';
   }
@@ -183,7 +184,8 @@ export class TaskEmpReportComponent implements OnInit {
       [CustomTaskStatus.InProgress]: 'قيد التنفيذ',
       [CustomTaskStatus.UnderReview]: 'قيد المراجعة',
       [CustomTaskStatus.NeedsEdits]: 'يحتاج تعديلات',
-      [CustomTaskStatus.Completed]: 'مكتمل'
+      [CustomTaskStatus.Completed]: 'مكتمل',
+      [CustomTaskStatus.Rejected]: 'مرفوضة'
     };
     return statusTexts[status] || 'غير محدد';
   }

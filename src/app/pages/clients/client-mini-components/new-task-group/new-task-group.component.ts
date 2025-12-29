@@ -110,6 +110,7 @@ export class NewTaskGroupComponent implements OnInit {
       deadline: ['', Validators.required],
       employeeId: [''],
       refrence: ['', Validators.maxLength(1000)],
+      numberofSubTasks: [0]
     });
 
     this.getTasksArray(serviceIndex).push(task);
@@ -157,9 +158,9 @@ export class NewTaskGroupComponent implements OnInit {
         deadline: new Date(task.deadline),
         priority: task.priority,
         refrence: task.refrence,
+        numberofSubTasks: task.numberofSubTasks
       })),
     };
-    console.log(taskGroup);
 
     this.taskService.addTaskGroup(taskGroup, this.currentUserId).subscribe({
       next: (response) => {

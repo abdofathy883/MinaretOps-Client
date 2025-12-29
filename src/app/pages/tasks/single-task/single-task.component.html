@@ -36,7 +36,8 @@
 
   @if (!isEditMode) { @if (!task.employeeId) {
   <div class="alert alert-danger" role="alert">
-    لم يتم تعيين موظف لهذا التاسك - كل الاجراءات معطلة حتى تحديث التاسك واضافة موظف
+    لم يتم تعيين موظف لهذا التاسك - كل الاجراءات معطلة حتى تحديث التاسك واضافة
+    موظف
   </div>
   }
   <div class="row">
@@ -82,6 +83,13 @@
             <span class="no-reference">لا يوجد مرجع</span>
           </ng-template>
         </div>
+
+        <div class="detail-item">
+          <label>عدد التاسكات الداخلية:</label>
+          <span class="employee-name">{{
+            task.numberOfSubTasks || "غير محدد"
+          }}</span>
+        </div>
         <div class="detail-item">
           <label>تاريخ انشاء التاسك:</label>
           <span>{{ task.createdAt | date }}</span>
@@ -104,15 +112,15 @@
                   <span class="prop">{{ h.propertyName }}</span>
                   <span class="arrow">←</span>
                   @if (h.propertyName === 'الموعد النهائي') {
-                    <span class="old">{{ h.oldValue | date : 'short' }}</span>
+                  <span class="old">{{ h.oldValue | date : "short" }}</span>
                   } @else {
-                    <span class="old">{{ h.oldValue || "-" }}</span>
+                  <span class="old">{{ h.oldValue || "-" }}</span>
                   }
                   <span class="to">إلى</span>
                   @if (h.propertyName === 'الموعد النهائي') {
-                    <span class="new">{{ h.newValue | date : 'short' }}</span>
+                  <span class="new">{{ h.newValue | date : "short" }}</span>
                   } @else {
-                    <span class="new">{{ h.newValue || "-" }}</span>
+                  <span class="new">{{ h.newValue || "-" }}</span>
                   }
                 </div>
                 <div class="byline">
@@ -172,14 +180,14 @@
         </div>
 
         <!-- Completion Date -->
-         @if (task.completedAt) {
-           <div class="completion-section">
-             <label>تاريخ الإنجاز:</label>
-             <span class="completion-date">
-               {{ task.completedAt | date : "short" }}
-             </span>
-           </div>
-         }
+        @if (task.completedAt) {
+        <div class="completion-section">
+          <label>تاريخ الإنجاز:</label>
+          <span class="completion-date">
+            {{ task.completedAt | date : "short" }}
+          </span>
+        </div>
+        }
 
         <!-- <div class="info-item">
           <label>تم الإنجاز في الموعد:</label>
@@ -228,7 +236,8 @@
                 updatingStatus ||
                 task.status === status.value ||
                 (status.value === CustomTaskStatus.Open &&
-                  task.status !== CustomTaskStatus.Open) || !task.employeeId
+                  task.status !== CustomTaskStatus.Open) ||
+                !task.employeeId
               "
             >
               <i [class]="status.icon"></i>
@@ -236,14 +245,21 @@
             </button>
 
             } @if (task.status !== CustomTaskStatus.Completed) {
-            <button class="status-option-btn" (click)="openCompleteTaskModal()" [disabled]="!task.employeeId">
+            <button
+              class="status-option-btn"
+              (click)="openCompleteTaskModal()"
+              [disabled]="!task.employeeId"
+            >
               <i class="bi bi-check-circle me-1"></i>
               إكمال التاسك
             </button>
             }
           </div>
           @if (isUserAdmin || isUserAccountManager) {
-          <button class="archive-btn" (click)="isTaskArchived ? restoreTask() : archiveTask()">
+          <button
+            class="archive-btn"
+            (click)="isTaskArchived ? restoreTask() : archiveTask()"
+          >
             @if(isArchiveLoading) {
             <span
               class="spinner-border spinner-border-sm me-2"
@@ -300,54 +316,60 @@
         <div class="card-header mb-3">
           <h3><i class="bi bi-chat-left-text"></i> تعليقات المهمة</h3>
         </div>
-        
+
         <!-- Comment Form -->
         <div class="comment-form mb-4">
-          <textarea 
-            class="form-control mb-2" 
+          <textarea
+            class="form-control mb-2"
             [(ngModel)]="newComment"
             placeholder="أدخل تعليقك هنا..."
             rows="3"
             [disabled]="isSubmittingComment"
           ></textarea>
-          <button 
+          <button
             class="add-btn"
             (click)="addComment()"
             [disabled]="!newComment || isSubmittingComment"
           >
             @if (isSubmittingComment) {
-              <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-              جاري الإضافة...
-            } @if (!isSubmittingComment) {
-              <i class="bi bi-plus-circle me-1"></i>
-              إضافة تعليق
-            }
+            <span
+              class="spinner-border spinner-border-sm me-2"
+              role="status"
+            ></span>
+            جاري الإضافة... } @if (!isSubmittingComment) {
+            <i class="bi bi-plus-circle me-1"></i>
+            إضافة تعليق }
           </button>
         </div>
-        
+
         <!-- Comments List -->
         @if (task.taskComments && task.taskComments.length > 0) {
-          <div class="comments-list">
-            @for (comment of task.taskComments; track comment.employeeId + comment.createdAt) {
-              <div class="comment-item">
-                <div class="comment-header">
-                  <div class="comment-author">
-                    <i class="bi bi-person-circle"></i>
-                    <span class="author-name">{{ comment.employeeName || 'غير معروف' }}</span>
-                  </div>
-                  <span class="comment-date">{{ comment.createdAt | date: 'short' }}</span>
-                </div>
-                <div class="comment-content">
-                  {{ comment.comment }}
-                </div>
+        <div class="comments-list">
+          @for (comment of task.taskComments; track comment.employeeId +
+          comment.createdAt) {
+          <div class="comment-item">
+            <div class="comment-header">
+              <div class="comment-author">
+                <i class="bi bi-person-circle"></i>
+                <span class="author-name">{{
+                  comment.employeeName || "غير معروف"
+                }}</span>
               </div>
-            }
+              <span class="comment-date">{{
+                comment.createdAt | date : "short"
+              }}</span>
+            </div>
+            <div class="comment-content">
+              {{ comment.comment }}
+            </div>
           </div>
+          }
+        </div>
         } @else {
-          <div class="no-comments">
-            <i class="bi bi-chat-left-text"></i>
-            <p>لا توجد تعليقات بعد</p>
-          </div>
+        <div class="no-comments">
+          <i class="bi bi-chat-left-text"></i>
+          <p>لا توجد تعليقات بعد</p>
+        </div>
         }
       </div>
     </div>
@@ -357,12 +379,11 @@
   @if (alertMessage) {
   <div class="alert" [class]="'alert-' + alertType">
     {{ alertMessage }}
-    <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
   </div>
   }
   <form [formGroup]="editTaskForm" (ngSubmit)="saveTask()">
     <div class="row">
-      <div class="mb-3">
+      <div class="col-12 col-md-6 mb-3">
         <label for="taskType" class="form-label">نوع التاسك</label>
         <span class="text-danger me-2">*</span>
         <select
@@ -403,7 +424,7 @@
         </div>
         }
       </div>
-      <div class="col-md-6 mb-3">
+      <div class="col-12 col-md-6 mb-3">
         <label for="title" class="form-label">عنوان التاسك</label>
         <span class="text-danger me-2">*</span>
         <input
@@ -420,8 +441,10 @@
         </div>
         }
       </div>
+    </div>
 
-      <div class="col-md-6 mb-3">
+    <div class="row">
+      <div class="col-12 col-md-6 mb-3">
         <label for="priority" class="form-label">الأولوية</label>
         <span class="text-danger me-2">*</span>
         <select
@@ -439,6 +462,23 @@
         <div class="invalid-feedback">
           {{ getErrorMessage("priority") }}
         </div>
+      </div>
+      <div class="col-12 col-md-6 mb-3">
+        <label for="numberOfSubTasks" class="form-label"
+          >عدد التاسكات الداخلية</label
+        >
+        <input
+          type="number"
+          class="form-control"
+          id="numberOfSubTasks"
+          formControlName="numberOfSubTasks"
+          [class.is-invalid]="hasError('numberOfSubTasks')"
+        />
+        @if (hasError('numberOfSubTasks')) {
+        <div class="invalid-feedback">
+          {{ getErrorMessage("numberOfSubTasks") }}
+        </div>
+        }
       </div>
     </div>
 
@@ -545,17 +585,15 @@
       }
     </div>
 
-    <div class="">
-      <button type="submit" class="add-btn" [disabled]="isLoading">
-        @if (isLoading) {
-        <span
-          class="spinner-border spinner-border-sm me-2"
-          role="status"
-          aria-hidden="true"
-        ></span>
-        جاري التعديل... } @if(!isLoading) { تعديل }
-      </button>
-    </div>
+    <button type="submit" class="add-btn" [disabled]="isLoading">
+      @if (isLoading) {
+      <span
+        class="spinner-border spinner-border-sm me-2"
+        role="status"
+        aria-hidden="true"
+      ></span>
+      جاري التعديل... } @if(!isLoading) { تعديل }
+    </button>
     <div class="mt-3">
       <button class="btn btn-danger" (click)="deleteTask()">حذف التاسك</button>
     </div>

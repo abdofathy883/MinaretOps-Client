@@ -20,7 +20,6 @@
         </button>
       </div>
       <div class="modal-body">
-        <!-- Alert Messages -->
         @if (alertMessage) {
         <div class="alert" [class]="'alert-' + alertType">
           {{ alertMessage }}
@@ -54,7 +53,11 @@
 
               <div class="mb-3">
                 <label class="form-label">اختر الخدمة</label>
-                <select class="form-select" formControlName="serviceId" [class.is-invalid]="hasError('serviceId')">
+                <select
+                  class="form-select"
+                  formControlName="serviceId"
+                  [class.is-invalid]="hasError('serviceId')"
+                >
                   <option value="" disabled selected>اختر الخدمة</option>
                   @for(service of availableServices; track service.id) {
                   <option [value]="service.id">{{ service.title }}</option>
@@ -113,7 +116,7 @@
                     [class.collapsed]="isTaskCollapsed(serviceIndex, taskIndex)"
                   >
                     <div class="row">
-                      <div class="col-md-6 mb-2">
+                      <div class="col-12 col-md-6 mb-3">
                         <label for="type" class="form-label">نوع التاسك</label>
                         <span class="text-danger me-2">*</span>
                         <select
@@ -154,7 +157,7 @@
                         </div>
                         }
                       </div>
-                      <div class="col-md-6 mb-2">
+                      <div class="col-12 col-md-6 mb-3">
                         <label class="form-label">عنوان المهمة</label>
                         <span class="text-danger me-2">*</span>
                         <input
@@ -171,7 +174,8 @@
                         }
                       </div>
                     </div>
-                    <div class="mb-2">
+
+                    <div class="mb-3">
                       <label class="form-label">وصف المهمة</label>
                       <textarea
                         class="form-control"
@@ -186,8 +190,9 @@
                       </div>
                       }
                     </div>
+
                     <div class="row">
-                      <div class="col-md-6 mb-2">
+                      <div class="col-12 col-md-6 mb-3">
                         <label class="form-label">الموظف</label>
                         <select
                           class="form-select"
@@ -201,7 +206,7 @@
                           }
                         </select>
                       </div>
-                      <div class="col-md-6 mb-2">
+                      <div class="col-12 col-md-6 mb-3">
                         <label class="form-label">موعد التسليم</label>
                         <span class="text-danger me-2">*</span>
                         <input
@@ -217,8 +222,9 @@
                         }
                       </div>
                     </div>
+
                     <div class="row">
-                      <div class="col-md-6 mb-2">
+                      <div class="col-12 col-md-6 mb-3">
                         <label class="form-label">الأولوية</label>
                         <span class="text-danger me-2">*</span>
                         <select
@@ -236,8 +242,24 @@
                         </div>
                         }
                       </div>
-                      <div class="col-md-6 mb-2">
-                        <label class="form-label">المرجع (اختياري)</label>
+                      <div class="col-12 col-md-6 mb-3">
+                        <label class="form-label">عدد التاسكات الداخلية</label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          formControlName="numberOfSubTasks"
+                          placeholder="أدخل عدد التاسكات الداخلية"
+                          [class.is-invalid]="hasError('numberOfSubTasks')"
+                        />
+                        @if (hasError('numberOfSubTasks')) {
+                        <div class="invalid-feedback">
+                          {{ getErrorMessage("numberOfSubTasks") }}
+                        </div>
+                        }
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">المرجع (اختياري)</label>
                         <input
                           type="text"
                           class="form-control"
@@ -250,7 +272,6 @@
                           {{ getErrorMessage("reference") }}
                         </div>
                         }
-                      </div>
                     </div>
                   </div>
                 </div>

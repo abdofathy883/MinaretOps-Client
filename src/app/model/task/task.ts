@@ -23,6 +23,7 @@ export interface ITask {
   taskComments: ITaskComment[];
   completionNotes: string;
   createdAt: Date;
+  numberOfSubTasks?: number;
 }
 
 export interface ILightWieghtTask {
@@ -39,6 +40,7 @@ export interface ILightWieghtTask {
   serviceName: string;
   clientName: string;
   createdAt: Date;
+  numberOfSubTasks?: number;
 }
 
 export enum CustomTaskStatus {
@@ -48,7 +50,7 @@ export enum CustomTaskStatus {
   UnderReview = 3,
   NeedsEdits = 4,
   Completed = 5,
-  Rejected = 6
+  Rejected = 6,
 }
 
 export enum TaskType {
@@ -89,6 +91,7 @@ export interface ICreateTask {
   refrence?: string;
   employeeId: string;
   taskGroupId: number;
+  numberOfSubTasks?: number;
 }
 
 export interface IUpdateTask {
@@ -99,6 +102,7 @@ export interface IUpdateTask {
   priority?: string;
   refrence?: string;
   employeeId?: string;
+  numberOfSubTasks?: number;
 }
 
 // Task Groups
@@ -151,7 +155,7 @@ export enum TaskTeam {
   Video = 'video',
   SEO = 'seo',
   ADs = 'ads',
-  Management = 'management'
+  Management = 'management',
 }
 
 export interface TaskTeamMapping {
@@ -164,26 +168,17 @@ export const TASK_TEAM_MAPPINGS: TaskTeamMapping[] = [
   {
     team: TaskTeam.ContentCreation,
     name: 'فريق إنشاء المحتوى',
-    taskTypes: [
-      TaskType.ContentStrategy,
-      TaskType.ContentWriting
-    ]
+    taskTypes: [TaskType.ContentStrategy, TaskType.ContentWriting],
   },
   {
     team: TaskTeam.Video,
     name: 'فريق الفيديو',
-    taskTypes: [
-      TaskType.Voiceover,
-      TaskType.VideoEditing,
-      TaskType.Motion
-    ]
+    taskTypes: [TaskType.Voiceover, TaskType.VideoEditing, TaskType.Motion],
   },
   {
     team: TaskTeam.SEO,
     name: 'فريق تحسين محركات البحث',
-    taskTypes: [
-      TaskType.SEO
-    ]
+    taskTypes: [TaskType.SEO],
   },
   {
     team: TaskTeam.ADs,
@@ -191,8 +186,8 @@ export const TASK_TEAM_MAPPINGS: TaskTeamMapping[] = [
     taskTypes: [
       TaskType.Ad_Management,
       TaskType.E_mailMarketing,
-      TaskType.WhatsAppMarketing
-    ]
+      TaskType.WhatsAppMarketing,
+    ],
   },
   {
     team: TaskTeam.Design,
@@ -204,17 +199,13 @@ export const TASK_TEAM_MAPPINGS: TaskTeamMapping[] = [
       TaskType.SM_Design,
       TaskType.PrintingsDesign,
       TaskType.Illustrations,
-      TaskType.UI_UX
-    ]
+      TaskType.UI_UX,
+    ],
   },
   {
     team: TaskTeam.Software,
     name: 'فريق البرمجيات',
-    taskTypes: [
-      TaskType.WordPress,
-      TaskType.Backend,
-      TaskType.Frontend,
-    ]
+    taskTypes: [TaskType.WordPress, TaskType.Backend, TaskType.Frontend],
   },
   {
     team: TaskTeam.Management,
@@ -224,9 +215,9 @@ export const TASK_TEAM_MAPPINGS: TaskTeamMapping[] = [
       TaskType.Meeting,
       TaskType.HostingManagement,
       TaskType.Publishing,
-      TaskType.Moderation
-    ]
-  }
+      TaskType.Moderation,
+    ],
+  },
 ];
 
 export interface TaskFilter {

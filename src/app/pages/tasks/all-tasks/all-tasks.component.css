@@ -30,6 +30,7 @@
 .status-ribbon.status-under-review { background: #ffc107; color: #212529; } /* warning */
 .status-ribbon.status-needs-edits { background: #dc3545; color: #fff; }     /* danger */
 .status-ribbon.status-completed { background: #198754; color: #fff; }       /* success */
+.status-ribbon.status-rejected { background: #dc3545; color: #fff; }         /* danger */
 .status-ribbon.status-unknown { background: #6c757d; color: #fff; }         /* fallback */
 
 

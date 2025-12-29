@@ -197,7 +197,11 @@
 </section>
 
 <!-- New Task Group Modal -->
-<app-new-task-group #newTaskGroupModal [clientId]="clientId" [currentUserId]="currentUserId">
+<app-new-task-group
+  #newTaskGroupModal
+  [clientId]="clientId"
+  [currentUserId]="currentUserId"
+>
 </app-new-task-group>
 
 <!-- Single Task Modal for both Add and Edit -->
@@ -225,57 +229,55 @@
       </div>
 
       <div class="modal-body">
-        <!-- Alert Messages -->
         @if (alertMessage) {
         <div class="alert" [class]="'alert-' + alertType">
           {{ alertMessage }}
-          <!-- <button class="alert-close" (click)="closeAlert()">×</button> -->
         </div>
         }
         <form [formGroup]="editTaskForm" (ngSubmit)="saveTask()">
-          <div class="row">
-            <div class="mb-3">
-              <label for="taskType" class="form-label">نوع التاسك</label>
-              <span class="text-danger me-2">*</span>
-              <select
-                name="taskType"
-                id="taskType"
-                formControlName="taskType"
-                class="form-select"
-                [class.is-invalid]="hasError('taskType')"
-              >
-                <option [value]="0">Planning</option>
-                <option [value]="1">Content Strategy</option>
-                <option [value]="2">Content Writing</option>
-                <option [value]="3">Logo Design</option>
-                <option [value]="4">Visual Identity</option>
-                <option [value]="5">Design Directions</option>
-                <option [value]="6">SM Design</option>
-                <option [value]="7">Printings Design</option>
-                <option [value]="8">Illustrations</option>
-                <option [value]="9">Voiceover</option>
-                <option [value]="10">Motion</option>
-                <option [value]="11">Video Editing</option>
-                <option [value]="12">Publishing</option>
-                <option [value]="13">Moderation</option>
-                <option [value]="14">Ad Management</option>
-                <option [value]="15">E Mail Marketing</option>
-                <option [value]="16">WhatsApp Marketing</option>
-                <option [value]="17">UI UX</option>
-                <option [value]="18">WordPress</option>
-                <option [value]="19">Backend</option>
-                <option [value]="20">Frontend</option>
-                <option [value]="21">SEO</option>
-                <option [value]="22">Meeting</option>
-                <option [value]="23">Hosting Management</option>
-              </select>
-              @if (hasError('taskType')) {
-              <div class="invalid-feedback">
-                {{ getErrorMessage("taskType") }}
-              </div>
-              }
+          <div class="mb-3">
+            <label for="taskType" class="form-label">نوع التاسك</label>
+            <span class="text-danger me-2">*</span>
+            <select
+              name="taskType"
+              id="taskType"
+              formControlName="taskType"
+              class="form-select"
+              [class.is-invalid]="hasError('taskType')"
+            >
+              <option [value]="0">Planning</option>
+              <option [value]="1">Content Strategy</option>
+              <option [value]="2">Content Writing</option>
+              <option [value]="3">Logo Design</option>
+              <option [value]="4">Visual Identity</option>
+              <option [value]="5">Design Directions</option>
+              <option [value]="6">SM Design</option>
+              <option [value]="7">Printings Design</option>
+              <option [value]="8">Illustrations</option>
+              <option [value]="9">Voiceover</option>
+              <option [value]="10">Motion</option>
+              <option [value]="11">Video Editing</option>
+              <option [value]="12">Publishing</option>
+              <option [value]="13">Moderation</option>
+              <option [value]="14">Ad Management</option>
+              <option [value]="15">E Mail Marketing</option>
+              <option [value]="16">WhatsApp Marketing</option>
+              <option [value]="17">UI UX</option>
+              <option [value]="18">WordPress</option>
+              <option [value]="19">Backend</option>
+              <option [value]="20">Frontend</option>
+              <option [value]="21">SEO</option>
+              <option [value]="22">Meeting</option>
+              <option [value]="23">Hosting Management</option>
+            </select>
+            @if (hasError('taskType')) {
+            <div class="invalid-feedback">
+              {{ getErrorMessage("taskType") }}
             </div>
-            <div class="col-md-6 mb-3">
+            }
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6 mb-3">
               <label for="title" class="form-label">عنوان التاسك</label>
               <span class="text-danger me-2">*</span>
               <input
@@ -293,7 +295,7 @@
               }
             </div>
 
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-md-6 mb-3">
               <label for="priority" class="form-label">الأولوية</label>
               <span class="text-danger me-2">*</span>
               <select
@@ -315,7 +317,7 @@
           </div>
 
           <div class="row">
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-md-6 mb-3">
               <label for="deadline" class="form-label">موعد التسليم</label>
               <span class="text-danger me-2">*</span>
               <input
@@ -331,33 +333,48 @@
               </div>
               }
             </div>
-            @if (modalMode === 'edit') {
-
-            <div class="col-md-6 mb-3">
-              <label for="status" class="form-label">الحالة</label>
-              <select
-                class="form-select"
-                id="status"
-                formControlName="status"
-                [class.is-invalid]="hasError('status')"
-              >
-                <option value="">اختر الحالة</option>
-                <option [value]="0">لم يبدأ</option>
-                <option [value]="1">تم الاقرار</option>
-                <option [value]="2">قيد التنفيذ</option>
-                <option [value]="3">قيد المراجعة</option>
-                <option [value]="4">تحتاج تعديلات</option>
-                <option [value]="5">مكتمل</option>
-                <option [value]="6">مرفوضة</option>
-              </select>
-              @if (hasError('status')) {
+            <div class="col-12 col-md-6 mb-3">
+              <label for="numberOfSubTasks" class="form-label">عدد التاسكات الداخلية</label>
+              <input
+                type="number"
+                class="form-control"
+                id="numberOfSubTasks"
+                formControlName="numberOfSubTasks"
+                [class.is-invalid]="hasError('numberOfSubTasks')"
+              />
+              @if (hasError('numberOfSubTasks')) {
               <div class="invalid-feedback">
-                {{ getErrorMessage("status") }}
+                {{ getErrorMessage("numberOfSubTasks") }}
               </div>
               }
             </div>
+          </div>
+          @if (modalMode === 'edit') {
+
+          <div class="mb-3">
+            <label for="status" class="form-label">الحالة</label>
+            <select
+              class="form-select"
+              id="status"
+              formControlName="status"
+              [class.is-invalid]="hasError('status')"
+            >
+              <option value="">اختر الحالة</option>
+              <option [value]="0">لم يبدأ</option>
+              <option [value]="1">تم الاقرار</option>
+              <option [value]="2">قيد التنفيذ</option>
+              <option [value]="3">قيد المراجعة</option>
+              <option [value]="4">تحتاج تعديلات</option>
+              <option [value]="5">مكتمل</option>
+              <option [value]="6">مرفوضة</option>
+            </select>
+            @if (hasError('status')) {
+            <div class="invalid-feedback">
+              {{ getErrorMessage("status") }}
+            </div>
             }
           </div>
+          }
 
           <div class="row">
             <div class="col-md-6 mb-3">
@@ -405,10 +422,10 @@
               [class.is-invalid]="hasError('description')"
             ></textarea>
             @if (hasError('description')) {
-              <div class="invalid-feedback">
-                {{ getErrorMessage("description") }}
-              </div>
-              }
+            <div class="invalid-feedback">
+              {{ getErrorMessage("description") }}
+            </div>
+            }
           </div>
 
           <div class="modal-footer">
@@ -419,10 +436,7 @@
             >
               إلغاء
             </button>
-            <button
-              type="submit"
-              class="add-btn"
-            >
+            <button type="submit" class="add-btn">
               @if (isSaving) {
               <span
                 class="spinner-border spinner-border-sm me-2"

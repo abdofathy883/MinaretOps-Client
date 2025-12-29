@@ -20,6 +20,8 @@ export class MapTaskStatusClassPipe implements PipeTransform {
             return 'status-needs-edits';
           case CustomTaskStatus.Completed:
             return 'status-completed';
+          case CustomTaskStatus.Rejected:
+            return 'status-rejected';
           default:
             return 'status-unknown';
         }
