@@ -254,9 +254,10 @@ export class SingleTaskComponent implements OnInit {
     this.taskService
       .changeStatus(this.task.id, this.currentUserId, newStatus)
       .subscribe({
-        next: () => {
+        next: (response) => {
           if (this.task) {
             this.task.status = newStatus;
+            console.log('Updated Status:', response);
             // Update CompletedAt field
             if (newStatus === CustomTaskStatus.Completed) {
               this.task.completedAt = new Date();
@@ -269,6 +270,7 @@ export class SingleTaskComponent implements OnInit {
         },
         error: (error) => {
           this.updatingStatus = false;
+          console.error('Error updating status:', error);
           this.showAlert(error.error, 'error');
         },
       });
