@@ -14,7 +14,7 @@ export class PushNotificationService {
   public notificationSubject = new BehaviorSubject<any>(null);
 
   constructor(private swPush: SwPush, private http: HttpClient, private api: ApiService) { 
-    this.setupNotificationHandling();
+    // this.setupNotificationHandling();
   }
 
   // Add this helper method to convert ArrayBuffer to base64url string
