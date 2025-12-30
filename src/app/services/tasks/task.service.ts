@@ -76,7 +76,7 @@ export class TaskService {
   ): Observable<boolean> {
     return this.api.patch<boolean>(
       `${this.endpoint}/change-status/${taskId}/${empId}`,
-      {status}
+      status
     );
   }
 
