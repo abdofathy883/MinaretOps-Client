@@ -251,6 +251,9 @@ export class SingleTaskComponent implements OnInit {
   updateTaskStatus(newStatus: CustomTaskStatus): void {
     if (!this.task) return;
     this.updatingStatus = true;
+    console.log('Updating status to:', newStatus);
+    console.log('Current Task ID:', this.task.id);
+    console.log('Current User ID:', this.currentUserId);
     this.taskService
       .changeStatus(this.task.id, this.currentUserId, newStatus)
       .subscribe({
