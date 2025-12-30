@@ -25,13 +25,13 @@ export class AppComponent implements OnInit {
     // Set initial sidebar state based on screen width
     this.checkScreenSize();
     // Request notification permission
-    const hasPermission = await this.pushNotificationService.requestNotificationPermission();
+    // const hasPermission = await this.pushNotificationService.requestNotificationPermission();
     
-    if (hasPermission) {
-      // Get current user ID (from your auth service)
-      const userId = this.authService.getCurrentUserId(); // Implement this method
-      await this.pushNotificationService.subscribeToNotifications(userId);
-    }
+    // if (hasPermission) {
+    //   // Get current user ID (from your auth service)
+    //   const userId = this.authService.getCurrentUserId(); // Implement this method
+    //   // await this.pushNotificationService.subscribeToNotifications(userId);
+    // }
   }
 
   @HostListener('window:resize', ['$event'])
