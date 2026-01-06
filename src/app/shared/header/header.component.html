@@ -21,17 +21,18 @@
 
     <div class="sidebar-nav">
       <ul class="navbar-nav text-white">
-        @if (isUserAdmin || isUserAccountManager || isContentLeader || isDesignerLeader) {
-          <li class="nav-item me-2">
-            <a
-              class="nav-link active"
-              aria-current="page"
-              routerLink="/dashboard"
-            >
-              <i class="bi bi-house-door ms-3"></i>
-              <span class="nav-text" [class.hidden]="isCollapsed">التقارير</span>
-            </a>
-          </li>
+        @if (isUserAdmin || isUserAccountManager || isContentLeader ||
+        isDesignerLeader) {
+        <li class="nav-item me-2">
+          <a
+            class="nav-link active"
+            aria-current="page"
+            routerLink="/dashboard"
+          >
+            <i class="bi bi-house-door ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed">التقارير</span>
+          </a>
+        </li>
         }
         <li class="nav-item">
           <button class="text-white menu-toggler" (click)="toggleMenu('tasks')">
@@ -112,16 +113,39 @@
             </li>
 
             } @if (isUserAdmin) {
-              <li class="nav-item">
-                <a class="nav-link" routerLink="/employee-invitations/create">دعوة موظف</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" routerLink="/employee-invitations">دعوات قيد الانتظار</a>
-              </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/employee-invitations/create"
+                >دعوة موظف</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/employee-invitations"
+                >دعوات قيد الانتظار</a
+              >
+            </li>
 
             }
           </ul>
         </li>
+        @if (isUserAdmin) {
+          <li class="nav-item">
+            <button class="text-white menu-toggler" (click)="toggleMenu('payroll')">
+              <i class="bi bi-credit-card-2-back ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+              >الرواتب</span
+            >
+            </button>
+            <ul
+            class="submenu payroll-menu"
+            [class.open]="openMenu === 'payroll'"
+            [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+              <a routerLink="/payroll/periods" class="nav-link">جميع الرواتب</a>
+            </li>
+            </ul>
+          </li>
+        }
         @if (isUserAdmin) {
         <li class="nav-item">
           <button class="text-white menu-toggler" (click)="toggleMenu('jds')">
@@ -278,51 +302,6 @@
           </a>
         </li>
         }
-        <!-- <li class="nav-item">
-          <button class="text-white menu-toggler" (click)="toggleMenu('blog')">
-            <span class="nav-text" [class.hidden]="isCollapsed">بلوج</span>
-          </button>
-          <ul
-            class="submenu blog-menu"
-            [class.open]="openMenu === 'blog'"
-            [class.hidden]="isCollapsed"
-          >
-          <li class="nav-item">
-            <a routerLink="/blog-category" class="nav-link">التصنيفات</a>
-          </li>
-            <li class="nav-item">
-              <a routerLink="/blog" class="nav-link">جميع المقالات</a>
-            </li>
-            <li class="nav-item">
-              <a routerLink="/blog/add" class="nav-link">اضافة مقالة</a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <button class="text-white menu-toggler" (click)="toggleMenu('portfolio')">
-            <span class="nav-text" [class.hidden]="isCollapsed">بورتفوليو</span>
-          </button>
-          <ul
-            class="submenu portfolio-menu"
-            [class.open]="openMenu === 'portfolio'"
-            [class.hidden]="isCollapsed"
-          >
-            <li class="nav-item">
-              <a routerLink="/portfolio" class="nav-link">جميع المشاريع</a>
-            </li>
-            <li class="nav-item">
-              <a routerLink="/portfolio/add" class="nav-link">اضافة مشروع</a>
-            </li>
-          </ul>
-        </li>
-        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
-          <a routerLink="/contact-form-entries" class="nav-link">
-            <i class="bi bi-file-text ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed"
-              >فورم التواصل</span
-            >
-          </a>
-        </li> -->
       </ul>
     </div>
 

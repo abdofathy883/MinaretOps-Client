@@ -9,7 +9,7 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
-import { ChangePassword, User } from '../../../model/auth/user';
+import { ChangePassword, UpdateUser, User } from '../../../model/auth/user';
 
 @Component({
   selector: 'app-update-profile',
@@ -29,15 +29,12 @@ export class UpdateProfileComponent implements OnInit {
   editUserForm!: FormGroup;
   passwordForm!: FormGroup;
 
-  constructor(
-    private authService: AuthService,
-    private fb: FormBuilder,
-  ) {
+  constructor(private authService: AuthService, private fb: FormBuilder) {
     this.initializeForms();
   }
 
   ngOnInit(): void {
-    this.authService.getById(this.userId).subscribe(user => {
+    this.authService.getById(this.userId).subscribe((user) => {
       this.currentUser = user;
       this.updateFormValues();
     });
@@ -102,18 +99,20 @@ export class UpdateProfileComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    const updateUser: FormData = new FormData();
-    updateUser.append('id', this.currentUser?.id);
-    updateUser.append('firstName', this.editUserForm.value.firstName);
-    updateUser.append('lastName', this.editUserForm.value.lastName);
-    updateUser.append('email', this.editUserForm.value.email);
-    updateUser.append('phoneNumber', this.editUserForm.value.phoneNumber);
-    updateUser.append('paymentNumber', this.editUserForm.value.paymentNumber);
-    updateUser.append('city', this.editUserForm.value.city);
-    updateUser.append('street', this.editUserForm.value.street);
-    if (!updateUser.get('id')) {
-      return;
-    }
+
+    const updateUser: UpdateUser = {
+      id: this.currentUser.id,
+      firstName: this.editUserForm.value.firstName,
+      lastName: this.editUserForm.value.lastName,
+      email: this.editUserForm.value.email,
+      phoneNumber: this.editUserForm.value.phoneNumber,
+      city: this.editUserForm.value.city,
+      street: this.editUserForm.value.street,
+      paymentNumber: this.editUserForm.value.paymentNumber,
+      role: this.editUserForm.value.role,
+      baseSalary: this.editUserForm.value.baseSalary,
+      
+    };
     this.authService.update(updateUser).subscribe({
       next: (response) => {
         this.isLoading = false;

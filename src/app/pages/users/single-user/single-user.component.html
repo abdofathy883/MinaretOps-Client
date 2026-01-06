@@ -110,7 +110,6 @@
   <div>
     <form
       [formGroup]="editUserForm"
-      enctype="multipart/form-data"
       (ngSubmit)="saveUser()"
     >
       <div class="card shadow-sm">
@@ -273,6 +272,27 @@
               />
             </div>
           </div>
+
+          <div class="row">
+          <div class="col-12 col-md-6 mb-4">
+            <label for="baseSalary" class="form-label">الراتب الاساسي</label>
+            <input
+              type="number"
+              name="baseSalary"
+              id="baseSalary"
+              class="form-control"
+              formControlName="baseSalary"
+            />
+          </div>
+          <div class="col-12 col-md-6 mb-4">
+            <label for="employeeType" class="form-label">نوع التوظيف</label>
+            <select name="employeeType" id="employeeType" class="form-select" formControlName="employeeType">
+              <option value="0">Full Time</option>
+              <option value="1">Part Time</option>
+              <option value="2">Freelancer</option>
+            </select>
+          </div>
+        </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">

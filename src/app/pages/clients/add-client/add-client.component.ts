@@ -21,6 +21,7 @@ import {
 } from '../../../services/helper-services/utils';
 import { CheckpointService } from '../../../services/checkpoints/checkpoint.service';
 import { IServiceCheckpoint } from '../../../model/checkpoint/i-service-checkpoint';
+import { COUNTRIES } from '../../../core/assets/countries';
 
 @Component({
   selector: 'app-add-client',
@@ -40,6 +41,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
   alertType = 'info';
 
   collapsedTasks: Set<string> = new Set();
+  countries = COUNTRIES;
 
   private destroy$ = new Subject<void>();
 
@@ -50,6 +52,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
     private clientService: ClientService,
     private checkpointService: CheckpointService
   ) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+(\.[^\s@]+)*$/;
     this.clientForm = this.fb.group({
       name: [
         '',
@@ -59,6 +62,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
           Validators.maxLength(100),
         ],
       ],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(emailRegex)]],
       personalPhoneNumber: ['', [Validators.required]],
       companyName: ['', [Validators.minLength(2), Validators.maxLength(100)]],
       companyNumber: [''],
@@ -71,6 +75,12 @@ export class AddClientComponent implements OnInit, OnDestroy {
         ],
       ],
       driveLink: ['', Validators.required],
+      businessType: [0, Validators.required],
+      businessActivity: [''],
+      commercialRegisterNumber: [''],
+      taxCardNumber: [''],
+      accountManagerId: [''],
+      country: [''],
       status: [ClientStatus.Active],
       clientServices: this.fb.array([]),
     });
@@ -282,8 +292,15 @@ export class AddClientComponent implements OnInit, OnDestroy {
       companyName: formValue.companyName || undefined,
       personalPhoneNumber: formValue.personalPhoneNumber,
       companyNumber: formValue.companyNumber || undefined,
+      email: formValue.email,
       businessDescription: formValue.businessDescription,
       driveLink: formValue.driveLink,
+      businessType: Number(formValue.businessType),
+      businessActivity: formValue.businessActivity || undefined,
+      commercialRegisterNumber: formValue.commercialRegisterNumber || undefined,
+      taxCardNumber: formValue.taxCardNumber || undefined,
+      country: formValue.country || undefined,
+      accountManagerId: formValue.accountManagerId || undefined,
       status: formValue.status,
       clientServices: formValue.clientServices.map(
         (cs: any, index: number) => ({
@@ -307,6 +324,8 @@ export class AddClientComponent implements OnInit, OnDestroy {
         })
       ),
     };
+
+    console.log('Submitting client data:', clientData);
 
     this.clientService.add(clientData, this.currentUserId).subscribe({
       next: () => {

@@ -17,6 +17,8 @@ export interface User {
   refreshToken: string;
   refreshTokenExpiration: Date;
   concurrencyStamp: string;
+  baseSalary: number;
+  employeeType: EmployeeType;
 }
 
 export enum UserRoles {
@@ -29,7 +31,7 @@ export enum UserRoles {
   AdsSpecialest = 7,
   SEOSpecialest = 8,
   WebDeveloper = 9,
-  VideoEditor = 10
+  VideoEditor = 10,
 }
 
 export interface UpdateUser {
@@ -41,6 +43,9 @@ export interface UpdateUser {
   city?: string;
   street?: string;
   paymentNumber?: string;
+  role: number;
+  baseSalary: number;
+  employeeType?: EmployeeType;
 }
 
 export interface ChangePassword {
@@ -67,6 +72,8 @@ export interface RegisterUser {
   paymentNumber: string;
   nid: string;
   dateOfHiring: Date;
+  baseSalary: number;
+  employeeType: EmployeeType;
 }
 
 export interface IResetPassword {
@@ -76,8 +83,14 @@ export interface IResetPassword {
 }
 
 export interface TokenPayload {
-    exp: number;
+  exp: number;
   sub: string;
   role: string;
   [key: string]: any;
+}
+
+export enum EmployeeType {
+  FullTime = 0,
+  PartTime = 1,
+  Freelance = 2,
 }

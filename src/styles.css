@@ -6,8 +6,8 @@
 }
 
 .form-header {
-    background-color: var(--orange-color);
-    color: var(--terquoise-color);
+    background-color: var(--terquoise-color) !important;
+    color: white !important;
 }
 
 .add-btn {
@@ -69,7 +69,7 @@ body {
 }
 
 .content-table thead tr {
-  background-color: var(--orange-color);
+  background-color: var(--terquoise-color);
   color: white;
   text-align: right;
   font-weight: 400;
@@ -94,7 +94,7 @@ body {
 }
 
 .content-table tbody tr:last-of-type {
-  border-bottom: 4px solid var(--orange-color);
+  border-bottom: 4px solid var(--terquoise-color);
 }
 
 @media (max-width: 750px) {

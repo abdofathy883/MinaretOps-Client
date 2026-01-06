@@ -46,6 +46,9 @@ import { CreateInvitationComponent } from './pages/emp-invitations/create-invita
 import { PendingInvitationsComponent } from './pages/emp-invitations/pending-invitations/pending-invitations.component';
 import { CompleteInvitationComponent } from './pages/emp-invitations/complete-invitation/complete-invitation.component';
 import { AttendanceReportComponent } from './pages/reports/attendance-report/attendance-report.component';
+import { AllSalaryPeriodsComponent } from './pages/payroll/all-salary-periods/all-salary-periods.component';
+import { AddSalaryPeriodComponent } from './pages/payroll/add-salary-period/add-salary-period.component';
+import { SingleSalaryPeriodComponent } from './pages/payroll/single-salary-period/single-salary-period.component';
 
 export const routes: Routes = [
   {
@@ -252,6 +255,23 @@ export const routes: Routes = [
   {
     path: 'complete-invitation',
     component: CompleteInvitationComponent,
+  },
+  {
+    path: 'payroll/periods',
+    component: AllSalaryPeriodsComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin', 'AccountManager'] },
+  },
+  {
+    path: 'payroll/periods/add',
+    component: AddSalaryPeriodComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin', 'AccountManager'] },
+  },
+  {
+    path: 'payroll/periods/:id',
+    component: SingleSalaryPeriodComponent,
+    canActivate: [noauthGuard],
   },
   {
     path: '**',

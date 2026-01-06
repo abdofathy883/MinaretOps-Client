@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { User, UserRoles } from '../../../model/auth/user';
+import { UpdateUser, User, UserRoles } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
 import { AttendanceRecord } from '../../../model/attendance-record/attendance-record';
 import { MapUserRolePipe } from '../../../core/pipes/map-user-role/map-user-role.pipe';
@@ -57,6 +57,8 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       paymentNumber: [''],
       city: [''],
       street: [''],
+      baseSalary: [''],
+      employeeType: ['']
     });
   }
 
@@ -120,6 +122,8 @@ export class SingleUserComponent implements OnInit, OnDestroy {
       paymentNumber: user.paymentNumber,
       city: user.city,
       street: user.street,
+      baseSalary: user.baseSalary,
+      employeeType: user.employeeType
     });
   }
 
@@ -140,26 +144,19 @@ export class SingleUserComponent implements OnInit, OnDestroy {
 
     this.isLoading = true;
 
-    const formValue = this.editUserForm.value;
-
-    const updateUser: FormData = new FormData();
-    updateUser.append('id', this.user?.id);
-    updateUser.append('firstName', formValue.firstName);
-    updateUser.append('lastName', formValue.lastName);
-    updateUser.append('email', formValue.email);
-    updateUser.append('phoneNumber', formValue.phoneNumber);
-    updateUser.append('city', formValue.city);
-    updateUser.append('street', formValue.street);
-    updateUser.append('paymentNumber', formValue.paymentNumber);
-    // In saveUser() method, around line 182:
-
-    updateUser.append('role', formValue.role);
-
-    // Convert numeric role value to role name before sending
-    // const roleName = this.getRoleNameFromValue(formValue.role);
-    // if (roleName) {
-    //   updateUser.append('role', roleName);
-    // }
+    const updateUser: UpdateUser = {
+      id: this.user.id,
+      firstName: this.editUserForm.value.firstName,
+      lastName: this.editUserForm.value.lastName,
+      email: this.editUserForm.value.email,
+      phoneNumber: this.editUserForm.value.phoneNumber,
+      city: this.editUserForm.value.city,
+      street: this.editUserForm.value.street,
+      paymentNumber: this.editUserForm.value.paymentNumber,
+      role: this.editUserForm.value.role,
+      baseSalary: this.editUserForm.value.baseSalary,
+      employeeType: Number(this.editUserForm.value.employeeType)
+    }
 
     this.authService.update(updateUser).subscribe({
       next: (response) => {
@@ -167,9 +164,10 @@ export class SingleUserComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.showAlert('تم تحديث بيانات المستخدم بنجاح', 'success');
       },
-      error: () => {
+      error: (error) => {
         this.isLoading = false;
         this.showAlert('حدث خطأ أثناء تحديث بيانات المستخدم', 'error');
+        console.log(error)
       },
     });
   }

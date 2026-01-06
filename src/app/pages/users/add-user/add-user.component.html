@@ -94,56 +94,6 @@
           </div>
         </div>
 
-        <!-- <div class="mb-3">
-          <label for="bio" class="form-label">Bio</label>
-          <textarea
-            name="bio"
-            id="bio"
-            class="form-control"
-            rows="3"
-            formControlName="bio"
-            [class.is-invalid]="
-              newUser.get('bio')?.invalid && newUser.get('bio')?.touched
-            "
-            placeholder="ادخل نبذة عن الموظف تعرض في الموقع الرئيسي"
-          ></textarea>
-        </div> -->
-
-        <!-- <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="jobTitle" class="form-label">المسمى الوظيفي</label>
-            <input
-              type="text"
-              name="jobTitle"
-              id="jobTitle"
-              class="form-control"
-              formControlName="jobTitle"
-              [class.is-invalid]="
-                newUser.get('jobTitle')?.invalid &&
-                newUser.get('jobTitle')?.touched
-              "
-            />
-          </div>
-          <div class="col-md-6 mb-3">
-            <label for="profilePicture" class="form-label"
-              >الصورة الشخصية</label
-            >
-            <input
-              type="file"
-              accept="image/*"
-              name="profilePicture"
-              id="profilePicture"
-              class="form-control"
-              formControlName="profilePicture"
-              [class.is-invalid]="
-                newUser.get('profilePicture')?.invalid &&
-                newUser.get('profilePicture')?.touched
-              "
-              (change)="onFileChange($event)"
-            />
-          </div>
-        </div> -->
-
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="nid" class="form-label">الرقم القومي</label>
@@ -260,7 +210,7 @@
           </div>
         </div>
 
-        <div class="row mb-4">
+        <div class="row">
           <div class="col-md-6 mb-3">
             <label for="paymentNumber" class="form-label"
               >رقم المحفظة او انستاباي</label
@@ -333,6 +283,27 @@
               }
             </div>
             }
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-6 mb-4">
+            <label for="baseSalary" class="form-label">الراتب الاساسي</label>
+            <input
+              type="number"
+              name="baseSalary"
+              id="baseSalary"
+              class="form-control"
+              formControlName="baseSalary"
+            />
+          </div>
+          <div class="col-12 col-md-6 mb-4">
+            <label for="employeeType" class="form-label">نوع التوظيف</label>
+            <select name="employeeType" id="employeeType" class="form-select" formControlName="employeeType">
+              <option value="0">Full Time</option>
+              <option value="1">Part Time</option>
+              <option value="2">Freelancer</option>
+            </select>
           </div>
         </div>
 

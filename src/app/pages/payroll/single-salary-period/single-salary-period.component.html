@@ -1,0 +1,187 @@
+<section class="container mt-4">
+  @if (isLoading) {
+  <div class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">جاري التحميل...</span>
+    </div>
+  </div>
+  } @if (!isLoading && period) {
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>فترة الراتب - {{ period.monthLabel }}</h2>
+    <button class="btn btn-primary" (click)="openPaymentModal()">
+      <i class="bi bi-plus-circle ms-2"></i> تسجيل دفعة
+    </button>
+  </div>
+  @if (alertMessage) {
+  <div
+    class="alert alert-{{ alertType }} alert-dismissible fade show"
+    role="alert"
+  >
+    {{ alertMessage }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  }
+  <div class="card mb-3">
+    <div class="card-header form-header">
+      <h5 class="mb-0">معلومات الفترة</h5>
+    </div>
+    <div class="card-body">
+      <dl class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">الموظف:</label>
+          <p class="form-control-plaintext">{{ period.employeeName }}</p>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">الشهر:</label>
+          <p class="form-control-plaintext">{{ period.monthLabel }}</p>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">الراتب الاساسي:</label>
+          <p class="form-control-plaintext">
+            {{ period.salary | number : "1.2-2" }}
+          </p>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">المكافات:</label>
+          <p class="form-control-plaintext">
+            {{ period.bonus | number : "1.2-2" }}
+          </p>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">الخصومات:</label>
+          <p class="form-control-plaintext">
+            {{ period.deductions | number : "1.2-2" }}
+          </p>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">المبلغ المستحق:</label>
+          <br />
+          <strong>
+            {{ period.dueAmount | number : "1.2-2" }}
+          </strong>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">المبلغ المدفوع:</label>
+          <br />
+          <strong>
+            {{ period.totalPaidAmount | number : "1.2-2" }}
+          </strong>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">المتبقي:</label>
+          <br />
+          <strong [class.text-danger]="period.remainingAmount > 0">
+            {{ period.remainingAmount | number : "1.2-2" }}
+          </strong>
+        </div>
+
+        @if (period.notes) {
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold">ملاحظات:</label>
+          <p class="form-control-plaintext">
+            {{ period.notes }}
+          </p>
+        </div>
+        }
+      </dl>
+    </div>
+  </div>
+  }
+</section>
+
+<section class="container">
+    @if (period && period.salaryPayments.length > 0) {
+    <h3 class="text-center">سجل المدفوعات</h3>
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>المبلغ</th>
+          <th>التاريخ</th>
+          <th>ملاحظات</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (payment of period.salaryPayments; track $index) {
+        <tr>
+          <td>{{ payment.amount | number : "1.2-2" }}</td>
+          <td>{{ payment.createdAt | date : "short" }}</td>
+          <td>{{ payment.notes || "-" }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    } @if (period && period.salaryPayments.length === 0) {
+    <div class="alert alert-info">لا توجد مدفوعات مسجلة</div>
+    }
+
+</section>
+
+<!-- Payment Modal -->
+@if (showPaymentModal) {
+<div
+  class="modal show d-block"
+  tabindex="-1"
+  style="background-color: rgba(0, 0, 0, 0.5)"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">تسجيل دفعة جديدة</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closePaymentModal()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="paymentForm">
+          <div class="mb-3">
+            <label class="form-label">المبلغ</label>
+            <span class="text-danger me-2">*</span>
+            <input
+              type="number"
+              step="500"
+              class="form-control"
+              formControlName="amount"
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">ملاحظات</label>
+            <textarea
+              class="form-control"
+              rows="3"
+              formControlName="notes"
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closePaymentModal()"
+        >
+          إلغاء
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="recordPayment()"
+          [disabled]="paymentForm.invalid || isLoading"
+        >
+          @if (isLoading) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          } حفظ
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}

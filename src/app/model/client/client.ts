@@ -8,6 +8,8 @@ export interface LightWieghtClient {
   status: ClientStatus;
   serviceId: number;
   serviceTitle: string;
+  accountManagerId: string;
+  accountManagerName: string;
 }
 
 export enum ClientStatus {
@@ -16,6 +18,10 @@ export enum ClientStatus {
   Cancelled = 2,
 }
 
+export enum BusinessType {
+  Individual = 0,
+  Commercial = 1
+}
 
 // Client Service interfaces
 export interface ICreateClientService {
@@ -30,8 +36,15 @@ export interface ICreateClient {
   companyName?: string;
   personalPhoneNumber: string;
   companyNumber?: string;
+  email: string;
   businessDescription: string;
   driveLink: string;
+  businessType: BusinessType;
+  businessActivity?: string;
+  commercialRegisterNumber?: string;
+  taxCardNumber?: string;
+  country?: string;
+  accountManagerId?: string;
   status: ClientStatus;
   clientServices: ICreateClientService[];
 }
@@ -55,8 +68,16 @@ export interface IClient {
   companyName?: string;
   personalPhoneNumber: string;
   companyNumber?: string;
+  email: string;
   businessDescription: string;
   driveLink?: string;
+  businessType: BusinessType;
+  businessActivity?: string;
+  commercialRegisterNumber?: string;
+  taxCardNumber?: string;
+  country?: string;
+  accountManagerId: string;
+  accountManagerName: string;
   discordChannelId?: string;
   status: ClientStatus;
   statusNotes?: string;
@@ -78,8 +99,15 @@ export interface IUpdateClient {
   personalPhoneNumber: string;
   companyName: string;
   companyNumber: string;
+  email: string;
   businessDescription: string;
   driveLink: string;
+  businessType: BusinessType;
+  businessActivity?: string;
+  commercialRegisterNumber?: string;
+  taxCardNumber?: string;
+  country?: string;
+  accountManagerId: string;
   discordChannelId: string;
   status: ClientStatus;
   statusNotes: string;

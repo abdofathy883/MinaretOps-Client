@@ -100,6 +100,16 @@
             />
           </div>
         </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">الايميل</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            formControlName="email"
+            [class.is-invalid]="hasError('email')"
+          />
+        </div>
 
         <div class="mb-3">
           <label for="businessDescription" class="form-label"
@@ -142,6 +152,79 @@
               formControlName="discordChannelId"
               placeholder="أدخل معرف ديسكورد الخاص بالعميل (اختياري)"
             />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="businessActivity" class="form-label">نشاط</label>
+            <input
+              name="businessActivity"
+              id="businessActivity"
+              class="form-control"
+              formControlName="businessActivity"
+              [class.is-invalid]="hasError('businessActivity')"
+            >
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="businessType" class="form-label">نوع العمل</label>
+            <select
+            name="businessType"
+            id="businessType"
+              class="form-select"
+              formControlName="businessType"
+              [class.is-invalid]="hasError('businessType')"
+            >
+              <option disabled selected>اختر نوع العمل</option>
+              <option [value]="0">فردي</option>
+              <option [value]="1">تجاري</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="commercialRegisterNumber" class="form-label">رقم السجل التجاري</label>
+            <input type="text" class="form-control" formControlName="commercialRegisterNumber" [class.is-invalid]="hasError('commercialRegisterNumber')" />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="taxCardNumber" class="form-label">رقم البطاقة الضريبية</label>
+            <input type="text" class="form-control" formControlName="taxCardNumber" [class.is-invalid]="hasError('taxCardNumber')" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="country" class="form-label">البلد</label>
+            <select
+              name="country"
+              id="country"
+              class="form-select"
+              formControlName="country"
+              [class.is-invalid]="hasError('country')"
+            >
+              <option disabled selected>اختر البلد</option>
+              @for (country of countries; track $index) {
+              <option [value]="country.value">{{ country.label }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="accountManagerId" class="form-label">المسئول</label>
+            <select
+              name="accountManagerId"
+              id="accountManagerId"
+              class="form-select"
+              formControlName="accountManagerId"
+              [class.is-invalid]="hasError('accountManagerId')"
+            >
+              <option disabled selected>اختر المسئول</option>
+              @for (emp of employees; track emp.id) {
+              <option [value]="emp.id">
+                {{ emp.firstName + " " + emp.lastName }}
+              </option>
+              }
+            </select>
           </div>
         </div>
 

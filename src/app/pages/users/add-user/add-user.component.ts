@@ -26,7 +26,6 @@ export class AddUserComponent implements OnInit {
   isLoading = false;
   showPassword = false;
   useSameAsPhone = false;
-  profilePictureFile!: File;
 
   alertMessage = '';
   alertType = 'info';
@@ -89,6 +88,8 @@ export class AddUserComponent implements OnInit {
         ],
       ],
       dateOfHiring: ['', Validators.required],
+      baseSalary: [''],
+      userType: [''],
       useSameAsPhone: [false],
     });
 
@@ -108,12 +109,6 @@ export class AddUserComponent implements OnInit {
         this.newUser.get('paymentNumber')?.setValue(phoneValue);
       }
     });
-  }
-
-  onFileChange(event: any) {
-    if (event.target.files.length > 0) {
-      this.profilePictureFile = event.target.files[0];
-    }
   }
 
   private passwordComplexityValidator(): ValidatorFn {
@@ -186,9 +181,6 @@ export class AddUserComponent implements OnInit {
     const userData: RegisterUser = {
       firstName: this.newUser.value.firstName,
       lastName: this.newUser.value.lastName,
-      // jobTitle: this.newUser.value.jobTitle,
-      // bio: this.newUser.value.bio,
-      // profilePicture: this.profilePictureFile,
       email: this.newUser.value.email,
       phoneNumber: this.newUser.value.phoneNumber,
       role: parseInt(this.newUser.value.role),
@@ -198,6 +190,8 @@ export class AddUserComponent implements OnInit {
       nid: this.newUser.value.nid,
       paymentNumber: paymentNumberValue,
       dateOfHiring: this.newUser.value.dateOfHiring,
+      baseSalary: this.newUser.value.baseSalary,
+      employeeType: Number(this.newUser.value.employeeType)
     };
     this.authService.registerUser(userData).subscribe({
       next: (response) => {

@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit, OnChanges {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.userId = this.authService.getCurrentUserId();
+    // this.userId = this.authService.getCurrentUserId();
     this.authService.isAdmin().subscribe((isAdmin) => {
       if (isAdmin) {
         this.isUserAdmin = true;
