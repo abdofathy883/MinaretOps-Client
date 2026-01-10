@@ -13,7 +13,11 @@ import { ServicesService } from '../../../services/services/services.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { User } from '../../../model/auth/user';
 import { ClientService } from '../../../services/clients/client.service';
-import { ClientStatus, ICreateClient } from '../../../model/client/client';
+import {
+  BusinessType,
+  ClientStatus,
+  ICreateClient,
+} from '../../../model/client/client';
 import { CustomTaskStatus } from '../../../model/task/task';
 import {
   getErrorMessage,
@@ -62,7 +66,10 @@ export class AddClientComponent implements OnInit, OnDestroy {
           Validators.maxLength(100),
         ],
       ],
-      email: ['', [Validators.required, Validators.email, Validators.pattern(emailRegex)]],
+      email: [
+        '',
+        [Validators.required, Validators.email, Validators.pattern(emailRegex)],
+      ],
       personalPhoneNumber: ['', [Validators.required]],
       companyName: ['', [Validators.minLength(2), Validators.maxLength(100)]],
       companyNumber: [''],
@@ -137,9 +144,17 @@ export class AddClientComponent implements OnInit, OnDestroy {
     return this.clientForm.get('clientServices') as FormArray;
   }
 
+  get isCommercial(): boolean {
+    return (
+      Number(this.clientForm.get('businessType')?.value) ===
+      BusinessType.Commercial
+    );
+  }
+
   addClientService(): void {
     const clientServiceGroup = this.fb.group({
       serviceId: ['', Validators.required],
+      serviceCost: [''],
       tasks: this.fb.array([]),
     });
     this.clientServicesArray.push(clientServiceGroup);

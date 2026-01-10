@@ -1,0 +1,27 @@
+.card-header.form-header {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.card {
+  border: none;
+  border-radius: 8px;
+}
+
+.btn {
+  border-radius: 6px;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.badge {
+  font-size: 0.875rem;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+

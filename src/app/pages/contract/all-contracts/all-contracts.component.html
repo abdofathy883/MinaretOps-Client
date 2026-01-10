@@ -1,0 +1,76 @@
+<section class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="mb-0">العقود</h1>
+      <p class="text-muted mb-0">إدارة جميع العقود</p>
+    </div>
+    <button class="btn btn-primary" (click)="goToAddContract()">
+      <i class="bi bi-plus-circle me-2"></i>
+      إضافة عقد جديد
+    </button>
+  </div>
+
+  @if (isLoading) {
+    <app-shimmer></app-shimmer>
+  }
+
+  @if (!isLoading && contracts.length > 0) {
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>رقم العقد</th>
+          <th>اسم العميل</th>
+          <th>العملة</th>
+          <th>مدة العقد</th>
+          <th>إجمالي العقد</th>
+          <th>المدفوع</th>
+          <th>المستحق</th>
+          <th>مدير الحساب</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (contract of contracts; track contract.id) {
+          <tr style="cursor: pointer;" (click)="goToContract(contract.id)">
+            <td class="fw-bold">{{ contract.id }}</td>
+            <td>{{ contract.clientName }}</td>
+            <td>
+              <span class="badge bg-info">{{ contract.currencyName }}</span>
+            </td>
+            <td>{{ contract.contractDuration }} شهر</td>
+            <td>{{ contract.contractTotal | number:'1.2-2' }}</td>
+            <td class="text-success">{{ contract.paidAmount | number:'1.2-2' }}</td>
+            <td [class.text-danger]="contract.dueAmount > 0" [class.text-success]="contract.dueAmount === 0">
+              {{ contract.dueAmount | number:'1.2-2' }}
+            </td>
+            <td>{{ contract.accountManagerName }}</td>
+            <td>
+              <button
+                class="btn btn-outline-primary btn-sm"
+                (click)="goToContract(contract.id); $event.stopPropagation()"
+                title="عرض التفاصيل"
+              >
+                <i class="bi bi-eye"></i>
+                عرض
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (!isLoading && contracts.length === 0) {
+    <div class="text-center py-5">
+      <div class="empty-state">
+        <i class="bi bi-file-earmark-text" style="font-size: 4rem; color: #ccc;"></i>
+        <h3 class="mt-3">لا توجد عقود حتى الآن</h3>
+        <p class="text-muted">ابدأ بإضافة أول عقد لك</p>
+        <button class="btn btn-primary mt-3" (click)="goToAddContract()">
+          <i class="bi bi-plus-circle me-2"></i>
+          إضافة عقد جديد
+        </button>
+      </div>
+    </div>
+  }
+</section>

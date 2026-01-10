@@ -1,0 +1,179 @@
+<section class="container my-3">
+  <div class="card shadow-sm">
+    <div class="card-header form-header d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">
+        <i class="bi bi-currency-exchange me-2"></i>
+        جميع العملات
+      </h5>
+      <button class="btn btn-light btn-sm" (click)="openAddModal()">
+        <i class="bi bi-plus-circle me-1"></i>
+        إضافة عملة جديدة
+      </button>
+    </div>
+
+    <div class="card-body">
+      <!-- Alert Messages -->
+      @if (alertMessage) {
+        <div class="alert" [class]="'alert-' + (alertType === 'error' ? 'danger' : alertType)">
+          {{ alertMessage }}
+        </div>
+      }
+
+      @if (loading && currencies.length === 0) {
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">جاري التحميل...</span>
+          </div>
+        </div>
+      } @else {
+        @if (currencies.length > 0) {
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>الكود</th>
+                  <th>الاسم</th>
+                  <th>عدد الأرقام العشرية</th>
+                  <th>الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (currency of currencies; track currency.id) {
+                  <tr style="cursor: pointer;" (click)="openEditModal(currency)">
+                    <td class="fw-bold">{{ currency.code }}</td>
+                    <td>{{ currency.name }}</td>
+                    <td>
+                      <span class="badge bg-info">{{ currency.decimalPlaces }}</span>
+                    </td>
+                    <td>
+                      <button 
+                        class="btn btn-outline-primary btn-sm"
+                        (click)="openEditModal(currency); $event.stopPropagation()"
+                        title="عرض التفاصيل">
+                        <i class="bi bi-eye"></i>
+                        عرض التفاصيل
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="text-center py-4">
+            <p class="text-muted">
+              <i class="bi bi-info-circle me-2"></i>
+              لا توجد عملات
+            </p>
+            <button class="btn btn-primary mt-2" (click)="openAddModal()">
+              <i class="bi bi-plus-circle me-1"></i>
+              إضافة أول عملة
+            </button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Add/Edit Modal -->
+@if (showAddModal || showEditModal) {
+  <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);" (click)="closeModal()">
+    <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            {{ selectedCurrency ? 'تعديل العملة' : 'إضافة عملة جديدة' }}
+          </h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          @if (selectedCurrency) {
+            <div class="mb-3">
+              <strong>معلومات العملة الحالية:</strong>
+              <ul class="list-unstyled mt-2">
+                <li><strong>الكود:</strong> {{ selectedCurrency.code }}</li>
+                <li><strong>الاسم:</strong> {{ selectedCurrency.name }}</li>
+                <li><strong>عدد الأرقام العشرية:</strong> {{ selectedCurrency.decimalPlaces }}</li>
+              </ul>
+            </div>
+            <hr>
+          }
+          <form [formGroup]="currencyForm" (ngSubmit)="saveCurrency()">
+            <div class="mb-3">
+              <label for="code" class="form-label">كود العملة</label>
+              <span class="text-danger me-2">*</span>
+              <input
+                type="text"
+                class="form-control"
+                id="code"
+                formControlName="code"
+                [class.is-invalid]="hasError('code')"
+                placeholder="مثال: USD, EUR, SAR..."
+              />
+              @if (hasError('code')) {
+                <div class="invalid-feedback">
+                  {{ getErrorMessage('code') }}
+                </div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="name" class="form-label">اسم العملة</label>
+              <span class="text-danger me-2">*</span>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                formControlName="name"
+                [class.is-invalid]="hasError('name')"
+                placeholder="مثال: الدولار الأمريكي، اليورو..."
+              />
+              @if (hasError('name')) {
+                <div class="invalid-feedback">
+                  {{ getErrorMessage('name') }}
+                </div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="decimalPlaces" class="form-label">عدد الأرقام العشرية</label>
+              <span class="text-danger me-2">*</span>
+              <input
+                type="number"
+                class="form-control"
+                id="decimalPlaces"
+                formControlName="decimalPlaces"
+                [class.is-invalid]="hasError('decimalPlaces')"
+                min="0"
+                max="10"
+              />
+              @if (hasError('decimalPlaces')) {
+                <div class="invalid-feedback">
+                  {{ getErrorMessage('decimalPlaces') }}
+                </div>
+              }
+              <small class="form-text text-muted">
+                عدد الأرقام العشرية المستخدمة في عرض العملة (0-10)
+              </small>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" (click)="closeModal()">
+                إلغاء
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="loading">
+                @if (loading) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  جاري الحفظ...
+                } @else {
+                  {{ selectedCurrency ? 'حفظ التغييرات' : 'إضافة' }}
+                }
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+}

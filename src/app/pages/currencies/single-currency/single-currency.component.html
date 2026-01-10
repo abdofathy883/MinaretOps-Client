@@ -1,0 +1,239 @@
+<section class="container my-4">
+  <!-- Header Section -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-currency-exchange me-2"></i>
+      تفاصيل العملة
+    </h2>
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      <i class="bi bi-arrow-right me-1"></i>
+      العودة
+    </button>
+  </div>
+
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+    <div class="alert" [class]="'alert-' + (alertType === 'error' ? 'danger' : alertType)">
+      {{ alertMessage }}
+    </div>
+  }
+
+  @if (loading && !currency) {
+    <div class="text-center py-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">جاري التحميل...</span>
+      </div>
+    </div>
+  } @else if (currency) {
+    <!-- Currency Information Card -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header form-header">
+        <h5 class="mb-0">معلومات العملة</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <strong>الكود:</strong>
+            <p class="mb-0">{{ currency.code }}</p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <strong>الاسم:</strong>
+            <p class="mb-0">{{ currency.name }}</p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <strong>عدد الأرقام العشرية:</strong>
+            <p class="mb-0">
+              <span class="badge bg-info">{{ currency.decimalPlaces }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exchange Rates Section -->
+    <div class="card shadow-sm">
+      <div class="card-header form-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">أسعار الصرف</h5>
+        <button class="btn btn-primary btn-sm" (click)="openAddExchangeRateForm()" [disabled]="showAddExchangeRateForm">
+          <i class="bi bi-plus-circle me-1"></i>
+          إضافة سعر صرف جديد
+        </button>
+      </div>
+
+      <div class="card-body">
+        <!-- Add Exchange Rate Form -->
+        @if (showAddExchangeRateForm) {
+          <div class="card mb-4 border-primary">
+            <div class="card-header bg-primary text-white">
+              <h6 class="mb-0">إضافة سعر صرف جديد</h6>
+            </div>
+            <div class="card-body">
+              <form [formGroup]="exchangeRateForm" (ngSubmit)="saveExchangeRate()">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="fromCurrencyId" class="form-label">من العملة</label>
+                    <span class="text-danger me-2">*</span>
+                    <input
+                      type="text"
+                      class="form-control"
+                      [value]="currency.code + ' - ' + currency.name"
+                      disabled
+                    />
+                    <input type="hidden" formControlName="fromCurrencyId" />
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="toCurrencyId" class="form-label">إلى العملة</label>
+                    <span class="text-danger me-2">*</span>
+                    <select
+                      class="form-select"
+                      id="toCurrencyId"
+                      formControlName="toCurrencyId"
+                      [class.is-invalid]="hasError('toCurrencyId')"
+                    >
+                      <option value="">اختر العملة</option>
+                      @for (curr of getFilteredCurrencies(); track curr.id) {
+                        <option [value]="curr.id">{{ curr.code }} - {{ curr.name }}</option>
+                      }
+                    </select>
+                    @if (hasError('toCurrencyId')) {
+                      <div class="invalid-feedback">
+                        {{ getErrorMessage('toCurrencyId') }}
+                      </div>
+                    }
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="rate" class="form-label">سعر الصرف</label>
+                    <span class="text-danger me-2">*</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="rate"
+                      formControlName="rate"
+                      step="0.000001"
+                      min="0.000001"
+                      [class.is-invalid]="hasError('rate')"
+                      placeholder="مثال: 3.75"
+                    />
+                    @if (hasError('rate')) {
+                      <div class="invalid-feedback">
+                        {{ getErrorMessage('rate') }}
+                      </div>
+                    }
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="effectiveFrom" class="form-label">تاريخ البدء</label>
+                    <span class="text-danger me-2">*</span>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="effectiveFrom"
+                      formControlName="effectiveFrom"
+                      [class.is-invalid]="hasError('effectiveFrom')"
+                    />
+                    @if (hasError('effectiveFrom')) {
+                      <div class="invalid-feedback">
+                        {{ getErrorMessage('effectiveFrom') }}
+                      </div>
+                    }
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="effectiveTo" class="form-label">تاريخ الانتهاء (اختياري)</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="effectiveTo"
+                      formControlName="effectiveTo"
+                    />
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <div class="form-check mt-4">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="isActive"
+                        formControlName="isActive"
+                      />
+                      <label class="form-check-label" for="isActive">
+                        نشط
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-primary" [disabled]="loading">
+                    @if (loading) {
+                      <span class="spinner-border spinner-border-sm me-2"></span>
+                      جاري الحفظ...
+                    } @else {
+                      <i class="bi bi-check-circle me-1"></i>
+                      حفظ
+                    }
+                  </button>
+                  <button type="button" class="btn btn-secondary" (click)="cancelAddExchangeRate()" [disabled]="loading">
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        }
+
+        <!-- Exchange Rates Table -->
+        @if (exchangeRates.length > 0) {
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>من</th>
+                  <th>إلى</th>
+                  <th>سعر الصرف</th>
+                  <th>تاريخ البدء</th>
+                  <th>تاريخ الانتهاء</th>
+                  <th>الحالة</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (rate of exchangeRates; track rate.id) {
+                  <tr>
+                    <td>{{ getCurrencyName(rate.fromCurrencyId) }}</td>
+                    <td>{{ getCurrencyName(rate.toCurrencyId) }}</td>
+                    <td class="fw-bold">{{ rate.rate | number:'1.0-6' }}</td>
+                    <td>{{ formatDate(rate.effectiveFrom) }}</td>
+                    <td>{{ formatDate(rate.effectiveTo) }}</td>
+                    <td>
+                      @if (rate.isActive) {
+                        <span class="badge bg-success">نشط</span>
+                      } @else {
+                        <span class="badge bg-secondary">غير نشط</span>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="text-center py-4">
+            <p class="text-muted">
+              <i class="bi bi-info-circle me-2"></i>
+              لا توجد أسعار صرف مسجلة لهذه العملة
+            </p>
+            @if (!showAddExchangeRateForm) {
+              <button class="btn btn-primary mt-2" (click)="openAddExchangeRateForm()">
+                <i class="bi bi-plus-circle me-1"></i>
+                إضافة أول سعر صرف
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</section>
+

@@ -1,0 +1,20 @@
+.form-header {
+  background-color: var(--orange-color);
+  color: white;
+}
+
+.card {
+  border: none;
+  border-radius: 0.5rem;
+}
+
+.card-body strong {
+  color: var(--mov-color);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.card-body p {
+  margin-bottom: 0;
+}
+

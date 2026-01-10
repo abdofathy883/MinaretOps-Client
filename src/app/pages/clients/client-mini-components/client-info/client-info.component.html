@@ -22,8 +22,7 @@
     }
   </div>
 
-  @if (isEditMode) {
-  @if (alertMessage) {
+  @if (isEditMode) { @if (alertMessage) {
   <div class="alert" [class]="'alert-' + alertType">
     {{ alertMessage }}
   </div>
@@ -164,13 +163,13 @@
               class="form-control"
               formControlName="businessActivity"
               [class.is-invalid]="hasError('businessActivity')"
-            >
+            />
           </div>
           <div class="col-12 col-md-6 mb-3">
             <label for="businessType" class="form-label">نوع العمل</label>
             <select
-            name="businessType"
-            id="businessType"
+              name="businessType"
+              id="businessType"
               class="form-select"
               formControlName="businessType"
               [class.is-invalid]="hasError('businessType')"
@@ -182,16 +181,32 @@
           </div>
         </div>
 
+        @if (isCommercial) {
         <div class="row">
           <div class="col-12 col-md-6 mb-3">
-            <label for="commercialRegisterNumber" class="form-label">رقم السجل التجاري</label>
-            <input type="text" class="form-control" formControlName="commercialRegisterNumber" [class.is-invalid]="hasError('commercialRegisterNumber')" />
+            <label for="commercialRegisterNumber" class="form-label"
+              >رقم السجل التجاري</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              formControlName="commercialRegisterNumber"
+              [class.is-invalid]="hasError('commercialRegisterNumber')"
+            />
           </div>
           <div class="col-12 col-md-6 mb-3">
-            <label for="taxCardNumber" class="form-label">رقم البطاقة الضريبية</label>
-            <input type="text" class="form-control" formControlName="taxCardNumber" [class.is-invalid]="hasError('taxCardNumber')" />
+            <label for="taxCardNumber" class="form-label"
+              >رقم البطاقة الضريبية</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              formControlName="taxCardNumber"
+              [class.is-invalid]="hasError('taxCardNumber')"
+            />
           </div>
         </div>
+        }
 
         <div class="row">
           <div class="col-12 col-md-6 mb-3">

@@ -128,23 +128,50 @@
           </ul>
         </li>
         @if (isUserAdmin) {
-          <li class="nav-item">
-            <button class="text-white menu-toggler" (click)="toggleMenu('payroll')">
-              <i class="bi bi-credit-card-2-back ms-3"></i>
-              <span class="nav-text" [class.hidden]="isCollapsed"
-              >الرواتب</span
-            >
-            </button>
-            <ul
+        <li class="nav-item">
+          <button
+            class="text-white menu-toggler"
+            (click)="toggleMenu('payroll')"
+          >
+            <i class="bi bi-bank ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed">الحسابات</span>
+          </button>
+          <ul
             class="submenu payroll-menu"
             [class.open]="openMenu === 'payroll'"
             [class.hidden]="isCollapsed"
-            >
-              <li class="nav-item">
-              <a routerLink="/payroll/periods" class="nav-link">جميع الرواتب</a>
+          >
+            <li class="nav-item">
+              <a routerLink="/payroll/periods" class="nav-link">الرواتب</a>
             </li>
-            </ul>
-          </li>
+            <li class="nav-item">
+              <a routerLink="/currency" class="nav-link">العملات</a>
+            </li>
+          </ul>
+        </li>
+        }
+        @if (isUserAdmin) {
+        <li class="nav-item">
+          <button
+            class="text-white menu-toggler"
+            (click)="toggleMenu('contracts')"
+          >
+          <i class="bi bi-file-earmark-text ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed">التعاقدات</span>
+          </button>
+          <ul
+            class="submenu contracts-menu"
+            [class.open]="openMenu === 'contracts'"
+            [class.hidden]="isCollapsed"
+          >
+            <li class="nav-item">
+              <a routerLink="/contracts" class="nav-link">جميع التعاقدات</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/contracts/add" class="nav-link">اضافة تعاقد</a>
+            </li>
+          </ul>
+        </li>
         }
         @if (isUserAdmin) {
         <li class="nav-item">

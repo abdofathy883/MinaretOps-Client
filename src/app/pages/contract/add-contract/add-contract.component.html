@@ -1,0 +1,163 @@
+<section class="container my-4">
+  <!-- Header Section -->
+  <div class="mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-file-earmark-plus me-2"></i>
+      إضافة عقد جديد
+    </h2>
+  </div>
+
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+    <div class="alert" [class]="'alert-' + (alertType === 'error' ? 'danger' : alertType === 'success' ? 'success' : 'info')">
+      {{ alertMessage }}
+    </div>
+  }
+
+  <!-- Contract Form -->
+  <div class="card shadow-sm">
+    <div class="card-header form-header">
+      <h5 class="mb-0">
+        <i class="bi bi-file-earmark-text me-2"></i>
+        معلومات العقد
+      </h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="contractForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <!-- Client Selection -->
+          <div class="col-md-6 mb-3">
+            <label for="clientId" class="form-label">العميل</label>
+            <span class="text-danger me-2">*</span>
+            <select
+              class="form-select"
+              id="clientId"
+              formControlName="clientId"
+              [class.is-invalid]="hasError(contractForm, 'clientId')"
+            >
+              <option value="">اختر العميل</option>
+              @for (client of clients; track client.id) {
+                <option [value]="client.id">{{ client.name }} - {{ client.companyName }}</option>
+              }
+            </select>
+            @if (hasError(contractForm, 'clientId')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage(contractForm, 'clientId') }}
+              </div>
+            }
+          </div>
+
+          <!-- Currency Selection -->
+          <div class="col-md-6 mb-3">
+            <label for="currencyId" class="form-label">العملة</label>
+            <span class="text-danger me-2">*</span>
+            <select
+              class="form-select"
+              id="currencyId"
+              formControlName="currencyId"
+              [class.is-invalid]="hasError(contractForm, 'currencyId')"
+            >
+              <option value="">اختر العملة</option>
+              @for (currency of currencies; track currency.id) {
+                <option [value]="currency.id">{{ currency.name }} ({{ currency.code }})</option>
+              }
+            </select>
+            @if (hasError(contractForm, 'currencyId')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage(contractForm, 'currencyId') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="row">
+          <!-- Contract Duration -->
+          <div class="col-md-6 mb-3">
+            <label for="contractDuration" class="form-label">مدة العقد (بالأشهر)</label>
+            <span class="text-danger me-2">*</span>
+            <input
+              type="number"
+              class="form-control"
+              id="contractDuration"
+              formControlName="contractDuration"
+              [class.is-invalid]="hasError(contractForm, 'contractDuration')"
+              placeholder="أدخل مدة العقد بالأشهر"
+              min="1"
+            />
+            @if (hasError(contractForm, 'contractDuration')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage(contractForm, 'contractDuration') }}
+              </div>
+            }
+          </div>
+
+          <!-- Contract Total -->
+          <div class="col-md-6 mb-3">
+            <label for="contractTotal" class="form-label">إجمالي قيمة العقد</label>
+            <span class="text-danger me-2">*</span>
+            <input
+              type="number"
+              class="form-control"
+              id="contractTotal"
+              formControlName="contractTotal"
+              [class.is-invalid]="hasError(contractForm, 'contractTotal')"
+              placeholder="أدخل إجمالي قيمة العقد"
+              step="0.01"
+              min="0"
+            />
+            @if (hasError(contractForm, 'contractTotal')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage(contractForm, 'contractTotal') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Paid Amount -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="paidAmount" class="form-label">المبلغ المدفوع</label>
+            <span class="text-danger me-2">*</span>
+            <input
+              type="number"
+              class="form-control"
+              id="paidAmount"
+              formControlName="paidAmount"
+              [class.is-invalid]="hasError(contractForm, 'paidAmount')"
+              placeholder="أدخل المبلغ المدفوع"
+              step="0.01"
+              min="0"
+            />
+            @if (hasError(contractForm, 'paidAmount')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage(contractForm, 'paidAmount') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="cancel()"
+            [disabled]="isLoading"
+          >
+            إلغاء
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="isLoading || contractForm.invalid"
+          >
+            @if (isLoading) {
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            }
+            إضافة العقد
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

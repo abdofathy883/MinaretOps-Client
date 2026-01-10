@@ -1,0 +1,21 @@
+.form-header {
+  background-color: var(--orange-color);
+  color: white;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.modal.show {
+  display: block;
+}
+
+.table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease;
+}

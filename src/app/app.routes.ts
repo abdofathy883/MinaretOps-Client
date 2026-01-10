@@ -49,6 +49,12 @@ import { AttendanceReportComponent } from './pages/reports/attendance-report/att
 import { AllSalaryPeriodsComponent } from './pages/payroll/all-salary-periods/all-salary-periods.component';
 import { AddSalaryPeriodComponent } from './pages/payroll/add-salary-period/add-salary-period.component';
 import { SingleSalaryPeriodComponent } from './pages/payroll/single-salary-period/single-salary-period.component';
+import { AllCurrenciesComponent } from './pages/currencies/all-currencies/all-currencies.component';
+import { SingleCurrencyComponent } from './pages/currencies/single-currency/single-currency.component';
+import { AllContractsComponent } from './pages/contract/all-contracts/all-contracts.component';
+import { AddContractComponent } from './pages/contract/add-contract/add-contract.component';
+import { single } from 'rxjs';
+import { SingleContractComponent } from './pages/contract/single-contract/single-contract.component';
 
 export const routes: Routes = [
   {
@@ -221,8 +227,8 @@ export const routes: Routes = [
     canActivate: [noauthGuard],
     children: [
       // { path: 'task-report', component: TaskDashboardComponent },
-      { path: 'task-emp-report', component: TaskEmpReportComponent},
-      { path: 'attendance-report', component: AttendanceReportComponent}
+      { path: 'task-emp-report', component: TaskEmpReportComponent },
+      { path: 'attendance-report', component: AttendanceReportComponent },
     ],
   },
   {
@@ -272,6 +278,33 @@ export const routes: Routes = [
     path: 'payroll/periods/:id',
     component: SingleSalaryPeriodComponent,
     canActivate: [noauthGuard],
+  },
+  {
+    path: 'currency',
+    component: AllCurrenciesComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] },
+  },
+  {
+    path: 'currency/:id',
+    component: SingleCurrencyComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] },
+  },
+  {
+    path: 'contracts',
+    component: AllContractsComponent,
+    canActivate: [noauthGuard]
+  },
+  {
+    path: 'contracts/add',
+    component: AddContractComponent,
+    canActivate: [noauthGuard]
+  },
+  {
+    path: 'contracts/:id',
+    component: SingleContractComponent,
+    canActivate: [noauthGuard]
   },
   {
     path: '**',

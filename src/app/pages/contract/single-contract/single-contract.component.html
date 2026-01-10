@@ -1,0 +1,125 @@
+<section class="container my-4">
+  <!-- Header Section -->
+  <div class="mb-4 d-flex justify-content-between align-items-center">
+    <h2 class="mb-0">
+      <i class="bi bi-file-earmark-text me-2"></i>
+      تفاصيل العقد
+    </h2>
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      <i class="bi bi-arrow-right me-2"></i>
+      العودة إلى قائمة العقود
+    </button>
+  </div>
+
+  <!-- Alert Messages -->
+  @if (alertMessage) {
+    <div class="alert" [class]="'alert-' + (alertType === 'error' ? 'danger' : 'info')">
+      {{ alertMessage }}
+    </div>
+  }
+
+  @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">جاري التحميل...</span>
+      </div>
+    </div>
+  }
+
+  @if (!loading && contract) {
+    <div class="row">
+      <!-- Contract Information Card -->
+      <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+          <div class="card-header form-header">
+            <h5 class="mb-0">
+              <i class="bi bi-info-circle me-2"></i>
+              معلومات العقد
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <strong>رقم العقد:</strong>
+                <p class="text-muted">{{ contract.id }}</p>
+              </div>
+              <div class="col-md-6">
+                <strong>مدة العقد:</strong>
+                <p class="text-muted">{{ contract.contractDuration }} شهر</p>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <strong>إجمالي قيمة العقد:</strong>
+                <p class="text-muted fw-bold">{{ contract.contractTotal | number:'1.2-2' }} {{ contract.currencyName }}</p>
+              </div>
+              <div class="col-md-6">
+                <strong>المبلغ المدفوع:</strong>
+                <p class="text-muted fw-bold text-success">{{ contract.paidAmount | number:'1.2-2' }} {{ contract.currencyName }}</p>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <strong>المبلغ المستحق:</strong>
+                <p class="text-muted fw-bold" [class.text-danger]="contract.dueAmount > 0">
+                  {{ contract.dueAmount | number:'1.2-2' }} {{ contract.currencyName }}
+                </p>
+              </div>
+              <div class="col-md-6">
+                <strong>نوع العمل:</strong>
+                <p class="text-muted">{{ getBusinessTypeText(contract.businessType) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Client Information Card -->
+      <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+          <div class="card-header form-header">
+            <h5 class="mb-0">
+              <i class="bi bi-person me-2"></i>
+              معلومات العميل
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <strong>اسم العميل:</strong>
+              <p class="text-muted">
+                <a href="#" (click)="goToClient(contract.clientId); $event.preventDefault()" class="text-primary">
+                  {{ contract.clientName }}
+                </a>
+              </p>
+            </div>
+            <div class="mb-3">
+              <strong>البلد:</strong>
+              <p class="text-muted">{{ contract.country }}</p>
+            </div>
+            <div class="mb-3">
+              <strong>مدير الحساب:</strong>
+              <p class="text-muted">{{ contract.accountManagerName }}</p>
+            </div>
+            <div class="mb-3">
+              <strong>الخدمة:</strong>
+              <p class="text-muted">{{ contract.serviceName }}</p>
+            </div>
+            <div class="mb-3">
+              <strong>تكلفة الخدمة:</strong>
+              <p class="text-muted">{{ contract.serviceCost | number:'1.2-2' }} {{ contract.currencyName }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (!loading && !contract) {
+    <div class="alert alert-warning">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      لم يتم العثور على العقد
+    </div>
+  }
+</section>

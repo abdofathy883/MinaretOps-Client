@@ -160,16 +160,18 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-12 col-md-6 mb-3">
-            <label for="commercialRegisterNumber" class="form-label">رقم السجل التجاري</label>
-            <input type="text" class="form-control" formControlName="commercialRegisterNumber" [class.is-invalid]="hasError('commercialRegisterNumber')" />
+        @if (isCommercial) {
+          <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+              <label for="commercialRegisterNumber" class="form-label">رقم السجل التجاري</label>
+              <input type="text" class="form-control" formControlName="commercialRegisterNumber" [class.is-invalid]="hasError('commercialRegisterNumber')" />
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <label for="taxCardNumber" class="form-label">رقم البطاقة الضريبية</label>
+              <input type="text" class="form-control" formControlName="taxCardNumber" [class.is-invalid]="hasError('taxCardNumber')" />
+            </div>
           </div>
-          <div class="col-12 col-md-6 mb-3">
-            <label for="taxCardNumber" class="form-label">رقم البطاقة الضريبية</label>
-            <input type="text" class="form-control" formControlName="taxCardNumber" [class.is-invalid]="hasError('taxCardNumber')" />
-          </div>
-        </div>
+        }
 
         <div class="row">
           <div class="col-12 col-md-6 mb-3">
@@ -262,20 +264,26 @@
               </button>
             </div>
 
-            <div class="mb-3">
-              <label class="form-label">اختر الخدمة</label>
-              <select
-                class="form-select"
-                formControlName="serviceId"
-                (change)="
-                  onServiceSelected(serviceIndex, $any($event.target).value)
-                "
-              >
-                <option value="" disabled selected>اختر الخدمة</option>
-                @for(service of availableServices; track service.id) {
-                <option [value]="service.id">{{ service.title }}</option>
-                }
-              </select>
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label class="form-label">اختر الخدمة</label>
+                <select
+                  class="form-select"
+                  formControlName="serviceId"
+                  (change)="
+                    onServiceSelected(serviceIndex, $any($event.target).value)
+                  "
+                >
+                  <option value="" disabled selected>اختر الخدمة</option>
+                  @for(service of availableServices; track service.id) {
+                  <option [value]="service.id">{{ service.title }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="serviceCost" class="form-label">سعر الخدمة</label>
+                <input type="number" step="500" name="serviceCost" id="serviceCost" class="form-control" formControlName="serviceCost">
+              </div>
             </div>
 
             @if

@@ -15,6 +15,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../../services/auth/auth.service';
 import {
+  BusinessType,
   ClientStatus,
   IClient,
   IUpdateClient,
@@ -70,6 +71,13 @@ export class ClientInfoComponent implements OnInit, OnChanges {
       }
     });
   }
+
+  get isCommercial(): boolean {
+      return (
+        Number(this.clientForm.get('businessType')?.value) ===
+        BusinessType.Commercial
+      );
+    }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (

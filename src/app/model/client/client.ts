@@ -26,6 +26,7 @@ export enum BusinessType {
 // Client Service interfaces
 export interface ICreateClientService {
   serviceId: number;
+  serviceCost: number;
   selectedCheckpointIds?: number[];
   taskGroups: ICreateTaskGroup[];
 }
@@ -55,8 +56,7 @@ export interface IClientService {
   clientName: string;
   serviceId: number;
   serviceTitle: string;
-  startDate: Date;
-  endDate?: Date;
+  serviceCost: number;
   taskItems: ITask[];
   taskGroups: ITaskGroup[];
   clientServiceCheckpoints: IClientServiceCheckpoint[];
