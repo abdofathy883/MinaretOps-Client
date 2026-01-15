@@ -1,0 +1,149 @@
+<section class="container py-4">
+  @if (isLoading()) {
+    <app-shimmer></app-shimmer>
+  }
+
+  <div class="mb-4">
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      <i class="bi bi-arrow-right me-2"></i>
+      العودة للخزنات
+    </button>
+  </div>
+
+  @if (!isLoading() && vault()) {
+    <!-- Currency Selector -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <label for="currencySelector" class="form-label">اختر العملة</label>
+        <select id="currencySelector" class="form-select" [value]="vault()!.currencyId" (change)="onCurrencyChange($event)">
+          @for (currency of currencies(); track currency.id) {
+            <option [value]="currency.id">{{ currency.name }} ({{ currency.code }})</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Unified Vault Info -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header">
+        <h4 class="mb-0">
+          <i class="bi bi-globe me-2"></i>
+          الخزنة الموحدة - جميع الفروع
+        </h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="text-muted">العملة</label>
+            <p><span class="badge bg-info fs-6">{{ vault()!.currencyName }} ({{ vault()!.currencyCode }})</span></p>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="text-muted">الرصيد الإجمالي</label>
+            <p>
+              <span [class.text-success]="vault()!.balance >= 0" [class.text-danger]="vault()!.balance < 0" class="fw-bold fs-3">
+                {{ vault()!.balance | number:'1.2-2' }} {{ vault()!.currencyCode }}
+              </span>
+            </p>
+          </div>
+        </div>
+        <p class="text-muted small">
+          هذا الرصيد يمثل مجموع جميع المعاملات من جميع فروع الشركة في العملة المحددة
+        </p>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">فلترة المعاملات</h5>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="filterForm">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="filterTransactionType" class="form-label">نوع المعاملة</label>
+              <select class="form-select" id="filterTransactionType" formControlName="transactionType">
+                <option value="">الكل</option>
+                <option [value]="TransactionType.Incoming">وارد</option>
+                <option [value]="TransactionType.Outgoing">صادر</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="fromDate" class="form-label">من تاريخ</label>
+              <input type="date" class="form-control" id="fromDate" formControlName="fromDate" />
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="toDate" class="form-label">إلى تاريخ</label>
+              <input type="date" class="form-control" id="toDate" formControlName="toDate" />
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" (click)="applyFilters()">تطبيق الفلتر</button>
+            <button type="button" class="btn btn-secondary" (click)="clearFilters()">مسح الفلتر</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Transactions List -->
+    <div class="card shadow-sm">
+      <div class="card-header">
+        <h5 class="mb-0">جميع المعاملات من جميع الفروع</h5>
+      </div>
+      <div class="card-body">
+        @if (filteredTransactions().length > 0) {
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>التاريخ</th>
+                  <th>الفرع</th>
+                  <th>النوع</th>
+                  <th>المبلغ</th>
+                  <th>الوصف</th>
+                  <th>نوع المرجع</th>
+                  <th>أنشأ بواسطة</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (transaction of filteredTransactions(); track transaction.id) {
+                  <tr>
+                    <td>{{ transaction.transactionDate | date:'short' }}</td>
+                    <td>
+                      <span class="badge bg-secondary">{{ transaction.vaultBranchName || 'موحد' }}</span>
+                    </td>
+                    <td>
+                      @if (transaction.transactionType === TransactionType.Incoming) {
+                        <span class="badge bg-success">وارد</span>
+                      } @else {
+                        <span class="badge bg-danger">صادر</span>
+                      }
+                    </td>
+                    <td [class.text-success]="transaction.transactionType === TransactionType.Incoming" [class.text-danger]="transaction.transactionType === TransactionType.Outgoing">
+                      {{ transaction.transactionType === TransactionType.Incoming ? '+' : '-' }}{{ transaction.amount | number:'1.2-2' }} {{ transaction.currencyCode }}
+                    </td>
+                    <td>{{ transaction.description || '-' }}</td>
+                    <td>
+                      @switch (transaction.referenceType) {
+                        @case (TransactionReferenceType.Manual) { <span class="badge bg-secondary">يدوي</span> }
+                        @case (TransactionReferenceType.ContractPayment) { <span class="badge bg-info">عقد</span> }
+                        @case (TransactionReferenceType.SalaryPayment) { <span class="badge bg-warning">راتب</span> }
+                        @case (TransactionReferenceType.Expense) { <span class="badge bg-danger">مصروف</span> }
+                        @case (TransactionReferenceType.Transfer) { <span class="badge bg-primary">تحويل</span> }
+                      }
+                    </td>
+                    <td>{{ transaction.createdByName }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="text-center py-4">
+            <p class="text-muted">لا توجد معاملات</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</section>

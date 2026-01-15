@@ -89,7 +89,7 @@ export class AddUserComponent implements OnInit {
       ],
       dateOfHiring: ['', Validators.required],
       baseSalary: [''],
-      userType: [''],
+      employeeType: [''],
       useSameAsPhone: [false],
     });
 
@@ -193,6 +193,8 @@ export class AddUserComponent implements OnInit {
       baseSalary: this.newUser.value.baseSalary,
       employeeType: Number(this.newUser.value.employeeType)
     };
+
+    console.log(userData)
     this.authService.registerUser(userData).subscribe({
       next: (response) => {
         this.isLoading = false;
@@ -200,6 +202,7 @@ export class AddUserComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
+        console.log(error)
         this.showAlert('حدث خطأ أثناء إضافة المستخدم', 'error');
       },
     });

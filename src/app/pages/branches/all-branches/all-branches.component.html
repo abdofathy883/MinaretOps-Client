@@ -1,0 +1,82 @@
+<section class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="mb-0">الفروع</h1>
+      <p class="text-muted mb-0">إدارة جميع الفروع</p>
+    </div>
+    <button class="btn btn-primary" (click)="goToAddBranch()">
+      <i class="bi bi-plus-circle me-2"></i>
+      إضافة فرع جديد
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <app-shimmer></app-shimmer>
+  }
+
+  @if (!isLoading() && branches().length > 0) {
+    <div class="table-responsive">
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th>الاسم</th>
+            <th>الكود</th>
+            <th>العملة</th>
+            <th>رصيد الخزنة</th>
+            <th>تاريخ الإنشاء</th>
+            <th>الإجراءات</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (branch of branches(); track branch.id) {
+            <tr style="cursor: pointer;" (click)="goToBranch(branch.id)">
+              <td class="fw-bold">{{ branch.name }}</td>
+              <td>{{ branch.code || '-' }}</td>
+              <td>
+                @if (branch.vault) {
+                  <span class="badge bg-info">{{ branch.vault.currencyName }}</span>
+                } @else {
+                  <span class="text-muted">-</span>
+                }
+              </td>
+              <td>
+                @if (branch.vault) {
+                  <span [class.text-success]="branch.vault.balance >= 0" [class.text-danger]="branch.vault.balance < 0">
+                    {{ branch.vault.balance | number:'1.2-2' }} {{ branch.vault.currencyCode }}
+                  </span>
+                } @else {
+                  <span class="text-muted">-</span>
+                }
+              </td>
+              <td>{{ branch.createdAt | date:'short' }}</td>
+              <td>
+                <button
+                  class="btn btn-outline-primary btn-sm"
+                  (click)="goToBranch(branch.id); $event.stopPropagation()"
+                  title="عرض التفاصيل"
+                >
+                  <i class="bi bi-eye"></i>
+                  عرض
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (!isLoading() && branches().length === 0) {
+    <div class="text-center py-5">
+      <div class="empty-state">
+        <i class="bi bi-building" style="font-size: 4rem; color: #ccc;"></i>
+        <h3 class="mt-3">لا توجد فروع حتى الآن</h3>
+        <p class="text-muted">ابدأ بإضافة أول فرع لك</p>
+        <button class="btn btn-primary mt-3" (click)="goToAddBranch()">
+          <i class="bi bi-plus-circle me-2"></i>
+          إضافة فرع جديد
+        </button>
+      </div>
+    </div>
+  }
+</section>

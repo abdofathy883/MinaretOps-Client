@@ -1,0 +1,109 @@
+<section class="container my-4">
+  <div class="mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-building me-2"></i>
+      إضافة فرع جديد
+    </h2>
+  </div>
+
+  @if (alertMessage()) {
+    <div class="alert" [class]="'alert-' + (alertType() === 'error' ? 'danger' : alertType() === 'success' ? 'success' : 'info')">
+      {{ alertMessage() }}
+    </div>
+  }
+
+  <div class="card shadow-sm">
+    <div class="card-header form-header">
+      <h5 class="mb-0">
+        <i class="bi bi-building me-2"></i>
+        معلومات الفرع
+      </h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="branchForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="name" class="form-label">اسم الفرع</label>
+            <span class="text-danger me-2">*</span>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              formControlName="name"
+              [class.is-invalid]="hasError(branchForm, 'name')"
+              placeholder="أدخل اسم الفرع"
+              maxlength="200"
+            />
+            @if (hasError(branchForm, 'name')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage(branchForm, 'name') }}
+              </div>
+            }
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="code" class="form-label">كود الفرع</label>
+            <input
+              type="text"
+              class="form-control"
+              id="code"
+              formControlName="code"
+              [class.is-invalid]="hasError(branchForm, 'code')"
+              placeholder="أدخل كود الفرع (اختياري)"
+              maxlength="50"
+            />
+            @if (hasError(branchForm, 'code')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage(branchForm, 'code') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="currencyId" class="form-label">العملة</label>
+            <span class="text-danger me-2">*</span>
+            <select
+              class="form-select"
+              id="currencyId"
+              formControlName="currencyId"
+              [class.is-invalid]="hasError(branchForm, 'currencyId')"
+            >
+              <option value="">اختر العملة</option>
+              @for (currency of currencies(); track currency.id) {
+                <option [value]="currency.id">{{ currency.name }} ({{ currency.code }})</option>
+              }
+            </select>
+            @if (hasError(branchForm, 'currencyId')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage(branchForm, 'currencyId') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="cancel()"
+            [disabled]="isLoading()"
+          >
+            إلغاء
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="isLoading() || branchForm.invalid"
+          >
+            @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            }
+            إضافة الفرع
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

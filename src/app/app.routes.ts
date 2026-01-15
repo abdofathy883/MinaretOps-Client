@@ -55,6 +55,12 @@ import { AllContractsComponent } from './pages/contract/all-contracts/all-contra
 import { AddContractComponent } from './pages/contract/add-contract/add-contract.component';
 import { single } from 'rxjs';
 import { SingleContractComponent } from './pages/contract/single-contract/single-contract.component';
+import { AllBranchesComponent } from './pages/branches/all-branches/all-branches.component';
+import { AddBranchComponent } from './pages/branches/add-branch/add-branch.component';
+import { SingleBranchComponent } from './pages/branches/single-branch/single-branch.component';
+import { AllVaultsComponent } from './pages/vaults/all-vaults/all-vaults.component';
+import { SingleVaultComponent } from './pages/vaults/single-vault/single-vault.component';
+import { UnifiedVaultComponent } from './pages/vaults/unified-vault/unified-vault.component';
 
 export const routes: Routes = [
   {
@@ -305,6 +311,42 @@ export const routes: Routes = [
     path: 'contracts/:id',
     component: SingleContractComponent,
     canActivate: [noauthGuard]
+  },
+  {
+    path: 'branches',
+    component: AllBranchesComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] }
+  },
+  {
+    path: 'branches/add',
+    component: AddBranchComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] }
+  },
+  {
+    path: 'branches/:id',
+    component: SingleBranchComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] }
+  },
+  {
+    path: 'vaults',
+    component: AllVaultsComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin', 'AccountManager'] }
+  },
+  {
+    path: 'vaults/:id',
+    component: SingleVaultComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin', 'AccountManager'] }
+  },
+  {
+    path: 'vaults/unified/:currencyId',
+    component: UnifiedVaultComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin', 'AccountManager'] }
   },
   {
     path: '**',

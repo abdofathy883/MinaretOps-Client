@@ -1,0 +1,169 @@
+<section class="container py-4">
+  @if (isLoading()) {
+    <app-shimmer></app-shimmer>
+  }
+
+  @if (!isLoading() && branch()) {
+    <div class="mb-4">
+      <button class="btn btn-outline-secondary" (click)="goBack()">
+        <i class="bi bi-arrow-right me-2"></i>
+        العودة للفروع
+      </button>
+    </div>
+
+    @if (alertMessage()) {
+      <div class="alert" [class]="'alert-' + (alertType() === 'error' ? 'danger' : alertType() === 'success' ? 'success' : 'info')">
+        {{ alertMessage() }}
+      </div>
+    }
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">
+          <i class="bi bi-building me-2"></i>
+          تفاصيل الفرع
+        </h4>
+        <div class="btn-group">
+          @if (!isEditing()) {
+            <button class="btn btn-outline-primary btn-sm" (click)="toggleEdit()">
+              <i class="bi bi-pencil me-2"></i>
+              تعديل
+            </button>
+            <button class="btn btn-outline-danger btn-sm" (click)="deleteBranch()" [disabled]="isLoading()">
+              <i class="bi bi-trash me-2"></i>
+              حذف
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="card-body">
+        @if (!isEditing()) {
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="text-muted">الاسم</label>
+              <p class="fw-bold">{{ branch()!.name }}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="text-muted">الكود</label>
+              <p>{{ branch()!.code || '-' }}</p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="text-muted">تاريخ الإنشاء</label>
+              <p>{{ branch()!.createdAt | date:'short' }}</p>
+            </div>
+            @if (branch()!.vault) {
+              <div class="col-md-6 mb-3">
+                <label class="text-muted">رصيد الخزنة</label>
+                <p>
+                  <span [class.text-success]="branch()!.vault!.balance >= 0" [class.text-danger]="branch()!.vault!.balance < 0" class="fw-bold">
+                    {{ branch()!.vault!.balance | number:'1.2-2' }} {{ branch()!.vault!.currencyCode }}
+                  </span>
+                </p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="text-muted">العملة</label>
+                <p><span class="badge bg-info">{{ branch()!.vault!.currencyName }}</span></p>
+              </div>
+              <div class="col-12">
+                <button class="btn btn-primary" (click)="goToVault()">
+                  <i class="bi bi-safe me-2"></i>
+                  عرض الخزنة والمعاملات
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">الاسم</label>
+                <span class="text-danger me-2">*</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  formControlName="name"
+                  [class.is-invalid]="hasError(updateForm, 'name')"
+                />
+                @if (hasError(updateForm, 'name')) {
+                  <div class="invalid-feedback">
+                    {{ getErrorMessage(updateForm, 'name') }}
+                  </div>
+                }
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="code" class="form-label">الكود</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="code"
+                  formControlName="code"
+                  [class.is-invalid]="hasError(updateForm, 'code')"
+                />
+                @if (hasError(updateForm, 'code')) {
+                  <div class="invalid-feedback">
+                    {{ getErrorMessage(updateForm, 'code') }}
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-secondary" (click)="toggleEdit()" [disabled]="isLoading()">
+                إلغاء
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="isLoading() || updateForm.invalid">
+                @if (isLoading()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                حفظ
+              </button>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+
+    @if (branch()!.vault && transactions().length > 0) {
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-0">آخر المعاملات</h5>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>التاريخ</th>
+                  <th>النوع</th>
+                  <th>المبلغ</th>
+                  <th>الوصف</th>
+                  <th>أنشأ بواسطة</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (transaction of transactions().slice(0, 10); track transaction.id) {
+                  <tr>
+                    <td>{{ transaction.transactionDate | date:'short' }}</td>
+                    <td>
+                      @if (transaction.transactionType === 0) {
+                        <span class="badge bg-success">وارد</span>
+                      } @else {
+                        <span class="badge bg-danger">صادر</span>
+                      }
+                    </td>
+                    <td [class.text-success]="transaction.transactionType === 0" [class.text-danger]="transaction.transactionType === 1">
+                      {{ transaction.transactionType === 0 ? '+' : '-' }}{{ transaction.amount | number:'1.2-2' }} {{ transaction.currencyCode }}
+                    </td>
+                    <td>{{ transaction.description || '-' }}</td>
+                    <td>{{ transaction.createdByName }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</section>
