@@ -67,10 +67,10 @@ export class AllTasksComponent implements OnInit {
     
     // Initialize form with today's date
     const today = new Date().toISOString().split('T')[0];
-    this.filterForm.patchValue({
-      fromDate: today,
-      toDate: today
-    });
+    // this.filterForm.patchValue({
+    //   fromDate: today,
+    //   toDate: today
+    // });
     
     this.loadClients();
     this.loadEmployees();
