@@ -137,7 +137,7 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
         ],
       ],
       taskType: ['', Validators.required],
-      description: ['', Validators.maxLength(2000)],
+      description: ['', Validators.maxLength(5000)],
       priority: ['', Validators.required],
       deadline: ['', Validators.required],
       employeeId: ['', Validators.required],

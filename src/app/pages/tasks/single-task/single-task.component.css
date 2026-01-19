@@ -22,6 +22,9 @@
   font-size: 25px;
 }
 
+.description{
+  overflow: auto;
+}
 .on-time-status.on-time {
   color: #28a745;
 }
