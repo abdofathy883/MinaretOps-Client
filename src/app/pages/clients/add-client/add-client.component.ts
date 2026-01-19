@@ -26,11 +26,12 @@ import {
 import { CheckpointService } from '../../../services/checkpoints/checkpoint.service';
 import { IServiceCheckpoint } from '../../../model/checkpoint/i-service-checkpoint';
 import { COUNTRIES } from '../../../core/assets/countries';
+import { NgxEditorComponent, NgxEditorMenuComponent, Editor, Toolbar } from 'ngx-editor'
 
 @Component({
   selector: 'app-add-client',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgxEditorComponent, NgxEditorMenuComponent],
   templateUrl: './add-client.component.html',
   styleUrl: './add-client.component.css',
 })
@@ -39,6 +40,23 @@ export class AddClientComponent implements OnInit, OnDestroy {
   availableServices: Service[] = [];
   employees: User[] = [];
   currentUserId: string = '';
+  editor!: Editor;
+  toolbar: Toolbar = [
+    // default value
+    ['bold', 'italic'],
+    ['underline', 'strike'],
+    ['code', 'blockquote'],
+    ['ordered_list', 'bullet_list'],
+    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+    ['link', 'image'],
+    // or, set options for link:
+    //[{ link: { showOpenInNewTab: false } }, 'image'],
+    ['text_color', 'background_color'],
+    ['align_left', 'align_center', 'align_right', 'align_justify'],
+    ['horizontal_rule', 'format_clear', 'indent', 'outdent'],
+    ['superscript', 'subscript'],
+    ['undo', 'redo'],
+  ];
 
   isLoading = false;
   alertMessage = '';
@@ -268,6 +286,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.editor = new Editor();
     this.loadAvailableServices();
     this.loadEmployees();
     this.addClientService();
@@ -277,6 +296,7 @@ export class AddClientComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.editor.destroy();
   }
 
   loadAvailableServices(): void {

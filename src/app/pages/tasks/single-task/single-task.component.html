@@ -54,7 +54,7 @@
 
         <div class="detail-item">
           <label>الوصف:</label>
-          <p class="description">{{ task.description }}</p>
+          <p class="description" [innerHTML]="task.description"></p>
         </div>
 
         <div class="detail-item">
@@ -550,14 +550,22 @@
 
     <div class="mb-3">
       <label for="description" class="form-label">وصف المهمة</label>
-      <textarea
+      <!-- <textarea
         class="form-control"
         id="description"
         rows="3"
         formControlName="description"
         placeholder="أدخل وصف المهمة"
         [class.is-invalid]="hasError('description')"
-      ></textarea>
+      ></textarea> -->
+
+      <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+                        <ngx-editor
+                          [editor]="editor"
+                          [placeholder]="'Type here...'"
+                          formControlName="description"
+                          [class.is-invalid]="hasError('description')"
+                        ></ngx-editor>
       @if (hasError('description')) {
       <div class="invalid-feedback">
         {{ getErrorMessage("description") }}

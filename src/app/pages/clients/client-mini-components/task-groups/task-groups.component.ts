@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
@@ -26,8 +27,8 @@ import {
   IUpdateTask,
 } from '../../../../model/task/task';
 import { MapTaskStatusClassPipe } from '../../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
-import { AlertService } from '../../../../services/helper-services/alert.service';
 import { hasError } from '../../../../services/helper-services/utils';
+import { NgxEditorComponent, NgxEditorMenuComponent, Editor, Toolbar } from 'ngx-editor';
 
 @Component({
   selector: 'app-task-groups',
@@ -38,11 +39,13 @@ import { hasError } from '../../../../services/helper-services/utils';
     NewTaskGroupComponent,
     MapTaskStatusPipe,
     MapTaskStatusClassPipe,
+    NgxEditorComponent,
+    NgxEditorMenuComponent
   ],
   templateUrl: './task-groups.component.html',
   styleUrl: './task-groups.component.css',
 })
-export class TaskGroupsComponent implements OnInit {
+export class TaskGroupsComponent implements OnInit, OnDestroy {
   @Input() clientServices: IClientService[] = [];
   @Input() clientId: number = 0;
   @Input() currentUserId: string = '';
@@ -57,6 +60,23 @@ export class TaskGroupsComponent implements OnInit {
   isUserAccountManager: boolean = false;
   isContentLeader: boolean = false;
   isDesignerLeader: boolean = false;
+  editor!: Editor;
+  toolbar: Toolbar = [
+      // default value
+      ['bold', 'italic'],
+      ['underline', 'strike'],
+      ['code', 'blockquote'],
+      ['ordered_list', 'bullet_list'],
+      [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+      ['link', 'image'],
+      // or, set options for link:
+      //[{ link: { showOpenInNewTab: false } }, 'image'],
+      ['text_color', 'background_color'],
+      ['align_left', 'align_center', 'align_right', 'align_justify'],
+      ['horizontal_rule', 'format_clear', 'indent', 'outdent'],
+      ['superscript', 'subscript'],
+      ['undo', 'redo'],
+    ];
 
   alertMessage = '';
   alertType = 'info';
@@ -99,8 +119,13 @@ export class TaskGroupsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.editor = new Editor();
     this.loadEmployees();
     this.initializeModal();
+  }
+
+  ngOnDestroy(): void {
+    this.editor.destroy();
   }
 
   getPriorityClass(priority: string): string {

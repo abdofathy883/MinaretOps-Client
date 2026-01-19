@@ -1,5 +1,5 @@
 import { MapTaskPriorityPipe } from './../../../core/pipes/task-priority/map-task-priority.pipe';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TaskService } from '../../../services/tasks/task.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -28,6 +28,7 @@ import { AlertService } from '../../../services/helper-services/alert.service';
 import { hasError } from '../../../services/helper-services/utils';
 import { MapTaskTypePipe } from '../../../core/pipes/task-type/map-task-type.pipe';
 import { TaskShimmerComponent } from '../../../shared/task-shimmer/task-shimmer.component';
+import { Editor, NgxEditorComponent, NgxEditorMenuComponent, Toolbar } from 'ngx-editor';
 
 @Component({
   selector: 'app-single-task',
@@ -40,11 +41,13 @@ import { TaskShimmerComponent } from '../../../shared/task-shimmer/task-shimmer.
     MapTaskTypePipe,
     TaskShimmerComponent,
     FormsModule,
+    NgxEditorComponent,
+    NgxEditorMenuComponent
   ],
   templateUrl: './single-task.component.html',
   styleUrl: './single-task.component.css',
 })
-export class SingleTaskComponent implements OnInit {
+export class SingleTaskComponent implements OnInit, OnDestroy {
   task!: ITask;
   updatingStatus = false;
   isEditMode: boolean = false;
@@ -69,6 +72,24 @@ export class SingleTaskComponent implements OnInit {
 
   newComment: string = '';
   isSubmittingComment: boolean = false;
+
+  editor!: Editor;
+  toolbar: Toolbar = [
+    // default value
+    ['bold', 'italic'],
+    ['underline', 'strike'],
+    ['code', 'blockquote'],
+    ['ordered_list', 'bullet_list'],
+    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+    ['link', 'image'],
+    // or, set options for link:
+    //[{ link: { showOpenInNewTab: false } }, 'image'],
+    ['text_color', 'background_color'],
+    ['align_left', 'align_center', 'align_right', 'align_justify'],
+    ['horizontal_rule', 'format_clear', 'indent', 'outdent'],
+    ['superscript', 'subscript'],
+    ['undo', 'redo'],
+  ];
 
   availableStatuses = [
     { value: CustomTaskStatus.Open, label: 'لم تبدأ', icon: 'bi bi-clock' },
@@ -133,6 +154,7 @@ export class SingleTaskComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.editor = new Editor();
     this.isLoadingTask = true;
     const taskIdParam = this.route.snapshot.paramMap.get('id');
     const isArchivedParam = this.route.snapshot.queryParamMap.get('isArchived'); // Changed from queryParamMap to paramMap
@@ -142,6 +164,10 @@ export class SingleTaskComponent implements OnInit {
     // Use the unified endpoint instead of separate calls
     this.loadTaskUnified(taskId, isArchived);
     this.loadUser();
+  }
+
+  ngOnDestroy(): void {
+    this.editor.destroy();
   }
 
   private loadTaskUnified(taskId: number, isArchived?: boolean): void {

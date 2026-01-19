@@ -9,9 +9,9 @@
 
   <!-- Alert Messages -->
   @if (alertMessage) {
-  <div class="alert" [class]="'alert-' + alertType">
-    {{ alertMessage }}
-  </div>
+    <div class="alert" [class]="'alert-' + alertType">
+      {{ alertMessage }}
+    </div>
   }
 
   <!-- Client Form -->
@@ -44,10 +44,10 @@
               placeholder="أدخل اسم العميل"
               required
             />
-            @if (hasError('name')) {
-            <div class="invalid-feedback">
-              {{ getErrorMessage("name") }}
-            </div>
+            @if (hasError("name")) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage("name") }}
+              </div>
             }
           </div>
 
@@ -65,10 +65,10 @@
               placeholder="أدخل رقم الهاتف الشخصي"
               required
             />
-            @if (hasError('personalPhoneNumber')) {
-            <div class="invalid-feedback">
-              {{ getErrorMessage("personalPhoneNumber") }}
-            </div>
+            @if (hasError("personalPhoneNumber")) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage("personalPhoneNumber") }}
+              </div>
             }
           </div>
         </div>
@@ -126,10 +126,10 @@
             [class.is-invalid]="hasError('driveLink')"
             placeholder="ادخل لينك درايف فولدر الخاص بالعميل"
           />
-          @if (hasError('driveLink')) {
-          <div class="invalid-feedback">
-            {{ getErrorMessage("driveLink") }}
-          </div>
+          @if (hasError("driveLink")) {
+            <div class="invalid-feedback">
+              {{ getErrorMessage("driveLink") }}
+            </div>
           }
         </div>
 
@@ -142,13 +142,13 @@
               class="form-control"
               formControlName="businessActivity"
               [class.is-invalid]="hasError('businessActivity')"
-            >
+            />
           </div>
           <div class="col-12 col-md-6 mb-3">
             <label for="businessType" class="form-label">نوع العمل</label>
             <select
-            name="businessType"
-            id="businessType"
+              name="businessType"
+              id="businessType"
               class="form-select"
               formControlName="businessType"
               [class.is-invalid]="hasError('businessType')"
@@ -163,12 +163,26 @@
         @if (isCommercial) {
           <div class="row">
             <div class="col-12 col-md-6 mb-3">
-              <label for="commercialRegisterNumber" class="form-label">رقم السجل التجاري</label>
-              <input type="text" class="form-control" formControlName="commercialRegisterNumber" [class.is-invalid]="hasError('commercialRegisterNumber')" />
+              <label for="commercialRegisterNumber" class="form-label"
+                >رقم السجل التجاري</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                formControlName="commercialRegisterNumber"
+                [class.is-invalid]="hasError('commercialRegisterNumber')"
+              />
             </div>
             <div class="col-12 col-md-6 mb-3">
-              <label for="taxCardNumber" class="form-label">رقم البطاقة الضريبية</label>
-              <input type="text" class="form-control" formControlName="taxCardNumber" [class.is-invalid]="hasError('taxCardNumber')" />
+              <label for="taxCardNumber" class="form-label"
+                >رقم البطاقة الضريبية</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                formControlName="taxCardNumber"
+                [class.is-invalid]="hasError('taxCardNumber')"
+              />
             </div>
           </div>
         }
@@ -185,7 +199,7 @@
             >
               <option disabled selected>اختر البلد</option>
               @for (country of countries; track $index) {
-              <option [value]="country.value">{{ country.label }}</option>
+                <option [value]="country.value">{{ country.label }}</option>
               }
             </select>
           </div>
@@ -200,9 +214,9 @@
             >
               <option disabled selected>اختر المسئول</option>
               @for (emp of employees; track emp.id) {
-              <option [value]="emp.id">
-                {{ emp.firstName + " " + emp.lastName }}
-              </option>
+                <option [value]="emp.id">
+                  {{ emp.firstName + " " + emp.lastName }}
+                </option>
               }
             </select>
           </div>
@@ -230,10 +244,10 @@
               placeholder="أدخل وصفاً مفصلاً للنشاط التجاري للعميل"
               required
             ></textarea>
-            @if (hasError('businessDescription')) {
-            <div class="invalid-feedback">
-              {{ getErrorMessage("businessDescription") }}
-            </div>
+            @if (hasError("businessDescription")) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage("businessDescription") }}
+              </div>
             }
           </div>
         </div>
@@ -250,272 +264,321 @@
         </div>
 
         <div formArrayName="clientServices">
-          @for (clientService of clientServicesArray.controls; track $index; let
-          serviceIndex = $index) {
-          <div [formGroupName]="serviceIndex" class="border rounded p-3 mb-3">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h6>الخدمة {{ serviceIndex + 1 }}</h6>
-              <button
-                type="button"
-                class="btn btn-outline-danger btn-sm"
-                (click)="removeClientService(serviceIndex)"
+          @for (
+            clientService of clientServicesArray.controls;
+            track $index;
+            let serviceIndex = $index
+          ) {
+            <div [formGroupName]="serviceIndex" class="border rounded p-3 mb-3">
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
               >
-                - إزالة الخدمة
-              </button>
-            </div>
-
-            <div class="row">
-              <div class="col-12 col-md-6 mb-3">
-                <label class="form-label">اختر الخدمة</label>
-                <select
-                  class="form-select"
-                  formControlName="serviceId"
-                  (change)="
-                    onServiceSelected(serviceIndex, $any($event.target).value)
-                  "
+                <h6>الخدمة {{ serviceIndex + 1 }}</h6>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  (click)="removeClientService(serviceIndex)"
                 >
-                  <option value="" disabled selected>اختر الخدمة</option>
-                  @for(service of availableServices; track service.id) {
-                  <option [value]="service.id">{{ service.title }}</option>
-                  }
-                </select>
+                  - إزالة الخدمة
+                </button>
               </div>
-              <div class="col-12 col-md-6 mb-3">
-                <label for="serviceCost" class="form-label">سعر الخدمة</label>
-                <input type="number" step="500" name="serviceCost" id="serviceCost" class="form-control" formControlName="serviceCost">
-              </div>
-            </div>
 
-            @if
-            (getCheckpointsForService(clientServicesArray.at(serviceIndex).get('serviceId')?.value).length
-            > 0) {
-            <div class="mb-3 p-3 bg-light rounded border">
-              <small class="text-muted d-block mb-2 fw-bold">
-                <i class="bi bi-list-check me-1"></i>
-                اختر نقاط التحقق لهذه الخدمة:
-              </small>
               <div class="row">
-                @for (checkpoint of
-                getCheckpointsForService(clientServicesArray.at(serviceIndex).get('serviceId')?.value);
-                track checkpoint.id) {
-                <div class="col-md-6 mb-2">
-                  <div class="form-check">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      [id]="'checkpoint-' + serviceIndex + '-' + checkpoint.id"
-                      [checked]="
-                        isCheckpointSelected(serviceIndex, checkpoint.id)
-                      "
-                      (change)="
-                        toggleCheckpointSelection(serviceIndex, checkpoint.id)
-                      "
-                    />
-                    <label
-                      class="form-check-label"
-                      [for]="'checkpoint-' + serviceIndex + '-' + checkpoint.id"
-                    >
-                      {{ checkpoint.name }}
-                      @if (checkpoint.description) {
-                      <small class="text-muted d-block">{{
-                        checkpoint.description
-                      }}</small>
-                      }
-                    </label>
-                  </div>
-                </div>
-                }
-              </div>
-              <small class="text-info d-block mt-2">
-                <i class="bi bi-info-circle me-1"></i>
-                تم اختيار {{ getSelectedCheckpoints(serviceIndex).length }} من
-                {{
-                  getCheckpointsForService(
-                    clientServicesArray.at(serviceIndex).get("serviceId")?.value
-                  ).length
-                }}
-                نقطة تحقق
-              </small>
-            </div>
-            }
-
-            <!-- Tasks -->
-            <div formArrayName="tasks">
-              @for (task of getTasksArray(serviceIndex).controls; track $index;
-              let taskIndex = $index) {
-              <div [formGroupName]="taskIndex" class="border rounded p-2 mb-2">
-                <!-- Task Header - Always Visible -->
-                <div
-                  class="d-flex justify-content-between align-items-center mb-2 flex-wrap"
-                >
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    (click)="toggleTaskCollapse(serviceIndex, taskIndex)"
-                    [attr.aria-expanded]="
-                      !isTaskCollapsed(serviceIndex, taskIndex)
+                <div class="col-12 col-md-6 mb-3">
+                  <label class="form-label">اختر الخدمة</label>
+                  <select
+                    class="form-select"
+                    formControlName="serviceId"
+                    (change)="
+                      onServiceSelected(serviceIndex, $any($event.target).value)
                     "
                   >
-                    <i
-                      class="bi"
-                      [class.bi-chevron-down]="
-                        !isTaskCollapsed(serviceIndex, taskIndex)
-                      "
-                      [class.bi-chevron-up]="
-                        isTaskCollapsed(serviceIndex, taskIndex)
-                      "
-                    ></i>
-                    <span class="mb-0 me-2">المهمة {{ taskIndex + 1 }}</span>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger btn-sm"
-                    (click)="removeTask(serviceIndex, taskIndex)"
-                  >
-                    - إزالة المهمة
-                  </button>
+                    <option value="" disabled selected>اختر الخدمة</option>
+                    @for (service of availableServices; track service.id) {
+                      <option [value]="service.id">{{ service.title }}</option>
+                    }
+                  </select>
                 </div>
-
-                <!-- Task Details - Collapsible -->
-                <div
-                  id="task-{{ serviceIndex }}-{{ taskIndex }}"
-                  class="task-details"
-                  [class.collapsed]="isTaskCollapsed(serviceIndex, taskIndex)"
-                >
-                  <div class="row">
-                    <div class="col-12 col-md-6 mb-3">
-                      <label for="taskType" class="form-label"
-                        >نوع التاسك</label
-                      >
-                      <select
-                        name="taskType"
-                        id="taskType"
-                        formControlName="taskType"
-                        class="form-select"
-                        [class.is-invalid]="hasError('taskType')"
-                      >
-                        <option [value]="0">Planning</option>
-                        <option [value]="1">Content Strategy</option>
-                        <option [value]="2">Content Writing</option>
-                        <option [value]="3">Logo Design</option>
-                        <option [value]="4">Visual Identity</option>
-                        <option [value]="5">Design Directions</option>
-                        <option [value]="6">SM Design</option>
-                        <option [value]="7">Printings Design</option>
-                        <option [value]="8">Illustrations</option>
-                        <option [value]="9">Voiceover</option>
-                        <option [value]="10">Motion</option>
-                        <option [value]="11">Video Editing</option>
-                        <option [value]="12">Publishing</option>
-                        <option [value]="13">Moderation</option>
-                        <option [value]="14">Ad Management</option>
-                        <option [value]="15">E Mail Marketing</option>
-                        <option [value]="16">WhatsApp Marketing</option>
-                        <option [value]="17">UI UX</option>
-                        <option [value]="18">WordPress</option>
-                        <option [value]="19">Backend</option>
-                        <option [value]="20">Frontend</option>
-                        <option [value]="21">SEO</option>
-                        <option [value]="22">Meeting</option>
-                        <option [value]="23">Hosting Management</option>
-                      </select>
-                    </div>
-                    <div class="col-12 col-md-6 mb-3">
-                      <label class="form-label">عنوان التاسك</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        formControlName="title"
-                        placeholder="ادخل عنوان المهمة"
-                        [class.is-invalid]="hasError('title')"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="mb-3">
-                    <label class="form-label">وصف التاسك</label>
-                    <textarea
-                      class="form-control"
-                      rows="2"
-                      formControlName="description"
-                      placeholder="اكتب وصفا مفصلا للمهمة"
-                      [class.is-invalid]="hasError('description')"
-                    ></textarea>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-12 col-md-6 mb-3">
-                      <label class="form-label">الموظف</label>
-                      <select
-                        class="form-select"
-                        formControlName="employeeId"
-                        [class.is-invalid]="hasError('employeeId')"
-                      >
-                        <option value="" disabled selected>اختر موظف</option>
-                        @for (emp of employees; track emp.id) {
-                        <option [value]="emp.id">
-                          {{ emp.firstName + " " + emp.lastName }}
-                        </option>
-                        }
-                      </select>
-                    </div>
-                    <div class="col-12 col-md-6 mb-3">
-                      <label class="form-label">موعد التسليم</label>
-                      <input
-                        type="date"
-                        class="form-control"
-                        formControlName="deadline"
-                        [class.is-invalid]="hasError('deadline')"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-12 col-md-6 mb-3">
-                      <label class="form-label">الأولوية</label>
-                      <select
-                        class="form-select"
-                        formControlName="priority"
-                        [class.is-invalid]="hasError('priority')"
-                      >
-                        <option value="عادي">عادي</option>
-                        <option value="مهم">مهم</option>
-                        <option value="مستعجل">مستعجل</option>
-                      </select>
-                    </div>
-                    <div class="col-12 col-md-6 mb-3">
-                      <label class="form-label">عدد التاسكات الداخلية</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        formControlName="numberOfSubTasks"
-                        placeholder="أدخل عدد المهام الداخلية"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="mb-3">
-                    <label class="form-label">المرجع (اختياري)</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      formControlName="refrence"
-                      placeholder="أدخل مرجع للمهمة"
-                    />
-                  </div>
+                <div class="col-12 col-md-6 mb-3">
+                  <label for="serviceCost" class="form-label">سعر الخدمة</label>
+                  <input
+                    type="number"
+                    step="500"
+                    name="serviceCost"
+                    id="serviceCost"
+                    class="form-control"
+                    formControlName="serviceCost"
+                  />
                 </div>
               </div>
-              }
-            </div>
 
-            <button
-              type="button"
-              class="btn btn-outline-primary btn-sm mb-2"
-              (click)="addTask(serviceIndex)"
-            >
-              + إضافة مهمة
-            </button>
-          </div>
+              @if (
+                getCheckpointsForService(
+                  clientServicesArray.at(serviceIndex).get("serviceId")?.value
+                ).length > 0
+              ) {
+                <div class="mb-3 p-3 bg-light rounded border">
+                  <small class="text-muted d-block mb-2 fw-bold">
+                    <i class="bi bi-list-check me-1"></i>
+                    اختر نقاط التحقق لهذه الخدمة:
+                  </small>
+                  <div class="row">
+                    @for (
+                      checkpoint of getCheckpointsForService(
+                        clientServicesArray.at(serviceIndex).get("serviceId")
+                          ?.value
+                      );
+                      track checkpoint.id
+                    ) {
+                      <div class="col-md-6 mb-2">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            [id]="
+                              'checkpoint-' + serviceIndex + '-' + checkpoint.id
+                            "
+                            [checked]="
+                              isCheckpointSelected(serviceIndex, checkpoint.id)
+                            "
+                            (change)="
+                              toggleCheckpointSelection(
+                                serviceIndex,
+                                checkpoint.id
+                              )
+                            "
+                          />
+                          <label
+                            class="form-check-label"
+                            [for]="
+                              'checkpoint-' + serviceIndex + '-' + checkpoint.id
+                            "
+                          >
+                            {{ checkpoint.name }}
+                            @if (checkpoint.description) {
+                              <small class="text-muted d-block">{{
+                                checkpoint.description
+                              }}</small>
+                            }
+                          </label>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                  <small class="text-info d-block mt-2">
+                    <i class="bi bi-info-circle me-1"></i>
+                    تم اختيار
+                    {{ getSelectedCheckpoints(serviceIndex).length }} من
+                    {{
+                      getCheckpointsForService(
+                        clientServicesArray.at(serviceIndex).get("serviceId")
+                          ?.value
+                      ).length
+                    }}
+                    نقطة تحقق
+                  </small>
+                </div>
+              }
+
+              <!-- Tasks -->
+              <div formArrayName="tasks">
+                @for (
+                  task of getTasksArray(serviceIndex).controls;
+                  track $index;
+                  let taskIndex = $index
+                ) {
+                  <div
+                    [formGroupName]="taskIndex"
+                    class="border rounded p-2 mb-2"
+                  >
+                    <!-- Task Header - Always Visible -->
+                    <div
+                      class="d-flex justify-content-between align-items-center mb-2 flex-wrap"
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        (click)="toggleTaskCollapse(serviceIndex, taskIndex)"
+                        [attr.aria-expanded]="
+                          !isTaskCollapsed(serviceIndex, taskIndex)
+                        "
+                      >
+                        <i
+                          class="bi"
+                          [class.bi-chevron-down]="
+                            !isTaskCollapsed(serviceIndex, taskIndex)
+                          "
+                          [class.bi-chevron-up]="
+                            isTaskCollapsed(serviceIndex, taskIndex)
+                          "
+                        ></i>
+                        <span class="mb-0 me-2"
+                          >المهمة {{ taskIndex + 1 }}</span
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger btn-sm"
+                        (click)="removeTask(serviceIndex, taskIndex)"
+                      >
+                        - إزالة المهمة
+                      </button>
+                    </div>
+
+                    <!-- Task Details - Collapsible -->
+                    <div
+                      id="task-{{ serviceIndex }}-{{ taskIndex }}"
+                      class="task-details"
+                      [class.collapsed]="
+                        isTaskCollapsed(serviceIndex, taskIndex)
+                      "
+                    >
+                      <div class="row">
+                        <div class="col-12 col-md-6 mb-3">
+                          <label for="taskType" class="form-label"
+                            >نوع التاسك</label
+                          >
+                          <select
+                            name="taskType"
+                            id="taskType"
+                            formControlName="taskType"
+                            class="form-select"
+                            [class.is-invalid]="hasError('taskType')"
+                          >
+                            <option [value]="0">Planning</option>
+                            <option [value]="1">Content Strategy</option>
+                            <option [value]="2">Content Writing</option>
+                            <option [value]="3">Logo Design</option>
+                            <option [value]="4">Visual Identity</option>
+                            <option [value]="5">Design Directions</option>
+                            <option [value]="6">SM Design</option>
+                            <option [value]="7">Printings Design</option>
+                            <option [value]="8">Illustrations</option>
+                            <option [value]="9">Voiceover</option>
+                            <option [value]="10">Motion</option>
+                            <option [value]="11">Video Editing</option>
+                            <option [value]="12">Publishing</option>
+                            <option [value]="13">Moderation</option>
+                            <option [value]="14">Ad Management</option>
+                            <option [value]="15">E Mail Marketing</option>
+                            <option [value]="16">WhatsApp Marketing</option>
+                            <option [value]="17">UI UX</option>
+                            <option [value]="18">WordPress</option>
+                            <option [value]="19">Backend</option>
+                            <option [value]="20">Frontend</option>
+                            <option [value]="21">SEO</option>
+                            <option [value]="22">Meeting</option>
+                            <option [value]="23">Hosting Management</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                          <label class="form-label">عنوان التاسك</label>
+                          <input
+                            type="text"
+                            class="form-control"
+                            formControlName="title"
+                            placeholder="ادخل عنوان المهمة"
+                            [class.is-invalid]="hasError('title')"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">وصف التاسك</label>
+                        <!-- <textarea
+                          class="form-control"
+                          rows="2"
+                          formControlName="description"
+                          placeholder="اكتب وصفا مفصلا للمهمة"
+                          [class.is-invalid]="hasError('description')"
+                        ></textarea> -->
+
+                        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+                        <ngx-editor
+                          [editor]="editor"
+                          [placeholder]="'Type here...'"
+                          formControlName="description"
+                          [class.is-invalid]="hasError('description')"
+                        ></ngx-editor>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-12 col-md-6 mb-3">
+                          <label class="form-label">الموظف</label>
+                          <select
+                            class="form-select"
+                            formControlName="employeeId"
+                            [class.is-invalid]="hasError('employeeId')"
+                          >
+                            <option value="" disabled selected>
+                              اختر موظف
+                            </option>
+                            @for (emp of employees; track emp.id) {
+                              <option [value]="emp.id">
+                                {{ emp.firstName + " " + emp.lastName }}
+                              </option>
+                            }
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                          <label class="form-label">موعد التسليم</label>
+                          <input
+                            type="date"
+                            class="form-control"
+                            formControlName="deadline"
+                            [class.is-invalid]="hasError('deadline')"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-12 col-md-6 mb-3">
+                          <label class="form-label">الأولوية</label>
+                          <select
+                            class="form-select"
+                            formControlName="priority"
+                            [class.is-invalid]="hasError('priority')"
+                          >
+                            <option value="عادي">عادي</option>
+                            <option value="مهم">مهم</option>
+                            <option value="مستعجل">مستعجل</option>
+                          </select>
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                          <label class="form-label"
+                            >عدد التاسكات الداخلية</label
+                          >
+                          <input
+                            type="number"
+                            class="form-control"
+                            formControlName="numberOfSubTasks"
+                            placeholder="أدخل عدد المهام الداخلية"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">المرجع (اختياري)</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          formControlName="refrence"
+                          placeholder="أدخل مرجع للمهمة"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm mb-2"
+                (click)="addTask(serviceIndex)"
+              >
+                + إضافة مهمة
+              </button>
+            </div>
           }
         </div>
 
@@ -533,8 +596,11 @@
             <div class="d-flex justify-content-start gap-2 flex-wrap">
               <button type="submit" class="add-btn">
                 @if (isLoading) {
-                <span class="spinner-border spinner-border-sm me-2"></span>
-                جاري اضافة العميل... } @else { إضافة العميل }
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  جاري اضافة العميل...
+                } @else {
+                  إضافة العميل
+                }
               </button>
               <button type="button" class="reset-btn" (click)="resetForm()">
                 <i class="bi bi-arrow-clockwise me-2"></i>

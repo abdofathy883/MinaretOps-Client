@@ -193,6 +193,7 @@ export class AuthService {
   }
 
   private handleError = (error: HttpErrorResponse): Observable<never> => {
+    console.log('error: ', error);
     let errorMessage = 'An unknown error occurred';
     
     if (error.error instanceof ErrorEvent) {
