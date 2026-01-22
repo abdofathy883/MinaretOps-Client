@@ -47,6 +47,31 @@
             }
           </div>
 
+          <div class="col-md-6 mb-3">
+            <label for="vaultId" class="form-label">الخزنة</label>
+            <span class="text-danger me-2">*</span>
+            <select
+              class="form-select"
+              id="vaultId"
+              formControlName="vaultId"
+              [class.is-invalid]="hasError(contractForm, 'vaultId')"
+            >
+              <option value="">اختر الخزنة</option>
+              @for (vault of vaults; track vault.id) {
+                <option [value]="vault.id">{{ vault.branchName }}</option>
+              }
+            </select>
+            @if (hasError(contractForm, 'vaultId')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage(contractForm, 'vaultId') }}
+              </div>
+            }
+          </div>
+
+          
+        </div>
+
+        <div class="row">
           <!-- Currency Selection -->
           <div class="col-md-6 mb-3">
             <label for="currencyId" class="form-label">العملة</label>
@@ -58,8 +83,8 @@
               [class.is-invalid]="hasError(contractForm, 'currencyId')"
             >
               <option value="">اختر العملة</option>
-              @for (currency of currencies; track currency.id) {
-                <option [value]="currency.id">{{ currency.name }} ({{ currency.code }})</option>
+              @for (currency of vaults; track currency.id) {
+                <option [value]="currency.currencyId">{{ currency.currencyName }} ({{ currency.currencyCode }})</option>
               }
             </select>
             @if (hasError(contractForm, 'currencyId')) {
@@ -68,9 +93,7 @@
               </div>
             }
           </div>
-        </div>
 
-        <div class="row">
           <!-- Contract Duration -->
           <div class="col-md-6 mb-3">
             <label for="contractDuration" class="form-label">مدة العقد (بالأشهر)</label>
@@ -91,6 +114,11 @@
             }
           </div>
 
+          
+        </div>
+
+        <!-- Paid Amount -->
+        <div class="row">
           <!-- Contract Total -->
           <div class="col-md-6 mb-3">
             <label for="contractTotal" class="form-label">إجمالي قيمة العقد</label>
@@ -111,10 +139,6 @@
               </div>
             }
           </div>
-        </div>
-
-        <!-- Paid Amount -->
-        <div class="row">
           <div class="col-md-6 mb-3">
             <label for="paidAmount" class="form-label">المبلغ المدفوع</label>
             <span class="text-danger me-2">*</span>
@@ -149,7 +173,7 @@
           <button
             type="submit"
             class="btn btn-primary"
-            [disabled]="isLoading || contractForm.invalid"
+            [disabled]="isLoading"
           >
             @if (isLoading) {
               <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>

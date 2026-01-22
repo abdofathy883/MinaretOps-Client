@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { PayrollService } from '../../../services/payroll/payroll.service';
@@ -6,6 +6,8 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ICreateSalaryPayment, ISalaryPeriod } from '../../../model/salary/i-salary-payment';
 import { CommonModule } from '@angular/common';
+import { VaultService } from '../../../services/vault/vault.service';
+import { IVault } from '../../../model/vault/i-vault';
 
 @Component({
   selector: 'app-single-salary-period',
@@ -13,38 +15,49 @@ import { CommonModule } from '@angular/common';
   templateUrl: './single-salary-period.component.html',
   styleUrl: './single-salary-period.component.css'
 })
-export class SingleSalaryPeriodComponent {
+export class SingleSalaryPeriodComponent implements OnInit {
   @Input() id?: number;
   period: ISalaryPeriod | null = null;
   isLoading = false;
-  isUserAdmin = false;
-  isUserAccountManager = false;
   showPaymentModal = false;
-  paymentForm: FormGroup;
+  paymentForm!: FormGroup;
   alertMessage = '';
   alertType = 'info';
+  vaults: IVault[] = [];
+  currentUserId: string = '';
 
   private destroy$ = new Subject<void>();
 
   constructor(
     private payrollService: PayrollService,
     private authService: AuthService,
+    private vaultService: VaultService,
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder
-  ) {
-    this.paymentForm = this.fb.group({
-      amount: [0, [Validators.required, Validators.min(0.01)]],
-      notes: ['']
-    });
-  }
+  ) {  }
 
   ngOnInit(): void {
+    this.initializePaymentForm();
     this.loadUserRoles();
     const periodId = this.id || this.route.snapshot.params['id'];
     if (periodId) {
       this.loadSalaryPeriod(periodId);
     }
+    this.loadVaults();
+  }
+
+  initializePaymentForm() {
+    this.paymentForm = this.fb.group({
+      amount: [0, [Validators.required, Validators.min(0.01)]],
+      currencyId: [1, [Validators.required]],
+      vaultId: [1, [Validators.required]],
+      notes: ['']
+    });
+  }
+
+  loadVaults() {
+    this.vaultService.getAllLocal().subscribe((response) => this.vaults = response);
   }
 
   ngOnDestroy(): void {
@@ -53,16 +66,7 @@ export class SingleSalaryPeriodComponent {
   }
 
   loadUserRoles(): void {
-    this.authService.isAdmin().subscribe((isAdmin) => {
-      if (isAdmin) {
-        this.isUserAdmin = true;
-      }
-    });
-    this.authService.isAccountManager().subscribe((isAccountManager) => {
-      if (isAccountManager) {
-        this.isUserAccountManager = true;
-      }
-    });
+    this.currentUserId = this.authService.getCurrentUserId();
   }
 
   loadSalaryPeriod(periodId: number): void {
@@ -99,9 +103,14 @@ export class SingleSalaryPeriodComponent {
     const paymentDto: ICreateSalaryPayment = {
       employeeId: this.period.employeeId,
       salaryPeriodId: this.period.id,
+      vaultId: formValue.vaultId,
+      currencyId: formValue.currencyId,
+      createdBy: this.currentUserId,
       amount: formValue.amount,
       notes: formValue.notes || ''
     };
+
+    console.log(paymentDto)
 
     this.isLoading = true;
     this.payrollService.recordSalaryPayment(paymentDto)
@@ -113,6 +122,7 @@ export class SingleSalaryPeriodComponent {
           this.loadSalaryPeriod(this.period!.id);
         },
         error: (err) => {
+          console.log(err)
           this.showAlert(err.error?.message || 'خطأ في تسجيل الدفعة', 'danger');
           this.isLoading = false;
         }

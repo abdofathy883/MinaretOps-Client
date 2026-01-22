@@ -9,10 +9,16 @@
   <div class="row mb-3">
     <div class="col-md-4">
       <label for="currencyFilter" class="form-label">فلترة حسب العملة</label>
-      <select id="currencyFilter" class="form-select" (change)="onCurrencyFilterChange($any($event.target).value)">
+      <select
+        id="currencyFilter"
+        class="form-select"
+        (change)="onCurrencyFilterChange($any($event.target).value)"
+      >
         <option value="">جميع العملات</option>
         @for (currency of currencies(); track currency.id) {
-          <option [value]="currency.id">{{ currency.name }} ({{ currency.code }})</option>
+          <option [value]="currency.id">
+            {{ currency.name }} ({{ currency.code }})
+          </option>
         }
       </select>
     </div>
@@ -35,22 +41,65 @@
           </tr>
         </thead>
         <tbody>
+          @if (unifiedVault) {
+            <tr
+              style="cursor: pointer"
+              (click)="goToUnifiedVault(unifiedVault.currencyId)"
+            >
+              <td>
+                <span class="badge bg-secondary">موحد</span>
+              </td>
+              <td class="fw-bold">{{ unifiedVault.branchName || "موحد" }}</td>
+              <td>
+                <span class="badge bg-info"
+                  >{{ unifiedVault.currencyName }} ({{
+                    unifiedVault.currencyCode
+                  }})</span
+                >
+              </td>
+              <td>
+                <span
+                  [class.text-success]="unifiedVault.balance >= 0"
+                  [class.text-danger]="unifiedVault.balance < 0"
+                  class="fw-bold"
+                >
+                  {{ unifiedVault.balance | number: "1.2-2" }}
+                  {{ unifiedVault.currencyCode }}
+                </span>
+              </td>
+              <td>
+                <button
+                    class="btn btn-outline-info btn-sm me-2"
+                    (click)="
+                      goToUnifiedVault(unifiedVault.currencyId);
+                      $event.stopPropagation()
+                    "
+                    title="عرض الخزنة الموحدة"
+                  >
+                    <i class="bi bi-globe"></i>
+                    موحد
+                  </button>
+              </td>
+            </tr>
+          }
           @for (vault of filteredVaults(); track vault.id) {
-            <tr style="cursor: pointer;" (click)="goToVault(vault.id)">
+            <tr style="cursor: pointer" (click)="goToVault(vault.id)">
               <td>
-                @if (vault.vaultType === 0) {
                   <span class="badge bg-primary">فرع</span>
-                } @else {
-                  <span class="badge bg-secondary">موحد</span>
-                }
               </td>
-              <td class="fw-bold">{{ vault.branchName || 'موحد' }}</td>
+              <td class="fw-bold">{{ vault.branchName || "موحد" }}</td>
               <td>
-                <span class="badge bg-info">{{ vault.currencyName }} ({{ vault.currencyCode }})</span>
+                <span class="badge bg-info"
+                  >{{ vault.currencyName }} ({{ vault.currencyCode }})</span
+                >
               </td>
               <td>
-                <span [class.text-success]="vault.balance >= 0" [class.text-danger]="vault.balance < 0" class="fw-bold">
-                  {{ vault.balance | number:'1.2-2' }} {{ vault.currencyCode }}
+                <span
+                  [class.text-success]="vault.balance >= 0"
+                  [class.text-danger]="vault.balance < 0"
+                  class="fw-bold"
+                >
+                  {{ vault.balance | number: "1.2-2" }} {{ vault.currencyCode }}
                 </span>
               </td>
               <td>
@@ -62,16 +111,6 @@
                   <i class="bi bi-eye"></i>
                   عرض
                 </button>
-                @if (vault.vaultType === 1) {
-                  <button
-                    class="btn btn-outline-info btn-sm me-2"
-                    (click)="goToUnifiedVault(vault.currencyId); $event.stopPropagation()"
-                    title="عرض الخزنة الموحدة"
-                  >
-                    <i class="bi bi-globe"></i>
-                    موحد
-                  </button>
-                }
               </td>
             </tr>
           }
@@ -83,9 +122,11 @@
   @if (!isLoading() && filteredVaults().length === 0) {
     <div class="text-center py-5">
       <div class="empty-state">
-        <i class="bi bi-safe" style="font-size: 4rem; color: #ccc;"></i>
+        <i class="bi bi-safe" style="font-size: 4rem; color: #ccc"></i>
         <h3 class="mt-3">لا توجد خزنات حتى الآن</h3>
-        <p class="text-muted">الخزنات يتم إنشاؤها تلقائياً عند إضافة فروع جديدة</p>
+        <p class="text-muted">
+          الخزنات يتم إنشاؤها تلقائياً عند إضافة فروع جديدة
+        </p>
       </div>
     </div>
   }

@@ -9,14 +9,15 @@ import {
 import { Router } from '@angular/router';
 import { ContractService } from '../../../services/contracts/contract.service';
 import { ClientService } from '../../../services/clients/client.service';
-import { CurrencyService } from '../../../services/currency/currency.service';
 import { LightWieghtClient } from '../../../model/client/client';
-import { ICurrency } from '../../../model/currency/i-currency';
 import { ICreateContract } from '../../../model/contract/i-contract';
 import {
   getErrorMessage,
   hasError,
 } from '../../../services/helper-services/utils';
+import { IVault } from '../../../model/vault/i-vault';
+import { VaultService } from '../../../services/vault/vault.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-add-contract',
@@ -28,7 +29,8 @@ import {
 export class AddContractComponent implements OnInit {
   contractForm: FormGroup;
   clients: LightWieghtClient[] = [];
-  currencies: ICurrency[] = [];
+  vaults: IVault[] = [];
+  currentUserId: string = '';
 
   isLoading = false;
   alertMessage = '';
@@ -38,7 +40,8 @@ export class AddContractComponent implements OnInit {
     private fb: FormBuilder,
     private contractService: ContractService,
     private clientService: ClientService,
-    private currencyService: CurrencyService,
+    private vaultService: VaultService,
+    private authService: AuthService,
     private router: Router
   ) {
     this.contractForm = this.fb.group({
@@ -56,12 +59,15 @@ export class AddContractComponent implements OnInit {
         '',
         [Validators.required, Validators.min(0), Validators.pattern(/^\d+(\.\d{1,2})?$/)],
       ],
+      vaultId: ['', [Validators.required]],
+      createdBy: ['', [Validators.required]],
     });
   }
 
   ngOnInit(): void {
+    this.currentUserId = this.authService.getCurrentUserId();
     this.loadClients();
-    this.loadCurrencies();
+    this.loadVaults();
   }
 
   loadClients(): void {
@@ -75,10 +81,10 @@ export class AddContractComponent implements OnInit {
     });
   }
 
-  loadCurrencies(): void {
-    this.currencyService.getAll().subscribe({
+  loadVaults(): void {
+    this.vaultService.getAllLocal().subscribe({
       next: (response) => {
-        this.currencies = response;
+        this.vaults = response;
       },
       error: () => {
         this.showAlert('حدث خطأ في تحميل قائمة العملات', 'error');
@@ -87,20 +93,22 @@ export class AddContractComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.contractForm.invalid) {
-      this.contractForm.markAllAsTouched();
-      return;
-    }
+    // if (this.contractForm.invalid) {
+    //   this.contractForm.markAllAsTouched();
+    //   return;
+    // }
 
     this.isLoading = true;
     const formValue = this.contractForm.value;
 
     const contractData: ICreateContract = {
       clientId: Number(formValue.clientId),
-      currencyId: Number(formValue.currencyId),
+      currencyId: formValue.currencyId,
       contractDuration: Number(formValue.contractDuration),
       contractTotal: Number(formValue.contractTotal),
       paidAmount: Number(formValue.paidAmount),
+      vaultId: formValue.vaultId,
+      createdBy: this.currentUserId,
     };
 
     this.contractService.create(contractData).subscribe({

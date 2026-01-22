@@ -26,6 +26,7 @@ export class HeaderComponent implements OnInit, OnChanges {
   isUserAccountManager: boolean = false;
   isContentLeader: boolean = false;
   isDesignerLeader: boolean = false;
+  isUserFinance: boolean = false;
 
   @Input() isSidebarCollapsed: boolean = false;
   @Output() sidebarToggle = new EventEmitter<boolean>();
@@ -33,7 +34,7 @@ export class HeaderComponent implements OnInit, OnChanges {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    // this.userId = this.authService.getCurrentUserId();
+    this.userId = this.authService.getCurrentUserId();
     this.authService.isAdmin().subscribe((isAdmin) => {
       if (isAdmin) {
         this.isUserAdmin = true;
@@ -49,6 +50,9 @@ export class HeaderComponent implements OnInit, OnChanges {
     });
     this.authService.isDesignerLeader().subscribe((isLeader) => {
       if (isLeader) this.isDesignerLeader = true;
+    });
+    this.authService.isFinance().subscribe((isFinance) => {
+      if (isFinance) this.isUserFinance = true;
     });
 
     // Set initial collapsed state based on screen width

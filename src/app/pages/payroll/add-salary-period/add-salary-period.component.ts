@@ -11,6 +11,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { PayrollService } from '../../../services/payroll/payroll.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Router } from '@angular/router';
+import { IVault } from '../../../model/vault/i-vault';
+import { VaultService } from '../../../services/vault/vault.service';
 
 @Component({
   selector: 'app-add-salary-period',
@@ -19,8 +21,10 @@ import { Router } from '@angular/router';
   styleUrl: './add-salary-period.component.css',
 })
 export class AddSalaryPeriodComponent {
+  currentUserId: string = '';
   salaryPeriodForm: FormGroup;
   employees: User[] = [];
+  vaults: IVault[] = [];
   isLoading = false;
   alertMessage = '';
   alertType = 'info';
@@ -31,6 +35,7 @@ export class AddSalaryPeriodComponent {
     private fb: FormBuilder,
     private payrollService: PayrollService,
     private authService: AuthService,
+    private vaultService: VaultService,
     private router: Router
   ) {
     this.salaryPeriodForm = this.fb.group({
@@ -45,8 +50,10 @@ export class AddSalaryPeriodComponent {
   }
 
   ngOnInit(): void {
+    this.currentUserId = this.authService.getCurrentUserId();
     this.loadEmployees();
     this.setupEmployeeIdListener();
+    this.loadVaults();
   }
 
   ngOnDestroy(): void {
@@ -63,6 +70,10 @@ export class AddSalaryPeriodComponent {
         console.error('Error loading employees:', err);
       },
     });
+  }
+
+  loadVaults() {
+    this.vaultService.getAllLocal().subscribe((response) => this.vaults = response);
   }
 
   setupEmployeeIdListener(): void {
@@ -91,6 +102,8 @@ export class AddSalaryPeriodComponent {
     const paymentForm = this.fb.group({
       amount: [0, [Validators.required, Validators.min(0.01)]],
       notes: [''],
+      vaultId: [1, [Validators.required]],
+      currencyId: [1, [Validators.required]],
     });
     this.salaryPayments.push(paymentForm);
   }
@@ -119,6 +132,9 @@ export class AddSalaryPeriodComponent {
         employeeId: formValue.employeeId,
         amount: p.amount,
         notes: p.notes || '',
+        vaultId: p.vaultId,
+        currencyId: p.currencyId,
+        createdBy: this.currentUserId,
       })),
     };
 

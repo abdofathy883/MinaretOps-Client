@@ -20,6 +20,10 @@ export class VaultService {
     return this.api.get<IVault[]>(this.endpoint);
   }
 
+  getAllLocal(): Observable<IVault[]> {
+    return this.api.get<IVault[]>(`${this.endpoint}/local`);
+  }
+
   getById(id: number): Observable<IVault> {
     return this.api.get<IVault>(`${this.endpoint}/${id}`);
   }

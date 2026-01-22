@@ -30,6 +30,9 @@ export interface ISalaryPayment {
 export interface ICreateSalaryPayment {
   employeeId: string;
   salaryPeriodId?: number;
+  vaultId: number;
+  currencyId: number;
+  createdBy: string;
   amount: number;
   notes?: string;
 }

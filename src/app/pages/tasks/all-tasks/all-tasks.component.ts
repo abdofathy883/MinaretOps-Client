@@ -5,18 +5,39 @@ import { User } from '../../../model/auth/user';
 import { LightWieghtClient } from '../../../model/client/client';
 import { ServicesService } from '../../../services/services/services.service';
 import { ClientService } from '../../../services/clients/client.service';
-import { ITask, TaskType, TaskFilter, PaginatedTaskResult, TASK_TEAM_MAPPINGS, CustomTaskStatus, ILightWieghtTask } from '../../../model/task/task';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  ITask,
+  TaskType,
+  TaskFilter,
+  PaginatedTaskResult,
+  TASK_TEAM_MAPPINGS,
+  CustomTaskStatus,
+  ILightWieghtTask,
+} from '../../../model/task/task';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { TaskService } from '../../../services/tasks/task.service';
 import { Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
-import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
+import { ShimmerComponent } from '../../../shared/shimmer/shimmer.component';
 
 @Component({
   selector: 'app-all-tasks',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, ShimmerComponent, DatePipe, MapTaskStatusClassPipe, MapTaskStatusPipe],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    CommonModule,
+    ShimmerComponent,
+    DatePipe,
+    MapTaskStatusClassPipe,
+    MapTaskStatusPipe,
+  ],
   templateUrl: './all-tasks.component.html',
   styleUrl: './all-tasks.component.css',
 })
@@ -48,7 +69,7 @@ export class AllTasksComponent implements OnInit {
     private clientService: ClientService,
     private taskService: TaskService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     this.filterForm = this.fb.group({
       clientId: [null],
@@ -58,24 +79,24 @@ export class AllTasksComponent implements OnInit {
       toDate: [null],
       status: [null],
       onDeadline: [null],
-      team: [null] // Add team to form
+      team: [null], // Add team to form
     });
   }
 
   ngOnInit(): void {
     this.currentUserId = this.authService.getCurrentUserId();
-    
+
     // Initialize form with today's date
-    const today = new Date().toISOString().split('T')[0];
+    // const today = new Date().toISOString().split('T')[0];
     // this.filterForm.patchValue({
     //   fromDate: today,
     //   toDate: today
     // });
-    
+
     this.loadClients();
     this.loadEmployees();
     this.loadServices();
-    this.loadTasks(); // This will now load today's tasks with pagination
+    this.loadTasks();
 
     // Subscribe to form changes for live filtering
     this.filterForm.valueChanges.subscribe(() => {
@@ -122,23 +143,25 @@ export class AllTasksComponent implements OnInit {
     }
 
     this.isSearching = true;
-    this.taskService.searchTasks(this.searchQuery.trim(), this.currentUserId).subscribe({
-      next: (response) => {
-        this.searchResults = response;
-        this.filteredTasks = [...this.searchResults];
-        this.isSearching = false;
-      },
-      error: (error) => {
-        this.isSearching = false;
-      },
-    });
+    this.taskService
+      .searchTasks(this.searchQuery.trim(), this.currentUserId)
+      .subscribe({
+        next: (response) => {
+          this.searchResults = response;
+          this.filteredTasks = [...this.searchResults];
+          this.isSearching = false;
+        },
+        error: (error) => {
+          this.isSearching = false;
+        },
+      });
   }
 
   clearSearch() {
     this.searchQuery = '';
     this.searchResults = [];
     this.isSearching = false;
-    
+
     // Reset to today's date
     const today = new Date().toISOString().split('T')[0];
     this.filterForm.patchValue({
@@ -149,9 +172,9 @@ export class AllTasksComponent implements OnInit {
       toDate: today,
       status: null,
       onDeadline: null,
-      team: null // Reset team filter
+      team: null, // Reset team filter
     });
-    
+
     this.currentPage = 1;
     this.loadTasks();
   }
@@ -159,9 +182,9 @@ export class AllTasksComponent implements OnInit {
   loadTasks() {
     this.loading = true;
     this.isLoadingTasks = true;
-    
+
     const formValue = this.filterForm.value;
-    
+
     // Create filter object for server-side pagination
     const filter: TaskFilter = {
       fromDate: formValue.fromDate || undefined,
@@ -173,7 +196,7 @@ export class AllTasksComponent implements OnInit {
       onDeadline: formValue.onDeadline || undefined,
       team: formValue.team || undefined, // Add team to filter
       pageNumber: this.currentPage,
-      pageSize: this.pageSize
+      pageSize: this.pageSize,
     };
 
     this.taskService.getPaginatedTasks(filter, this.currentUserId).subscribe({
@@ -189,7 +212,7 @@ export class AllTasksComponent implements OnInit {
       error: (error) => {
         this.loading = false;
         this.isLoadingTasks = false;
-      }
+      },
     });
   }
 
@@ -197,13 +220,13 @@ export class AllTasksComponent implements OnInit {
   loadPreviousDay(): void {
     const fromDate = new Date(this.filterForm.value.fromDate);
     fromDate.setDate(fromDate.getDate() - 1);
-    
+
     const toDate = new Date(this.filterForm.value.toDate);
     toDate.setDate(toDate.getDate() - 1);
 
     this.filterForm.patchValue({
       fromDate: fromDate.toISOString().split('T')[0],
-      toDate: toDate.toISOString().split('T')[0]
+      toDate: toDate.toISOString().split('T')[0],
     });
 
     this.currentPage = 1; // Reset to first page
@@ -213,13 +236,13 @@ export class AllTasksComponent implements OnInit {
   loadNextDay(): void {
     const fromDate = new Date(this.filterForm.value.fromDate);
     fromDate.setDate(fromDate.getDate() + 1);
-    
+
     const toDate = new Date(this.filterForm.value.toDate);
     toDate.setDate(toDate.getDate() + 1);
 
     this.filterForm.patchValue({
       fromDate: fromDate.toISOString().split('T')[0],
-      toDate: toDate.toISOString().split('T')[0]
+      toDate: toDate.toISOString().split('T')[0],
     });
 
     this.currentPage = 1; // Reset to first page
@@ -312,8 +335,16 @@ export class AllTasksComponent implements OnInit {
   }
 
   isCompletedAfterDeadline(task: ILightWieghtTask): boolean {
-  return task.status === CustomTaskStatus.Completed &&
-         task.completedAt != null &&
-         new Date(task.completedAt) > new Date(task.deadline);
+    return (
+      task.status === CustomTaskStatus.Completed &&
+      task.completedAt != null &&
+      new Date(task.completedAt) > new Date(task.deadline)
+    );
+  }
+
+  getShortDescription(html: string): string {
+  const text = html.replace(/<[^>]*>/g, ''); // strip HTML tags
+  return text.length > 50 ? text.slice(0, 50) + '…' : text;
 }
+
 }

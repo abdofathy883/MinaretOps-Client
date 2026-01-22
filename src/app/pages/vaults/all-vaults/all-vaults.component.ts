@@ -1,4 +1,4 @@
-import { Component, signal, OnInit, ChangeDetectionStrategy, inject, computed } from '@angular/core';
+import { Component, signal, OnInit, ChangeDetectionStrategy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { VaultService } from '../../../services/vault/vault.service';
@@ -15,14 +15,17 @@ import { ShimmerComponent } from '../../../shared/shimmer/shimmer.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AllVaultsComponent implements OnInit {
-  private readonly vaultService = inject(VaultService);
-  private readonly currencyService = inject(CurrencyService);
-  private readonly router = inject(Router);
-
   vaults = signal<IVault[]>([]);
   currencies = signal<ICurrency[]>([]);
   selectedCurrencyId = signal<number | null>(null);
   isLoading = signal<boolean>(false);
+  unifiedVault: IVault | null = null;
+
+  constructor(
+    private vaultService: VaultService,
+    private currencyService: CurrencyService,
+    private router: Router
+  ) {}
 
   filteredVaults = computed(() => {
     const currencyId = this.selectedCurrencyId();
@@ -32,18 +35,28 @@ export class AllVaultsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadVaults();
+    this.loadUnifiedVault();
     this.loadCurrencies();
   }
 
   loadVaults(): void {
     this.isLoading.set(true);
-    this.vaultService.getAll().subscribe({
+    this.vaultService.getAllLocal().subscribe({
       next: (response) => {
         this.vaults.set(response);
         this.isLoading.set(false);
       },
       error: () => {
         this.isLoading.set(false);
+      }
+    });
+  }
+
+  loadUnifiedVault() {
+    this.vaultService.getUnifiedVault(5).subscribe({
+      next: (response) => {
+        this.unifiedVault = response;
+        console.log('Unified Vault:', this.unifiedVault);
       }
     });
   }
@@ -64,7 +77,7 @@ export class AllVaultsComponent implements OnInit {
     this.router.navigate(['/vaults', id]);
   }
 
-  goToUnifiedVault(currencyId: number): void {
+  goToUnifiedVault(currencyId?: number): void {
     this.router.navigate(['/vaults/unified', currencyId]);
   }
 }

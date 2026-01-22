@@ -15,6 +15,8 @@ export interface IContract {
   contractTotal: number;
   paidAmount: number;
   dueAmount: number;
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 export interface ICreateContract {
@@ -23,4 +25,6 @@ export interface ICreateContract {
   contractDuration: number;
   contractTotal: number;
   paidAmount: number;
+  vaultId: number;
+  createdBy: string;
 }

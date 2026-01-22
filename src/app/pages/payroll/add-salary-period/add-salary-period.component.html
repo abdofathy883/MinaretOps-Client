@@ -38,6 +38,8 @@
           </div>
         </div>
 
+        
+
         <div class="row mb-3">
           <div class="col-md-4">
             <label class="form-label">الراتب الأساسي</label>
@@ -113,15 +115,37 @@
                       formControlName="notes"
                     />
                   </div>
-                  <div class="col-md-2 d-flex align-items-end">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-danger"
-                      (click)="removePayment($index)"
-                    >
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </div>
+                </div>
+                <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+              <label for="currencyId" class="form-label">العملة</label>
+              <span class="text-danger me-2">*</span>
+              <select name="currencyId" id="currencyId" class="form-select" formControlName="currencyId">
+                <option disabled selected>اختر العملة</option>
+                @for (currency of vaults; track $index) {
+                <option [value]="currency.currencyId">{{ currency.currencyName }}</option>
+                }
+              </select>
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <label for="vaultId" class="form-label">الخزنة</label>
+              <span class="text-danger me-2">*</span>
+              <select name="vaultId" id="vaultId" class="form-select" formControlName="vaultId">
+                <option disabled selected>اختر الخزنة</option>
+                @for (vault of vaults; track $index) {
+                <option [value]="vault.id">{{ vault.branchName }}</option>
+                }
+              </select>
+            </div>
+          </div>
+                <div class="col-md-2 d-flex align-items-end">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    (click)="removePayment($index)"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
                 </div>
               </div>
             </div>
