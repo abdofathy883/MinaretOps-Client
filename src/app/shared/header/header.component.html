@@ -127,7 +127,7 @@
             }
           </ul>
         </li>
-        @if (isUserFinance) {
+        @if (isUserFinance && isUserAdmin) {
         <li class="nav-item">
           <button
             class="text-white menu-toggler"
@@ -156,8 +156,6 @@
             </li>
           </ul>
         </li>
-        }
-        @if (isUserAdmin) {
         <li class="nav-item">
           <button
             class="text-white menu-toggler"
