@@ -17,7 +17,7 @@ import { ShimmerComponent } from '../../../shared/shimmer/shimmer.component';
 export class AllVaultsComponent implements OnInit {
   vaults = signal<IVault[]>([]);
   currencies = signal<ICurrency[]>([]);
-  selectedCurrencyId = signal<number | null>(1);
+  selectedCurrencyId = signal<number | null>(1001);
   isLoading = signal<boolean>(false);
   unifiedVault = signal<IVault | null>(null);
 
