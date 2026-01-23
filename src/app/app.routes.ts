@@ -272,81 +272,85 @@ export const routes: Routes = [
     path: 'payroll/periods',
     component: AllSalaryPeriodsComponent,
     canActivate: [noauthGuard, roleGuard],
-    data: { roles: ['Admin', 'AccountManager'] },
+    data: { roles: ['Finance'] },
   },
   {
     path: 'payroll/periods/add',
     component: AddSalaryPeriodComponent,
     canActivate: [noauthGuard, roleGuard],
-    data: { roles: ['Admin', 'AccountManager'] },
+    data: { roles: ['Finance'] }
   },
   {
     path: 'payroll/periods/:id',
     component: SingleSalaryPeriodComponent,
-    canActivate: [noauthGuard],
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Finance'] }
   },
   {
     path: 'currency',
     component: AllCurrenciesComponent,
     canActivate: [noauthGuard, roleGuard],
-    data: { roles: ['Admin'] },
+    data: { roles: ['Finance'] },
   },
   {
     path: 'currency/:id',
     component: SingleCurrencyComponent,
     canActivate: [noauthGuard, roleGuard],
-    data: { roles: ['Admin'] },
+    data: { roles: ['Finance'] },
   },
   {
     path: 'contracts',
     component: AllContractsComponent,
-    canActivate: [noauthGuard]
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Finance'] }
   },
   {
     path: 'contracts/add',
     component: AddContractComponent,
-    canActivate: [noauthGuard]
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Finance'] }
   },
   {
     path: 'contracts/:id',
     component: SingleContractComponent,
-    canActivate: [noauthGuard]
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Finance'] }
   },
   {
     path: 'branches',
     component: AllBranchesComponent,
     canActivate: [noauthGuard, roleGuard],
-    data: { roles: ['Admin'] }
+    data: { roles: ['Finance'] }
   },
   {
     path: 'branches/add',
     component: AddBranchComponent,
     canActivate: [noauthGuard, roleGuard],
-    data: { roles: ['Admin'] }
+    data: { roles: ['Finance'] }
   },
   {
     path: 'branches/:id',
     component: SingleBranchComponent,
     canActivate: [noauthGuard, roleGuard],
-    data: { roles: ['Admin'] }
+    data: { roles: ['Finance'] }
   },
   {
     path: 'vaults',
     component: AllVaultsComponent,
     canActivate: [noauthGuard, roleGuard],
-    data: { roles: ['Admin', 'AccountManager'] }
+    data: { roles: ['Finance'] }
   },
   {
     path: 'vaults/:id',
     component: SingleVaultComponent,
     canActivate: [noauthGuard, roleGuard],
-    data: { roles: ['Admin', 'AccountManager'] }
+    data: { roles: ['Finance'] }
   },
   {
     path: 'vaults/unified/:currencyId',
     component: UnifiedVaultComponent,
     canActivate: [noauthGuard, roleGuard],
-    data: { roles: ['Admin', 'AccountManager'] }
+    data: { roles: ['Finance'] }
   },
   {
     path: '**',
