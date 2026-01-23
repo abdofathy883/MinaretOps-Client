@@ -17,9 +17,9 @@ import { ShimmerComponent } from '../../../shared/shimmer/shimmer.component';
 export class AllVaultsComponent implements OnInit {
   vaults = signal<IVault[]>([]);
   currencies = signal<ICurrency[]>([]);
-  selectedCurrencyId = signal<number | null>(null);
+  selectedCurrencyId = signal<number | null>(1);
   isLoading = signal<boolean>(false);
-  unifiedVault: IVault | null = null;
+  unifiedVault = signal<IVault | null>(null);
 
   constructor(
     private vaultService: VaultService,
@@ -53,10 +53,19 @@ export class AllVaultsComponent implements OnInit {
   }
 
   loadUnifiedVault() {
-    this.vaultService.getUnifiedVault(5).subscribe({
+    const currency = this.selectedCurrencyId();
+    if (currency === null) {
+      this.unifiedVault.set(null);
+      return;
+    }
+    this.vaultService.getUnifiedVault(currency).subscribe({
       next: (response) => {
-        this.unifiedVault = response;
-        console.log('Unified Vault:', this.unifiedVault);
+        this.unifiedVault.set(response);
+        console.log('Unified Vault:', this.unifiedVault());
+      },
+      error: (err) => {
+        this.unifiedVault.set(null);
+        console.error('Error loading unified vault:', err);
       }
     });
   }
@@ -71,6 +80,7 @@ export class AllVaultsComponent implements OnInit {
 
   onCurrencyFilterChange(currencyId: string): void {
     this.selectedCurrencyId.set(currencyId ? Number(currencyId) : null);
+    this.loadUnifiedVault();
   }
 
   goToVault(id: number): void {

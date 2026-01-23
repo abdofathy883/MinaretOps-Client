@@ -12,9 +12,10 @@
       <select
         id="currencyFilter"
         class="form-select"
+        [value]="selectedCurrencyId()"
         (change)="onCurrencyFilterChange($any($event.target).value)"
       >
-        <option value="">جميع العملات</option>
+        <option disabled selected>اختر عملة</option>
         @for (currency of currencies(); track currency.id) {
           <option [value]="currency.id">
             {{ currency.name }} ({{ currency.code }})
@@ -41,37 +42,37 @@
           </tr>
         </thead>
         <tbody>
-          @if (unifiedVault) {
+          @if (unifiedVault()) {
             <tr
               style="cursor: pointer"
-              (click)="goToUnifiedVault(unifiedVault.currencyId)"
+              (click)="goToUnifiedVault(unifiedVault()!.currencyId)"
             >
               <td>
                 <span class="badge bg-secondary">موحد</span>
               </td>
-              <td class="fw-bold">{{ unifiedVault.branchName || "موحد" }}</td>
+              <td class="fw-bold">{{ unifiedVault()!.branchName || "موحد" }}</td>
               <td>
                 <span class="badge bg-info"
-                  >{{ unifiedVault.currencyName }} ({{
-                    unifiedVault.currencyCode
+                  >{{ unifiedVault()!.currencyName }} ({{
+                    unifiedVault()!.currencyCode
                   }})</span
                 >
               </td>
               <td>
                 <span
-                  [class.text-success]="unifiedVault.balance >= 0"
-                  [class.text-danger]="unifiedVault.balance < 0"
+                  [class.text-success]="unifiedVault()!.balance >= 0"
+                  [class.text-danger]="unifiedVault()!.balance < 0"
                   class="fw-bold"
                 >
-                  {{ unifiedVault.balance | number: "1.2-2" }}
-                  {{ unifiedVault.currencyCode }}
+                  {{ unifiedVault()!.balance | number: "1.2-2" }}
+                  {{ unifiedVault()!.currencyCode }}
                 </span>
               </td>
               <td>
                 <button
                     class="btn btn-outline-info btn-sm me-2"
                     (click)="
-                      goToUnifiedVault(unifiedVault.currencyId);
+                      goToUnifiedVault(unifiedVault()!.currencyId);
                       $event.stopPropagation()
                     "
                     title="عرض الخزنة الموحدة"
