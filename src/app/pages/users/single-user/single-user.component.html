@@ -81,9 +81,11 @@
           <div class="col-md-6 mb-3">
             <label class="form-label fw-bold">الدور:</label>
             <p class="form-control-plaintext">
-              <span class="badge bg-info">{{
-                user.roles[0] | mapUserRole
+              @for (role of user.roles; track role) {
+              <span class="badge bg-info me-1">{{
+                role | mapUserRole
               }}</span>
+              }
             </p>
           </div>
           <div class="col-md-6 mb-3">
@@ -272,6 +274,20 @@
               />
             </div>
           </div>
+
+          @if (hasFinanceRole) {
+          <div class="row">
+            <div class="col-12 mb-3">
+              <div class="alert alert-info d-flex align-items-center" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                <div>
+                  <strong>ملاحظة:</strong> هذا المستخدم لديه صلاحية Finance. 
+                  تغيير الدور هنا سيؤثر فقط على الدور الأساسي ولن يؤثر على صلاحية Finance.
+                </div>
+              </div>
+            </div>
+          </div>
+          }
 
           <div class="row">
           <div class="col-12 col-md-6 mb-4">

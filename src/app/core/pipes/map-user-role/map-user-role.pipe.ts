@@ -27,6 +27,8 @@ export class MapUserRolePipe implements PipeTransform {
         return 'Video Editor';
       case 'WebDeveloper':
         return 'Web Developer';
+      case 'Finance':
+        return 'Finance';
       default:
         return 'غير محدد';
     }

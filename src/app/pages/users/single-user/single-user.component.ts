@@ -67,7 +67,12 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   get rolesList(): Array<{ key: string; value: string }> {
     return Object.keys(UserRoles)
       .filter((key) => isNaN(Number(key)))
+      .filter((key) => key !== 'Finance')
       .map((key) => ({ key, value: key }));
+  }
+
+  get hasFinanceRole(): boolean {
+    return this.user?.roles?.includes('Finance') || false;
   }
 
   ngOnInit(): void {
@@ -113,12 +118,15 @@ export class SingleUserComponent implements OnInit, OnDestroy {
   }
 
   populateForm(user: User): void {
+    // Get the first non-Finance role as the primary role
+    const primaryRole = user.roles.find(r => r !== 'Finance') || user.roles[0];
+    
     this.editUserForm.patchValue({
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
       phoneNumber: user.phoneNumber,
-      role: user.roles[0],
+      role: primaryRole, // Show primary role in dropdown
       paymentNumber: user.paymentNumber,
       city: user.city,
       street: user.street,

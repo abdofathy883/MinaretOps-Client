@@ -32,6 +32,7 @@ export enum UserRoles {
   SEOSpecialest = 8,
   WebDeveloper = 9,
   VideoEditor = 10,
+  Finance = 11
 }
 
 export interface UpdateUser {
