@@ -61,6 +61,9 @@ import { SingleBranchComponent } from './pages/branches/single-branch/single-bra
 import { AllVaultsComponent } from './pages/vaults/all-vaults/all-vaults.component';
 import { SingleVaultComponent } from './pages/vaults/single-vault/single-vault.component';
 import { UnifiedVaultComponent } from './pages/vaults/unified-vault/unified-vault.component';
+import { AllLeadsComponent } from './pages/sales/all-leads/all-leads.component';
+import { AddLeadComponent } from './pages/sales/add-lead/add-lead.component';
+import { IncidentsComponent } from './pages/kpis/incidents/incidents.component';
 
 export const routes: Routes = [
   {
@@ -218,6 +221,12 @@ export const routes: Routes = [
     data: { roles: ['Admin'] },
   },
   {
+    path: 'kpis-incidents',
+    component: IncidentsComponent,
+    canActivate: [noauthGuard, roleGuard],
+    data: { roles: ['Admin'] },
+  },
+  {
     path: 'access-denied',
     component: AccessDeniedComponent,
     canActivate: [noauthGuard],
@@ -351,6 +360,16 @@ export const routes: Routes = [
     component: UnifiedVaultComponent,
     canActivate: [noauthGuard, roleGuard],
     data: { roles: ['Finance'] }
+  },
+  {
+    path: 'leads',
+    component: AllLeadsComponent,
+    canActivate: [noauthGuard],
+  },
+  {
+    path: 'leads/add',
+    component: AddLeadComponent,
+    canActivate: [noauthGuard]
   },
   {
     path: '**',

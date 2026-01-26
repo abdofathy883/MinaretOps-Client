@@ -6,10 +6,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class MapTaskPriorityPipe implements PipeTransform {
 
   transform(priority: string): string {
-    switch (priority) {
-      case 'عالي':
+    switch (priority.toLowerCase()) {
+      case 'مستعجل':
         return 'priority-high';
-      case 'متوسط':
+      case 'مهم':
         return 'priority-medium';
       case 'عادي':
         return 'priority-normal';

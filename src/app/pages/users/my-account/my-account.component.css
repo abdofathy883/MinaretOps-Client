@@ -14,12 +14,6 @@
     color: white;
 }
 
-img {
-    background-size: cover;
-    width: 100%;
-    border-radius: 15px;
-}
-
 .alert {
   position: fixed;
   top: 20px;
@@ -71,15 +65,8 @@ img {
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   margin-bottom: 24px;
-}
-
-.cover-image {
-  height: 200px;
-  background-color: var(--terquoise-color);
-  background-image: linear-gradient(135deg, var(--terquoise-color) 0%, #5a2db8 100%);
-  position: relative;
 }
 
 .profile-info {
@@ -95,16 +82,6 @@ img {
   position: relative;
   margin-top: -60px;
   z-index: 2;
-}
-
-.profile-picture {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 4px solid white;
-  object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  background-color: #f8f9fa;
 }
 
 .profile-details {

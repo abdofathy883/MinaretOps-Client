@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AnnouncementService } from '../../../services/announcements/announcement.service';
 import { Announcement } from '../../../model/announcement/announcement';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-all-announcements',
@@ -12,13 +13,19 @@ import { Announcement } from '../../../model/announcement/announcement';
 })
 export class AllAnnouncementsComponent implements OnInit {
   announcements: Announcement[] = [];
+  selectedAnnouncement: Announcement | null = null;
+  userId: string = '';
+  isUserAdmin: boolean = false;
 
-  constructor(
-    private announcementService: AnnouncementService,
-    private router: Router
-  ) {}
+  constructor(private announcementService: AnnouncementService, private authService: AuthService) {}
 
   ngOnInit(): void {
+    this.userId = this.authService.getCurrentUserId();
+    this.authService.isAdmin().subscribe((isAdmin) => {
+      if (isAdmin) {
+        this.isUserAdmin = true;
+      }
+    });
     this.loadAnnouncements();
   }
 
@@ -28,6 +35,19 @@ export class AllAnnouncementsComponent implements OnInit {
         this.announcements = response;
       },
     });
+  }
+
+  deleteAnnouncement(id?: number): void {
+    if (!id) return;
+    this.announcementService.delete(id).subscribe({
+      next: (response) => {
+        console.log('Announcement deleted:', response);
+        this.closeAnnouncementModal();
+        this.announcements = this.announcements.filter(
+          (announcement) => announcement.id !== id
+        );
+      }
+    })
   }
 
   formatDate(date: Date): string {
@@ -81,5 +101,19 @@ export class AllAnnouncementsComponent implements OnInit {
       return text;
     }
     return text.substring(0, maxLength) + '...';
+  }
+
+  openAnnouncementModal(announcement: Announcement) {
+    this.selectedAnnouncement = announcement;
+
+    const modalEl = document.getElementById('announcementModal');
+    if (modalEl) new (window as any).bootstrap.Modal(modalEl).show();
+  }
+
+  closeAnnouncementModal() {
+    const modalEl = document.getElementById('announcementModal');
+    if (modalEl) (window as any).bootstrap.Modal.getInstance(modalEl)?.hide();
+
+    this.selectedAnnouncement = null;
   }
 }

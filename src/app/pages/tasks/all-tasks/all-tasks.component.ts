@@ -26,6 +26,8 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
 import { ShimmerComponent } from '../../../shared/shimmer/shimmer.component';
+import { MapTaskPriorityPipe } from "../../../core/pipes/task-priority/map-task-priority.pipe";
+import { MapTaskTypePipe } from '../../../core/pipes/task-type/map-task-type.pipe';
 
 @Component({
   selector: 'app-all-tasks',
@@ -37,7 +39,9 @@ import { ShimmerComponent } from '../../../shared/shimmer/shimmer.component';
     DatePipe,
     MapTaskStatusClassPipe,
     MapTaskStatusPipe,
-  ],
+    MapTaskPriorityPipe,
+    MapTaskTypePipe
+],
   templateUrl: './all-tasks.component.html',
   styleUrl: './all-tasks.component.css',
 })
@@ -262,76 +266,8 @@ export class AllTasksComponent implements OnInit {
     this.loadTasks();
   }
 
-  getPriorityClass(priority: string): string {
-    switch (priority.toLowerCase()) {
-      case 'مستعجل':
-        return 'priority-high';
-      case 'مهم':
-        return 'priority-medium';
-      case 'عادي':
-        return 'priority-normal';
-      default:
-        return 'priority-normal';
-    }
-  }
-
   goToTask(taskId: number) {
     this.router.navigate(['tasks', taskId]);
-  }
-
-  getTypeLabel(type: TaskType): string {
-    switch (type) {
-      case TaskType.Ad_Management:
-        return 'Ad Management';
-      case TaskType.Backend:
-        return 'Backend';
-      case TaskType.ContentStrategy:
-        return 'Content Strategy';
-      case TaskType.ContentWriting:
-        return 'Content Writing';
-      case TaskType.DesignDirections:
-        return 'Design Directions';
-      case TaskType.E_mailMarketing:
-        return 'E-mail Marketing';
-      case TaskType.Frontend:
-        return 'Frontend';
-      case TaskType.HostingManagement:
-        return 'Hosting Management';
-      case TaskType.Illustrations:
-        return 'Illustrations';
-      case TaskType.LogoDesign:
-        return 'Logo Design';
-      case TaskType.Meeting:
-        return 'Meeting';
-      case TaskType.Moderation:
-        return 'Moderation';
-      case TaskType.Motion:
-        return 'Motion';
-      case TaskType.Planning:
-        return 'Planning';
-      case TaskType.PrintingsDesign:
-        return 'Printings Design';
-      case TaskType.Publishing:
-        return 'Publishing';
-      case TaskType.SEO:
-        return 'SEO';
-      case TaskType.SM_Design:
-        return 'SM Design';
-      case TaskType.UI_UX:
-        return 'UI/UX';
-      case TaskType.VideoEditing:
-        return 'Video Editing';
-      case TaskType.VisualIdentity:
-        return 'Visual Identity';
-      case TaskType.Voiceover:
-        return 'Voiceover';
-      case TaskType.WhatsAppMarketing:
-        return 'WhatsApp Marketing';
-      case TaskType.WordPress:
-        return 'WordPress';
-      default:
-        return 'غير محدد';
-    }
   }
 
   isCompletedAfterDeadline(task: ILightWieghtTask): boolean {

@@ -17,4 +17,12 @@ export class AnnouncementService {
   getAll(): Observable<Announcement[]> {
     return this.api.get<Announcement[]>(this.endpoint);
   }
+
+  getById(id: number) : Observable<Announcement> {
+    return this.api.get<Announcement>(`${this.endpoint}/${id}`);
+  }
+
+  delete(id: number): Observable<boolean> {
+    return this.api.delete<boolean>(`${this.endpoint}/${id}`);
+  }
 }

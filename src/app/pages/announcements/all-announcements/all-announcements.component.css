@@ -10,7 +10,7 @@
 .announcement-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  border-color: var(--orange-color);
+  border-color: var(--lime-color);
 }
 
 .announcement-card .card-header {
@@ -97,7 +97,7 @@ h1 {
 }
 
 h1 i {
-  color: var(--orange-color);
+  color: var(--lime-color);
 }
 
 /* Button Styles */

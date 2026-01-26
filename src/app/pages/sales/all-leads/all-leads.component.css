@@ -1,0 +1,52 @@
+.container {
+    padding: 20px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.btn-create {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.table-container {
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid transparent; /* Hide border by default */
+    background: transparent;
+}
+input[type="text"]:focus, input[type="text"]:hover {
+    border: 1px solid #ccc;
+    background: white;
+}
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+}
+select:focus, select:hover {
+     border: 1px solid #ccc;
+    background: white;
+}
+.center {
+    text-align: center;
+}

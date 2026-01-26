@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
+  FormArray,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
@@ -8,7 +9,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { AnnouncementService } from '../../../services/announcements/announcement.service';
 import { CreateAnnouncement } from '../../../model/announcement/announcement';
-import { AlertService } from '../../../services/helper-services/alert.service';
 import { hasError } from '../../../services/helper-services/utils';
 
 @Component({
@@ -26,7 +26,6 @@ export class AddAnnouncementComponent implements OnInit {
 
   constructor(
     private announcementService: AnnouncementService,
-    private alertService: AlertService,
     private fb: FormBuilder
   ) {}
 
@@ -34,7 +33,23 @@ export class AddAnnouncementComponent implements OnInit {
     this.announcementForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       message: ['', [Validators.required, Validators.minLength(10)]],
+      announcementLinks: this.fb.array([]),
     });
+  }
+
+  get announcementLinksArray(): FormArray {
+    return this.announcementForm.get('announcementLinks') as FormArray;
+  }
+
+  removeAnnouncementLink(index: number) {
+    this.announcementLinksArray.removeAt(index);
+  }
+
+  addAnnouncementLink() {
+    const link = this.fb.group({
+      link: ['', [Validators.required]]
+    });
+    this.announcementLinksArray.push(link);
   }
 
   onSubmit(): void {
@@ -48,6 +63,7 @@ export class AddAnnouncementComponent implements OnInit {
     const announcementData: CreateAnnouncement = {
       title: this.announcementForm.value.title,
       message: this.announcementForm.value.message,
+      announcementLinks: this.announcementForm.value.announcementLinks,
     };
 
     this.announcementService.create(announcementData).subscribe({
@@ -58,6 +74,7 @@ export class AddAnnouncementComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
+        console.log(error)
         if (error.error && error.error.message) {
           this.showAlert(error.message, 'error');
         } else {

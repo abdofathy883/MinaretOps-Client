@@ -1,0 +1,253 @@
+<section class="container py-4">
+  <div class="card">
+    <div class="card-header">
+      <h3>اضافة عميل محتمل</h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="businessName" class="form-label">اسم العميل</label>
+            <span class="text-danger me-2">*</span>
+            <input
+              id="businessName"
+              name="businessName"
+              class="form-control"
+              type="text"
+              formControlName="businessName"
+              [class.is-invalid]="hasError('businessName')"
+            />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="whatsAppNumber" class="form-label">رقم الواتساب</label>
+            <span class="text-danger me-2">*</span>
+            <input
+              type="text"
+              id="whatsAppNumber"
+              name="whatsAppNumber"
+              class="form-control"
+              formControlName="whatsAppNumber"
+              [class.is-invalid]="hasError('whatsAppNumber')"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="interested" class="form-label">مُهتم</label>
+            <select
+              name="interested"
+              id="interested"
+              class="form-select"
+              formControlName="interested"
+              [class.is-invalid]="hasError('interested')"
+            >
+              <option disabled selected>اختر الحالة</option>
+              <option [ngValue]="true">نعم</option>
+              <option [ngValue]="false">لا</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="interestLevel" class="form-label">درجة الاهتمام</label>
+            <select
+              name="interestLevel"
+              id="interestLevel"
+              class="form-select"
+              formControlName="interestLevel"
+              [class.is-invalid]="hasError('interestLevel')"
+            >
+              <option disabled selected>اختر درجة الاهتمام</option>
+              <option [ngValue]="0">منخفض</option>
+              <option [ngValue]="1">متوسط</option>
+              <option [ngValue]="2">مرتفع</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="currentStatus" class="form-label">حالة العميل الحالية</label>
+            <select
+              id="currentStatus"
+              class="form-select"
+              formControlName="currentStatus"
+              [class.is-invalid]="hasError('currentStatus')"
+            >
+              <option disabled selected>اختر الحالة</option>
+              <option [ngValue]="0">عميل جديد</option>
+              <option [ngValue]="1">تم الاتصال</option>
+              <option [ngValue]="2">مهتم</option>
+              <option [ngValue]="3">تم تحديد اجتماع</option>
+              <option [ngValue]="4">منتهي</option>
+              <option [ngValue]="5">متابعة في وقت اخر</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="contactStatus" class="form-label">حالة التواصل</label>
+            <select
+              name="contactStatus"
+              id="contactStatus"
+              class="form-select"
+              formControlName="contactStatus"
+              [class.is-invalid]="hasError('contactStatus')"
+            >
+              <option disabled selected>اختر الحالة</option>
+              <option [ngValue]="0">لا يوجد رد</option>
+              <option [ngValue]="1">تم الرد</option>
+              <option [ngValue]="2">الرقم غير صحيح</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="meetingAgreed" class="form-label">تحديد موعد اجتماع</label>
+          <select
+            name="meetingAgreed"
+            id="meetingAgreed"
+            class="form-select"
+            formControlName="meetingAgreed"
+            [class.is-invalid]="hasError('meetingAgreed')"
+          >
+            <option disabled selected>اختر اجابة</option>
+            <option [ngValue]="true">نعم</option>
+            <option [ngValue]="false">لا</option>
+          </select>
+        </div>
+        @if (isMeetingAgreed) {
+          <div class="mb-3">
+            <label for="meetingDate" class="form-label">تاريخ الاجتماع</label>
+            <input
+              type="datetime-local"
+              id="meetingDate"
+              class="form-control"
+              formControlName="meetingDate"
+              [class.is-invalid]="hasError('meetingDate')"
+            />
+          </div>
+        }
+
+        @if (isFollowUpLater) {
+          <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+              <label for="followUpReason" class="form-label">سبب المتابعة القادمة</label>
+              <select
+                name="followUpReason"
+                id="followUpReason"
+                class="form-select"
+                formControlName="followUpReason"
+                [class.is-invalid]="hasError('followUpReason')"
+              >
+                <option disabled selected>اختر السبب</option>
+                <option [ngValue]="0">متاخر</option>
+                <option [ngValue]="1">لا يوجد رد</option>
+                <option [ngValue]="2">عودة بعد شهور</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <label for="followUpTime" class="form-label">تاريخ المتابعة القادمة</label>
+              <input
+                type="datetime-local"
+                id="followUpTime"
+                class="form-control"
+                formControlName="followUpTime"
+                [class.is-invalid]="hasError('followUpTime')"
+              />
+            </div>
+          </div>
+        }
+
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="leadSource" class="form-label">المصدر</label>
+            <select
+              id="leadSource"
+              class="form-select"
+              formControlName="leadSource"
+              [class.is-invalid]="hasError('leadSource')"
+            >
+              <option disabled selected>اختر المصدر</option>
+              <option value="0">Facebook</option>
+              <option value="1">Instigram</option>
+              <option value="2">LinkedIn</option>
+              <option value="3">Referral</option>
+              <option value="4">GoogleMaps</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="assignedTo" class="form-label">تعيين الى</label>
+            <select
+              id="assignedTo"
+              class="form-select"
+              formControlName="assignedTo"
+              [class.is-invalid]="hasError('assignedTo')"
+            >
+              <option disabled selected>اختر الموظف</option>
+              @for (user of employees; track user.id) {
+                <option [value]="user.id">
+                  {{ user.firstName + " " + user.lastName }}
+                </option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="servicesInterestedIn" class="form-label">الخدمات المطلوبة</label>
+          <select
+            multiple
+            name="servicesInterestedIn"
+            id="servicesInterestedIn"
+            class="form-select"
+            formControlName="servicesInterestedIn"
+            [class.is-invalid]="hasError('servicesInterestedIn')"
+          >
+            <option disabled selected>اختر الخدمات المطلوبة</option>
+            @for (service of availableServices; track service.id) {
+              <option [value]="service.id">{{ service.title }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="notes" class="form-label">ملاحظات</label>
+          <textarea
+            id="notes"
+            formControlName="notes"
+            class="form-control"
+            [class.is-invalid]="hasError('notes')"
+          ></textarea>
+        </div>
+
+        <!-- Compact fields for booleans -->
+        <div class="row inline">
+          <label
+            ><input type="checkbox" formControlName="decisionMakerReached" />
+            Decision Maker Reached</label
+          >
+
+          <label
+            ><input type="checkbox" formControlName="quotationSent" /> Quotation
+            Sent</label
+          >
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100 mt-3"
+          [disabled]="isLoading"
+        >
+          @if (isLoading) {
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            جارٍ الاضافة...
+          } @else {
+            اضافة
+          }
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

@@ -45,13 +45,13 @@
       <tbody>
         @for (item of summaries; track $index) {
           <tr>
-            <td>{{ item.employeeName }}</td>
-            <td>{{ item.commitment }}%</td>
-            <td>{{ item.productivity }}%</td>
-            <td>{{ item.qualityOfWork }}%</td>
-            <td>{{ item.cooperation }}%</td>
-            <td>{{ item.customerSatisfaction }}%</td>
-            <td>{{ item.total }}%</td>
+            <td data-cell="الموظف">{{ item.employeeName }}</td>
+            <td data-cell="الالتزام">{{ item.commitment }}%</td>
+            <td data-cell="الانتاجية">{{ item.productivity }}%</td>
+            <td data-cell="تكرار العمل">{{ item.qualityOfWork }}%</td>
+            <td data-cell="الجودة والتعاون">{{ item.cooperation }}%</td>
+            <td data-cell="رضا العميل">{{ item.customerSatisfaction }}%</td>
+            <td data-cell="الاجمالي">{{ item.total }}%</td>
           </tr>
         }
       </tbody>

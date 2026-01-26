@@ -1,0 +1,88 @@
+<section class="container my-4">
+  <form class="p-3" (ngSubmit)="onFilter()">
+    <div class="row align-items-end g-3">
+      <div class="col-12 col-md-6 col-lg-4">
+        <label for="monthYear" class="form-label fw-bold"
+          >تصفية حسب الشهر</label
+        >
+        <input
+          type="month"
+          id="monthYear"
+          name="monthYear"
+          [(ngModel)]="selectedMonthYear"
+          class="form-control"
+        />
+      </div>
+      <div class="col-12 col-md-6 col-lg-4">
+        <label for="employeeId" class="form-label fw-bold"
+          >تصفية حسب الموظف</label
+        >
+        <select
+          id="employeeId"
+          name="employeeId"
+          [(ngModel)]="selectedEmployeeId"
+          class="form-select"
+        >
+          <option value="">كل الموظفين</option>
+          @for (employee of employees; track employee.id) {
+            <option [value]="employee.id">
+              {{ employee.firstName + ' ' + employee.lastName }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="col-12 col-md-6 col-lg-4 d-flex gap-2">
+        <button type="submit" class="add-btn flex-grow-1">تصفية</button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary flex-grow-1"
+          (click)="clearFilters()"
+        >
+          مسح
+        </button>
+      </div>
+    </div>
+  </form>
+</section>
+
+<section class="container">
+  <h3>المخالفات</h3>
+
+  @if (isLoading) {
+    <div class="py-4 text-center text-muted">جاري التحميل...</div>
+  }
+
+  @if (!isLoading && incidents.length === 0) {
+    <div class="py-4 text-center text-muted">لا توجد مخالفات مطابقة للتصفية.</div>
+  }
+
+  @for (item of incidents; track item.id) {
+    <div class="card mb-3">
+      <div class="card-body">
+          <div>
+            <h5 class="mb-3">الجانب: {{ item.aspect | mapKpiAspect }}</h5>
+            <div class="text-muted small">
+              @if (item.employeeName) {
+                <p>الموظف: {{ item.employeeName }}</p>
+              }
+              <!-- <br> -->
+              @if (item.timeStamp) {
+                <p class="ms-2">التاريخ: {{ item.timeStamp | date: 'yyyy-MM-dd' }}</p>
+              }
+            </div>
+          </div>
+
+          @if (item.description) {
+            <p class="mb-3 mb-0">الوصف: {{ item.description }}</p>
+          }
+          @if (item.evidenceURL) {
+            <a class="btn btn-outline-primary btn-sm" [href]="item.evidenceURL" target="_blank">
+              عرض الدليل
+            </a>
+          }
+      </div>
+    </div>
+  }
+
+</section>

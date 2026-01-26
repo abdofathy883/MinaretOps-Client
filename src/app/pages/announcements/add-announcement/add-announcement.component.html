@@ -65,6 +65,34 @@
           }
         </div>
 
+        <div formArrayName="announcementLinks">
+          @for (link of announcementLinksArray.controls; track $index; let linkIndex = $index) {
+            <div class="border rounded p-3 mb-3" [formGroupName]="linkIndex">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6>رابط الإعلان {{ linkIndex + 1 }}</h6>
+                <button
+                type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  (click)="removeAnnouncementLink(linkIndex)"
+                  >
+                    <i class="bi bi-trash"></i>
+                </button>
+              </div>
+              <label for="link{{ linkIndex }}" class="form-label">رابط الإعلان</label>
+              <input
+                type="text"
+                class="form-control"
+                id="link{{ linkIndex }}"
+                formControlName="link"
+                placeholder="أدخل رابط الإعلان"
+              />
+            </div>
+          }
+          <button type="button" class="btn btn-outline-success mb-3" (click)="addAnnouncementLink()">
+            إضافة رابط جديد +
+          </button>
+        </div>
+
         <!-- Submit Button Section -->
         <div class="d-flex justify-content-start flex-wrap gap-3">
           <button type="submit" class="add-btn" [disabled]="isLoading">

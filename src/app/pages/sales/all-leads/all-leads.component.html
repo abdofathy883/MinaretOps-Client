@@ -1,0 +1,54 @@
+<div class="container">
+  <div class="header">
+    <h2>Sales Leads</h2>
+    <button (click)="showCreateModal = true" class="btn-create">Add New Lead</button>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Business Name</th>
+          <th>WhatsApp</th>
+          <th>Status</th>
+          <th>Interest Level</th>
+          <th>Interested</th>
+          <th>Decision Maker</th>
+          <th>Notes</th>
+          <!-- Add more columns as needed -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lead of leads">
+          <td>
+            <input type="text" [(ngModel)]="lead.businessName" (blur)="updateField(lead, 'BusinessName', lead.businessName)">
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="lead.whatsAppNumber" (blur)="updateField(lead, 'WhatsAppNumber', lead.whatsAppNumber)">
+          </td>
+          <td>
+            <select [(ngModel)]="lead.contactStatus" (change)="updateField(lead, 'ContactStatus', lead.contactStatus)">
+              <option *ngFor="let s of contactStatuses" [ngValue]="s">{{ getEnumLabel(ContactStatus, s) }}</option>
+            </select>
+          </td>
+          <td>
+             <select [(ngModel)]="lead.interestLevel" (change)="updateField(lead, 'InterestLevel', lead.interestLevel)">
+              <option *ngFor="let s of interestLevels" [ngValue]="s">{{ getEnumLabel(InterestLevel, s) }}</option>
+            </select>
+          </td>
+          <td class="center">
+            <input type="checkbox" [(ngModel)]="lead.interested" (change)="updateField(lead, 'Interested', lead.interested)">
+          </td>
+           <td class="center">
+            <input type="checkbox" [(ngModel)]="lead.decisionMakerReached" (change)="updateField(lead, 'DecisionMakerReached', lead.decisionMakerReached)">
+          </td>
+          <td>
+             <input type="text" [(ngModel)]="lead.notes" (blur)="updateField(lead, 'Notes', lead.notes)" placeholder="Add notes...">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<app-add-lead *ngIf="showCreateModal" (created)="onLeadCreated()" (cancel)="showCreateModal = false"></app-add-lead>

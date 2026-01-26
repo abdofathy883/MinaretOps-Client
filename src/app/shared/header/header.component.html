@@ -178,6 +178,26 @@
           </ul>
         </li>
         }
+        <li class="nav-item">
+          <button class="text-white menu-toggler" (click)="toggleMenu('leads')">
+            <i class="bi bi-people-fill ms-3"></i>
+            <span class="nav-text" [class.hidden]="isCollapsed">العملاء المحتملون</span>
+          </button>
+          <ul
+            class="submenu leads-menu"
+            [class.open]="openMenu === 'leads'"
+            [class.hidden]="isCollapsed"
+          >
+            <li class="nav-item">
+              <a routerLink="/leads" class="nav-link">قائمة العملاء المحتملين</a>
+            </li>
+            @if (isUserAdmin || isUserAccountManager) {
+            <li class="nav-item">
+              <a routerLink="/leads/add" class="nav-link">إضافة عميل محتمل</a>
+            </li>
+            }
+          </ul>
+        </li>
         @if (isUserAdmin) {
         <li class="nav-item">
           <button class="text-white menu-toggler" (click)="toggleMenu('jds')">
@@ -263,12 +283,23 @@
             >
           </a>
         </li>
-        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
-          <a class="nav-link" routerLink="/kpis-management">
+        <li class="nav-item">
+          <button class="text-white menu-toggler" (click)="toggleMenu('kpis')">
             <i class="bi bi-pie-chart-fill ms-3"></i>
-
             <span class="nav-text" [class.hidden]="isCollapsed">KPIs</span>
-          </a>
+          </button>
+          <ul
+            class="submenu kpis-menu"
+            [class.open]="openMenu === 'kpis'"
+            [class.hidden]="isCollapsed"
+          >
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/kpis-management">إدارة KPIs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/kpis-incidents">الحوادث</a>
+            </li>
+          </ul>
         </li>
         }
 
