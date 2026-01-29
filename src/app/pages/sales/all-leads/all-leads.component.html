@@ -1,49 +1,71 @@
 <div class="container">
   <div class="header">
     <h2>Sales Leads</h2>
-    <button (click)="showCreateModal = true" class="btn-create">Add New Lead</button>
   </div>
 
-  <div class="table-container">
-    <table>
+  <div class="">
+    <table class="content-table">
       <thead>
         <tr>
-          <th>Business Name</th>
-          <th>WhatsApp</th>
-          <th>Status</th>
-          <th>Interest Level</th>
-          <th>Interested</th>
-          <th>Decision Maker</th>
-          <th>Notes</th>
+          <th></th>
+          <th>اسم العميل</th>
+          <th>واتساب</th>
+          <th>محاولات الاتصال</th>
+          <th>حالة الاتصال</th>
+          <th>مهتم</th>
+          <th>تحديد اجتماع</th>
+          <th>موعد الاجتماع</th>
+          <th>حضور الاجتماع</th>
+          <th>وقت المتابعة</th>
+          <th>سبب المتابعة</th>
+          <!-- <th>Notes</th> -->
           <!-- Add more columns as needed -->
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let lead of leads">
           <td>
-            <input type="text" [(ngModel)]="lead.businessName" (blur)="updateField(lead, 'BusinessName', lead.businessName)">
+            <button (click)="openLeadDetails(lead.id)" class="btn btn-sm btn-primary">فتح</button>
+          </td>
+          <td>{{ lead.businessName}}</td>
+          <td>
+            <a href="https://wa.me/{{ lead.whatsAppNumber }}">{{ lead.whatsAppNumber }}</a>
           </td>
           <td>
-            <input type="text" [(ngModel)]="lead.whatsAppNumber" (blur)="updateField(lead, 'WhatsAppNumber', lead.whatsAppNumber)">
+            <input type="number" min="0" class="form-control form-control-sm" [(ngModel)]="lead.contactAttempts" (change)="updateField(lead, 'ContactAttempts', lead.contactAttempts)">
           </td>
           <td>
-            <select [(ngModel)]="lead.contactStatus" (change)="updateField(lead, 'ContactStatus', lead.contactStatus)">
-              <option *ngFor="let s of contactStatuses" [ngValue]="s">{{ getEnumLabel(ContactStatus, s) }}</option>
-            </select>
-          </td>
-          <td>
-             <select [(ngModel)]="lead.interestLevel" (change)="updateField(lead, 'InterestLevel', lead.interestLevel)">
-              <option *ngFor="let s of interestLevels" [ngValue]="s">{{ getEnumLabel(InterestLevel, s) }}</option>
+            <select [(ngModel)]="lead.contactStatus" class="form-select form-select-sm" (change)="updateField(lead, 'ContactStatus', lead.contactStatus)">
+              <option [value]="1">لا يوجد رد</option>
+              <option [value]="2">تم الرد</option>
+              <option [value]="3">رقم خاطئ</option>
             </select>
           </td>
           <td class="center">
-            <input type="checkbox" [(ngModel)]="lead.interested" (change)="updateField(lead, 'Interested', lead.interested)">
-          </td>
-           <td class="center">
-            <input type="checkbox" [(ngModel)]="lead.decisionMakerReached" (change)="updateField(lead, 'DecisionMakerReached', lead.decisionMakerReached)">
+            <input type="checkbox" class="form-check-input" role="switch" [(ngModel)]="lead.interested" (change)="updateField(lead, 'Interested', lead.interested)">
           </td>
           <td>
-             <input type="text" [(ngModel)]="lead.notes" (blur)="updateField(lead, 'Notes', lead.notes)" placeholder="Add notes...">
+            <input type="checkbox" class="form-check-input" role="switch" [(ngModel)]="lead.meetingAgreed" (change)="updateField(lead, 'MeetingScheduled', lead.meetingAgreed)">
+          </td>
+          <td>
+            <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="lead.meetingDate" (change)="updateField(lead, 'MeetingDateTime', lead.meetingDate)">
+          </td>
+          <td>
+            <select [(ngModel)]="lead.meetingAttend" class="form-select form-select-sm" (change)="updateField(lead, 'MeetingAttend', lead.meetingAttend)">
+              <option [value]="0">نعم</option>
+              <option [value]="1">لا</option>
+              <option [value]="2">في الانتظار</option>
+            </select>
+          </td>
+          <td>
+            <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="lead.followUpTime" (change)="updateField(lead, 'FollowUpTime', lead.followUpTime)">
+          </td>
+          <td>
+            <select class="form-select form-select-sm" [(ngModel)]="lead.followUpReason" (change)="updateField(lead, 'FollowUpReason', lead.followUpReason)">
+              <option [value]="0">لاحقا</option>
+              <option [value]="1">لا يوجد رد</option>
+              <option [value]="2">عودة بعد شهور</option>
+            </select>
           </td>
         </tr>
       </tbody>

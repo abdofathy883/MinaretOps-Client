@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { LeadService } from '../../../services/sales/lead.service';
 import { ContactStatus, FollowUpReason, InterestLevel, ISalesLead, LeadSource, MeetingAttend } from '../../../model/sales/i-sales-lead';
 import { AddLeadComponent } from '../add-lead/add-lead.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-all-leads',
@@ -25,7 +26,7 @@ export class AllLeadsComponent implements OnInit {
   InterestLevel = InterestLevel;
   MeetingAttend = MeetingAttend;
   
-  constructor(private leadService: LeadService) {}
+  constructor(private leadService: LeadService, private router: Router) {}
 
   ngOnInit() {
     this.loadLeads();
@@ -84,5 +85,9 @@ export class AllLeadsComponent implements OnInit {
 
   getEnumLabel(enumObj: any, value: any): string {
     return enumObj[value];
+  }
+
+  openLeadDetails(leadId: number) {
+    this.router.navigate(['/leads/details', leadId]);
   }
 }

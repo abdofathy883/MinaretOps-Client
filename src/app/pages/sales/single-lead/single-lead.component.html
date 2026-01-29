@@ -1,0 +1,200 @@
+<section class="container py-4">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="mb-0">Lead</h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="businessName" class="form-label">اسم العميل</label>
+            <input
+              type="text"
+              name="businessName"
+              id="businessName"
+              class="form-control"
+              formControlName="businessName"
+            />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="whatsAppNumber" class="form-label">رقم الواتساب</label>
+            <input
+              type="text"
+              name="whatsAppNumber"
+              id="whatsAppNumber"
+              class="form-control"
+              formControlName="whatsAppNumber"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="contactAttempts" class="form-label"
+              >عدد محاولات الاتصال</label
+            >
+            <input
+              type="number"
+              step="1"
+              name="contactAttempts"
+              id="contactAttempts"
+              class="form-control"
+              formControlName="contactAttempts"
+            />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="contactStatus" class="form-label">حالة الاتصال</label>
+            <select
+              name="contactStatus"
+              id="contactStatus"
+              class="form-select"
+              formControlName="contactStatus"
+            >
+              <option disabled selected>اختر الحالة</option>
+              <option [value]="1">لا يوجد رد</option>
+              <option [value]="2">تم الرد</option>
+              <option [value]="3">الرقم خاطئ</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="leadSource" class="form-label">مصدر العميل</label>
+            <select
+              type="text"
+              name="leadSource"
+              id="leadSource"
+              class="form-select"
+              formControlName="leadSource"
+            >
+              <option disabled selected>اختر المصدر</option>
+              <option [value]="1">مصدر 1</option>
+              <option [value]="2">مصدر 2</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="interestLevel" class="form-label">درجة الاهتمام</label>
+            <select
+              name="interestLevel"
+              id="interestLevel"
+              class="form-select"
+              formControlName="interested"
+            >
+              <option disabled selected>اختر الدرجة</option>
+              <option [value]="1">منخفضة</option>
+              <option [value]="2">متوسطة</option>
+              <option [value]="3">مرتفعة</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="servicesInterestedIn" class="form-label"></label>
+          <select
+            name="servicesInterestedIn"
+            id="servicesInterestedIn"
+            class="form-select"
+            formControlName="servicesInterestedIn"
+            multiple
+          >
+            <option disabled selected></option>
+            @for (service of services; track $index) {
+              <option [value]="service.id">{{ service.title }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="meetingDate" class="form-label">تاريخ الاجتماع</label>
+            <input
+              type="datetime-local"
+              name="meetingDate"
+              id="meetingDate"
+              class="form-control"
+              formControlName="meetingDate"
+            />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="meetingAttend" class="form-label">حضور الاجتماع</label>
+            <select
+              name="meetingAttend"
+              id="meetingAttend"
+              class="form-select"
+              formControlName="meetingAttend"
+            >
+              <option disabled selected>اختر الخيار</option>
+              <option [value]="1">نعم</option>
+              <option [value]="2">لا</option>
+              <option [value]="3">في الانتظار</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="followUpTime" class="form-label">تاريخ المتابعة</label>
+            <input
+              type="datetime-local"
+              name="followUpTime"
+              id="followUpTime"
+              class="form-control"
+              formControlName="followUpTime"
+            />
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label for="followUpReason" class="form-label">سبب المتابعة</label>
+            <select
+              name="followUpReason"
+              id="followUpReason"
+              class="form-select"
+              formControlName="followUpReason"
+            >
+              <option disabled selected>اختر السبب</option>
+              <option [value]="1">لاحقا</option>
+              <option [value]="2">لا يوجد رد</option>
+              <option [value]="3">عودة بعد شهور</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="notes" class="form-label">ملاحظات</label>
+          <textarea
+            name="notes"
+            id="notes"
+            class="form-control"
+            formControlName="notes"
+          ></textarea>
+        </div>
+
+        <div class="row">
+          <label for="salesRepId" class="form-label">الموظف</label>
+          <select
+            name="salesRepId"
+            id="salesRepId"
+            class="form-select"
+            formControlName="salesRepId"
+          >
+            <option disabled selected>اختر الموظف</option>
+            @for (employee of employees; track $index) {
+              <option [value]="employee.id">
+                {{ employee.firstName + " " + employee.lastName }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <button class="btn btn-primary w-100">
+            @if (isLoading) {
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                جار الحفظ...
+            } @else {
+                حفظ التغييرات
+            }
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

@@ -6,14 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import {
-  ContactStatus,
-  FollowUpReason,
-  ICreateLead,
-  InterestLevel,
-  LeadSource,
-  MeetingAttend,
-} from '../../../model/sales/i-sales-lead';
+import { ICreateLead, MeetingAttend } from '../../../model/sales/i-sales-lead';
 import { LeadService } from '../../../services/sales/lead.service';
 import { ServicesService } from '../../../services/services/services.service';
 import { Service } from '../../../model/service/service';
@@ -55,18 +48,19 @@ export class AddLeadComponent implements OnInit {
       businessName: ['', Validators.required],
       whatsAppNumber: ['', Validators.required],
       contactStatus: [null, Validators.required],
-      leadSource: [], 
+      leadSource: [],
       decisionMakerReached: [false],
       interested: [null, Validators.required],
       interestLevel: [null, Validators.required],
       servicesInterestedIn: [[]],
-      meetingAgreed: [false], 
+      meetingAttend: [''],
+      meetingAgreed: [false],
       meetingDate: [],
       quotationSent: [false],
-      currentStatus: [null], 
+      currentStatus: [null],
       followUpTime: [],
       followUpReason: [],
-      assignedTo: [], 
+      assignedTo: [],
       notes: [''],
       createdById: [''],
     });
@@ -109,13 +103,25 @@ export class AddLeadComponent implements OnInit {
     );
 
     const newLead: ICreateLead = {
-      ...formValue,
+      businessName: formValue.businessName,
+      whatsAppNumber: formValue.whatsAppNumber,
+      contactAttempts: 0, // Default to 0
+      contactStatus: formValue.contactStatus,
+      meetingAgreed: formValue.meetingAgreed,
+      meetingDate: formValue.meetingDate,
       servicesInterestedIn: servicesDTO,
       salesRepId: formValue.assignedTo,
-      meetingAttend: MeetingAttend.Pending, // Default to Pending (2)
+      meetingAttend: MeetingAttend.Pending,
+      interestLevel: formValue.interestLevel,
+      leadSource: Number(formValue.leadSource),
+      decisionMakerReached: formValue.decisionMakerReached,
+      interested: formValue.interested,
       createdById: this.currentUserId,
+      quotationSent: false,
+      followUpReason: formValue.followUpReason,
     };
 
+    console.log('Submitting new lead:', newLead);
     // Remove UI-only fields if necessary, but spreading handles most.
     // Explicitly mapping overrides spreads.
 

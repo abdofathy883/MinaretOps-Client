@@ -64,6 +64,7 @@ import { UnifiedVaultComponent } from './pages/vaults/unified-vault/unified-vaul
 import { AllLeadsComponent } from './pages/sales/all-leads/all-leads.component';
 import { AddLeadComponent } from './pages/sales/add-lead/add-lead.component';
 import { IncidentsComponent } from './pages/kpis/incidents/incidents.component';
+import { SingleLeadComponent } from './pages/sales/single-lead/single-lead.component';
 
 export const routes: Routes = [
   {
@@ -369,6 +370,11 @@ export const routes: Routes = [
   {
     path: 'leads/add',
     component: AddLeadComponent,
+    canActivate: [noauthGuard]
+  },
+  {
+    path: 'leads/details/:id',
+    component: SingleLeadComponent,
     canActivate: [noauthGuard]
   },
   {
