@@ -4,12 +4,7 @@
   }
 
   @if (!isLoading() && branch()) {
-    <div class="mb-4">
-      <button class="btn btn-outline-secondary" (click)="goBack()">
-        <i class="bi bi-arrow-right me-2"></i>
-        العودة للفروع
-      </button>
-    </div>
+
 
     @if (alertMessage()) {
       <div class="alert" [class]="'alert-' + (alertType() === 'error' ? 'danger' : alertType() === 'success' ? 'success' : 'info')">
@@ -23,7 +18,7 @@
           <i class="bi bi-building me-2"></i>
           تفاصيل الفرع
         </h4>
-        <div class="btn-group">
+        <div class="d-flex gap-2">
           @if (!isEditing()) {
             <button class="btn btn-outline-primary btn-sm" (click)="toggleEdit()">
               <i class="bi bi-pencil me-2"></i>

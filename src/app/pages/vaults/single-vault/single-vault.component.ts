@@ -133,7 +133,7 @@ export class SingleVaultComponent implements OnInit {
     const transactionData: ICreateVaultTransaction = {
       vaultId: vaultId,
       userId: this.currentUserId,
-      transactionType: Number(formValue.transactionType),
+      transactionType: TransactionType.Incoming,
       amount: Number(formValue.amount),
       transactionDate: formValue.transactionDate,
       description: formValue.description || undefined,

@@ -4,18 +4,12 @@
   }
 
   @if (!isLoading() && vault()) {
-    <div class="mb-4">
-      <button class="btn btn-outline-secondary" (click)="goBack()">
-        <i class="bi bi-arrow-right me-2"></i>
-        العودة للخزنات
+    @if (vault()!.branchId) {
+      <button class="btn btn-outline-info me-2 mb-4" (click)="goToBranch()">
+        <i class="bi bi-building me-2"></i>
+        عرض الفرع
       </button>
-      @if (vault()!.branchId) {
-        <button class="btn btn-outline-info me-2" (click)="goToBranch()">
-          <i class="bi bi-building me-2"></i>
-          عرض الفرع
-        </button>
-      }
-    </div>
+    }
 
     @if (alertMessage()) {
       <div class="alert" [class]="'alert-' + (alertType() === 'error' ? 'danger' : alertType() === 'success' ? 'success' : 'info')">
@@ -87,10 +81,7 @@
               <div class="col-md-6 mb-3">
                 <label for="transactionType" class="form-label">نوع المعاملة</label>
                 <span class="text-danger me-2">*</span>
-                <select class="form-select" id="transactionType" formControlName="transactionType" [class.is-invalid]="hasError(transactionForm, 'transactionType')">
-                  <option [value]="TransactionType.Incoming">وارد</option>
-                  <option [value]="TransactionType.Outgoing">صادر</option>
-                </select>
+                <input type="text" class="form-control" id="transactionType" value="صادر" disabled />
                 @if (hasError(transactionForm, 'transactionType')) {
                   <div class="invalid-feedback">{{ getErrorMessage(transactionForm, 'transactionType') }}</div>
                 }
@@ -117,9 +108,9 @@
                 <label for="referenceType" class="form-label">نوع المرجع</label>
                 <span class="text-danger me-2">*</span>
                 <select class="form-select" id="referenceType" formControlName="referenceType" [class.is-invalid]="hasError(transactionForm, 'referenceType')">
-                  <option [value]="TransactionReferenceType.Manual">يدوي</option>
-                  <option [value]="TransactionReferenceType.ContractPayment">دفعة عقد</option>
-                  <option [value]="TransactionReferenceType.SalaryPayment">دفعة راتب</option>
+                  <!-- <option [value]="TransactionReferenceType.Manual">يدوي</option> -->
+                  <!-- <option [value]="TransactionReferenceType.ContractPayment">دفعة عقد</option> -->
+                  <!-- <option [value]="TransactionReferenceType.SalaryPayment">دفعة راتب</option> -->
                   <option [value]="TransactionReferenceType.Expense">مصروف</option>
                   <option [value]="TransactionReferenceType.Transfer">تحويل</option>
                 </select>
