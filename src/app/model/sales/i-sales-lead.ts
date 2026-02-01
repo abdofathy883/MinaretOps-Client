@@ -91,3 +91,29 @@ export enum FollowUpReason {
   NoReply = 1,
   ReturnedAfterMonths = 2,
 }
+
+export interface IUpdateLead {
+  id: number;
+  businessName?: string;
+  whatsAppNumber?: string;
+  contactAttempts: number;
+  contactStatus: ContactStatus;
+  leadSource: LeadSource;
+  decisionMakerReached: boolean;
+  interested: boolean;
+  interestLevel: InterestLevel;
+  servicesInterestedIn: number[];
+  meetingAgreed: boolean;
+  meetingDate?: Date;
+  meetingAttend: MeetingAttend;
+  quotationSent: boolean;
+  followUpTime?: Date;
+  followUpReason: FollowUpReason;
+  notes?: string;
+  salesRepId?: string;
+}
+
+export interface IUpdateLeadService {
+  serviceId: number;
+  leadId?: number;
+}

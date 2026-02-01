@@ -194,7 +194,6 @@ export class AddUserComponent implements OnInit {
       employeeType: Number(this.newUser.value.employeeType)
     };
 
-    console.log(userData)
     this.authService.registerUser(userData).subscribe({
       next: (response) => {
         this.isLoading = false;

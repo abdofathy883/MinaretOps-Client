@@ -1,3 +1,4 @@
+/* Existing styles */
 .container {
     padding: 20px;
 }
@@ -7,46 +8,70 @@
     align-items: center;
     margin-bottom: 20px;
 }
-.btn-create {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-.table-container {
+
+
+/* New Spreadsheet-like Table Styles */
+.table-wrapper {
+    max-height: 75vh; /* Adjust height as needed to fit screen */
+    overflow-y: auto;
     overflow-x: auto;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate; /* Required for sticky to work well with borders sometimes, or collapse */
+    border-spacing: 0;
 }
+
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa; /* Light gray background */
+    color: #333;
+    z-index: 2; /* Ensure it stays above content */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Optional shadow for depth */
+}
+
 th, td {
     padding: 10px;
     border-bottom: 1px solid #ddd;
+    border-right: 1px solid #eee; /* Vertical grid lines */
     text-align: left;
+    white-space: nowrap; /* Prevent wrapping for spreadsheet look */
 }
-input[type="text"] {
+
+/* Style form elements to look cleaner in grid */
+input[type="text"], 
+input[type="number"], 
+input[type="datetime-local"] {
     width: 100%;
-    padding: 8px;
-    border: 1px solid transparent; /* Hide border by default */
-    background: transparent;
-}
-input[type="text"]:focus, input[type="text"]:hover {
-    border: 1px solid #ccc;
-    background: white;
-}
-select {
-    width: 100%;
-    padding: 8px;
+    min-width: 80px;
+    padding: 4px 8px;
     border: 1px solid transparent;
     background: transparent;
+    font-size: 14px;
 }
-select:focus, select:hover {
-     border: 1px solid #ccc;
-    background: white;
+
+input:focus, 
+input:hover,
+select:focus, 
+select:hover {
+    border-color: #80bdff;
+    background-color: #fff;
+    outline: none;
 }
+
+select {
+    width: 100%;
+    min-width: 100px;
+    padding: 4px;
+    border: 1px solid transparent;
+    background: transparent;
+    font-size: 14px;
+}
+
 .center {
     text-align: center;
 }

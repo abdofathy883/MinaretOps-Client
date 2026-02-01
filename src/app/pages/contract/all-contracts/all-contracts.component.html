@@ -1,14 +1,8 @@
 <section class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h1 class="mb-0">العقود</h1>
-      <p class="text-muted mb-0">إدارة جميع العقود</p>
+    <div class="text-center">
+      <h1 class="mb-0">التعاقدات</h1>
+      <p class="text-muted mb-0">إدارة جميع التعاقدات</p>
     </div>
-    <button class="btn btn-primary" (click)="goToAddContract()">
-      <i class="bi bi-plus-circle me-2"></i>
-      إضافة عقد جديد
-    </button>
-  </div>
 
   @if (isLoading) {
     <app-shimmer></app-shimmer>
@@ -18,7 +12,6 @@
     <table class="content-table">
       <thead>
         <tr>
-          <th>رقم العقد</th>
           <th>اسم العميل</th>
           <th>العملة</th>
           <th>مدة العقد</th>
@@ -26,13 +19,13 @@
           <th>المدفوع</th>
           <th>المستحق</th>
           <th>مدير الحساب</th>
+          <th>تاريخ التعاقد</th>
           <th>الإجراءات</th>
         </tr>
       </thead>
       <tbody>
         @for (contract of contracts; track contract.id) {
           <tr style="cursor: pointer;" (click)="goToContract(contract.id)">
-            <td class="fw-bold">{{ contract.id }}</td>
             <td>{{ contract.clientName }}</td>
             <td>
               <span class="badge bg-info">{{ contract.currencyName }}</span>
@@ -44,6 +37,7 @@
               {{ contract.dueAmount | number:'1.2-2' }}
             </td>
             <td>{{ contract.accountManagerName }}</td>
+            <td>{{ contract.createdAt | date:'dd/MM/yyyy' }}</td>
             <td>
               <button
                 class="btn btn-outline-primary btn-sm"

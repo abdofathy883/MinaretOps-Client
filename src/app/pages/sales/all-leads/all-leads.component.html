@@ -3,7 +3,7 @@
     <h2>Sales Leads</h2>
   </div>
 
-  <div class="">
+  <div class="table-wrapper">
     <table class="content-table">
       <thead>
         <tr>
@@ -14,6 +14,7 @@
           <th>حالة الاتصال</th>
           <th>مهتم</th>
           <th>تحديد اجتماع</th>
+          
           <th>موعد الاجتماع</th>
           <th>حضور الاجتماع</th>
           <th>وقت المتابعة</th>
@@ -47,9 +48,13 @@
           <td>
             <input type="checkbox" class="form-check-input" role="switch" [(ngModel)]="lead.meetingAgreed" (change)="updateField(lead, 'MeetingScheduled', lead.meetingAgreed)">
           </td>
-          <td>
-            <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="lead.meetingDate" (change)="updateField(lead, 'MeetingDateTime', lead.meetingDate)">
-          </td>
+          @if (lead.meetingAgreed) {
+            <td>
+              <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="lead.meetingDate" (change)="updateField(lead, 'MeetingDateTime', lead.meetingDate)">
+            </td>
+          } @else {
+            <td>-</td>
+          }
           <td>
             <select [(ngModel)]="lead.meetingAttend" class="form-select form-select-sm" (change)="updateField(lead, 'MeetingAttend', lead.meetingAttend)">
               <option [value]="0">نعم</option>
@@ -57,6 +62,7 @@
               <option [value]="2">في الانتظار</option>
             </select>
           </td>
+          <!-- @if (lead.followUpReason == FollowUpReason.) {} -->
           <td>
             <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="lead.followUpTime" (change)="updateField(lead, 'FollowUpTime', lead.followUpTime)">
           </td>

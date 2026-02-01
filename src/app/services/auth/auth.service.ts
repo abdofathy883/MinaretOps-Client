@@ -68,6 +68,9 @@ export class AuthService {
     return this.hasRole('Finance')
   }
 
+  isSales(): Observable<boolean> {
+    return this.hasRole('SalesRep');
+  }
   login(user: LoginUser): Observable<User> {
     return this.api.post<User>(`${this.endpoint}/login`, user)
     .pipe(

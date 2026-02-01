@@ -22,7 +22,6 @@ export interface IVaultTransaction {
 
 export interface ICreateVaultTransaction {
   vaultId: number;
-  userId: string;
   transactionType: TransactionType;
   amount: number;
   transactionDate: string;

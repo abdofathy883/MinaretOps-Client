@@ -130,7 +130,7 @@
               formControlName="contractTotal"
               [class.is-invalid]="hasError(contractForm, 'contractTotal')"
               placeholder="أدخل إجمالي قيمة العقد"
-              step="0.01"
+              step="500"
               min="0"
             />
             @if (hasError(contractForm, 'contractTotal')) {
@@ -141,7 +141,6 @@
           </div>
           <div class="col-md-6 mb-3">
             <label for="paidAmount" class="form-label">المبلغ المدفوع</label>
-            <span class="text-danger me-2">*</span>
             <input
               type="number"
               class="form-control"
@@ -149,12 +148,29 @@
               formControlName="paidAmount"
               [class.is-invalid]="hasError(contractForm, 'paidAmount')"
               placeholder="أدخل المبلغ المدفوع"
-              step="0.01"
+              step="500"
               min="0"
             />
             @if (hasError(contractForm, 'paidAmount')) {
               <div class="invalid-feedback">
                 {{ getErrorMessage(contractForm, 'paidAmount') }}
+              </div>
+            }
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label for="createdAt" class="form-label">تاريخ التعاقد</label>
+            <input
+              type="date"
+              class="form-control"
+              id="createdAt"
+              formControlName="createdAt"
+              [class.is-invalid]="hasError(contractForm, 'createdAt')"
+            />
+            @if (hasError(contractForm, 'createdAt')) {
+              <div class="invalid-feedback">
+                {{ getErrorMessage(contractForm, 'createdAt') }}
               </div>
             }
           </div>

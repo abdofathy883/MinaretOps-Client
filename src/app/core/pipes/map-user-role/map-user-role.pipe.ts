@@ -29,6 +29,8 @@ export class MapUserRolePipe implements PipeTransform {
         return 'Web Developer';
       case 'Finance':
         return 'Finance';
+      case 'SalesRep':
+        return 'Sales Representative';
       default:
         return 'غير محدد';
     }

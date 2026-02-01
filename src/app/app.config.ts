@@ -7,19 +7,22 @@ import {
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   provideServiceWorker,
   ServiceWorkerModule,
 } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([authInterceptor])
+    ),
     ...(LoggerModule.forRoot({
       level: NgxLoggerLevel.DEBUG,          // console level
       serverLogLevel: NgxLoggerLevel.ERROR, // logs sent to backend

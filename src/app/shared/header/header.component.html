@@ -3,8 +3,8 @@
     <button class="toggle-btn" (click)="toggleSidebar()">
       <i
         class="bi"
-        [class.bi-chevron-left]="!isCollapsed"
-        [class.bi-chevron-right]="isCollapsed"
+        [class.bi-chevron-right]="!isCollapsed"
+        [class.bi-chevron-left]="isCollapsed"
       ></i>
     </button>
 
@@ -20,114 +20,900 @@
     </div>
 
     <div class="sidebar-nav">
+      @if (isUserAdmin) {
+        <ul class="navbar-nav text-white">
+          <li class="nav-item me-2">
+            <a
+              class="nav-link active"
+              aria-current="page"
+              routerLink="/dashboard"
+            >
+              <i class="bi bi-house-door ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >التقارير</span
+              >
+            </a>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('tasks')"
+            >
+              <i class="bi bi-list-task ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >التاسكات</span
+              >
+            </button>
+            <ul
+              class="submenu tasks-menu"
+              [class.open]="openMenu === 'tasks'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a routerLink="/tasks" class="nav-link">قائمة التاسكات</a>
+              </li>
+              <li class="nav-item">
+                <a routerLink="/tasks/archive" class="nav-link">الارشيف</a>
+              </li>
+              <li class="nav-item">
+                <a routerLink="/tasks/add" class="nav-link">اضافة تاسك</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('internalTasks')"
+            >
+              <i class="bi bi-list-task ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المهام الداخلية</span
+              >
+            </button>
+            <ul
+              class="submenu internal-tasks-menu"
+              [class.open]="openMenu === 'internalTasks'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks"
+                  >قائمة المهام الداخلية</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks/archive"
+                  >الارشيف</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks/add"
+                  >إضافة مهمة داخلية</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('users')"
+            >
+              <i class="bi bi-people-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المستخدمين</span
+              >
+            </button>
+            <ul
+              class="submenu users-menu"
+              [class.open]="openMenu === 'users'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/users">قائمة المستخدمين</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/users/add">إضافة مستخدم</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/employee-invitations/create"
+                  >دعوة موظف</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/employee-invitations"
+                  >دعوات قيد الانتظار</a
+                >
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('leads')"
+            >
+              <i class="bi bi-people-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >العملاء المحتملون</span
+              >
+            </button>
+            <ul
+              class="submenu leads-menu"
+              [class.open]="openMenu === 'leads'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a routerLink="/leads" class="nav-link"
+                  >قائمة العملاء المحتملين</a
+                >
+              </li>
+              <li class="nav-item">
+                <a routerLink="/leads/add" class="nav-link">إضافة عميل محتمل</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button class="text-white menu-toggler" (click)="toggleMenu('jds')">
+              <i class="bi bi-card-checklist ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المهام الوظيفية</span
+              >
+            </button>
+            <ul
+              class="submenu jds-menu"
+              [class.open]="openMenu === 'jds'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a routerLink="/job-descriptions" class="nav-link"
+                  >جميع المهام</a
+                >
+              </li>
+              <li class="nav-item">
+                <a routerLink="/job-descriptions/add" class="nav-link"
+                  >اضافة مهام</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('services')"
+            >
+              <i class="bi bi-gear-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">الخدمات</span>
+            </button>
+            <ul
+              class="submenu services-menu"
+              [class.open]="openMenu === 'services'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/services">قائمة الخدمات</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/services/add">إضافة خدمة</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('clients')"
+            >
+              <i class="bi bi-person-badge-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">العملاء</span>
+            </button>
+            <ul
+              class="submenu clients-menu"
+              [class.open]="openMenu === 'clients'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/clients">قائمة العملاء</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/clients/add">إضافة عميل</a>
+              </li>
+            </ul>
+          </li>
+          <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+            <a routerLink="/attendance" class="nav-link">
+              <i class="bi bi-people-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">الحضور</span>
+            </a>
+          </li>
+          <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+            <a routerLink="/leave-requests" class="nav-link">
+              <i class="bi bi-cup-hot ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >طلبات الاجازة</span
+              >
+            </a>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('kpis')"
+            >
+              <i class="bi bi-pie-chart-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">KPIs</span>
+            </button>
+            <ul
+              class="submenu kpis-menu"
+              [class.open]="openMenu === 'kpis'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/kpis-management">إدارة KPIs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/kpis-incidents">الحوادث</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('announcements')"
+            >
+              <i class="bi bi-megaphone-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >الاعلانات</span
+              >
+            </button>
+            <ul
+              class="submenu services-menu"
+              [class.open]="openMenu === 'announcements'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/announcements"
+                  >قائمة الاعلانات</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/announcements/add"
+                  >إضافة اعلان</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('complaints')"
+            >
+              <i class="bi bi-chat-right-text-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المقترحات والشكاوي</span
+              >
+            </button>
+            <ul
+              class="submenu complaints-menu"
+              [class.open]="openMenu === 'complaints'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/complaints">قائمة الشكاوي</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/complaints/add">إضافة شكوى</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      }
+      @else if (isUserAccountManager) {
+        <ul class="navbar-nav text-white">
+          <li class="nav-item me-2">
+            <a
+              class="nav-link active"
+              aria-current="page"
+              routerLink="/dashboard"
+            >
+              <i class="bi bi-house-door ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >التقارير</span
+              >
+            </a>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('tasks')"
+            >
+              <i class="bi bi-list-task ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >التاسكات</span
+              >
+            </button>
+            <ul
+              class="submenu tasks-menu"
+              [class.open]="openMenu === 'tasks'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a routerLink="/tasks" class="nav-link">قائمة التاسكات</a>
+              </li>
+              @if (
+                isContentLeader ||
+                isDesignerLeader ||
+                isUserAccountManager ||
+                isUserAdmin
+              ) {
+                <li class="nav-item">
+                  <a routerLink="/tasks/archive" class="nav-link">الارشيف</a>
+                </li>
+                <li class="nav-item">
+                  <a routerLink="/tasks/add" class="nav-link">اضافة تاسك</a>
+                </li>
+              }
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('internalTasks')"
+            >
+              <i class="bi bi-list-task ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المهام الداخلية</span
+              >
+            </button>
+            <ul
+              class="submenu internal-tasks-menu"
+              [class.open]="openMenu === 'internalTasks'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks"
+                  >قائمة المهام الداخلية</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks/archive"
+                  >الارشيف</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks/add"
+                  >إضافة مهمة داخلية</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('users')"
+            >
+              <i class="bi bi-people-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المستخدمين</span
+              >
+            </button>
+            <ul
+              class="submenu users-menu"
+              [class.open]="openMenu === 'users'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/users">قائمة المستخدمين</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/users/add">إضافة مستخدم</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('leads')"
+            >
+              <i class="bi bi-people-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >العملاء المحتملون</span
+              >
+            </button>
+            <ul
+              class="submenu leads-menu"
+              [class.open]="openMenu === 'leads'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a routerLink="/leads" class="nav-link"
+                  >قائمة العملاء المحتملين</a
+                >
+              </li>
+              <li class="nav-item">
+                <a routerLink="/leads/add" class="nav-link">إضافة عميل محتمل</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('services')"
+            >
+              <i class="bi bi-gear-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">الخدمات</span>
+            </button>
+            <ul
+              class="submenu services-menu"
+              [class.open]="openMenu === 'services'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/services">قائمة الخدمات</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/services/add">إضافة خدمة</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('clients')"
+            >
+              <i class="bi bi-person-badge-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">العملاء</span>
+            </button>
+            <ul
+              class="submenu clients-menu"
+              [class.open]="openMenu === 'clients'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/clients">قائمة العملاء</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/clients/add">إضافة عميل</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('announcements')"
+            >
+              <i class="bi bi-megaphone-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >الاعلانات</span
+              >
+            </button>
+            <ul
+              class="submenu services-menu"
+              [class.open]="openMenu === 'announcements'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/announcements"
+                  >قائمة الاعلانات</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/announcements/add"
+                  >إضافة اعلان</a
+                >
+              </li>
+            </ul>
+          </li>
+
+          <!-- For Regular Users: Direct link to add complaint -->
+          <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+            <a routerLink="/complaints/add" class="nav-link">
+              <i class="bi bi-chat-right-text-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >إضافة شكوى</span
+              >
+            </a>
+          </li>
+        </ul>
+      }
+      @else if (isUserSales) {
+        <ul class="navbar-nav text-white">
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('leads')"
+            >
+              <i class="bi bi-people-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >العملاء المحتملون</span
+              >
+            </button>
+            <ul
+              class="submenu leads-menu"
+              [class.open]="openMenu === 'leads'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a routerLink="/leads" class="nav-link"
+                  >قائمة العملاء المحتملين</a
+                >
+              </li>
+              <li class="nav-item">
+                <a routerLink="/leads/add" class="nav-link">إضافة عميل محتمل</a>
+              </li>
+            </ul>
+          </li>
+          <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+            <a class="nav-link" routerLink="/users">
+              <i class="bi bi-people-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المستخدمين</span
+              >
+            </a>
+          </li>
+
+          <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+            <a class="nav-link" routerLink="/services">
+              <i class="bi bi-gear-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">الخدمات</span>
+            </a>
+          </li>
+
+          <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+            <a class="nav-link" routerLink="/announcements">
+              <i class="bi bi-megaphone-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >الاعلانات</span
+              >
+            </a>
+          </li>
+
+          <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+            <a routerLink="/complaints/add" class="nav-link">
+              <i class="bi bi-chat-right-text-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >إضافة شكوى</span
+              >
+            </a>
+          </li>
+        </ul>
+      }
+      @else if (isContentLeader || isDesignerLeader) {
+        <ul class="navbar-nav text-white">
+          <li class="nav-item me-2">
+            <a
+              class="nav-link active"
+              aria-current="page"
+              routerLink="/dashboard"
+            >
+              <i class="bi bi-house-door ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >التقارير</span
+              >
+            </a>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('tasks')"
+            >
+              <i class="bi bi-list-task ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >التاسكات</span
+              >
+            </button>
+            <ul
+              class="submenu tasks-menu"
+              [class.open]="openMenu === 'tasks'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a routerLink="/tasks" class="nav-link">قائمة التاسكات</a>
+              </li>
+              <li class="nav-item">
+                <a routerLink="/tasks/archive" class="nav-link">الارشيف</a>
+              </li>
+              <li class="nav-item">
+                <a routerLink="/tasks/add" class="nav-link">اضافة تاسك</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('internalTasks')"
+            >
+              <i class="bi bi-list-task ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المهام الداخلية</span
+              >
+            </button>
+            <ul
+              class="submenu internal-tasks-menu"
+              [class.open]="openMenu === 'internalTasks'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks"
+                  >قائمة المهام الداخلية</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks/archive"
+                  >الارشيف</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks/add"
+                  >إضافة مهمة داخلية</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('users')"
+            >
+              <i class="bi bi-people-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المستخدمين</span
+              >
+            </button>
+            <ul
+              class="submenu users-menu"
+              [class.open]="openMenu === 'users'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/users">قائمة المستخدمين</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('services')"
+            >
+              <i class="bi bi-gear-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">الخدمات</span>
+            </button>
+            <ul
+              class="submenu services-menu"
+              [class.open]="openMenu === 'services'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/services">قائمة الخدمات</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('clients')"
+            >
+              <i class="bi bi-person-badge-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">العملاء</span>
+            </button>
+            <ul
+              class="submenu clients-menu"
+              [class.open]="openMenu === 'clients'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/clients">قائمة العملاء</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('announcements')"
+            >
+              <i class="bi bi-megaphone-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >الاعلانات</span
+              >
+            </button>
+            <ul
+              class="submenu services-menu"
+              [class.open]="openMenu === 'announcements'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/announcements"
+                  >قائمة الاعلانات</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/announcements/add"
+                  >إضافة اعلان</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('complaints')"
+            >
+              <i class="bi bi-chat-right-text-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المقترحات والشكاوي</span
+              >
+            </button>
+            <ul
+              class="submenu complaints-menu"
+              [class.open]="openMenu === 'complaints'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/complaints/add">إضافة شكوى</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      }
+      @else {
+        <ul class="navbar-nav text-white">
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('tasks')"
+            >
+              <i class="bi bi-list-task ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >التاسكات</span
+              >
+            </button>
+            <ul
+              class="submenu tasks-menu"
+              [class.open]="openMenu === 'tasks'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a routerLink="/tasks" class="nav-link">قائمة التاسكات</a>
+              </li>
+              <li class="nav-item">
+                <a routerLink="/tasks/archive" class="nav-link">الارشيف</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('internalTasks')"
+            >
+              <i class="bi bi-list-task ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المهام الداخلية</span
+              >
+            </button>
+            <ul
+              class="submenu internal-tasks-menu"
+              [class.open]="openMenu === 'internalTasks'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks"
+                  >قائمة المهام الداخلية</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/internal-tasks/archive"
+                  >الارشيف</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('users')"
+            >
+              <i class="bi bi-people-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المستخدمين</span
+              >
+            </button>
+            <ul
+              class="submenu users-menu"
+              [class.open]="openMenu === 'users'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/users">قائمة المستخدمين</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('services')"
+            >
+              <i class="bi bi-gear-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">الخدمات</span>
+            </button>
+            <ul
+              class="submenu services-menu"
+              [class.open]="openMenu === 'services'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/services">قائمة الخدمات</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('clients')"
+            >
+              <i class="bi bi-person-badge-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed">العملاء</span>
+            </button>
+            <ul
+              class="submenu clients-menu"
+              [class.open]="openMenu === 'clients'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/clients">قائمة العملاء</a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('announcements')"
+            >
+              <i class="bi bi-megaphone-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >الاعلانات</span
+              >
+            </button>
+            <ul
+              class="submenu services-menu"
+              [class.open]="openMenu === 'announcements'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/announcements"
+                  >قائمة الاعلانات</a
+                >
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <button
+              class="text-white menu-toggler"
+              (click)="toggleMenu('complaints')"
+            >
+              <i class="bi bi-chat-right-text-fill ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >المقترحات والشكاوي</span
+              >
+            </button>
+            <ul
+              class="submenu complaints-menu"
+              [class.open]="openMenu === 'complaints'"
+              [class.hidden]="isCollapsed"
+            >
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/complaints/add"
+                  >اضافة الشكاوي</a
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      }
+    </div>
+
+    @if (isUserFinance) {
       <ul class="navbar-nav text-white">
-        @if (isUserAdmin || isUserAccountManager || isContentLeader ||
-        isDesignerLeader) {
-        <li class="nav-item me-2">
-          <a
-            class="nav-link active"
-            aria-current="page"
-            routerLink="/dashboard"
-          >
-            <i class="bi bi-house-door ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed">التقارير</span>
-          </a>
-        </li>
-        }
-        <li class="nav-item">
-          <button class="text-white menu-toggler" (click)="toggleMenu('tasks')">
-            <i class="bi bi-list-task ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed">التاسكات</span>
-          </button>
-          <ul
-            class="submenu tasks-menu"
-            [class.open]="openMenu === 'tasks'"
-            [class.hidden]="isCollapsed"
-          >
-            <li class="nav-item">
-              <a routerLink="/tasks" class="nav-link">قائمة التاسكات</a>
-            </li>
-            @if (isContentLeader || isDesignerLeader || isUserAccountManager ||
-            isUserAdmin) {
-            <li class="nav-item">
-              <a routerLink="/tasks/archive" class="nav-link">الارشيف</a>
-            </li>
-            <li class="nav-item">
-              <a routerLink="/tasks/add" class="nav-link">اضافة تاسك</a>
-            </li>
-            }
-          </ul>
-        </li>
-        <li class="nav-item">
-          <button
-            class="text-white menu-toggler"
-            (click)="toggleMenu('internalTasks')"
-          >
-            <i class="bi bi-list-task ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed"
-              >المهام الداخلية</span
-            >
-          </button>
-          <ul
-            class="submenu internal-tasks-menu"
-            [class.open]="openMenu === 'internalTasks'"
-            [class.hidden]="isCollapsed"
-          >
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/internal-tasks"
-                >قائمة المهام الداخلية</a
-              >
-            </li>
-            @if (isUserAdmin || isUserAccountManager) {
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/internal-tasks/archive"
-                >الارشيف</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/internal-tasks/add"
-                >إضافة مهمة داخلية</a
-              >
-            </li>
-            }
-          </ul>
-        </li>
-        <li class="nav-item">
-          <button class="text-white menu-toggler" (click)="toggleMenu('users')">
-            <i class="bi bi-people-fill ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed"
-              >المستخدمين</span
-            >
-          </button>
-          <ul
-            class="submenu users-menu"
-            [class.open]="openMenu === 'users'"
-            [class.hidden]="isCollapsed"
-          >
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/users">قائمة المستخدمين</a>
-            </li>
-            @if (isUserAdmin || isUserAccountManager) {
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/users/add">إضافة مستخدم</a>
-            </li>
-
-            } @if (isUserAdmin) {
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/employee-invitations/create"
-                >دعوة موظف</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/employee-invitations"
-                >دعوات قيد الانتظار</a
-              >
-            </li>
-
-            }
-          </ul>
-        </li>
-        @if (isUserFinance && isUserAdmin) {
         <li class="nav-item">
           <button
             class="text-white menu-toggler"
@@ -161,7 +947,7 @@
             class="text-white menu-toggler"
             (click)="toggleMenu('contracts')"
           >
-          <i class="bi bi-file-earmark-text ms-3"></i>
+            <i class="bi bi-file-earmark-text ms-3"></i>
             <span class="nav-text" [class.hidden]="isCollapsed">التعاقدات</span>
           </button>
           <ul
@@ -177,197 +963,8 @@
             </li>
           </ul>
         </li>
-        }
-        <li class="nav-item">
-          <button class="text-white menu-toggler" (click)="toggleMenu('leads')">
-            <i class="bi bi-people-fill ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed">العملاء المحتملون</span>
-          </button>
-          <ul
-            class="submenu leads-menu"
-            [class.open]="openMenu === 'leads'"
-            [class.hidden]="isCollapsed"
-          >
-            <li class="nav-item">
-              <a routerLink="/leads" class="nav-link">قائمة العملاء المحتملين</a>
-            </li>
-            @if (isUserAdmin || isUserAccountManager) {
-            <li class="nav-item">
-              <a routerLink="/leads/add" class="nav-link">إضافة عميل محتمل</a>
-            </li>
-            }
-          </ul>
-        </li>
-        @if (isUserAdmin) {
-        <li class="nav-item">
-          <button class="text-white menu-toggler" (click)="toggleMenu('jds')">
-            <i class="bi bi-card-checklist ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed"
-              >المهام الوظيفية</span
-            >
-          </button>
-          <ul
-            class="submenu jds-menu"
-            [class.open]="openMenu === 'jds'"
-            [class.hidden]="isCollapsed"
-          >
-            <li class="nav-item">
-              <a routerLink="/job-descriptions" class="nav-link">جميع المهام</a>
-            </li>
-            <li class="nav-item">
-              <a routerLink="/job-descriptions/add" class="nav-link"
-                >اضافة مهام</a
-              >
-            </li>
-          </ul>
-        </li>
-        }
-        <li class="nav-item">
-          <button
-            class="text-white menu-toggler"
-            (click)="toggleMenu('services')"
-          >
-            <i class="bi bi-gear-fill ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed">الخدمات</span>
-          </button>
-          <ul
-            class="submenu services-menu"
-            [class.open]="openMenu === 'services'"
-            [class.hidden]="isCollapsed"
-          >
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/services">قائمة الخدمات</a>
-            </li>
-            @if (isUserAdmin || isUserAccountManager) {
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/services/add">إضافة خدمة</a>
-            </li>
-            }
-          </ul>
-        </li>
-        <li class="nav-item">
-          <button
-            class="text-white menu-toggler"
-            (click)="toggleMenu('clients')"
-          >
-            <i class="bi bi-person-badge-fill ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed">العملاء</span>
-          </button>
-          <ul
-            class="submenu clients-menu"
-            [class.open]="openMenu === 'clients'"
-            [class.hidden]="isCollapsed"
-          >
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/clients">قائمة العملاء</a>
-            </li>
-            @if (isUserAdmin || isUserAccountManager) {
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/clients/add">إضافة عميل</a>
-            </li>
-            }
-          </ul>
-        </li>
-        @if (isUserAdmin) {
-        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
-          <a routerLink="/attendance" class="nav-link">
-            <i class="bi bi-people-fill ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed">الحضور</span>
-          </a>
-        </li>
-        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
-          <a routerLink="/leave-requests" class="nav-link">
-            <i class="bi bi-cup-hot ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed"
-              >طلبات الاجازة</span
-            >
-          </a>
-        </li>
-        <li class="nav-item">
-          <button class="text-white menu-toggler" (click)="toggleMenu('kpis')">
-            <i class="bi bi-pie-chart-fill ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed">KPIs</span>
-          </button>
-          <ul
-            class="submenu kpis-menu"
-            [class.open]="openMenu === 'kpis'"
-            [class.hidden]="isCollapsed"
-          >
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/kpis-management">إدارة KPIs</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/kpis-incidents">الحوادث</a>
-            </li>
-          </ul>
-        </li>
-        }
-
-        <li class="nav-item">
-          <button
-            class="text-white menu-toggler"
-            (click)="toggleMenu('announcements')"
-          >
-            <i class="bi bi-megaphone-fill ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed">الاعلانات</span>
-          </button>
-          <ul
-            class="submenu services-menu"
-            [class.open]="openMenu === 'announcements'"
-            [class.hidden]="isCollapsed"
-          >
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/announcements"
-                >قائمة الاعلانات</a
-              >
-            </li>
-            @if (isUserAdmin || isUserAccountManager) {
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/announcements/add"
-                >إضافة اعلان</a
-              >
-            </li>
-            }
-          </ul>
-        </li>
-        @if (isUserAdmin) {
-        <li class="nav-item">
-          <button
-            class="text-white menu-toggler"
-            (click)="toggleMenu('complaints')"
-          >
-            <i class="bi bi-chat-right-text-fill ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed"
-              >المقترحات والشكاوي</span
-            >
-          </button>
-          <ul
-            class="submenu complaints-menu"
-            [class.open]="openMenu === 'complaints'"
-            [class.hidden]="isCollapsed"
-          >
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/complaints">قائمة الشكاوي</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/complaints/add">إضافة شكوى</a>
-            </li>
-          </ul>
-        </li>
-        } @else {
-        <!-- For Regular Users: Direct link to add complaint -->
-        <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
-          <a routerLink="/complaints/add" class="nav-link">
-            <i class="bi bi-chat-right-text-fill ms-3"></i>
-            <span class="nav-text" [class.hidden]="isCollapsed"
-              >إضافة شكوى</span
-            >
-          </a>
-        </li>
-        }
       </ul>
-    </div>
-
+    }
     <div class="sidebar-account text-white" [class.collapsed]="isCollapsed">
       <a class="nav-link" [routerLink]="['/users/my-account', userId]">
         <i class="bi bi-person-circle ms-3"></i>

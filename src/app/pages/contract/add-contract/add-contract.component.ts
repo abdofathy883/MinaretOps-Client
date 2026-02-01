@@ -17,7 +17,6 @@ import {
 } from '../../../services/helper-services/utils';
 import { IVault } from '../../../model/vault/i-vault';
 import { VaultService } from '../../../services/vault/vault.service';
-import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-add-contract',
@@ -41,8 +40,7 @@ export class AddContractComponent implements OnInit {
     private contractService: ContractService,
     private clientService: ClientService,
     private vaultService: VaultService,
-    private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {
     this.contractForm = this.fb.group({
       clientId: ['', [Validators.required]],
@@ -53,19 +51,19 @@ export class AddContractComponent implements OnInit {
       ],
       contractTotal: [
         '',
-        [Validators.required, Validators.min(0), Validators.pattern(/^\d+(\.\d{1,2})?$/)],
+        [
+          Validators.required,
+          Validators.min(0),
+          Validators.pattern(/^\d+(\.\d{1,2})?$/),
+        ],
       ],
-      paidAmount: [
-        '',
-        [Validators.required, Validators.min(0), Validators.pattern(/^\d+(\.\d{1,2})?$/)],
-      ],
+      paidAmount: [''],
       vaultId: ['', [Validators.required]],
-      createdBy: ['', [Validators.required]],
+      createdAt: [''],
     });
   }
 
   ngOnInit(): void {
-    this.currentUserId = this.authService.getCurrentUserId();
     this.loadClients();
     this.loadVaults();
   }
@@ -108,8 +106,10 @@ export class AddContractComponent implements OnInit {
       contractTotal: Number(formValue.contractTotal),
       paidAmount: Number(formValue.paidAmount),
       vaultId: formValue.vaultId,
-      createdBy: this.currentUserId,
+      createdAt: formValue.createdAt || null,
     };
+
+    console.log('Submitting contract data:', contractData);
 
     this.contractService.create(contractData).subscribe({
       next: (response) => {
@@ -123,6 +123,7 @@ export class AddContractComponent implements OnInit {
         this.isLoading = false;
         const errorMessage =
           error.error?.message || 'حدث خطأ أثناء إضافة العقد';
+          console.log('Error adding contract:', error);
         this.showAlert(errorMessage, 'error');
       },
     });

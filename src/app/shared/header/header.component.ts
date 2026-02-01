@@ -27,6 +27,7 @@ export class HeaderComponent implements OnInit, OnChanges {
   isContentLeader: boolean = false;
   isDesignerLeader: boolean = false;
   isUserFinance: boolean = false;
+  isUserSales: boolean = false;
 
   @Input() isSidebarCollapsed: boolean = false;
   @Output() sidebarToggle = new EventEmitter<boolean>();
@@ -53,6 +54,9 @@ export class HeaderComponent implements OnInit, OnChanges {
     });
     this.authService.isFinance().subscribe((isFinance) => {
       if (isFinance) this.isUserFinance = true;
+    });
+    this.authService.isSales().subscribe((isSales) => {
+      if (isSales) this.isUserSales = true;
     });
 
     // Set initial collapsed state based on screen width

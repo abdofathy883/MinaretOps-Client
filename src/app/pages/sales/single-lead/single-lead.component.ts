@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ISalesLead } from '../../../model/sales/i-sales-lead';
+import { ISalesLead, IUpdateLead } from '../../../model/sales/i-sales-lead';
 import { LeadService } from '../../../services/sales/lead.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ServicesService } from '../../../services/services/services.service';
 import { Service } from '../../../model/service/service';
@@ -20,12 +20,14 @@ export class SingleLeadComponent implements OnInit {
   employees: User[] = [];
   leadForm!: FormGroup;
   isLoading: boolean = false;
+  isDeleteing: boolean = false;
 
   constructor(
     private leadService: LeadService,
     private serviceService: ServicesService,
     private authService: AuthService,
     private route: ActivatedRoute,
+    private router: Router,
     private fb: FormBuilder,
   ) {}
 
@@ -42,20 +44,19 @@ export class SingleLeadComponent implements OnInit {
       whatsAppNumber: ['', Validators.required],
       contactStatus: [, Validators.required],
       leadSource: [],
-      decisionMakerReached: [],
-      interested: ['', Validators.required],
+      decisionMakerReached: [false],
+      interested: [false, Validators.required],
       interestLevel: ['', Validators.required],
       servicesInterestedIn: [[]],
       meetingAttend: [''],
-      meetingAgreed: [''],
+      meetingAgreed: [false],
       meetingDate: [],
-      quotationSent: [''],
+      quotationSent: [false],
       currentStatus: [],
       followUpTime: [],
       followUpReason: [],
       assignedTo: [],
       notes: [''],
-      createdById: [''],
       salesRepId: [],
       contactAttempts: []
     });
@@ -71,7 +72,7 @@ export class SingleLeadComponent implements OnInit {
       decisionMakerReached: this.lead.decisionMakerReached,
       interested: this.lead.interested,
       interestLevel: this.lead.interestLevel,
-      servicesInterestedIn: this.lead.servicesInterestedIn,
+      servicesInterestedIn: this.lead.servicesInterestedIn.map(s => s.serviceId),
       meetingAttend: this.lead.meetingAttend,
       meetingAgreed: this.lead.meetingAgreed,
       meetingDate: this.lead.meetingDate,
@@ -80,6 +81,7 @@ export class SingleLeadComponent implements OnInit {
       followUpReason: this.lead.followUpReason,
       notes: this.lead.notes,
       salesRepId: this.lead.salesRepId,
+      contactAttempts: this.lead.contactAttempts
     });
   }
 
@@ -108,5 +110,43 @@ export class SingleLeadComponent implements OnInit {
       return;
     }
     this.isLoading = true;
+
+    const formValue = this.leadForm.value;
+    const payload: IUpdateLead = {
+      ...formValue,
+      id: this.lead?.id!,
+      servicesInterestedIn: formValue.servicesInterestedIn || []
+    };
+
+    this.leadService.update(payload).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        // Optionally update local lead data
+        this.lead = response;
+        // Show success message (simple alert for now as no toast service visible)
+        alert('Lead updated successfully');
+      },
+      error: (error) => {
+        this.isLoading = false;
+        console.error('Update failed', error);
+        alert('Update failed: ' + (error.error?.message || error.message));
+      }
+    });
+  }
+
+  deleteLead() {
+    if (!this.lead) return;
+    this.isDeleteing = true;
+    this.leadService.delete(this.lead.id).subscribe({
+      next: () => {
+        this.isDeleteing = false;
+        this.router.navigate(['/sales/leads']);
+        // Handle successful deletion, e.g., navigate away or show a message
+      },
+      error: (error) => {
+        this.isDeleteing = false;
+        // Handle error, e.g., show an error message
+      }
+    });
   }
 }

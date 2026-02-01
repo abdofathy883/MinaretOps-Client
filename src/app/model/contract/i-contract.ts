@@ -24,7 +24,7 @@ export interface ICreateContract {
   currencyId: number;
   contractDuration: number;
   contractTotal: number;
-  paidAmount: number;
+  paidAmount?: number;
   vaultId: number;
-  createdBy: string;
+  createdAt?: Date;
 }

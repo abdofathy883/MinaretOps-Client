@@ -7,7 +7,6 @@ import { IVault } from '../../../model/vault/i-vault';
 import { IVaultTransaction, ICreateVaultTransaction, IVaultTransactionFilter, TransactionType, TransactionReferenceType } from '../../../model/vault-transaction/i-vault-transaction';
 import { ShimmerComponent } from '../../../shared/shimmer/shimmer.component';
 import { hasError, getErrorMessage } from '../../../services/helper-services/utils';
-import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-single-vault',
@@ -18,7 +17,6 @@ import { AuthService } from '../../../services/auth/auth.service';
 })
 export class SingleVaultComponent implements OnInit {
   private readonly vaultService = inject(VaultService);
-  private authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
@@ -29,7 +27,6 @@ export class SingleVaultComponent implements OnInit {
   showAddTransactionForm = signal<boolean>(false);
   alertMessage = signal<string>('');
   alertType = signal<'info' | 'success' | 'error'>('info');
-  currentUserId: string = '';
 
   transactionForm: FormGroup;
   filterForm: FormGroup;
@@ -75,7 +72,6 @@ export class SingleVaultComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadVault();
-    this.currentUserId = this.authService.getCurrentUserId();
   }
 
   loadVault(): void {
@@ -132,7 +128,6 @@ export class SingleVaultComponent implements OnInit {
     const formValue = this.transactionForm.value;
     const transactionData: ICreateVaultTransaction = {
       vaultId: vaultId,
-      userId: this.currentUserId,
       transactionType: TransactionType.Incoming,
       amount: Number(formValue.amount),
       transactionDate: formValue.transactionDate,

@@ -3,13 +3,6 @@
     <app-shimmer></app-shimmer>
   }
 
-  <div class="mb-4">
-    <button class="btn btn-outline-secondary" (click)="goBack()">
-      <i class="bi bi-arrow-right me-2"></i>
-      العودة للخزنات
-    </button>
-  </div>
-
   @if (!isLoading() && vault()) {
     <!-- Currency Selector -->
     <div class="card shadow-sm mb-4">
