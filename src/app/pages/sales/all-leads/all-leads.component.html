@@ -1,6 +1,37 @@
 <div class="container">
-  <div class="header">
-    <h2>Sales Leads</h2>
+  <div>
+    <h2 class="text-center">العملاء المحتملون</h2>
+  </div>
+  <div class="d-flex gap-3 mb-3">
+    <button class="btn btn-outline-secondary" (click)="onDownloadTemplate()">قالب الاستيراد</button>
+    <button class="btn btn-success" (click)="fileInput.click()">
+      <i class="bi bi-cloud-arrow-down"></i>
+      @if (isImporting) {
+        <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            <span>جار استيراد البيانات...</span>
+      }
+      @if (!isImporting) {
+        استيراد
+      }
+    </button>
+    <input #fileInput type="file" (change)="onImport($event)" style="display: none;" accept=".xlsx, .xls">
+    <button class="btn btn-info" (click)="onExport()">
+      <i class="bi bi-cloud-arrow-up"></i>
+      @if (isExporting) {
+        <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            جار التصدير...
+      } @if (!isExporting) {
+        تصدير
+      }
+    </button>
   </div>
 
   <div class="table-wrapper">

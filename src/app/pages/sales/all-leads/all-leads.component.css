@@ -2,12 +2,6 @@
 .container {
     padding: 20px;
 }
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
 
 
 /* New Spreadsheet-like Table Styles */
@@ -74,4 +68,9 @@ select {
 
 .center {
     text-align: center;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
 }

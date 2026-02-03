@@ -16,6 +16,8 @@ import { Router } from '@angular/router';
 export class AllLeadsComponent implements OnInit {
   leads: ISalesLead[] = [];
   showCreateModal = false;
+  isImporting: boolean = false;
+  isExporting: boolean = false;
 
   // Enum Helpers
   contactStatuses = Object.values(ContactStatus).filter(value => typeof value === 'number');
@@ -89,5 +91,57 @@ export class AllLeadsComponent implements OnInit {
 
   openLeadDetails(leadId: number) {
     this.router.navigate(['/leads/details', leadId]);
+  }
+
+  onImport(event: any) {
+    this.isImporting = true;
+    const file = event.target.files[0];
+    if (file) {
+      this.leadService.importLeads(file).subscribe({
+        next: () => {
+          this.isImporting = false;
+          this.loadLeads();
+          alert('Leads imported successfully');
+        },
+        error: (err) => {
+          this.isImporting = false;
+            console.error('Import failed', err);
+            alert('Import failed');
+        }
+      });
+    }
+  }
+
+  onExport() {
+    this.isExporting = true;
+    this.leadService.exportLeads().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Leads.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.isExporting = false;
+      },
+      error: (err) => {
+        this.isExporting = false;
+        console.error('Export failed', err)
+      }
+    });
+  }
+
+  onDownloadTemplate() {
+    this.leadService.getTemplate().subscribe({
+        next: (blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'LeadsTemplate.xlsx';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        },
+        error: (err) => console.error('Download template failed', err)
+    });
   }
 }
