@@ -4,11 +4,10 @@ import { UserRoles } from '../../../model/auth/user';
 import { EmpInvitationService } from '../../../services/emp-invitation/emp-invitation.service';
 import { ICreateInvitation } from '../../../model/emp-invitation/i-invitation';
 import { CommonModule } from '@angular/common';
-import { MapUserRolePipe } from '../../../core/pipes/map-user-role/map-user-role.pipe';
 
 @Component({
   selector: 'app-create-invitation',
-  imports: [CommonModule, ReactiveFormsModule, MapUserRolePipe],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './create-invitation.component.html',
   styleUrl: './create-invitation.component.css'
 })
@@ -17,7 +16,6 @@ export class CreateInvitationComponent {
   isLoading = false;
   alertMessage = '';
   alertType = 'info';
-  userRoles = Object.entries(UserRoles).filter(([key, value]) => !isNaN(Number(value)));
 
   constructor(
     private fb: FormBuilder,
@@ -29,14 +27,6 @@ export class CreateInvitationComponent {
     });
   }
 
-  UserRoles = UserRoles;
-
-  get rolesList(): Array<{ key: string; value: string }> {
-    return Object.keys(UserRoles)
-      .filter((key) => isNaN(Number(key)))
-      .map((key) => ({ key, value: key }));
-  }
-
   onSubmit(): void {
     if (this.invitationForm.invalid) {
       this.invitationForm.markAllAsTouched();
@@ -46,7 +36,7 @@ export class CreateInvitationComponent {
     this.isLoading = true;
     const data: ICreateInvitation = {
       email: this.invitationForm.value.email,
-      role: parseInt(this.invitationForm.value.role)
+      role: Number(this.invitationForm.value.role)
     };
 
     this.invitationService.createInvitation(data).subscribe({
@@ -57,6 +47,7 @@ export class CreateInvitationComponent {
       },
       error: (error) => {
         this.isLoading = false;
+        console.log(error)
         this.showAlert(error.error?.message || 'حدث خطأ أثناء إرسال الدعوة', 'error');
       }
     });
@@ -68,9 +59,5 @@ export class CreateInvitationComponent {
     setTimeout(() => {
       this.alertMessage = '';
     }, 5000);
-  }
-
-  getRoleName(roleValue: number): string {
-    return UserRoles[roleValue] || '';
   }
 }

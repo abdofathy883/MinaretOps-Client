@@ -298,40 +298,6 @@
                 }
               </div>
 
-              <!-- Optional Fields -->
-              <div class="mb-3 mt-4">
-                <h6 class="text-primary">
-                  <i class="bi bi-info-circle me-2"></i>
-                  معلومات إضافية (اختيارية)
-                </h6>
-              </div>
-
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="jobTitle" class="form-label"
-                    >المسمى الوظيفي</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="jobTitle"
-                    formControlName="jobTitle"
-                    placeholder="أدخل المسمى الوظيفي"
-                  />
-                </div>
-              </div>
-
-              <div class="mb-3">
-                <label for="bio" class="form-label">نبذة شخصية</label>
-                <textarea
-                  class="form-control"
-                  id="bio"
-                  formControlName="bio"
-                  rows="3"
-                  placeholder="أدخل نبذة عنك"
-                ></textarea>
-              </div>
-
               <!-- Account Security Section -->
               <div class="mb-3 mt-4">
                 <h6 class="text-primary">
@@ -404,19 +370,17 @@
               </div>
 
               <!-- Submit Button -->
-              <div class="d-grid gap-2 mt-4">
-                <button
-                  type="submit"
-                  class="btn add-btn"
-                  [disabled]="isLoading || invitationForm.invalid"
-                >
-                  @if (isLoading) {
-                  <span class="spinner-border spinner-border-sm me-2"></span>
-                  جاري الإرسال... } @if (!isLoading) {
-                  <i class="bi bi-check-circle me-2"></i>
-                  إكمال التسجيل }
-                </button>
-              </div>
+              <button
+                type="submit"
+                class="btn add-btn"
+                [disabled]="isLoading || invitationForm.invalid"
+              >
+                @if (isLoading) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                جاري الإرسال... } @if (!isLoading) {
+                <i class="bi bi-check-circle me-2"></i>
+                إكمال التسجيل }
+              </button>
             </form>
             }
           </div>

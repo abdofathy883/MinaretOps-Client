@@ -28,7 +28,4 @@ export interface ICompleteInvitation {
   paymentNumber: string;
   dateOfHiring: Date;
   password: string;
-  profilePicture?: string;
-  jobTitle?: string;
-  bio?: string;
 }

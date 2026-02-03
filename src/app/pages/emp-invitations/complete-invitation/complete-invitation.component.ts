@@ -35,9 +35,7 @@ export class CompleteInvitationComponent {
       paymentNumber: ['', Validators.required],
       dateOfHiring: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required],
-      jobTitle: [''],
-      bio: ['']
+      confirmPassword: ['', Validators.required]
     }, { validators: this.passwordMatchValidator });
   }
 
@@ -78,9 +76,7 @@ export class CompleteInvitationComponent {
       nid: this.invitationForm.value.nid,
       paymentNumber: this.invitationForm.value.paymentNumber,
       dateOfHiring: this.invitationForm.value.dateOfHiring,
-      password: this.invitationForm.value.password,
-      jobTitle: this.invitationForm.value.jobTitle,
-      bio: this.invitationForm.value.bio
+      password: this.invitationForm.value.password
     };
 
     this.invitationService.completeInvitation(data).subscribe({
@@ -93,6 +89,7 @@ export class CompleteInvitationComponent {
       },
       error: (error) => {
         this.isLoading = false;
+        console.log(error)
         this.showAlert(error.error?.message || 'حدث خطأ أثناء إكمال المعلومات', 'error');
       }
     });

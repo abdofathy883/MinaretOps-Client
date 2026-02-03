@@ -69,11 +69,17 @@
               required
             >
               <option value="" disabled selected>اختر الدور</option>
-              @for (role of rolesList; track role.value) {
-                <option [value]="role.value">
-                  {{ role.key | mapUserRole }}
-                </option>
-                }
+              <option value="1">Admin</option>
+              <option value="2">Account Manager</option>
+              <option value="3">Graphic Designer</option>
+              <option value="4">Graphic Designer Team Leader</option>
+              <option value="5">Content Creator</option>
+              <option value="6">Content Creator Team Leader</option>
+              <option value="7">Ads Specialist</option>
+              <option value="8">SEO Specialist</option>
+              <option value="9">Web Developer</option>
+              <option value="10">Video Editor</option>
+              <option value="12">Sales Representative</option>
             </select>
             @if (invitationForm.get('role')?.invalid &&
             invitationForm.get('role')?.touched) {
