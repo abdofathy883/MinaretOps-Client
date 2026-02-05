@@ -46,7 +46,7 @@ export interface ICreateLead {
   meetingAttend: MeetingAttend;
   quotationSent: boolean;
   followUpTime?: Date;
-  followUpReason: FollowUpReason;
+  followUpReason?: FollowUpReason;
   notes?: string;
   salesRepId?: string;
   createdById: string;
