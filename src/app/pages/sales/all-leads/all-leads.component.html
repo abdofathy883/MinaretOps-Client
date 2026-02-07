@@ -3,111 +3,206 @@
     <h2 class="text-center">العملاء المحتملون</h2>
   </div>
   <div class="d-flex gap-3 mb-3">
-    <button class="btn btn-outline-secondary" (click)="onDownloadTemplate()">قالب الاستيراد</button>
+    <button class="btn btn-outline-secondary" (click)="onDownloadTemplate()">
+      @if (isLoadingTemplates) {
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span>جار تنزيل الملف...</span>
+      }
+      @if (!isLoadingTemplates) {
+        <span> قالب الاستيراد </span>
+      }
+    </button>
     <button class="btn btn-success" (click)="fileInput.click()">
       <i class="bi bi-cloud-arrow-down"></i>
       @if (isImporting) {
         <span
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            <span>جار استيراد البيانات...</span>
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span>جار استيراد البيانات...</span>
       }
       @if (!isImporting) {
         استيراد
       }
     </button>
-    <input #fileInput type="file" (change)="onImport($event)" style="display: none;" accept=".xlsx, .xls">
+    <input
+      #fileInput
+      type="file"
+      (change)="onImport($event)"
+      style="display: none"
+      accept=".xlsx, .xls"
+    />
     <button class="btn btn-info" (click)="onExport()">
       <i class="bi bi-cloud-arrow-up"></i>
       @if (isExporting) {
         <span
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            جار التصدير...
-      } @if (!isExporting) {
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        جار التصدير...
+      }
+      @if (!isExporting) {
         تصدير
       }
     </button>
   </div>
 
-  <div class="table-wrapper">
-    <table class="content-table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>اسم العميل</th>
-          <th>واتساب</th>
-          <th>محاولات الاتصال</th>
-          <th>حالة الاتصال</th>
-          <th>مهتم</th>
-          <th>تحديد اجتماع</th>
-          
-          <th>موعد الاجتماع</th>
-          <th>حضور الاجتماع</th>
-          <th>وقت المتابعة</th>
-          <th>سبب المتابعة</th>
-          <!-- <th>Notes</th> -->
-          <!-- Add more columns as needed -->
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let lead of leads">
-          <td>
-            <button (click)="openLeadDetails(lead.id)" class="btn btn-sm btn-primary">فتح</button>
-          </td>
-          <td>{{ lead.businessName}}</td>
-          <td>
-            <a href="https://wa.me/{{ lead.whatsAppNumber }}">{{ lead.whatsAppNumber }}</a>
-          </td>
-          <td>
-            <input type="number" min="0" class="form-control form-control-sm" [(ngModel)]="lead.contactAttempts" (change)="updateField(lead, 'ContactAttempts', lead.contactAttempts)">
-          </td>
-          <td>
-            <select [(ngModel)]="lead.contactStatus" class="form-select form-select-sm" (change)="updateField(lead, 'ContactStatus', lead.contactStatus)">
-              <option [value]="1">لا يوجد رد</option>
-              <option [value]="2">تم الرد</option>
-              <option [value]="3">رقم خاطئ</option>
-            </select>
-          </td>
-          <td class="center">
-            <input type="checkbox" class="form-check-input" role="switch" [(ngModel)]="lead.interested" (change)="updateField(lead, 'Interested', lead.interested)">
-          </td>
-          <td>
-            <input type="checkbox" class="form-check-input" role="switch" [(ngModel)]="lead.meetingAgreed" (change)="updateField(lead, 'MeetingScheduled', lead.meetingAgreed)">
-          </td>
-          @if (lead.meetingAgreed) {
-            <td>
-              <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="lead.meetingDate" (change)="updateField(lead, 'MeetingDateTime', lead.meetingDate)">
-            </td>
-          } @else {
-            <td>-</td>
+  @if (isLoadingLeads) {
+    <span
+      class="spinner-border spinner-border-sm"
+      role="status"
+      aria-hidden="true"
+    ></span>
+  }
+  @if (!isLoadingLeads && leads) {
+    <div class="table-wrapper">
+      <table class="content-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>اسم العميل</th>
+            <th>واتساب</th>
+            <th>محاولات الاتصال</th>
+            <th>حالة الاتصال</th>
+            <th>مهتم</th>
+            <th>تحديد اجتماع</th>
+  
+            <th>موعد الاجتماع</th>
+            <th>حضور الاجتماع</th>
+            <th>وقت المتابعة</th>
+            <th>سبب المتابعة</th>
+            <!-- <th>Notes</th> -->
+            <!-- Add more columns as needed -->
+          </tr>
+        </thead>
+        <tbody>
+          @for (lead of leads; track $index) {
+            <tr>
+              <td>
+                <button
+                  (click)="openLeadDetails(lead.id)"
+                  class="btn btn-sm btn-primary"
+                >
+                  فتح
+                </button>
+              </td>
+              <td>{{ lead.businessName }}</td>
+              <td>
+                <a href="https://wa.me/{{ lead.whatsAppNumber }}">{{
+                  lead.whatsAppNumber
+                }}</a>
+              </td>
+              <td>
+                <input
+                  type="number"
+                  min="0"
+                  class="form-control form-control-sm"
+                  [(ngModel)]="lead.contactAttempts"
+                  (change)="
+                    updateField(lead, 'ContactAttempts', lead.contactAttempts)
+                  "
+                />
+              </td>
+              <td>
+                <select
+                  [(ngModel)]="lead.contactStatus"
+                  class="form-select form-select-sm"
+                  (change)="
+                    updateField(lead, 'ContactStatus', lead.contactStatus)
+                  "
+                >
+                  <option [value]="1">لا يوجد رد</option>
+                  <option [value]="2">تم الرد</option>
+                  <option [value]="3">رقم خاطئ</option>
+                </select>
+              </td>
+              <td class="center">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  role="switch"
+                  [(ngModel)]="lead.interested"
+                  (change)="updateField(lead, 'Interested', lead.interested)"
+                />
+              </td>
+              <td>
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  role="switch"
+                  [(ngModel)]="lead.meetingAgreed"
+                  (change)="
+                    updateField(lead, 'MeetingScheduled', lead.meetingAgreed)
+                  "
+                />
+              </td>
+              @if (lead.meetingAgreed) {
+                <td>
+                  <input
+                    type="datetime-local"
+                    class="form-control form-control-sm"
+                    [(ngModel)]="lead.meetingDate"
+                    (change)="
+                      updateField(lead, 'MeetingDateTime', lead.meetingDate)
+                    "
+                  />
+                </td>
+              } @else {
+                <td>-</td>
+              }
+              <td>
+                <select
+                  [(ngModel)]="lead.meetingAttend"
+                  class="form-select form-select-sm"
+                  (change)="
+                    updateField(lead, 'MeetingAttend', lead.meetingAttend)
+                  "
+                >
+                  <option [value]="0">نعم</option>
+                  <option [value]="1">لا</option>
+                  <option [value]="2">في الانتظار</option>
+                </select>
+              </td>
+              <!-- @if (lead.followUpReason == FollowUpReason.) {} -->
+              <td>
+                <input
+                  type="datetime-local"
+                  class="form-control form-control-sm"
+                  [(ngModel)]="lead.followUpTime"
+                  (change)="
+                    updateField(lead, 'FollowUpTime', lead.followUpTime)
+                  "
+                />
+              </td>
+              <td>
+                <select
+                  class="form-select form-select-sm"
+                  [(ngModel)]="lead.followUpReason"
+                  (change)="
+                    updateField(lead, 'FollowUpReason', lead.followUpReason)
+                  "
+                >
+                  <option [value]="0">لاحقا</option>
+                  <option [value]="1">لا يوجد رد</option>
+                  <option [value]="2">عودة بعد شهور</option>
+                </select>
+              </td>
+            </tr>
           }
-          <td>
-            <select [(ngModel)]="lead.meetingAttend" class="form-select form-select-sm" (change)="updateField(lead, 'MeetingAttend', lead.meetingAttend)">
-              <option [value]="0">نعم</option>
-              <option [value]="1">لا</option>
-              <option [value]="2">في الانتظار</option>
-            </select>
-          </td>
-          <!-- @if (lead.followUpReason == FollowUpReason.) {} -->
-          <td>
-            <input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="lead.followUpTime" (change)="updateField(lead, 'FollowUpTime', lead.followUpTime)">
-          </td>
-          <td>
-            <select class="form-select form-select-sm" [(ngModel)]="lead.followUpReason" (change)="updateField(lead, 'FollowUpReason', lead.followUpReason)">
-              <option [value]="0">لاحقا</option>
-              <option [value]="1">لا يوجد رد</option>
-              <option [value]="2">عودة بعد شهور</option>
-            </select>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        </tbody>
+      </table>
+    </div>
+  }
 </div>
 
-<app-add-lead *ngIf="showCreateModal" (created)="onLeadCreated()" (cancel)="showCreateModal = false"></app-add-lead>
+<app-add-lead
+  *ngIf="showCreateModal"
+  (created)="onLeadCreated()"
+  (cancel)="showCreateModal = false"
+></app-add-lead>

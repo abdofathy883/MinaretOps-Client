@@ -2,7 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LeadService } from '../../../services/sales/lead.service';
-import { ContactStatus, FollowUpReason, InterestLevel, ISalesLead, LeadSource, MeetingAttend } from '../../../model/sales/i-sales-lead';
+import {
+  ContactStatus,
+  FollowUpReason,
+  InterestLevel,
+  ISalesLead,
+  LeadSource,
+  MeetingAttend,
+} from '../../../model/sales/i-sales-lead';
 import { AddLeadComponent } from '../add-lead/add-lead.component';
 import { Router } from '@angular/router';
 
@@ -11,42 +18,59 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule, AddLeadComponent],
   templateUrl: './all-leads.component.html',
-  styleUrl: './all-leads.component.css'
+  styleUrl: './all-leads.component.css',
 })
 export class AllLeadsComponent implements OnInit {
   leads: ISalesLead[] = [];
   showCreateModal = false;
   isImporting: boolean = false;
   isExporting: boolean = false;
+  isLoadingTemplates: boolean = false;
+  isLoadingLeads: boolean = false;
 
   // Enum Helpers
-  contactStatuses = Object.values(ContactStatus).filter(value => typeof value === 'number');
-  interestLevels = Object.values(InterestLevel).filter(value => typeof value === 'number');
-  meetingAttends = Object.values(MeetingAttend).filter(value => typeof value === 'number');
-  
+  contactStatuses = Object.values(ContactStatus).filter(
+    (value) => typeof value === 'number',
+  );
+  interestLevels = Object.values(InterestLevel).filter(
+    (value) => typeof value === 'number',
+  );
+  meetingAttends = Object.values(MeetingAttend).filter(
+    (value) => typeof value === 'number',
+  );
+
   ContactStatus = ContactStatus;
   InterestLevel = InterestLevel;
   MeetingAttend = MeetingAttend;
-  
-  constructor(private leadService: LeadService, private router: Router) {}
+
+  constructor(
+    private leadService: LeadService,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.loadLeads();
   }
 
   loadLeads() {
+    this.isLoadingLeads = true;
     this.leadService.getAll().subscribe({
-      next: (data) => this.leads = data,
-      error: (err) => console.error('Failed to load leads', err)
+      next: (data) => {
+        ((this.leads = data), (this.isLoadingLeads = false));
+      },
+      error: (err) => {
+        this.isLoadingLeads = false;
+        console.error('Failed to load leads', err);
+      },
     });
   }
 
   updateField(lead: ISalesLead, field: string, value: any) {
-    // Optimistic Update? Or wait? 
+    // Optimistic Update? Or wait?
     // The model is already updated via ngModel.
     // Ensure value is correct type (e.g. number for Enum)
-    
-    // For Enums in select, Angular usually binds string if using value="0". 
+
+    // For Enums in select, Angular usually binds string if using value="0".
     // Need to ensure type casting if backend expects strict int.
     // The <option [ngValue]="s"> handles types better than value="{{s}}".
 
@@ -66,7 +90,7 @@ export class AllLeadsComponent implements OnInit {
         //      toast.addEventListener('mouseleave', Swal.resumeTimer)
         //   }
         // })
-        
+
         // Toast.fire({
         //   icon: 'success',
         //   title: 'Updated'
@@ -76,10 +100,10 @@ export class AllLeadsComponent implements OnInit {
         console.error('Update failed', err);
         // Swal.fire('Error', 'Update failed', 'error');
         // Revert? (Complex without state management)
-      }
+      },
     });
   }
-  
+
   onLeadCreated() {
     this.showCreateModal = false;
     this.loadLeads();
@@ -105,9 +129,9 @@ export class AllLeadsComponent implements OnInit {
         },
         error: (err) => {
           this.isImporting = false;
-            console.error('Import failed', err);
-            alert('Import failed');
-        }
+          console.error('Import failed', err);
+          alert('Import failed');
+        },
       });
     }
   }
@@ -126,22 +150,22 @@ export class AllLeadsComponent implements OnInit {
       },
       error: (err) => {
         this.isExporting = false;
-        console.error('Export failed', err)
-      }
+        console.error('Export failed', err);
+      },
     });
   }
 
   onDownloadTemplate() {
     this.leadService.getTemplate().subscribe({
-        next: (blob) => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'LeadsTemplate.xlsx';
-            a.click();
-            window.URL.revokeObjectURL(url);
-        },
-        error: (err) => console.error('Download template failed', err)
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'LeadsTemplate.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => console.error('Download template failed', err),
     });
   }
 }
