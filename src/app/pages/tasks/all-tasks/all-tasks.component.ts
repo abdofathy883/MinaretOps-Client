@@ -166,17 +166,21 @@ export class AllTasksComponent implements OnInit {
     this.searchResults = [];
     this.isSearching = false;
 
-    // Reset to today's date
-    const today = new Date().toISOString().split('T')[0];
+    // Reset to first day of current month
+    const today = new Date();
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const firstDayStr = firstDayOfMonth.toISOString().split('T')[0];
+    const todayStr = today.toISOString().split('T')[0];
+    
     this.filterForm.patchValue({
       clientId: null,
       employeeId: null,
       priority: null,
-      fromDate: today,
-      toDate: today,
+      fromDate: firstDayStr,
+      toDate: todayStr,
       status: null,
       onDeadline: null,
-      team: null, // Reset team filter
+      team: null,
     });
 
     this.currentPage = 1;
@@ -222,10 +226,10 @@ export class AllTasksComponent implements OnInit {
 
   // Add day navigation methods
   loadPreviousDay(): void {
-    const fromDate = new Date(this.filterForm.value.fromDate);
+    const fromDate = new Date();
     fromDate.setDate(fromDate.getDate() - 1);
 
-    const toDate = new Date(this.filterForm.value.toDate);
+    const toDate = new Date();
     toDate.setDate(toDate.getDate() - 1);
 
     this.filterForm.patchValue({
@@ -238,10 +242,10 @@ export class AllTasksComponent implements OnInit {
   }
 
   loadNextDay(): void {
-    const fromDate = new Date(this.filterForm.value.fromDate);
+    const fromDate = new Date();
     fromDate.setDate(fromDate.getDate() + 1);
 
-    const toDate = new Date(this.filterForm.value.toDate);
+    const toDate = new Date();
     toDate.setDate(toDate.getDate() + 1);
 
     this.filterForm.patchValue({
