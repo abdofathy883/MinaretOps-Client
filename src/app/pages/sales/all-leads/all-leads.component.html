@@ -60,6 +60,14 @@
       </div>
     </div>
   }
+
+  @if (!isLoadingLeads && leads.length === 0 ) {
+    <div class="alert alert-info">
+      لا توجد فترات رواتب
+    </div>
+  }
+
+
   @if (!isLoadingLeads && leads) {
     <div class="table-wrapper">
       <table class="content-table">
@@ -200,9 +208,3 @@
     </div>
   }
 </div>
-
-<app-add-lead
-  *ngIf="showCreateModal"
-  (created)="onLeadCreated()"
-  (cancel)="showCreateModal = false"
-></app-add-lead>
