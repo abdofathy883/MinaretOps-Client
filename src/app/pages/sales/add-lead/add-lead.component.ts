@@ -30,6 +30,9 @@ export class AddLeadComponent implements OnInit {
   @Output() cancel = new EventEmitter<void>();
   isLoading = false;
 
+    alertMessage = '';
+  alertType = 'info';
+
   constructor(
     private fb: FormBuilder,
     private leadService: LeadService,
@@ -131,10 +134,12 @@ export class AddLeadComponent implements OnInit {
         this.created.emit();
         this.leadForm.reset();
         this.leadForm.patchValue({ servicesInterestedIn: [] });
+        this.showAlert('تم إضافة العميل بنجاح!', 'success');
       },
       error: (err) => {
         this.isLoading = false;
         console.error(err);
+        this.showAlert('حدث خطأ أثناء إضافة العميل', 'error');
       },
     });
   }
@@ -142,5 +147,18 @@ export class AddLeadComponent implements OnInit {
   // Keeping helper for validation
   hasError(controlName: string) {
     return hasError(this.leadForm, controlName);
+  }
+
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
+  }
+
+  closeAlert() {
+    this.alertMessage = '';
   }
 }

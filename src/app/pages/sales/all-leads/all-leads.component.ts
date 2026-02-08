@@ -56,7 +56,9 @@ export class AllLeadsComponent implements OnInit {
     this.isLoadingLeads = true;
     this.leadService.getAll().subscribe({
       next: (data) => {
-        ((this.leads = data), (this.isLoadingLeads = false));
+        this.leads = data;
+        console.log('leads: ', data)
+        this.isLoadingLeads = false;
       },
       error: (err) => {
         this.isLoadingLeads = false;
