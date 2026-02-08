@@ -3,17 +3,13 @@ import { ApiService } from '../api-service/api.service';
 import { Observable } from 'rxjs';
 import { ICreateLead, ISalesLead, IUpdateLead } from '../../model/sales/i-sales-lead';
 
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-
 @Injectable({
   providedIn: 'root'
 })
 export class LeadService {
   private endpoint: string = 'leads';
-  private apiBaseUrl = environment.apiBaseUrl;
 
-  constructor(private api: ApiService, private http: HttpClient) { }
+  constructor(private api: ApiService) { }
 
   getAll(): Observable<ISalesLead[]> {
     return this.api.get<ISalesLead[]>(this.endpoint);
@@ -47,10 +43,10 @@ export class LeadService {
   }
 
   exportLeads(): Observable<Blob> {
-    return this.http.get(`${this.apiBaseUrl}/${this.endpoint}/export`, { responseType: 'blob' });
+    return this.api.getBlob(`${this.endpoint}/export`);
   }
 
   getTemplate(): Observable<Blob> {
-    return this.http.get(`${this.apiBaseUrl}/${this.endpoint}/template`, { responseType: 'blob' });
+    return this.api.getBlob(`${this.endpoint}/template`);
   }
 }

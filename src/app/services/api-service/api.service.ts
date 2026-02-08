@@ -29,4 +29,8 @@ export class ApiService {
   delete<T>(endpoint: string): Observable<T> {
     return this.http.delete<T>(`${this.apiBaseUrl}/${endpoint}`);
   }
+
+  getBlob(endpoint: string): Observable<Blob> {
+    return this.http.get(`${this.apiBaseUrl}/${endpoint}`, { responseType: 'blob' });
+  }
 }

@@ -4,19 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { LeadService } from '../../../services/sales/lead.service';
 import {
   ContactStatus,
-  FollowUpReason,
   InterestLevel,
   ISalesLead,
-  LeadSource,
   MeetingAttend,
 } from '../../../model/sales/i-sales-lead';
-import { AddLeadComponent } from '../add-lead/add-lead.component';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-all-leads',
   standalone: true,
-  imports: [CommonModule, FormsModule, AddLeadComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './all-leads.component.html',
   styleUrl: './all-leads.component.css',
 })
@@ -145,8 +142,10 @@ export class AllLeadsComponent implements OnInit {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'Leads.xlsx';
+        // a.download = 'Leads.xlsx';
+        a.download = `Leads-${new Date().toISOString().split('T')[0]}.xlsx`;
         a.click();
+        document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
         this.isExporting = false;
       },
@@ -158,6 +157,7 @@ export class AllLeadsComponent implements OnInit {
   }
 
   onDownloadTemplate() {
+    this.isLoadingTemplates = true;
     this.leadService.getTemplate().subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
@@ -165,9 +165,14 @@ export class AllLeadsComponent implements OnInit {
         a.href = url;
         a.download = 'LeadsTemplate.xlsx';
         a.click();
+        document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
+        this.isLoadingTemplates = false;
       },
-      error: (err) => console.error('Download template failed', err),
+      error: (err) => {
+        this.isLoadingTemplates = false;
+        console.error('Download template failed', err);
+      }
     });
   }
 }
