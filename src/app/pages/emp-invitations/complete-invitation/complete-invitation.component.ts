@@ -79,6 +79,8 @@ export class CompleteInvitationComponent {
       password: this.invitationForm.value.password
     };
 
+    console.log(data)
+
     this.invitationService.completeInvitation(data).subscribe({
       next: () => {
         this.isLoading = false;
