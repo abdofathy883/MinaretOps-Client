@@ -17,6 +17,10 @@ export class EmpInvitationService {
   getPendingInvitations(): Observable<IInvitation[]> {
     return this.api.get<IInvitation[]>(`${this.endpoint}/pending`);
   }
+  
+  getAllInvitations(): Observable<IInvitation[]> {
+    return this.api.get<IInvitation[]>(`${this.endpoint}/all-invitaions`);
+  }
 
   getInvitationByToken(token: string): Observable<IInvitation> {
     return this.api.get<IInvitation>(`${this.endpoint}/token/${token}`);

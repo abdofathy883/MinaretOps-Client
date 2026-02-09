@@ -11,33 +11,51 @@ import { DatePipe } from '@angular/common';
   styleUrl: './pending-invitations.component.css'
 })
 export class PendingInvitationsComponent {
-  invitations: IInvitation[] = [];
-  isLoading = false;
+  pendingInvitations: IInvitation[] = [];
+  allInvitations: IInvitation[] = [];
+  isLoadingPending = false;
+  isLoadingAll = false;
 
   constructor(private invitationService: EmpInvitationService) {}
 
   ngOnInit(): void {
-    this.loadInvitations();
+    this.loadpendingInvitations();
+    this.loadAllInvitations();
   }
 
-  loadInvitations(): void {
-    this.isLoading = true;
+  loadpendingInvitations(): void {
+    this.isLoadingPending = true;
     this.invitationService.getPendingInvitations().subscribe({
       next: (data) => {
-        this.invitations = data;
-        this.isLoading = false;
+        this.pendingInvitations = data;
+        this.isLoadingPending = false;
       },
-      error: () => {
-        this.isLoading = false;
+      error: (error) => {
+        this.isLoadingPending = false;
+        console.log(error);
       }
     });
+  }
+
+  loadAllInvitations(){
+    this.isLoadingAll = true;
+    this.invitationService.getAllInvitations().subscribe({
+      next: (response) => {
+        this.isLoadingAll = false;
+        this.allInvitations = response;
+      },
+      error: (error) => {
+        this.isLoadingAll = false;
+        console.log(error);
+      }
+    })
   }
 
   approveInvitation(id: number): void {
     if (confirm('هل أنت متأكد من الموافقة على هذه الدعوة وإنشاء الحساب؟')) {
       this.invitationService.approveInvitation(id).subscribe({
         next: () => {
-          this.loadInvitations();
+          this.loadpendingInvitations();
         },
         error: (error) => {
           alert(error.error?.message || 'حدث خطأ أثناء الموافقة');
@@ -50,7 +68,7 @@ export class PendingInvitationsComponent {
     if (confirm('هل أنت متأكد من إلغاء هذه الدعوة؟')) {
       this.invitationService.cancelInvitation(id).subscribe({
         next: () => {
-          this.loadInvitations();
+          this.loadpendingInvitations();
         },
         error: (error) => {
           alert(error.error?.message || 'حدث خطأ أثناء الإلغاء');
