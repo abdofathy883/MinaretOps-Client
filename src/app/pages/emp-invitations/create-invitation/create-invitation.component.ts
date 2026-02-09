@@ -48,7 +48,7 @@ export class CreateInvitationComponent {
       error: (error) => {
         this.isLoading = false;
         console.log(error)
-        this.showAlert(error.error?.message || 'حدث خطأ أثناء إرسال الدعوة', 'error');
+        this.showAlert(error.error || 'حدث خطأ أثناء إرسال الدعوة', 'error');
       }
     });
   }

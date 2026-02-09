@@ -3,6 +3,7 @@ import { IInvitation } from '../../../model/emp-invitation/i-invitation';
 import { EmpInvitationService } from '../../../services/emp-invitation/emp-invitation.service';
 import { UserRoles } from '../../../model/auth/user';
 import { DatePipe } from '@angular/common';
+import { MapUserRolePipe } from '../../../core/pipes/map-user-role/map-user-role.pipe';
 
 @Component({
   selector: 'app-pending-invitations',
@@ -56,8 +57,10 @@ export class PendingInvitationsComponent {
       this.invitationService.approveInvitation(id).subscribe({
         next: () => {
           this.loadpendingInvitations();
+          this.loadAllInvitations();
         },
         error: (error) => {
+          console.log(error);
           alert(error.error?.message || 'حدث خطأ أثناء الموافقة');
         }
       });
@@ -69,8 +72,10 @@ export class PendingInvitationsComponent {
       this.invitationService.cancelInvitation(id).subscribe({
         next: () => {
           this.loadpendingInvitations();
+          this.loadAllInvitations();
         },
         error: (error) => {
+          console.log(error);
           alert(error.error?.message || 'حدث خطأ أثناء الإلغاء');
         }
       });
