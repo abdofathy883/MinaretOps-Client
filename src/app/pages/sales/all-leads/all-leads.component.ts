@@ -19,7 +19,6 @@ import { Router } from '@angular/router';
 })
 export class AllLeadsComponent implements OnInit {
   leads: ISalesLead[] = [];
-  showCreateModal = false;
   isImporting: boolean = false;
   isExporting: boolean = false;
   isLoadingTemplates: boolean = false;
@@ -77,36 +76,16 @@ export class AllLeadsComponent implements OnInit {
       next: (updatedLead) => {
         // Optional: Replace object with server response to sync details like UpdatedAt
         Object.assign(lead, updatedLead);
-        // Toast or subtle indicator?
-        // const Toast = Swal.mixin({
-        //   toast: true,
-        //   position: 'top-end',
-        //   showConfirmButton: false,
-        //   timer: 1500,
-        //   timerProgressBar: true,
-        //   didOpen: (toast) => {
-        //      toast.addEventListener('mouseenter', Swal.stopTimer)
-        //      toast.addEventListener('mouseleave', Swal.resumeTimer)
-        //   }
-        // })
-
-        // Toast.fire({
-        //   icon: 'success',
-        //   title: 'Updated'
-        // })
       },
       error: (err) => {
         console.error('Update failed', err);
-        // Swal.fire('Error', 'Update failed', 'error');
-        // Revert? (Complex without state management)
       },
     });
   }
 
-  onLeadCreated() {
-    this.showCreateModal = false;
-    this.loadLeads();
-  }
+  // onLeadCreated() {
+  //   this.loadLeads();
+  // }
 
   getEnumLabel(enumObj: any, value: any): string {
     return enumObj[value];

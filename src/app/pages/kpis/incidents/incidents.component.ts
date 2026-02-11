@@ -34,14 +34,14 @@ export class IncidentsComponent implements OnInit{
     this.isLoading = true;
     this.kpiService.getAllIncidents().subscribe({
       next: (response) => {
-        this.allIncidents = response ?? [];
+        this.allIncidents = response;
         this.applyFilters();
         this.isLoading = false;
+        console.log(response);
       },
-      error: () => {
-        this.allIncidents = [];
-        this.incidents = [];
+      error: (error) => {
         this.isLoading = false;
+        console.log(error);
       }
     });
   }

@@ -1,268 +1,272 @@
 <section class="container py-4">
-  <div class="card">
-    <div class="card-header form-header">
-      <div class="d-flex justify-content-between align-items-center">
-        <h3 class="mb-0">بيانات العميل</h3>
-        <button class="btn btn-danger" (click)="deleteLead()" [disabled]="isDeleteing">
-          <i class="bi bi-trash"></i>
-        </button>
+  @if (isLoadingLead) {
+    <app-shimmer></app-shimmer>
+  } @if (lead) {
+    <div class="card">
+      <div class="card-header form-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h3 class="mb-0">بيانات العميل</h3>
+          <button class="btn btn-danger" (click)="deleteLead()" [disabled]="isDeleteing">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+              <label for="businessName" class="form-label">اسم العميل</label>
+              <input
+                type="text"
+                name="businessName"
+                id="businessName"
+                class="form-control"
+                formControlName="businessName"
+              />
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <label for="whatsAppNumber" class="form-label">رقم الواتساب</label>
+              <input
+                type="text"
+                name="whatsAppNumber"
+                id="whatsAppNumber"
+                class="form-control"
+                formControlName="whatsAppNumber"
+              />
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-12 col-md-4 mb-3">
+              <label for="contactAttempts" class="form-label"
+                >عدد محاولات الاتصال</label
+              >
+              <input
+                type="number"
+                step="1"
+                name="contactAttempts"
+                id="contactAttempts"
+                class="form-control"
+                formControlName="contactAttempts"
+              />
+            </div>
+            <div class="col-12 col-md-4 mb-3">
+              <label for="contactStatus" class="form-label">حالة الاتصال</label>
+              <select
+                name="contactStatus"
+                id="contactStatus"
+                class="form-select"
+                formControlName="contactStatus"
+              >
+                <option disabled selected>اختر الحالة</option>
+                <option [ngValue]="0">لا يوجد رد</option>
+                <option [ngValue]="1">تم الرد</option>
+                <option [ngValue]="2">الرقم خاطئ</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-4 mb-3">
+              <label for="leadSource" class="form-label">مصدر العميل</label>
+              <select
+                name="leadSource"
+                id="leadSource"
+                class="form-select"
+                formControlName="leadSource"
+              >
+                <option disabled selected>اختر المصدر</option>
+                <option [ngValue]="0">فيسبوك</option>
+                <option [ngValue]="1">انستجرام</option>
+                <option [ngValue]="2">لينكد إن</option>
+                <option [ngValue]="3">إحالة</option>
+                <option [ngValue]="4">خرائط جوجل</option>
+              </select>
+            </div>
+          </div>
+  
+          <div class="row mb-3">
+            <div class="col-12 col-md-3">
+              <div class="form-check form-switch">
+                <label class="form-check-label" for="decisionMakerReached"
+                  >الوصول لصانع القرار
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="decisionMakerReached"
+                  formControlName="decisionMakerReached"
+                />
+                </label
+                >
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div class="form-check form-switch">
+                <label class="form-check-label" for="interested">مهتم
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="interested"
+                  formControlName="interested"
+                />
+                </label>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div class="form-check form-switch">
+                <label class="form-check-label" for="meetingAgreed"
+                  >تم الاتفاق على اجتماع
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="meetingAgreed"
+                  formControlName="meetingAgreed"
+                />
+                </label
+                >
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div class="form-check form-switch">
+                <label class="form-check-label" for="quotationSent"
+                  >تم إرسال عرض سعر
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id="quotationSent"
+                  formControlName="quotationSent"
+                />
+                </label
+                >
+              </div>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+              <label for="interestLevel" class="form-label">درجة الاهتمام</label>
+              <select
+                name="interestLevel"
+                id="interestLevel"
+                class="form-select"
+                formControlName="interestLevel"
+              >
+                <option disabled selected>اختر الدرجة</option>
+                <option [ngValue]="0">منخفضة</option>
+                <option [ngValue]="1">متوسطة</option>
+                <option [ngValue]="2">مرتفعة</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <label for="salesRepId" class="form-label">الموظف</label>
+            <select
+              name="salesRepId"
+              id="salesRepId"
+              class="form-select"
+              formControlName="salesRepId"
+            >
+              <option disabled selected>اختر الموظف</option>
+              @for (employee of employees; track $index) {
+                <option [value]="employee.id">
+                  {{ employee.firstName + " " + employee.lastName }}
+                </option>
+              }
+            </select>
+               
+            </div>
+          </div>
+  
+          <div class="mb-3">
+            <label for="servicesInterestedIn" class="form-label">الخدمات المهتم بها</label>
+                <select
+                  name="servicesInterestedIn"
+                  id="servicesInterestedIn"
+                  class="form-select"
+                  formControlName="servicesInterestedIn"
+                  multiple
+                >
+                  <option disabled selected>اختر الخدمات</option>
+                  @for (service of services; track $index) {
+                    <option [ngValue]="service.id">{{ service.title }}</option>
+                  }
+                </select>
+          </div>
+  
+          <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+              <label for="meetingDate" class="form-label">تاريخ الاجتماع</label>
+              <input
+                type="datetime-local"
+                name="meetingDate"
+                id="meetingDate"
+                class="form-control"
+                formControlName="meetingDate"
+              />
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <label for="meetingAttend" class="form-label">حضور الاجتماع</label>
+              <select
+                name="meetingAttend"
+                id="meetingAttend"
+                class="form-select"
+                formControlName="meetingAttend"
+              >
+                <option disabled selected>اختر الخيار</option>
+                <option [ngValue]="0">نعم</option>
+                <option [ngValue]="1">لا</option>
+                <option [ngValue]="2">في الانتظار</option>
+              </select>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+              <label for="followUpTime" class="form-label">تاريخ المتابعة</label>
+              <input
+                type="datetime-local"
+                name="followUpTime"
+                id="followUpTime"
+                class="form-control"
+                formControlName="followUpTime"
+              />
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <label for="followUpReason" class="form-label">سبب المتابعة</label>
+              <select
+                name="followUpReason"
+                id="followUpReason"
+                class="form-select"
+                formControlName="followUpReason"
+              >
+                <option disabled selected>اختر السبب</option>
+                <option [ngValue]="0">لاحقا</option>
+                <option [ngValue]="1">لا يوجد رد</option>
+                <option [ngValue]="2">عودة بعد شهور</option>
+              </select>
+            </div>
+          </div>
+  
+          <div class="mb-3">
+            <label for="notes" class="form-label">ملاحظات</label>
+            <textarea
+              name="notes"
+              id="notes"
+              class="form-control"
+              formControlName="notes"
+            ></textarea>
+          </div>
+  
+          <button class="btn btn-primary w-100">
+              @if (isLoading) {
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  جار الحفظ...
+              } @else {
+                  حفظ التغييرات
+              }
+          </button>
+        </form>
       </div>
     </div>
-    <div class="card-body">
-      <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
-        <div class="row">
-          <div class="col-12 col-md-6 mb-3">
-            <label for="businessName" class="form-label">اسم العميل</label>
-            <input
-              type="text"
-              name="businessName"
-              id="businessName"
-              class="form-control"
-              formControlName="businessName"
-            />
-          </div>
-          <div class="col-12 col-md-6 mb-3">
-            <label for="whatsAppNumber" class="form-label">رقم الواتساب</label>
-            <input
-              type="text"
-              name="whatsAppNumber"
-              id="whatsAppNumber"
-              class="form-control"
-              formControlName="whatsAppNumber"
-            />
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-12 col-md-4 mb-3">
-            <label for="contactAttempts" class="form-label"
-              >عدد محاولات الاتصال</label
-            >
-            <input
-              type="number"
-              step="1"
-              name="contactAttempts"
-              id="contactAttempts"
-              class="form-control"
-              formControlName="contactAttempts"
-            />
-          </div>
-          <div class="col-12 col-md-4 mb-3">
-            <label for="contactStatus" class="form-label">حالة الاتصال</label>
-            <select
-              name="contactStatus"
-              id="contactStatus"
-              class="form-select"
-              formControlName="contactStatus"
-            >
-              <option disabled selected>اختر الحالة</option>
-              <option [ngValue]="0">لا يوجد رد</option>
-              <option [ngValue]="1">تم الرد</option>
-              <option [ngValue]="2">الرقم خاطئ</option>
-            </select>
-          </div>
-          <div class="col-12 col-md-4 mb-3">
-            <label for="leadSource" class="form-label">مصدر العميل</label>
-            <select
-              name="leadSource"
-              id="leadSource"
-              class="form-select"
-              formControlName="leadSource"
-            >
-              <option disabled selected>اختر المصدر</option>
-              <option [ngValue]="0">فيسبوك</option>
-              <option [ngValue]="1">انستجرام</option>
-              <option [ngValue]="2">لينكد إن</option>
-              <option [ngValue]="3">إحالة</option>
-              <option [ngValue]="4">خرائط جوجل</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-12 col-md-3">
-            <div class="form-check form-switch">
-              <label class="form-check-label" for="decisionMakerReached"
-                >الوصول لصانع القرار
-              <input
-                class="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="decisionMakerReached"
-                formControlName="decisionMakerReached"
-              />
-              </label
-              >
-            </div>
-          </div>
-          <div class="col-12 col-md-3">
-            <div class="form-check form-switch">
-              <label class="form-check-label" for="interested">مهتم
-              <input
-                class="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="interested"
-                formControlName="interested"
-              />
-              </label>
-            </div>
-          </div>
-          <div class="col-12 col-md-3">
-            <div class="form-check form-switch">
-              <label class="form-check-label" for="meetingAgreed"
-                >تم الاتفاق على اجتماع
-              <input
-                class="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="meetingAgreed"
-                formControlName="meetingAgreed"
-              />
-              </label
-              >
-            </div>
-          </div>
-          <div class="col-12 col-md-3">
-            <div class="form-check form-switch">
-              <label class="form-check-label" for="quotationSent"
-                >تم إرسال عرض سعر
-              <input
-                class="form-check-input"
-                type="checkbox"
-                role="switch"
-                id="quotationSent"
-                formControlName="quotationSent"
-              />
-              </label
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-12 col-md-6 mb-3">
-            <label for="interestLevel" class="form-label">درجة الاهتمام</label>
-            <select
-              name="interestLevel"
-              id="interestLevel"
-              class="form-select"
-              formControlName="interestLevel"
-            >
-              <option disabled selected>اختر الدرجة</option>
-              <option [ngValue]="0">منخفضة</option>
-              <option [ngValue]="1">متوسطة</option>
-              <option [ngValue]="2">مرتفعة</option>
-            </select>
-          </div>
-          <div class="col-12 col-md-6 mb-3">
-            <label for="salesRepId" class="form-label">الموظف</label>
-          <select
-            name="salesRepId"
-            id="salesRepId"
-            class="form-select"
-            formControlName="salesRepId"
-          >
-            <option disabled selected>اختر الموظف</option>
-            @for (employee of employees; track $index) {
-              <option [value]="employee.id">
-                {{ employee.firstName + " " + employee.lastName }}
-              </option>
-            }
-          </select>
-             
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="servicesInterestedIn" class="form-label">الخدمات المهتم بها</label>
-              <select
-                name="servicesInterestedIn"
-                id="servicesInterestedIn"
-                class="form-select"
-                formControlName="servicesInterestedIn"
-                multiple
-              >
-                <option disabled selected>اختر الخدمات</option>
-                @for (service of services; track $index) {
-                  <option [ngValue]="service.id">{{ service.title }}</option>
-                }
-              </select>
-        </div>
-
-        <div class="row">
-          <div class="col-12 col-md-6 mb-3">
-            <label for="meetingDate" class="form-label">تاريخ الاجتماع</label>
-            <input
-              type="datetime-local"
-              name="meetingDate"
-              id="meetingDate"
-              class="form-control"
-              formControlName="meetingDate"
-            />
-          </div>
-          <div class="col-12 col-md-6 mb-3">
-            <label for="meetingAttend" class="form-label">حضور الاجتماع</label>
-            <select
-              name="meetingAttend"
-              id="meetingAttend"
-              class="form-select"
-              formControlName="meetingAttend"
-            >
-              <option disabled selected>اختر الخيار</option>
-              <option [ngValue]="0">نعم</option>
-              <option [ngValue]="1">لا</option>
-              <option [ngValue]="2">في الانتظار</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-12 col-md-6 mb-3">
-            <label for="followUpTime" class="form-label">تاريخ المتابعة</label>
-            <input
-              type="datetime-local"
-              name="followUpTime"
-              id="followUpTime"
-              class="form-control"
-              formControlName="followUpTime"
-            />
-          </div>
-          <div class="col-12 col-md-6 mb-3">
-            <label for="followUpReason" class="form-label">سبب المتابعة</label>
-            <select
-              name="followUpReason"
-              id="followUpReason"
-              class="form-select"
-              formControlName="followUpReason"
-            >
-              <option disabled selected>اختر السبب</option>
-              <option [ngValue]="0">لاحقا</option>
-              <option [ngValue]="1">لا يوجد رد</option>
-              <option [ngValue]="2">عودة بعد شهور</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="notes" class="form-label">ملاحظات</label>
-          <textarea
-            name="notes"
-            id="notes"
-            class="form-control"
-            formControlName="notes"
-          ></textarea>
-        </div>
-
-        <button class="btn btn-primary w-100">
-            @if (isLoading) {
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                جار الحفظ...
-            } @else {
-                حفظ التغييرات
-            }
-        </button>
-      </form>
-    </div>
-  </div>
+  }
 </section>

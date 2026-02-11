@@ -7,10 +7,11 @@ import { ServicesService } from '../../../services/services/services.service';
 import { Service } from '../../../model/service/service';
 import { User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
+import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
 
 @Component({
   selector: 'app-single-lead',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ShimmerComponent],
   templateUrl: './single-lead.component.html',
   styleUrl: './single-lead.component.css',
 })
@@ -20,6 +21,7 @@ export class SingleLeadComponent implements OnInit {
   employees: User[] = [];
   leadForm!: FormGroup;
   isLoading: boolean = false;
+  isLoadingLead: boolean = false;
   isDeleteing: boolean = false;
 
   constructor(
@@ -86,12 +88,14 @@ export class SingleLeadComponent implements OnInit {
   }
 
   loadLead() {
+    this.isLoadingLead = true;
     const leadId = Number(this.route.snapshot.paramMap.get('id'));
     this.leadService.getById(leadId).subscribe({
       next: (response) => {
         this.lead = response;
         console.log(this.lead);
         this.populateForm();
+        this.isLoadingLead = false;
       },
     });
   }
@@ -145,6 +149,7 @@ export class SingleLeadComponent implements OnInit {
       },
       error: (error) => {
         this.isDeleteing = false;
+        console.log(error);
         // Handle error, e.g., show an error message
       }
     });
