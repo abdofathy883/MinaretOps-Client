@@ -10,7 +10,6 @@ import {
   ToggleEarlyLeave,
 } from '../../model/attendance-record/attendance-record';
 import { Observable } from 'rxjs';
-import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -22,19 +21,17 @@ export class AttendanceService {
   checkIn(attendanceRecoed: NewAttendanceRecord): Observable<AttendanceRecord> {
     return this.api.post<AttendanceRecord>(
       `${this.endpoint}/clock-in`,
-      attendanceRecoed
+      attendanceRecoed,
     );
   }
 
-  clockOut(empId: string): Observable<any> {
-    return this.api.post<any>(`${this.endpoint}/clock-out/${empId}`, null);
+  clockOut(): Observable<any> {
+    return this.api.post<any>(`${this.endpoint}/clock-out`, null);
   }
 
-  getAttendanceByEmployeeId(
-    employeeId: string
-  ): Observable<AttendanceRecord[]> {
+  getAttendanceByEmployeeId(): Observable<AttendanceRecord[]> {
     return this.api.get<AttendanceRecord[]>(
-      `${this.endpoint}/employee-attendance/${employeeId}`
+      `${this.endpoint}/employee-attendance`,
     );
   }
 
@@ -42,9 +39,11 @@ export class AttendanceService {
   //   return this.api.get<AttendanceRecord[]>(`${this.endpoint}/all-attendance?date=${date}`);
   // }
 
-  getPaginatedAttendance(filter: AttendanceFilter): Observable<PaginatedAttendanceResult> {
+  getPaginatedAttendance(
+    filter: AttendanceFilter,
+  ): Observable<PaginatedAttendanceResult> {
     let url = `${this.endpoint}/paginated?pageNumber=${filter.pageNumber}&pageSize=${filter.pageSize}`;
-  
+
     if (filter.fromDate) {
       url += `&fromDate=${filter.fromDate}`;
     }
@@ -54,50 +53,37 @@ export class AttendanceService {
     if (filter.employeeId) {
       url += `&employeeId=${filter.employeeId}`;
     }
-  
+
     return this.api.get<PaginatedAttendanceResult>(url);
   }
 
-  getTodayAttendanceByEmployeeId(
-    employeeId: string
-  ): Observable<AttendanceRecord> {
-    return this.api.get<AttendanceRecord>(
-      `${this.endpoint}/today-attendance/${employeeId}`
-    );
+  getTodayAttendanceByEmployeeId(): Observable<AttendanceRecord> {
+    return this.api.get<AttendanceRecord>(`${this.endpoint}/today-attendance`);
   }
 
   changeAttendanceStatus(
-    adminId: string,
     recordId: number,
-    newStatus: AttendanceStatus
+    newStatus: AttendanceStatus,
   ): Observable<AttendanceRecord> {
     return this.api.put<AttendanceRecord>(
-      `${this.endpoint}/admin-change-attendance/${adminId}/${recordId}`,
-      newStatus
+      `${this.endpoint}/admin-change-attendance/${recordId}`,
+      newStatus,
     );
   }
 
-  startBreak(employeeId: string): Observable<BreakPeriod> {
-    return this.api.post<BreakPeriod>(`${this.endpoint}/start-break`, {
-      employeeId: employeeId,
-    });
+  startBreak(): Observable<BreakPeriod> {
+    return this.api.post<BreakPeriod>(`${this.endpoint}/start-break`, null);
   }
 
-  endBreak(employeeId: string): Observable<BreakPeriod> {
-    return this.api.post<BreakPeriod>(`${this.endpoint}/end-break`, {
-      employeeId: employeeId,
-    });
+  endBreak(): Observable<BreakPeriod> {
+    return this.api.post<BreakPeriod>(`${this.endpoint}/end-break`, null);
   }
 
-  getActiveBreak(employeeId: string): Observable<BreakPeriod | null> {
-    return this.api.get<BreakPeriod | null>(
-      `${this.endpoint}/active-break/${employeeId}`
-    );
+  getActiveBreak(): Observable<BreakPeriod | null> {
+    return this.api.get<BreakPeriod | null>(`${this.endpoint}/active-break`);
   }
 
   toggleEarlyLeave(earlyLeave: ToggleEarlyLeave): Observable<any> {
     return this.api.put<any>(`${this.endpoint}/submit-early-leave`, earlyLeave);
   }
-
 }
-

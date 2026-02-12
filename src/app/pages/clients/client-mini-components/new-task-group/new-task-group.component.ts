@@ -12,17 +12,17 @@ import { TaskService } from '../../../../services/tasks/task.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { ICreateTaskGroup } from '../../../../model/task/task';
 import { hasError } from '../../../../services/helper-services/utils';
+import { NgxEditorComponent, NgxEditorMenuComponent, Editor, Toolbar } from 'ngx-editor';
 
 @Component({
   selector: 'app-new-task-group',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgxEditorComponent, NgxEditorMenuComponent],
   templateUrl: './new-task-group.component.html',
   styleUrl: './new-task-group.component.css',
 })
 export class NewTaskGroupComponent implements OnInit {
   @Input() clientId: number = 0;
-  @Input() currentUserId: string = '';
   @Output() taskGroupCreated = new EventEmitter<any>();
 
   constructor(
@@ -32,6 +32,7 @@ export class NewTaskGroupComponent implements OnInit {
     private authService: AuthService
   ) {}
 
+  editor!: Editor;
   taskGroupForm!: FormGroup;
   availableServices: any[] = [];
   employees: any[] = [];
@@ -44,8 +45,25 @@ export class NewTaskGroupComponent implements OnInit {
 
   // Task collapse state tracking
   private taskCollapseState: { [key: string]: boolean } = {};
+  toolbar: Toolbar = [
+      // default value
+      ['bold', 'italic'],
+      ['underline', 'strike'],
+      ['code', 'blockquote'],
+      ['ordered_list', 'bullet_list'],
+      [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+      ['link', 'image'],
+      // or, set options for link:
+      //[{ link: { showOpenInNewTab: false } }, 'image'],
+      ['text_color', 'background_color'],
+      ['align_left', 'align_center', 'align_right', 'align_justify'],
+      ['horizontal_rule', 'format_clear', 'indent', 'outdent'],
+      ['superscript', 'subscript'],
+      ['undo', 'redo'],
+    ];
 
   ngOnInit() {
+    this.editor = new Editor();
     this.initializeForm();
     this.loadAvailableServices();
     this.loadEmployees();
@@ -82,6 +100,7 @@ export class NewTaskGroupComponent implements OnInit {
   addClientService() {
     const clientService = this.fb.group({
       serviceId: ['', Validators.required],
+      serviceCost: [''],
       tasks: this.fb.array([]),
     });
 
@@ -110,7 +129,7 @@ export class NewTaskGroupComponent implements OnInit {
       deadline: ['', Validators.required],
       employeeId: [''],
       refrence: ['', Validators.maxLength(1000)],
-      numberofSubTasks: [0]
+      numberOfSubTasks: [0]
     });
 
     this.getTasksArray(serviceIndex).push(task);
@@ -158,11 +177,11 @@ export class NewTaskGroupComponent implements OnInit {
         deadline: new Date(task.deadline),
         priority: task.priority,
         refrence: task.refrence,
-        numberofSubTasks: task.numberofSubTasks
+        numberOfSubTasks: task.numberOfSubTasks
       })),
     };
 
-    this.taskService.addTaskGroup(taskGroup, this.currentUserId).subscribe({
+    this.taskService.addTaskGroup(taskGroup).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.showAlert('تم إضافة الشهر الجديد بنجاح', 'success');

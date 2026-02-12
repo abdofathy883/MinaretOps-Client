@@ -26,7 +26,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
 import { ShimmerComponent } from '../../../shared/shimmer/shimmer.component';
-import { MapTaskPriorityPipe } from "../../../core/pipes/task-priority/map-task-priority.pipe";
+import { MapTaskPriorityPipe } from '../../../core/pipes/task-priority/map-task-priority.pipe';
 import { MapTaskTypePipe } from '../../../core/pipes/task-type/map-task-type.pipe';
 
 @Component({
@@ -40,8 +40,8 @@ import { MapTaskTypePipe } from '../../../core/pipes/task-type/map-task-type.pip
     MapTaskStatusClassPipe,
     MapTaskStatusPipe,
     MapTaskPriorityPipe,
-    MapTaskTypePipe
-],
+    MapTaskTypePipe,
+  ],
   templateUrl: './all-tasks.component.html',
   styleUrl: './all-tasks.component.css',
 })
@@ -55,7 +55,6 @@ export class AllTasksComponent implements OnInit {
   searchResults: ILightWieghtTask[] = [];
   isSearching: boolean = false;
   filterForm!: FormGroup;
-  currentUserId: string = '';
   isLoadingTasks: boolean = false;
 
   // Pagination properties
@@ -88,15 +87,6 @@ export class AllTasksComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.currentUserId = this.authService.getCurrentUserId();
-
-    // Initialize form with today's date
-    // const today = new Date().toISOString().split('T')[0];
-    // this.filterForm.patchValue({
-    //   fromDate: today,
-    //   toDate: today
-    // });
-
     this.loadClients();
     this.loadEmployees();
     this.loadServices();
@@ -147,18 +137,16 @@ export class AllTasksComponent implements OnInit {
     }
 
     this.isSearching = true;
-    this.taskService
-      .searchTasks(this.searchQuery.trim(), this.currentUserId)
-      .subscribe({
-        next: (response) => {
-          this.searchResults = response;
-          this.filteredTasks = [...this.searchResults];
-          this.isSearching = false;
-        },
-        error: (error) => {
-          this.isSearching = false;
-        },
-      });
+    this.taskService.searchTasks(this.searchQuery.trim()).subscribe({
+      next: (response) => {
+        this.searchResults = response;
+        this.filteredTasks = [...this.searchResults];
+        this.isSearching = false;
+      },
+      error: (error) => {
+        this.isSearching = false;
+      },
+    });
   }
 
   clearSearch() {
@@ -171,7 +159,7 @@ export class AllTasksComponent implements OnInit {
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const firstDayStr = firstDayOfMonth.toISOString().split('T')[0];
     const todayStr = today.toISOString().split('T')[0];
-    
+
     this.filterForm.patchValue({
       clientId: null,
       employeeId: null,
@@ -207,7 +195,7 @@ export class AllTasksComponent implements OnInit {
       pageSize: this.pageSize,
     };
 
-    this.taskService.getPaginatedTasks(filter, this.currentUserId).subscribe({
+    this.taskService.getPaginatedTasks(filter).subscribe({
       next: (response: PaginatedTaskResult) => {
         this.tasks = response.records;
         this.totalRecords = response.totalRecords;
@@ -283,8 +271,7 @@ export class AllTasksComponent implements OnInit {
   }
 
   getShortDescription(html: string): string {
-  const text = html.replace(/<[^>]*>/g, ''); // strip HTML tags
-  return text.length > 50 ? text.slice(0, 50) + '…' : text;
-}
-
+    const text = html.replace(/<[^>]*>/g, ''); // strip HTML tags
+    return text.length > 50 ? text.slice(0, 50) + '…' : text;
+  }
 }

@@ -95,6 +95,7 @@ export interface ICreateTask {
 }
 
 export interface IUpdateTask {
+  id: number;
   title?: string;
   description?: string;
   deadline?: Date;

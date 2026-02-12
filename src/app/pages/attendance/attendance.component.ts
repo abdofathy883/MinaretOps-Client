@@ -51,7 +51,7 @@ export class AttendanceComponent {
 
     
     this.startTimeUpdate();
-    this.loadToadayAttendance(this.userId);
+    this.loadToadayAttendance();
 
     this.getFingerPrient();
     this.getIpAddress().subscribe((ip) => {
@@ -59,7 +59,7 @@ export class AttendanceComponent {
     });
 
     // Load active break
-    this.loadActiveBreak(this.userId);
+    this.loadActiveBreak();
   }
 
   async sendTestNotification() {
@@ -101,8 +101,8 @@ export class AttendanceComponent {
     }
   }
 
-  loadToadayAttendance(empId: string) {
-    this.attendanceService.getTodayAttendanceByEmployeeId(empId).subscribe({
+  loadToadayAttendance() {
+    this.attendanceService.getTodayAttendanceByEmployeeId().subscribe({
       next: (response) => {
         this.todayRecord = response;
       },
@@ -181,12 +181,7 @@ export class AttendanceComponent {
   }
 
   onClockOut() {
-    if (!this.userId) {
-      this.isProcessing = false;
-      return;
-    }
-
-    this.attendanceService.clockOut(this.userId).subscribe({
+    this.attendanceService.clockOut().subscribe({
       next: (response) => {
         this.todayRecord = response;
         this.showAlert('تم تسجيل الانصراف', 'success');
@@ -227,8 +222,8 @@ export class AttendanceComponent {
     this.alertMessage = '';
   }
 
-  loadActiveBreak(empId: string) {
-    this.attendanceService.getActiveBreak(empId).subscribe({
+  loadActiveBreak() {
+    this.attendanceService.getActiveBreak().subscribe({
       next: (response) => {
         this.activeBreak = response;
       },
@@ -278,12 +273,7 @@ export class AttendanceComponent {
   }
 
   startBreak() {
-    if (!this.userId) {
-      this.isBreakProcessing = false;
-      return;
-    }
-
-    this.attendanceService.startBreak(this.userId).subscribe({
+    this.attendanceService.startBreak().subscribe({
       next: (response) => {
         this.activeBreak = response;
         this.showAlert('تم بدء الاستراحة', 'success');
@@ -297,16 +287,11 @@ export class AttendanceComponent {
   }
 
   endBreak() {
-    if (!this.userId) {
-      this.isBreakProcessing = false;
-      return;
-    }
-
-    this.attendanceService.endBreak(this.userId).subscribe({
+    this.attendanceService.endBreak().subscribe({
       next: (response) => {
         this.activeBreak = null;
         // Refresh today's attendance to get updated break periods
-        this.loadToadayAttendance(this.userId);
+        this.loadToadayAttendance();
         this.showAlert('تم إنهاء الاستراحة', 'success');
         this.isBreakProcessing = false;
       },

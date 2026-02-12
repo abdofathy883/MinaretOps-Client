@@ -28,7 +28,12 @@ import { AlertService } from '../../../services/helper-services/alert.service';
 import { hasError } from '../../../services/helper-services/utils';
 import { MapTaskTypePipe } from '../../../core/pipes/task-type/map-task-type.pipe';
 import { TaskShimmerComponent } from '../../../shared/task-shimmer/task-shimmer.component';
-import { Editor, NgxEditorComponent, NgxEditorMenuComponent, Toolbar } from 'ngx-editor';
+import {
+  Editor,
+  NgxEditorComponent,
+  NgxEditorMenuComponent,
+  Toolbar,
+} from 'ngx-editor';
 
 @Component({
   selector: 'app-single-task',
@@ -42,7 +47,7 @@ import { Editor, NgxEditorComponent, NgxEditorMenuComponent, Toolbar } from 'ngx
     TaskShimmerComponent,
     FormsModule,
     NgxEditorComponent,
-    NgxEditorMenuComponent
+    NgxEditorMenuComponent,
   ],
   templateUrl: './single-task.component.html',
   styleUrl: './single-task.component.css',
@@ -125,7 +130,7 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     this.editTaskForm = this.fb.group({
       title: [
@@ -277,32 +282,27 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
   updateTaskStatus(newStatus: CustomTaskStatus): void {
     if (!this.task) return;
     this.updatingStatus = true;
-    console.log('Updating status to:', newStatus);
-    console.log('Current Task ID:', this.task.id);
-    console.log('Current User ID:', this.currentUserId);
-    this.taskService
-      .changeStatus(this.task.id, this.currentUserId, newStatus)
-      .subscribe({
-        next: (response) => {
-          if (this.task) {
-            this.task.status = newStatus;
-            console.log('Updated Status:', response);
-            // Update CompletedAt field
-            if (newStatus === CustomTaskStatus.Completed) {
-              this.task.completedAt = new Date();
-            } else {
-              this.task.completedAt = undefined;
-            }
-            this.showAlert('تم تحديث حالة التاسك', 'success');
+    this.taskService.changeStatus(this.task.id, newStatus).subscribe({
+      next: (response) => {
+        if (this.task) {
+          this.task.status = newStatus;
+          console.log('Updated Status:', response);
+          // Update CompletedAt field
+          if (newStatus === CustomTaskStatus.Completed) {
+            this.task.completedAt = new Date();
+          } else {
+            this.task.completedAt = undefined;
           }
-          this.updatingStatus = false;
-        },
-        error: (error) => {
-          this.updatingStatus = false;
-          console.error('Error updating status:', error);
-          this.showAlert(error.error, 'error');
-        },
-      });
+          this.showAlert('تم تحديث حالة التاسك', 'success');
+        }
+        this.updatingStatus = false;
+      },
+      error: (error) => {
+        this.updatingStatus = false;
+        console.error('Error updating status:', error);
+        this.showAlert(error.error, 'error');
+      },
+    });
   }
 
   isOverdue(): boolean {
@@ -351,6 +351,7 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
     const formValue = this.editTaskForm.value;
 
     const updatedTask: IUpdateTask = {
+      id: this.task.id,
       title: formValue.title,
       description: formValue.description,
       priority: formValue.priority,
@@ -358,23 +359,23 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
       employeeId: formValue.employeeId,
       status: Number(formValue.status),
       refrence: formValue.refrence,
-      numberOfSubTasks: formValue.numberOfSubTasks,
+      numberOfSubTasks: Number(formValue.numberOfSubTasks),
     };
     this.isLoading = true;
+    console.log(updatedTask);
 
-    this.taskService
-      .update(this.task.id, this.currentUserId, updatedTask)
-      .subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          this.task = response;
-          this.showAlert('تم تحديث التاسك بنجاح', 'success');
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.showAlert(error.error, 'error');
-        },
-      });
+    this.taskService.update(updatedTask).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.task = response;
+        this.showAlert('تم تحديث التاسك بنجاح', 'success');
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.showAlert(error.error, 'error');
+        console.log(error);
+      },
+    });
   }
 
   deleteTask() {
@@ -451,30 +452,28 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
       urls: urls,
       completionNotes: formValue.completionNotes || undefined,
     };
-    this.taskService
-      .complete(this.task.id, this.currentUserId, taskResources)
-      .subscribe({
-        next: (response) => {
-          this.isCompletingTask = false;
-          this.task = response;
-          this.showAlert('تم إكمال التاسك بنجاح', 'success');
+    this.taskService.complete(this.task.id, taskResources).subscribe({
+      next: (response) => {
+        this.isCompletingTask = false;
+        this.task = response;
+        this.showAlert('تم إكمال التاسك بنجاح', 'success');
 
-          // Hide modal
-          const modalElement = document.getElementById('completeTaskModal');
-          if (modalElement) {
-            const modal = (window as any).bootstrap.Modal.getInstance(
-              modalElement
-            );
-            if (modal) {
-              modal.hide();
-            }
+        // Hide modal
+        const modalElement = document.getElementById('completeTaskModal');
+        if (modalElement) {
+          const modal = (window as any).bootstrap.Modal.getInstance(
+            modalElement,
+          );
+          if (modal) {
+            modal.hide();
           }
-        },
-        error: (err) => {
-          this.isCompletingTask = false;
-          this.showAlert(err.error, 'error');
-        },
-      });
+        }
+      },
+      error: (err) => {
+        this.isCompletingTask = false;
+        this.showAlert(err.error, 'error');
+      },
+    });
   }
 
   showAlert(message: string, type: string) {

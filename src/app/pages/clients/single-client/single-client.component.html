@@ -10,14 +10,12 @@
   @if (client != null) {
     <app-checkpoints
     [clientServices]="client.clientServices"
-    [currentUserId]="currentUserId"
     (checkpointsChanged)="loadClient()"
   ></app-checkpoints>
 
   <app-task-groups
     [clientServices]="client.clientServices"
     [clientId]="client.id"
-    [currentUserId]="currentUserId"
     (taskDataChanged)="loadClient()"
   ></app-task-groups>
   }

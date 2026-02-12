@@ -16,27 +16,6 @@ import {
   TaskFilter,
 } from '../../model/task/task';
 
-// export interface TaskFilter {
-//   fromDate?: string;
-//   toDate?: string;
-//   employeeId?: string;
-//   clientId?: number;
-//   status?: number;
-//   priority?: string;
-//   onDeadline?: string;
-//   team?: string;
-//   pageNumber: number;
-//   pageSize: number;
-// }
-
-// export interface PaginatedTaskResult {
-//   records: ITask[];
-//   totalRecords: number;
-//   pageNumber: number;
-//   pageSize: number;
-//   totalPages: number;
-// }
-
 @Injectable({
   providedIn: 'root',
 })
@@ -52,31 +31,18 @@ export class TaskService {
     return this.api.get<ITask[]>(`${this.endpoint}/archived-tasks`);
   }
 
-  getTasksByEmployee(employeeId: string): Observable<ILightWieghtTask[]> {
-    return this.api.get<ILightWieghtTask[]>(
-      `${this.endpoint}/emp-tasks/${employeeId}`
-    );
+  getTasksByEmployee(): Observable<ILightWieghtTask[]> {
+    return this.api.get<ILightWieghtTask[]>(`${this.endpoint}/emp-tasks`);
   }
 
-  update(
-    taskId: number,
-    empId: string,
-    updateTask: IUpdateTask
-  ): Observable<ITask> {
-    return this.api.put<ITask>(
-      `${this.endpoint}/update-task/${taskId}/${empId}`,
-      updateTask
-    );
+  update(updateTask: IUpdateTask): Observable<ITask> {
+    return this.api.put<ITask>(`${this.endpoint}/update-task`, updateTask);
   }
 
-  changeStatus(
-    taskId: number,
-    empId: string,
-    status: CustomTaskStatus
-  ): Observable<boolean> {
+  changeStatus(taskId: number, status: CustomTaskStatus): Observable<boolean> {
     return this.api.patch<boolean>(
-      `${this.endpoint}/change-status/${taskId}/${empId}`,
-      status
+      `${this.endpoint}/change-status/${taskId}`,
+      status,
     );
   }
 
@@ -90,60 +56,45 @@ export class TaskService {
 
   complete(
     taskId: number,
-    userId: string,
-    taskResource: ICreateTaskResources
+    taskResource: ICreateTaskResources,
   ): Observable<ITask> {
     return this.api.patch<ITask>(
-      `${this.endpoint}/complete/${taskId}/${userId}`,
-      taskResource
+      `${this.endpoint}/complete/${taskId}`,
+      taskResource,
     );
   }
 
-  addTask(createTask: ICreateTask, userId: string): Observable<ITask> {
-    return this.api.post<ITask>(
-      `${this.endpoint}/create-task/${userId}`,
-      createTask
-    );
+  addTask(createTask: ICreateTask): Observable<ITask> {
+    return this.api.post<ITask>(`${this.endpoint}/create-task`, createTask);
   }
 
   deleteTask(taskId: number): Observable<boolean> {
     return this.api.delete<boolean>(`${this.endpoint}/delete-task/${taskId}`);
   }
 
-  addTaskGroup(
-    createTaskGroup: ICreateTaskGroup,
-    userId: string
-  ): Observable<ITaskGroup> {
+  addTaskGroup(createTaskGroup: ICreateTaskGroup): Observable<ITaskGroup> {
     return this.api.post<ITaskGroup>(
-      `${this.endpoint}/create-task-group/${userId}`,
-      createTaskGroup
+      `${this.endpoint}/create-task-group`,
+      createTaskGroup,
     );
   }
 
   getTaskGroupsByClientService(
-    clientServiceId: number
+    clientServiceId: number,
   ): Observable<ITaskGroup[]> {
     return this.api.get<ITaskGroup[]>(
-      `${this.endpoint}/client-service/${clientServiceId}/task-groups`
+      `${this.endpoint}/client-service/${clientServiceId}/task-groups`,
     );
   }
 
-  searchTasks(
-    query: string,
-    currentUserId: string
-  ): Observable<ILightWieghtTask[]> {
-    return this.api.get<ILightWieghtTask[]>(
-      `${this.endpoint}/search/${query}/${currentUserId}`
-    );
+  searchTasks(query: string): Observable<ILightWieghtTask[]> {
+    return this.api.get<ILightWieghtTask[]>(`${this.endpoint}/search/${query}`);
   }
 
   // Update the getPaginatedTasks method to include team parameter
 
-  getPaginatedTasks(
-    filter: TaskFilter,
-    currentUserId: string
-  ): Observable<PaginatedTaskResult> {
-    let url = `${this.endpoint}/paginated?pageNumber=${filter.pageNumber}&pageSize=${filter.pageSize}&currentUserId=${currentUserId}`;
+  getPaginatedTasks(filter: TaskFilter): Observable<PaginatedTaskResult> {
+    let url = `${this.endpoint}/paginated?pageNumber=${filter.pageNumber}&pageSize=${filter.pageSize}`;
 
     if (filter.fromDate) {
       url += `&fromDate=${filter.fromDate}`;

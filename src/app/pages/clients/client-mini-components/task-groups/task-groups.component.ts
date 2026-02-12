@@ -48,7 +48,6 @@ import { NgxEditorComponent, NgxEditorMenuComponent, Editor, Toolbar } from 'ngx
 export class TaskGroupsComponent implements OnInit, OnDestroy {
   @Input() clientServices: IClientService[] = [];
   @Input() clientId: number = 0;
-  @Input() currentUserId: string = '';
   @Output() taskDataChanged = new EventEmitter<void>();
 
   @ViewChild('newTaskGroupModal') newTaskGroupModal!: NewTaskGroupComponent;
@@ -104,7 +103,8 @@ export class TaskGroupsComponent implements OnInit, OnDestroy {
       deadline: ['', Validators.required],
       employeeId: [''],
       status: ['', Validators.required],
-      refrence: ['', Validators.maxLength(1000)]
+      refrence: ['', Validators.maxLength(1000)],
+      numberOfSubTasks: ['']
     });
   }
 
@@ -150,7 +150,7 @@ export class TaskGroupsComponent implements OnInit, OnDestroy {
   }
 
   private loadEmployees() {
-    this.currentUserId = this.authService.getCurrentUserId();
+    // this.currentUserId = this.authService.getCurrentUserId();
     this.authService.getAll().subscribe({
       next: (users) => {
         this.employees = users;
@@ -298,6 +298,7 @@ export class TaskGroupsComponent implements OnInit, OnDestroy {
     if (!this.selectedTask) return;
 
     const updatedTask: IUpdateTask = {
+      id: this.selectedTask.id,
       title: formValue.title,
       description: formValue.description,
       priority: formValue.priority,
@@ -309,7 +310,7 @@ export class TaskGroupsComponent implements OnInit, OnDestroy {
     };
 
     // Update local data
-    this.taskService.update(this.selectedTask.id, this.currentUserId, updatedTask).subscribe({
+    this.taskService.update(updatedTask).subscribe({
       next: (response) => {
         this.isSaving = false;
         this.hideModal();
@@ -342,7 +343,7 @@ export class TaskGroupsComponent implements OnInit, OnDestroy {
 
 
     this.isSaving = true;
-    this.taskService.addTask(newTask, this.currentUserId).subscribe({
+    this.taskService.addTask(newTask).subscribe({
       next: (response) => {
         this.isSaving = false;
         this.hideModal();

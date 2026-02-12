@@ -40,7 +40,6 @@ export class SingleClientComponent implements OnInit {
   selectedClientServiceId: number | null = null;
   selectedTaskGroupId: number | null = null;
   selectedTask: ITask | null = null;
-  currentUserId: string = '';
 
   constructor(
     private clientService: ClientService,
@@ -61,7 +60,6 @@ export class SingleClientComponent implements OnInit {
       },
     });
 
-    this.currentUserId = this.authService.getCurrentUserId();
   }
 
   loadClient(): void {
@@ -83,13 +81,6 @@ export class SingleClientComponent implements OnInit {
     }
   }
 
-  // Client info updated
-  // onClientUpdated(updatedClient: IClient): void {
-  //   this.client = updatedClient;
-  //   this.successMessage = 'تم تحديث بيانات العميل بنجاح';
-  //   this.clearMessages();
-  // }
-
   // Task management
   openAddTaskModal(clientServiceId: number, taskGroupId: number): void {
     this.selectedClientServiceId = clientServiceId;
@@ -110,7 +101,7 @@ export class SingleClientComponent implements OnInit {
   onTaskCreated(createTask: ICreateTask): void {
     this.loading = true;
 
-    this.taskService.addTask(createTask, this.currentUserId).subscribe({
+    this.taskService.addTask(createTask).subscribe({
       next: (response) => {
         // Add the new task to local data
         this.addTaskToLocalData(response);
@@ -128,7 +119,7 @@ export class SingleClientComponent implements OnInit {
   onTaskGroupCreated(createTaskGroup: ICreateTaskGroup): void {
     this.loading = true;
 
-    this.taskService.addTaskGroup(createTaskGroup, this.currentUserId).subscribe({
+    this.taskService.addTaskGroup(createTaskGroup).subscribe({
       next: (response) => {
         // Add the new task group to local data
         this.addTaskGroupToLocalData(response);
@@ -147,7 +138,7 @@ export class SingleClientComponent implements OnInit {
   onTaskUpdated(taskData: ITask): void {
     this.loading = true;
 
-    this.taskService.update(taskData.id, this.currentUserId, taskData).subscribe({
+    this.taskService.update(taskData).subscribe({
       next: (response) => {
         // Update the task in local data
         this.updateTaskInLocalData(response);
