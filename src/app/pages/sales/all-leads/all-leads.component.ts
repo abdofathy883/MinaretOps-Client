@@ -9,6 +9,8 @@ import {
   MeetingAttend,
 } from '../../../model/sales/i-sales-lead';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../services/auth/auth.service';
+import { User } from '../../../model/auth/user';
 
 @Component({
   selector: 'app-all-leads',
@@ -19,6 +21,7 @@ import { Router } from '@angular/router';
 })
 export class AllLeadsComponent implements OnInit {
   leads: ISalesLead[] = [];
+  employees: User[] = [];
   isImporting: boolean = false;
   isExporting: boolean = false;
   isLoadingTemplates: boolean = false;
@@ -41,11 +44,13 @@ export class AllLeadsComponent implements OnInit {
 
   constructor(
     private leadService: LeadService,
+    private authService: AuthService,
     private router: Router,
   ) {}
 
   ngOnInit() {
     this.loadLeads();
+    this.loadEmployees();
   }
 
   loadLeads() {
@@ -61,6 +66,10 @@ export class AllLeadsComponent implements OnInit {
         console.error('Failed to load leads', err);
       },
     });
+  }
+
+  loadEmployees(){
+    this.authService.getAll().subscribe((response) => this.employees = response);
   }
 
   updateField(lead: ISalesLead, field: string, value: any) {

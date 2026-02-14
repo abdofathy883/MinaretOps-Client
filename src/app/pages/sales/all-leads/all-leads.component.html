@@ -76,6 +76,7 @@
             <th></th>
             <th>اسم العميل</th>
             <th>واتساب</th>
+            <th>الموظف</th>
             <th>محاولات الاتصال</th>
             <th>حالة الاتصال</th>
             <th>مهتم</th>
@@ -105,6 +106,19 @@
                 <a href="https://wa.me/{{ lead.whatsAppNumber }}">{{
                   lead.whatsAppNumber
                 }}</a>
+              </td>
+              <td data-cell="الموظف">
+                <select
+                  [(ngModel)]="lead.salesRepId"
+                  class="form-select form-select-sm"
+                  (change)="
+                    updateField(lead, 'SalesRepId', lead.contactStatus)
+                  "
+                >
+                  @for (emp of employees; track $index) {
+                    <option [value]="emp.id">{{ emp.firstName + ' ' + emp.lastName }}</option>
+                  }
+                </select>
               </td>
               <td data-cell="محاولات الاتصال">
                 <input
