@@ -100,13 +100,13 @@
                   فتح
                 </button>
               </td>
-              <td>{{ lead.businessName }}</td>
-              <td>
+              <td data-cell="اسم العميل">{{ lead.businessName }}</td>
+              <td data-cell="واتساب">
                 <a href="https://wa.me/{{ lead.whatsAppNumber }}">{{
                   lead.whatsAppNumber
                 }}</a>
               </td>
-              <td>
+              <td data-cell="محاولات الاتصال">
                 <input
                   type="number"
                   min="0"
@@ -117,7 +117,7 @@
                   "
                 />
               </td>
-              <td>
+              <td data-cell="حالة الاتصال">
                 <select
                   [(ngModel)]="lead.contactStatus"
                   class="form-select form-select-sm"
@@ -130,7 +130,7 @@
                   <option [value]="3">رقم خاطئ</option>
                 </select>
               </td>
-              <td class="center">
+              <td class="center" data-cell="مهتم">
                 <input
                   type="checkbox"
                   class="form-check-input"
@@ -139,7 +139,7 @@
                   (change)="updateField(lead, 'Interested', lead.interested)"
                 />
               </td>
-              <td>
+              <td  data-cell="تحديد اجتماع">
                 <input
                   type="checkbox"
                   class="form-check-input"
@@ -151,7 +151,7 @@
                 />
               </td>
               @if (lead.meetingAgreed) {
-                <td>
+                <td data-cell="موعد الاجتماع">
                   <input
                     type="datetime-local"
                     class="form-control form-control-sm"
@@ -162,9 +162,9 @@
                   />
                 </td>
               } @else {
-                <td>-</td>
+                <td data-cell="موعد الاجتماع">-</td>
               }
-              <td>
+              <td data-cell="حضور الاجتماع">
                 <select
                   [(ngModel)]="lead.meetingAttend"
                   class="form-select form-select-sm"
@@ -178,7 +178,7 @@
                 </select>
               </td>
               <!-- @if (lead.followUpReason == FollowUpReason.) {} -->
-              <td>
+              <td data-cell="وقت المتابعة">
                 <input
                   type="datetime-local"
                   class="form-control form-control-sm"
@@ -188,7 +188,7 @@
                   "
                 />
               </td>
-              <td>
+              <td data-cell="سبب المتابعة">
                 <select
                   class="form-select form-select-sm"
                   [(ngModel)]="lead.followUpReason"

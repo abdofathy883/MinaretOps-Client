@@ -65,6 +65,8 @@ import { AllLeadsComponent } from './pages/sales/all-leads/all-leads.component';
 import { AddLeadComponent } from './pages/sales/add-lead/add-lead.component';
 import { IncidentsComponent } from './pages/kpis/incidents/incidents.component';
 import { SingleLeadComponent } from './pages/sales/single-lead/single-lead.component';
+import { AllEntriesComponent } from './pages/contact/all-entries/all-entries.component';
+import { SeoPagesComponent } from './pages/seo/seo-pages/seo-pages.component';
 
 export const routes: Routes = [
   {
@@ -375,6 +377,16 @@ export const routes: Routes = [
   {
     path: 'leads/details/:id',
     component: SingleLeadComponent,
+    canActivate: [noauthGuard]
+  },
+  {
+    path: 'contact-entries',
+    component: AllEntriesComponent,
+    canActivate: [noauthGuard]
+  },
+  {
+    path: 'seo',
+    component: SeoPagesComponent,
     canActivate: [noauthGuard]
   },
   {

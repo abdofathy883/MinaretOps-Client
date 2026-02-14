@@ -1,0 +1,68 @@
+<section class="container py-4">
+  <h2>ادارة السيو</h2>
+  <div class="card">
+    <div class="card-header">
+      <h3 class="mb-0">اختر الصفحة</h3>
+    </div>
+    <div class="card-body">
+      <form action="">
+        <select (change)="onPageChange($event)" class="form-select">
+          <option value="" selected disabled>اختر الصفحة</option>
+          <option value="/">الرئيسية</option>
+          <option value="/about-us">من نحن</option>
+          <option value="/our-services">الخدمات</option>
+          <option value="/contact-us">التواصل</option>
+        </select>
+      </form>
+      <hr />
+      @if (seoForm) {
+        <form [formGroup]="seoForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" formControlName="title" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label for="" class="form-label">Description</label>
+            <textarea formControlName="description" rows="3" class="form-control"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="" class="form-label">Keywords</label>
+            <textarea formControlName="keywords" rows="2" class="form-control"></textarea>
+          </div>
+          <div class="row">
+            <div class="col-12 col-md-6 mb-3">
+              <label for="" class="form-label">Og Title</label>
+              <input type="text" formControlName="ogTitle" class="form-control" />
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <label for="" class="form-label">Og Image</label>
+              <input
+                type="file"
+                accept="image"
+                (change)="null" 
+                class="form-control"
+              />
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <label for="" class="form-label">Canonical Url</label>
+              <input type="text" formControlName="canonicalUrl" class="form-control" />
+            </div>
+            <div class="col-12 col-md-6 mb-3">
+              <label for="" class="form-label">Robots</label>
+              <input type="text" formControlName="robots" class="form-control" />
+            </div>
+          </div>
+          <button class="add-btn w-100" [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              جار الحفظ...
+            }
+            @if (!isSubmitting()) {
+              حفظ
+            }
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</section>
