@@ -2,6 +2,45 @@
   <div>
     <h2 class="text-center">العملاء المحتملون</h2>
   </div>
+  <!-- Search Section -->
+  <div class="mb-4">
+    <div class="row">
+      <div class="col-md-8 col-lg-6">
+        <label for="searchInput" class="form-label">البحث في العملاء المحتملين</label>
+        <div class="input-group">
+          <input
+            type="text"
+            id="searchInput"
+            class="form-control"
+            placeholder="ابحث باسم العميل او رقم الواتساب..."
+            [(ngModel)]="searchQuery"
+            (input)="onSearchInput()"
+          />
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            (click)="clearSearch()"
+            [disabled]="!searchQuery"
+          >
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        @if (isSearching) {
+          <div class="mt-2">
+            <div class="d-flex align-items-center">
+              <div
+                class="spinner-border spinner-border-sm text-primary me-2"
+                role="status"
+              >
+                <span class="visually-hidden">جاري البحث...</span>
+              </div>
+              <small class="text-muted">جاري البحث...</small>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
   <div class="d-flex flex-wrap gap-3 mb-3">
     <button class="btn btn-outline-secondary" (click)="onDownloadTemplate()">
       @if (isLoadingTemplates) {

@@ -4,6 +4,7 @@ export interface ISalesLead {
   whatsAppNumber: string;
   contactAttempts: number;
   contactStatus: ContactStatus;
+  currentLeadStatus: CurrentLeadStatus;
   leadSource: LeadSource;
   decisionMakerReached: boolean;
   interested: boolean;
@@ -36,6 +37,7 @@ export interface ICreateLead {
   whatsAppNumber: string;
   contactAttempts: number;
   contactStatus: ContactStatus;
+  currentLeadStatus: CurrentLeadStatus;
   leadSource: LeadSource;
   decisionMakerReached: boolean;
   interested: boolean;
@@ -58,9 +60,10 @@ export interface ICreateLeadService {
 }
 
 export enum ContactStatus {
-  NoReply = 0,
-  Replied = 1,
-  WrongNumber = 2,
+  NotContactedYet = 0,
+  ContactedWithNoReply = 1,
+  ContactedAndReplied = 2,
+  WrongNumber = 3,
 }
 
 export enum CurrentLeadStatus {
@@ -72,7 +75,14 @@ export enum CurrentLeadStatus {
   FollowUpLater = 5,
 }
 
-export enum LeadSource {}
+export enum LeadSource {
+  Facebook = 0,
+Instagram = 1,
+LinkedIn = 2,
+Referral = 3,
+GoogleMaps = 4,
+Website = 5
+}
 
 export enum InterestLevel {
   Cold = 0,

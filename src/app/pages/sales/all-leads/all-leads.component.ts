@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LeadService } from '../../../services/sales/lead.service';
 import {
   ContactStatus,
@@ -15,17 +15,20 @@ import { User } from '../../../model/auth/user';
 @Component({
   selector: 'app-all-leads',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './all-leads.component.html',
   styleUrl: './all-leads.component.css',
 })
 export class AllLeadsComponent implements OnInit {
   leads: ISalesLead[] = [];
+  searchResults: ISalesLead[] = [];
   employees: User[] = [];
   isImporting: boolean = false;
   isExporting: boolean = false;
   isLoadingTemplates: boolean = false;
   isLoadingLeads: boolean = false;
+  isSearching: boolean = false;
+  searchQuery: string = '';
 
   // Enum Helpers
   contactStatuses = Object.values(ContactStatus).filter(
@@ -58,7 +61,6 @@ export class AllLeadsComponent implements OnInit {
     this.leadService.getAll().subscribe({
       next: (data) => {
         this.leads = data;
-        console.log('leads: ', data)
         this.isLoadingLeads = false;
       },
       error: (err) => {
@@ -91,10 +93,6 @@ export class AllLeadsComponent implements OnInit {
       },
     });
   }
-
-  // onLeadCreated() {
-  //   this.loadLeads();
-  // }
 
   getEnumLabel(enumObj: any, value: any): string {
     return enumObj[value];
@@ -162,5 +160,58 @@ export class AllLeadsComponent implements OnInit {
         console.error('Download template failed', err);
       }
     });
+  }
+
+  onSearchInput() {
+    if (this.searchQuery.trim().length >= 0) {
+      this.performSearch();
+    } else if (this.searchQuery.trim().length === 0) {
+      this.clearSearch();
+    }
+  }
+
+  performSearch() {
+    if (!this.searchQuery.trim()) {
+      this.clearSearch();
+      return;
+    }
+
+    this.isSearching = true;
+    this.leadService.search(this.searchQuery.trim()).subscribe({
+      next: (response) => {
+        this.searchResults = response;
+        this.leads = response;
+        this.isSearching = false;
+      },
+      error: (error) => {
+        this.isSearching = false;
+      },
+    });
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    this.searchResults = [];
+    this.isSearching = false;
+
+    // Reset to first day of current month
+    const today = new Date();
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const firstDayStr = firstDayOfMonth.toISOString().split('T')[0];
+    const todayStr = today.toISOString().split('T')[0];
+
+    // this.filterForm.patchValue({
+    //   clientId: null,
+    //   employeeId: null,
+    //   priority: null,
+    //   fromDate: firstDayStr,
+    //   toDate: todayStr,
+    //   status: null,
+    //   onDeadline: null,
+    //   team: null,
+    // });
+
+    // this.currentPage = 1;
+    this.loadLeads();
   }
 }

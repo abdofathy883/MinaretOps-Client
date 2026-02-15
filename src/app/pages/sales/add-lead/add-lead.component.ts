@@ -51,6 +51,7 @@ export class AddLeadComponent implements OnInit {
       businessName: ['', Validators.required],
       whatsAppNumber: ['', Validators.required],
       contactStatus: [null, Validators.required],
+      currentLeadStatus: [],
       leadSource: [],
       decisionMakerReached: [false],
       interested: [null, Validators.required],
@@ -110,6 +111,7 @@ export class AddLeadComponent implements OnInit {
       whatsAppNumber: formValue.whatsAppNumber,
       contactAttempts: 0, // Default to 0
       contactStatus: formValue.contactStatus,
+      currentLeadStatus: formValue.currentLeadStatus,
       meetingAgreed: formValue.meetingAgreed,
       meetingDate: formValue.meetingDate,
       servicesInterestedIn: servicesDTO,
