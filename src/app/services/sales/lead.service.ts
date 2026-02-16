@@ -54,9 +54,7 @@ export class LeadService {
     return this.api.getBlob(`${this.endpoint}/export`);
   }
 
-  getTemplate(): Observable<Blob> {
-    return this.api.getBlob(`${this.endpoint}/template`);
-  }
+
 
   search(query: string): Observable<ISalesLead[]> {
     return this.api.get<ISalesLead[]>(`${this.endpoint}/search/${query}`);

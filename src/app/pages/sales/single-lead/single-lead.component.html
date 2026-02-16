@@ -77,7 +77,7 @@
             <select
               id="currentStatus"
               class="form-select"
-              formControlName="currentStatus"
+              formControlName="currentLeadStatus"
             >
               <option disabled selected>اختر الحالة</option>
               <option [ngValue]="0">عميل جديد</option>
@@ -97,9 +97,10 @@
                 formControlName="contactStatus"
               >
                 <option disabled selected>اختر الحالة</option>
-                <option [ngValue]="0">لا يوجد رد</option>
-                <option [ngValue]="1">تم الرد</option>
-                <option [ngValue]="2">الرقم خاطئ</option>
+              <option Value="0">لم يتم التواصل بعد</option>
+              <option Value="1">تم التواصل بدون رد</option>
+              <option Value="2">تم الاتصال وتم الرد</option>
+              <option Value="3">الرقم غير صحيح</option>
               </select>
             </div>
           </div>

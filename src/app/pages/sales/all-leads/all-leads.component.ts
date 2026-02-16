@@ -143,23 +143,12 @@ export class AllLeadsComponent implements OnInit {
   }
 
   onDownloadTemplate() {
-    this.isLoadingTemplates = true;
-    this.leadService.getTemplate().subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'LeadsTemplate.xlsx';
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        this.isLoadingTemplates = false;
-      },
-      error: (err) => {
-        this.isLoadingTemplates = false;
-        console.error('Download template failed', err);
-      }
-    });
+    const link = document.createElement('a');
+    link.href = 'assets/Leads Template.xlsx';
+    link.download = 'Leads Template.xlsx';
+    link.target = '_blank';
+    link.click();
+    link.remove();
   }
 
   onSearchInput() {
