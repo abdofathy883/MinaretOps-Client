@@ -1,1 +1,110 @@
-<p>all-entries works!</p>
+<section class="container py-4">
+    <h2 class="text-center">ادارة الردود من استمارة التواصل</h2>
+    <div>
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th>الاسم</th>
+                    <th>الايميل</th>
+                    <th>رقم الهاتف</th>
+                    <th>التاريخ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (entry of allEntries; track entry.id) {
+                    <tr role="button" class="table-row-clickable" (click)="openEntryModal(entry)">
+                        <td>{{ entry.fullName }}</td>
+                        <td>{{ entry.email }}</td>
+                        <td>{{ entry.phoneNumber }}</td>
+                        <td>{{ entry.createdAt | date: 'dd/MM/yyyy' }}</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<div
+    class="modal fade"
+    id="entryDetailModal"
+    tabindex="-1"
+    aria-labelledby="entryDetailModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="entryDetailModalLabel">تفاصيل الرسالة</h5>
+                <button type="button" class="btn-close" (click)="closeEntryModal()" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if (loadingEntry) {
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2 text-muted">جاري تحميل التفاصيل...</p>
+                    </div>
+                }
+                @if (selectedEntry && !loadingEntry) {
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <strong>الاسم:</strong> {{ selectedEntry.fullName }}
+                        </div>
+                        <div class="col-12">
+                            <strong>الايميل:</strong>
+                            <a [href]="'mailto:' + selectedEntry.email">{{ selectedEntry.email }}</a>
+                        </div>
+                        <div class="col-12">
+                            <strong>رقم الهاتف:</strong> {{ selectedEntry.phoneNumber }}
+                        </div>
+                        <div class="col-12">
+                            <strong>الرسالة:</strong>
+                            <p class="mb-0 mt-1 p-2 bg-light rounded">{{ selectedEntry.message }}</p>
+                        </div>
+                        <div class="col-12">
+                            <strong>التاريخ:</strong> {{ selectedEntry.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                        </div>
+                        @if (selectedEntry.ipAddress) {
+                            <div class="col-12">
+                                <strong>عنوان IP:</strong> {{ selectedEntry.ipAddress }}
+                            </div>
+                        }
+                        @if (selectedEntry.userAgent) {
+                            <div class="col-12">
+                                <strong>المتصفح:</strong>
+                                <small class="text-muted d-block mt-1">{{ selectedEntry.userAgent }}</small>
+                            </div>
+                        }
+                        <div class="col-12">
+                            <strong>تصنيف:</strong>
+                            @if (selectedEntry.isSpam) {
+                                <span class="badge bg-warning text-dark">مزعج</span>
+                            } @else {
+                                <span class="badge bg-success">عادي</span>
+                            }
+                        </div>
+                    </div>
+                    <hr class="my-3" />
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a
+                            [href]="getWhatsAppLink(selectedEntry.phoneNumber)"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn btn-success"
+                        >
+                            <i class="bi bi-whatsapp me-1"></i> واتساب
+                        </a>
+                        <a
+                            [href]="getCallLink(selectedEntry.phoneNumber)"
+                            class="btn btn-primary"
+                        >
+                            <i class="bi bi-telephone me-1"></i> اتصال
+                        </a>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeEntryModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+</div>
