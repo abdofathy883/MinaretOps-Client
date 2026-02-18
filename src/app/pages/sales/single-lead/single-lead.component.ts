@@ -145,7 +145,7 @@ export class SingleLeadComponent implements OnInit {
     this.leadService.delete(this.lead.id).subscribe({
       next: () => {
         this.isDeleteing = false;
-        this.router.navigate(['/sales/leads']);
+        this.router.navigate(['/leads']);
         // Handle successful deletion, e.g., navigate away or show a message
       },
       error: (error) => {

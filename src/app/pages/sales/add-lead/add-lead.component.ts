@@ -124,6 +124,7 @@ export class AddLeadComponent implements OnInit {
       createdById: this.currentUserId,
       quotationSent: false,
       followUpReason: formValue.followUpReason,
+      notes: formValue.notes,
     };
 
     console.log('Submitting new lead:', newLead);
