@@ -5,21 +5,33 @@
       <h3 class="mb-0">اختر الصفحة</h3>
     </div>
     <div class="card-body">
-      <form action="">
-        <select (change)="onPageChange($event)" class="form-select">
-          <option value="" selected disabled>اختر الصفحة</option>
-          <option value="/">الرئيسية</option>
-          <option value="/about-us">من نحن</option>
-          <option value="/our-services">الخدمات</option>
-          <option value="/contact-us">التواصل</option>
-        </select>
+      <form [formGroup]="selectForm" (ngSubmit)="onSelectPage()">
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <select class="form-select"  formControlName="route">
+              <option value="" selected disabled>اختر الصفحة</option>
+              <option value="/">الرئيسية</option>
+              <option value="/about-us">من نحن</option>
+              <option value="/our-services">الخدمات</option>
+              <option value="/contact-us">التواصل</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <select name="language" id="language-select" class="form-select" formControlName=lang>
+              <option value="" disabled>اختر اللغة</option>
+              <option value="ar" selected>العربية</option>
+              <!-- <option value="en">الإنجليزية</option> -->
+            </select>
+          </div>
+        </div>
+        <button class="add-btn">اختر الصفحة</button>
       </form>
       <hr />
       @if (seoForm) {
         <form [formGroup]="seoForm" (ngSubmit)="onSubmit()">
           <div class="mb-3">
             <label for="title" class="form-label">Title</label>
-            <input type="text" formControlName="title" class="form-control" />
+            <input type="text" formControlName="title" class="form-control"/>
           </div>
           <div class="mb-3">
             <label for="" class="form-label">Description</label>
@@ -39,8 +51,8 @@
               <input
                 type="file"
                 accept="image"
-                (change)="null" 
                 class="form-control"
+                (change)="onFileChange($event)"
               />
             </div>
             <div class="col-12 col-md-6 mb-3">
@@ -52,12 +64,12 @@
               <input type="text" formControlName="robots" class="form-control" />
             </div>
           </div>
-          <button class="add-btn w-100" [disabled]="isSubmitting()">
-            @if (isSubmitting()) {
+          <button class="add-btn w-100" [disabled]="isSubmitting">
+            @if (isSubmitting) {
               <span class="spinner-border spinner-border-sm me-2"></span>
               جار الحفظ...
             }
-            @if (!isSubmitting()) {
+            @if (!isSubmitting) {
               حفظ
             }
           </button>
