@@ -23,6 +23,8 @@ export class LeadService {
     return this.api.get<ISalesLead>(`${this.endpoint}/${id}`);
   }
 
+  
+
   create(lead: ICreateLead): Observable<ISalesLead> {
     return this.api.post<ISalesLead>(this.endpoint, lead);
   }
@@ -43,18 +45,6 @@ export class LeadService {
   delete(id: number): Observable<boolean> {
     return this.api.delete<boolean>(`${this.endpoint}/${id}`);
   }
-
-  importLeads(file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('file', file);
-    return this.api.post<any>(`${this.endpoint}/import`, formData);
-  }
-
-  exportLeads(): Observable<Blob> {
-    return this.api.getBlob(`${this.endpoint}/export`);
-  }
-
-
 
   search(query: string): Observable<ISalesLead[]> {
     return this.api.get<ISalesLead[]>(`${this.endpoint}/search/${query}`);

@@ -1,27 +1,29 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import {
+  FormArray,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ICreateLead, MeetingAttend } from '../../../model/sales/i-sales-lead';
 import { LeadService } from '../../../services/sales/lead.service';
 import { ServicesService } from '../../../services/services/services.service';
 import { Service } from '../../../model/service/service';
 import { User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
 import { hasError } from '../../../services/helper-services/utils';
+import { Editor, NgxEditorComponent, NgxEditorMenuComponent, Toolbar } from 'ngx-editor';
+import { ICreateLead, LeadSource } from '../../../model/sales/i-sales-lead';
 
 @Component({
   selector: 'app-add-lead',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgxEditorComponent, NgxEditorMenuComponent],
   templateUrl: './add-lead.component.html',
   styleUrl: './add-lead.component.css',
 })
-export class AddLeadComponent implements OnInit {
+export class AddLeadComponent implements OnInit, OnDestroy {
   leadForm!: FormGroup;
   availableServices: Service[] = [];
   employees: User[] = [];
@@ -30,8 +32,27 @@ export class AddLeadComponent implements OnInit {
   @Output() cancel = new EventEmitter<void>();
   isLoading = false;
 
-    alertMessage = '';
+  alertMessage = '';
   alertType = 'info';
+
+  /** One Editor per note so adding a note doesn't reset previous editors */
+  noteEditors: Editor[] = [];
+  toolbar: Toolbar = [
+    // default value
+    ['bold', 'italic'],
+    ['underline', 'strike'],
+    ['code', 'blockquote'],
+    ['ordered_list', 'bullet_list'],
+    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+    ['link', 'image'],
+    // or, set options for link:
+    //[{ link: { showOpenInNewTab: false } }, 'image'],
+    ['text_color', 'background_color'],
+    ['align_left', 'align_center', 'align_right', 'align_justify'],
+    ['horizontal_rule', 'format_clear', 'indent', 'outdent'],
+    ['superscript', 'subscript'],
+    ['undo', 'redo'],
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -46,37 +67,62 @@ export class AddLeadComponent implements OnInit {
     this.loadServices();
     this.currentUserId = this.authService.getCurrentUserId();
   }
+
+  ngOnDestroy(): void {
+    this.noteEditors.forEach((e) => e.destroy());
+    this.noteEditors = [];
+  }
+
   initializeForm() {
     this.leadForm = this.fb.group({
       businessName: ['', Validators.required],
       whatsAppNumber: ['', Validators.required],
+      country: [''],
+      occupation: [''],
       contactStatus: [null, Validators.required],
-      currentLeadStatus: [],
-      leadSource: [],
-      decisionMakerReached: [false],
-      interested: [null, Validators.required],
+      currentLeadStatus: [null, Validators.required],
+      leadSource: [null, Validators.required],
       interestLevel: [null, Validators.required],
+      freelancePlatform: [null],
+      responsibility: [0],
+      budget: [0],
+      timeline: [0],
+      needsExpectation: [0],
       servicesInterestedIn: [[]],
-      meetingAttend: [''],
-      meetingAgreed: [false],
-      meetingDate: [],
+      meetingDate: [null],
+      followUpTime: [null],
       quotationSent: [false],
-      currentStatus: [null],
-      followUpTime: [],
-      followUpReason: [],
-      assignedTo: [],
-      notes: [''],
-      createdById: [''],
+      assignedTo: [null],
+      notes: this.fb.array([this.fb.control('')]),
     });
+    this.noteEditors = [new Editor()];
   }
 
-  get isMeetingAgreed(): boolean {
-    return this.leadForm.get('meetingAgreed')?.value === true;
+  get notesFormArray(): FormArray {
+    return this.leadForm.get('notes') as FormArray;
   }
 
-  get isFollowUpLater(): boolean {
-    return this.leadForm.get('currentStatus')?.value === 5; // 5 is FollowUpLater
+  addNote(): void {
+    this.notesFormArray.push(this.fb.control(''));
+    this.noteEditors.push(new Editor());
   }
+
+  removeNote(index: number): void {
+    if (this.notesFormArray.length > 1) {
+      this.noteEditors[index].destroy();
+      this.noteEditors.splice(index, 1);
+      this.notesFormArray.removeAt(index);
+    }
+  }
+
+  getNoteEditor(index: number): Editor {
+    return this.noteEditors[index];
+  }
+
+  get isFreelancePlatforms(): boolean {
+    return Number(this.leadForm.get('leadSource')?.value) === LeadSource.FreelancingPlatforms;
+  }
+
 
   loadEmployees() {
     this.authService
@@ -102,34 +148,41 @@ export class AddLeadComponent implements OnInit {
     const servicesDTO = (formValue.servicesInterestedIn || []).map(
       (id: number) => ({
         serviceId: id,
-        leadId: 0, // Backend ignores or handles this
+        leadId: 0,
       }),
     );
+
+    const noteValues = (formValue.notes || []) as string[];
+    const notesDTO = noteValues
+      .filter((n) => n != null && String(n).trim() !== '')
+      .map((note) => ({
+        note: note.trim(),
+        createdById: this.currentUserId,
+        leadId: 0,
+      }));
 
     const newLead: ICreateLead = {
       businessName: formValue.businessName,
       whatsAppNumber: formValue.whatsAppNumber,
-      contactAttempts: 0, // Default to 0
-      contactStatus: formValue.contactStatus,
-      currentLeadStatus: formValue.currentLeadStatus,
-      meetingAgreed: formValue.meetingAgreed,
-      meetingDate: formValue.meetingDate,
-      servicesInterestedIn: servicesDTO,
-      salesRepId: formValue.assignedTo,
-      meetingAttend: MeetingAttend.Pending,
-      interestLevel: formValue.interestLevel,
+      country: formValue.country || undefined,
+      occupation: formValue.occupation || undefined,
+      contactStatus: Number(formValue.contactStatus),
+      currentLeadStatus: Number(formValue.currentLeadStatus),
       leadSource: Number(formValue.leadSource),
-      decisionMakerReached: formValue.decisionMakerReached,
-      interested: formValue.interested,
+      interestLevel: Number(formValue.interestLevel),
+      freelancePlatform:
+        this.isFreelancePlatforms && formValue.freelancePlatform != null
+          ? Number(formValue.freelancePlatform)
+          : undefined,
+      responsibility: Number(formValue.responsibility),
+      servicesInterestedIn: servicesDTO,
+      meetingDate: formValue.meetingDate ? new Date(formValue.meetingDate) : undefined,
+      followUpTime: formValue.followUpTime ? new Date(formValue.followUpTime) : undefined,
+      quotationSent: Boolean(formValue.quotationSent),
+      salesRepId: formValue.assignedTo || undefined,
       createdById: this.currentUserId,
-      quotationSent: false,
-      followUpReason: formValue.followUpReason,
-      notes: formValue.notes,
+      notes: notesDTO.length > 0 ? notesDTO : undefined,
     };
-
-    console.log('Submitting new lead:', newLead);
-    // Remove UI-only fields if necessary, but spreading handles most.
-    // Explicitly mapping overrides spreads.
 
     this.leadService.create(newLead).subscribe({
       next: () => {
@@ -137,6 +190,10 @@ export class AddLeadComponent implements OnInit {
         this.created.emit();
         this.leadForm.reset();
         this.leadForm.patchValue({ servicesInterestedIn: [] });
+        this.noteEditors.forEach((e) => e.destroy());
+        this.noteEditors = [new Editor()];
+        this.notesFormArray.clear();
+        this.notesFormArray.push(this.fb.control(''));
         this.showAlert('تم إضافة العميل بنجاح!', 'success');
       },
       error: (err) => {

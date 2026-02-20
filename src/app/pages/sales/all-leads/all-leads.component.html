@@ -6,7 +6,9 @@
   <div class="mb-4">
     <div class="row">
       <div class="col-md-8 col-lg-6">
-        <label for="searchInput" class="form-label">البحث في العملاء المحتملين</label>
+        <label for="searchInput" class="form-label"
+          >البحث في العملاء المحتملين</label
+        >
         <div class="input-group">
           <input
             type="text"
@@ -100,12 +102,9 @@
     </div>
   }
 
-  @if (!isLoadingLeads && leads.length === 0 ) {
-    <div class="alert alert-info">
-      لا توجد فترات رواتب
-    </div>
+  @if (!isLoadingLeads && leads.length === 0) {
+    <div class="alert alert-info">لا يوجد عملاء محتملين</div>
   }
-
 
   @if (!isLoadingLeads && leads) {
     <div class="table-wrapper">
@@ -116,17 +115,13 @@
             <th>اسم العميل</th>
             <th>واتساب</th>
             <th>الموظف</th>
-            <th>محاولات الاتصال</th>
             <th>حالة الاتصال</th>
-            <th>مهتم</th>
-            <th>تحديد اجتماع</th>
-  
+            <th>حالة العميل</th>
+            <th>درجة الاهتمام</th>
             <th>موعد الاجتماع</th>
-            <th>حضور الاجتماع</th>
+            <th>عرض السعر</th>
             <th>وقت المتابعة</th>
-            <th>سبب المتابعة</th>
-            <!-- <th>Notes</th> -->
-            <!-- Add more columns as needed -->
+            <!-- <th>ملاحظات</th> -->
           </tr>
         </thead>
         <tbody>
@@ -150,25 +145,14 @@
                 <select
                   [(ngModel)]="lead.salesRepId"
                   class="form-select form-select-sm"
-                  (change)="
-                    updateField(lead, 'SalesRepId', lead.contactStatus)
-                  "
+                  (change)="updateField(lead, 'SalesRepId', lead.salesRepId)"
                 >
                   @for (emp of employees; track $index) {
-                    <option [value]="emp.id">{{ emp.firstName + ' ' + emp.lastName }}</option>
+                    <option [ngValue]="emp.id">
+                      {{ emp.firstName + " " + emp.lastName }}
+                    </option>
                   }
                 </select>
-              </td>
-              <td data-cell="محاولات الاتصال">
-                <input
-                  type="number"
-                  min="0"
-                  class="form-control form-control-sm"
-                  [(ngModel)]="lead.contactAttempts"
-                  (change)="
-                    updateField(lead, 'ContactAttempts', lead.contactAttempts)
-                  "
-                />
               </td>
               <td data-cell="حالة الاتصال">
                 <select
@@ -178,59 +162,67 @@
                     updateField(lead, 'ContactStatus', lead.contactStatus)
                   "
                 >
-                  <option [value]="1">لا يوجد رد</option>
-                  <option [value]="2">تم الرد</option>
-                  <option [value]="3">رقم خاطئ</option>
+                  <option [ngValue]="0">لم يتم التواصل بعد</option>
+                  <option [ngValue]="1">تم التواصل بدون رد</option>
+                  <option [ngValue]="2">تم الاتصال وتم الرد</option>
+                  <option [ngValue]="3">الرقم غير صحيح</option>
                 </select>
               </td>
-              <td class="center" data-cell="مهتم">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  role="switch"
-                  [(ngModel)]="lead.interested"
-                  (change)="updateField(lead, 'Interested', lead.interested)"
-                />
-              </td>
-              <td  data-cell="تحديد اجتماع">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  role="switch"
-                  [(ngModel)]="lead.meetingAgreed"
-                  (change)="
-                    updateField(lead, 'MeetingScheduled', lead.meetingAgreed)
-                  "
-                />
-              </td>
-              @if (lead.meetingAgreed) {
-                <td data-cell="موعد الاجتماع">
-                  <input
-                    type="datetime-local"
-                    class="form-control form-control-sm"
-                    [(ngModel)]="lead.meetingDate"
-                    (change)="
-                      updateField(lead, 'MeetingDateTime', lead.meetingDate)
-                    "
-                  />
-                </td>
-              } @else {
-                <td data-cell="موعد الاجتماع">-</td>
-              }
-              <td data-cell="حضور الاجتماع">
+              <td data-cell="حالة العميل">
                 <select
-                  [(ngModel)]="lead.meetingAttend"
+                  [(ngModel)]="lead.currentLeadStatus"
                   class="form-select form-select-sm"
                   (change)="
-                    updateField(lead, 'MeetingAttend', lead.meetingAttend)
+                    updateField(
+                      lead,
+                      'CurrentLeadStatus',
+                      lead.currentLeadStatus
+                    )
                   "
                 >
-                  <option [value]="0">نعم</option>
-                  <option [value]="1">لا</option>
-                  <option [value]="2">في الانتظار</option>
+                  <option [ngValue]="0">عميل جديد</option>
+                  <option [ngValue]="1">اتصال أولي</option>
+                  <option [ngValue]="2">مهتم</option>
+                  <option [ngValue]="3">اجتماع</option>
+                  <option [ngValue]="4">محتمل</option>
+                  <option [ngValue]="5">Deal</option>
+                  <option [ngValue]="6">غير محتمل</option>
                 </select>
               </td>
-              <!-- @if (lead.followUpReason == FollowUpReason.) {} -->
+              <td data-cell="درجة الاهتمام">
+                <select
+                  [(ngModel)]="lead.interestLevel"
+                  class="form-select form-select-sm"
+                  (change)="
+                    updateField(lead, 'InterestLevel', lead.interestLevel)
+                  "
+                >
+                  <option [ngValue]="0">منخفضة</option>
+                  <option [ngValue]="1">متوسطة</option>
+                  <option [ngValue]="2">مرتفعة</option>
+                </select>
+              </td>
+              <td data-cell="موعد الاجتماع">
+                <input
+                  type="datetime-local"
+                  class="form-control form-control-sm"
+                  [(ngModel)]="lead.meetingDate"
+                  (change)="
+                    updateField(lead, 'MeetingDate', lead.meetingDate)
+                  "
+                />
+              </td>
+              <td data-cell="عرض السعر">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  role="switch"
+                  [(ngModel)]="lead.quotationSent"
+                  (change)="
+                    updateField(lead, 'QuotationSent', lead.quotationSent)
+                  "
+                />
+              </td>
               <td data-cell="وقت المتابعة">
                 <input
                   type="datetime-local"
@@ -241,19 +233,9 @@
                   "
                 />
               </td>
-              <td data-cell="سبب المتابعة">
-                <select
-                  class="form-select form-select-sm"
-                  [(ngModel)]="lead.followUpReason"
-                  (change)="
-                    updateField(lead, 'FollowUpReason', lead.followUpReason)
-                  "
-                >
-                  <option [value]="0">لاحقا</option>
-                  <option [value]="1">لا يوجد رد</option>
-                  <option [value]="2">عودة بعد شهور</option>
-                </select>
-              </td>
+              <!-- <td data-cell="">
+                <textarea class="form-control"></textarea>
+              </td> -->
             </tr>
           }
         </tbody>

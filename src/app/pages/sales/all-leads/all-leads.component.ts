@@ -4,13 +4,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LeadService } from '../../../services/sales/lead.service';
 import {
   ContactStatus,
+  CurrentLeadStatus,
   InterestLevel,
-  ISalesLead,
-  MeetingAttend,
+  ISalesLead
 } from '../../../model/sales/i-sales-lead';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { User } from '../../../model/auth/user';
+import { LeadsOpsService } from '../../../services/sales/sales-ops/leads-ops.service';
 
 @Component({
   selector: 'app-all-leads',
@@ -37,16 +38,17 @@ export class AllLeadsComponent implements OnInit {
   interestLevels = Object.values(InterestLevel).filter(
     (value) => typeof value === 'number',
   );
-  meetingAttends = Object.values(MeetingAttend).filter(
-    (value) => typeof value === 'number',
+  leadStatuses = Object.values(CurrentLeadStatus).filter(
+    (value) =>typeof value === 'number'
   );
+
 
   ContactStatus = ContactStatus;
   InterestLevel = InterestLevel;
-  MeetingAttend = MeetingAttend;
-
+  CurrentLeadStatus = CurrentLeadStatus;
   constructor(
     private leadService: LeadService,
+    private leadOpsService: LeadsOpsService,
     private authService: AuthService,
     private router: Router,
   ) {}
@@ -106,7 +108,7 @@ export class AllLeadsComponent implements OnInit {
     this.isImporting = true;
     const file = event.target.files[0];
     if (file) {
-      this.leadService.importLeads(file).subscribe({
+      this.leadOpsService.importLeads(file).subscribe({
         next: () => {
           this.isImporting = false;
           this.loadLeads();
@@ -123,7 +125,7 @@ export class AllLeadsComponent implements OnInit {
 
   onExport() {
     this.isExporting = true;
-    this.leadService.exportLeads().subscribe({
+    this.leadOpsService.exportLeads().subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
