@@ -157,7 +157,6 @@ export class AddLeadComponent implements OnInit, OnDestroy {
       .filter((n) => n != null && String(n).trim() !== '')
       .map((note) => ({
         note: note.trim(),
-        createdById: this.currentUserId,
         leadId: 0,
       }));
 

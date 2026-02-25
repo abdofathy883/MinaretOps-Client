@@ -7,17 +7,28 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ILeadNote, ISalesLead, IUpdateLead, LeadSource } from '../../../model/sales/i-sales-lead';
+import {
+  ContactStatus,
+  CurrentLeadStatus,
+  FreelancePlatform,
+  ICreateLeadNote,
+  ILeadNote,
+  ISalesLead,
+  IUpdateLead,
+  LeadSource,
+  InterestLevel,
+  LeadResponsibility,
+} from '../../../model/sales/i-sales-lead';
 import { LeadService } from '../../../services/sales/lead.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ServicesService } from '../../../services/services/services.service';
 import { Service } from '../../../model/service/service';
 import { User } from '../../../model/auth/user';
 import { AuthService } from '../../../services/auth/auth.service';
-import { ShimmerComponent } from '../../../shared/shimmer/shimmer.component';
 import { hasError } from '../../../services/helper-services/utils';
 import { Editor, NgxEditorComponent, NgxEditorMenuComponent, Toolbar } from 'ngx-editor';
 import { LeadsOpsService } from '../../../services/sales/sales-ops/leads-ops.service';
+import { TaskShimmerComponent } from "../../../shared/task-shimmer/task-shimmer.component";
 
 @Component({
   selector: 'app-single-lead',
@@ -25,15 +36,15 @@ import { LeadsOpsService } from '../../../services/sales/sales-ops/leads-ops.ser
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ShimmerComponent,
     NgxEditorComponent,
-    NgxEditorMenuComponent
-  ],
+    NgxEditorMenuComponent,
+    TaskShimmerComponent
+],
   templateUrl: './single-lead.component.html',
   styleUrl: './single-lead.component.css',
 })
 export class SingleLeadComponent implements OnInit, OnDestroy {
-  lead: ISalesLead | null = null;
+  lead!: ISalesLead;
   notes: ILeadNote[] = [];
   services: Service[] = [];
   employees: User[] = [];
@@ -42,9 +53,12 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
   isLoadingLead = false;
   isDeleting = false;
   isLoadingNotes = false;
+  isEditMode = false;
+  isSubmittingNotes = false;
 
-  /** One Editor per note */
-  noteEditors: Editor[] = [];
+  /** New notes section (separate from update form): one or more editors to add notes */
+  newNotesForm!: FormGroup;
+  newNoteEditors: Editor[] = [new Editor()];
   toolbar: Toolbar = [
     ['bold', 'italic'],
     ['underline', 'strike'],
@@ -59,6 +73,13 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
     ['undo', 'redo'],
   ];
 
+  ContactStatus = ContactStatus;
+  CurrentLeadStatus = CurrentLeadStatus;
+  LeadSource = LeadSource;
+  InterestLevel = InterestLevel;
+  FreelancePlatform = FreelancePlatform;
+  LeadResponsibility = LeadResponsibility;
+
   constructor(
     private leadService: LeadService,
     private leadOpsService: LeadsOpsService,
@@ -67,7 +88,11 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-  ) {}
+  ) {
+    this.newNotesForm = this.fb.group({
+      notes: this.fb.array([this.fb.control('')]),
+    });
+  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -77,8 +102,8 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.noteEditors.forEach((e) => e.destroy());
-    this.noteEditors = [];
+    this.newNoteEditors.forEach((e) => e.destroy());
+    this.newNoteEditors = [];
   }
 
   initializeForm(): void {
@@ -101,30 +126,79 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
       followUpTime: [null],
       quotationSent: [false],
       assignedTo: [null],
-      notes: this.fb.array([this.fb.control('')]),
     });
-    this.noteEditors = [new Editor()];
   }
 
-  get notesFormArray(): FormArray {
-    return this.leadForm.get('notes') as FormArray;
+  toggleEditMode(): void {
+    this.isEditMode = true;
+    this.populateForm();
   }
 
-  addNote(): void {
-    this.notesFormArray.push(this.fb.control(''));
-    this.noteEditors.push(new Editor());
+  cancelEdit(): void {
+    this.isEditMode = false;
   }
 
-  removeNote(index: number): void {
-    if (this.notesFormArray.length > 1) {
-      this.noteEditors[index].destroy();
-      this.noteEditors.splice(index, 1);
-      this.notesFormArray.removeAt(index);
+  get newNotesFormArray(): FormArray {
+    return this.newNotesForm.get('notes') as FormArray;
+  }
+
+  /** New notes (add-only) section */
+  addNewNoteSlot(): void {
+    this.newNotesFormArray.push(this.fb.control(''));
+    this.newNoteEditors.push(new Editor());
+  }
+
+  removeNewNoteSlot(index: number): void {
+    if (this.newNotesFormArray.length > 1) {
+      this.newNoteEditors[index].destroy();
+      this.newNoteEditors.splice(index, 1);
+      this.newNotesFormArray.removeAt(index);
     }
   }
 
-  getNoteEditor(index: number): Editor {
-    return this.noteEditors[index];
+  getNewNoteEditor(index: number): Editor {
+    return this.newNoteEditors[index];
+  }
+
+  submitNewNotes(): void {
+    if (this.lead) {
+      const toCreate: string[] = this.newNotesFormArray.controls
+        .map((c) => (c.value as string)?.trim())
+        .filter((s) => s && s.length > 0);
+      if (toCreate.length === 0) return;
+  
+      this.isSubmittingNotes = true;
+      const createOne = (index: number): void => {
+        if (index >= toCreate.length) {
+          this.isSubmittingNotes = false;
+          this.clearNewNotesSlots();
+          this.loadNotes(this.lead.id);
+          return;
+        }
+        const dto: ICreateLeadNote = {
+          leadId: this.lead.id,
+          note: toCreate[index]
+        };
+        this.leadOpsService.createNote(dto).subscribe({
+          next: () => createOne(index + 1),
+          error: () => {
+            this.isSubmittingNotes = false;
+          },
+        });
+      };
+      createOne(0);
+    }
+      
+  }
+
+  private clearNewNotesSlots(): void {
+    const arr = this.newNotesFormArray;
+    while (arr.length > 1) {
+      this.newNoteEditors[arr.length - 1].destroy();
+      this.newNoteEditors.pop();
+      arr.removeAt(arr.length - 1);
+    }
+    arr.at(0).setValue('');
   }
 
   get isFreelancePlatforms(): boolean {
@@ -157,19 +231,11 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
       freelancePlatform: this.lead.freelancePlatform ?? null,
       responsibility: this.lead.responsibility ?? 0,
       servicesInterestedIn: this.lead.servicesInterestedIn?.map((s) => s.serviceId) ?? [],
-      meetingDate,
-      followUpTime,
+      meetingDate: this.lead.meetingDate,
+      followUpTime: this.lead.followUpTime,
       quotationSent: this.lead.quotationSent ?? false,
       assignedTo: this.lead.salesRepId ?? null,
     });
-
-    // Reset notes array and editors to a single empty note (API may not return notes)
-    while (this.notesFormArray.length > 1) {
-      this.noteEditors[this.notesFormArray.length - 1].destroy();
-      this.noteEditors.pop();
-      this.notesFormArray.removeAt(this.notesFormArray.length - 1);
-    }
-    this.notesFormArray.at(0).setValue('');
   }
 
   private formatDateTimeLocal(d: Date): string {
@@ -190,7 +256,7 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
         this.lead = response;
         this.populateForm();
         this.isLoadingLead = false;
-        this.loadNotes(leadId);
+        this.loadNotes(this.lead.id);
       },
       error: () => {
         this.isLoadingLead = false;
@@ -206,7 +272,8 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
         console.log(list)
         this.isLoadingNotes = false;
       },
-      error: () => {
+      error: (error) => {
+        console.log(error)
         this.notes = [];
         this.isLoadingNotes = false;
       },
@@ -230,11 +297,10 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
 
     this.isLoading = true;
     const formValue = this.leadForm.value;
-    const leadId = this.lead.id;
     const serviceIds = (formValue.servicesInterestedIn || []).map((id: number | string) => Number(id));
 
     const payload: IUpdateLead = {
-      id: leadId,
+      id: this.lead.id,
       businessName: formValue.businessName,
       whatsAppNumber: formValue.whatsAppNumber,
       country: formValue.country || undefined,
@@ -260,6 +326,7 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.lead = response;
         this.populateForm();
+        this.isEditMode = false;
         alert('تم تحديث العميل بنجاح');
       },
       error: (error) => {
@@ -276,12 +343,102 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
     this.leadService.delete(this.lead.id).subscribe({
       next: () => {
         this.isDeleting = false;
-        this.router.navigate(['/leads']);
+        this.hideDeleteModalAndNavigate();
       },
       error: (error) => {
         this.isDeleting = false;
         console.error(error);
       },
     });
+  }
+
+  private hideDeleteModalAndNavigate(): void {
+    const modalEl = document.getElementById('deleteModal');
+    if (modalEl) {
+      const modal = (window as any).bootstrap.Modal.getInstance(modalEl);
+      if (modal) {
+        const onHidden = () => {
+          modalEl.removeEventListener('hidden.bs.modal', onHidden);
+          this.router.navigate(['/leads']);
+        };
+        modalEl.addEventListener('hidden.bs.modal', onHidden);
+        modal.hide();
+        return;
+      }
+    }
+    this.router.navigate(['/leads']);
+  }
+
+  getContactStatusLabel(v: ContactStatus): string {
+    const m: Record<ContactStatus, string> = {
+      [ContactStatus.NotContactedYet]: 'لم يتم التواصل بعد',
+      [ContactStatus.ContactedWithNoReply]: 'تم التواصل بدون رد',
+      [ContactStatus.ContactedAndReplied]: 'تم الاتصال وتم الرد',
+      [ContactStatus.WrongNumber]: 'الرقم غير صحيح',
+    };
+    return m[v] ?? '';
+  }
+
+  getCurrentLeadStatusLabel(v: CurrentLeadStatus): string {
+    const m: Record<CurrentLeadStatus, string> = {
+      [CurrentLeadStatus.NewLead]: 'عميل جديد',
+      [CurrentLeadStatus.FirstCall]: 'اتصال أولي',
+      [CurrentLeadStatus.Interested]: 'مهتم',
+      [CurrentLeadStatus.MeetingAgreed]: 'اجتماع',
+      [CurrentLeadStatus.Potential]: 'محتمل',
+      [CurrentLeadStatus.Deal]: 'Deal',
+      [CurrentLeadStatus.NotPotential]: 'غير محتمل',
+    };
+    return m[v] ?? '';
+  }
+
+  getLeadSourceLabel(v: LeadSource): string {
+    const m: Record<LeadSource, string> = {
+      [LeadSource.Facebook]: 'Facebook',
+      [LeadSource.Instagram]: 'Instagram',
+      [LeadSource.LinkedIn]: 'LinkedIn',
+      [LeadSource.Referral]: 'Referral',
+      [LeadSource.GoogleMaps]: 'Google Maps',
+      [LeadSource.Website]: 'Website',
+      [LeadSource.FreelancingPlatforms]: 'Freelance Platforms',
+    };
+    return m[v] ?? '';
+  }
+
+  getInterestLevelLabel(v: InterestLevel): string {
+    const m: Record<InterestLevel, string> = {
+      [InterestLevel.Cold]: 'منخفض',
+      [InterestLevel.Warm]: 'متوسط',
+      [InterestLevel.Hot]: 'مرتفع',
+    };
+    return m[v] ?? '';
+  }
+
+  getFreelancePlatformLabel(v: FreelancePlatform): string {
+    const m: Record<FreelancePlatform, string> = {
+      [FreelancePlatform.Bahr]: 'Bahr',
+      [FreelancePlatform.Upwork]: 'Upwork',
+    };
+    return m[v] ?? '';
+  }
+
+  getResponsibilityLabel(v: LeadResponsibility): string {
+    const m: Record<LeadResponsibility, string> = {
+      [LeadResponsibility.Responsible_DecisionMaker]: 'المسئول وصاحب القرار',
+      [LeadResponsibility.Responsible_NOT_DecisionMaker]: 'المسئول وليس صاحب القرار',
+      [LeadResponsibility.NotResponsible]: 'ليس المسئول',
+    };
+    return m[v] ?? '';
+  }
+
+  getServicesInterestedInDisplay(): string {
+    if (!this.lead?.servicesInterestedIn?.length) return '—';
+    return this.lead.servicesInterestedIn.map((s) => s.serviceTitle).join('، ');
+  }
+
+  hasAnyNewNoteContent(): boolean {
+    return this.newNotesFormArray.controls.some(
+      (c) => (c.value || '').toString().trim().length > 0
+    );
   }
 }

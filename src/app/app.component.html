@@ -4,7 +4,7 @@
             <app-header [isSidebarCollapsed]="isSidebarCollapsed" (sidebarToggle)="onSidebarToggle($event)"></app-header>
         </div>
     }
-    <div class="content-wrapper" [class.collapsed]="isSidebarCollapsed">
+    <div class="content-wrapper" [class.collapsed]="isSidebarCollapsed" [class.with-sidebar]="isAuthenticated">
         <router-outlet></router-outlet>
     </div>
 </div>

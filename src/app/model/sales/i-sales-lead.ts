@@ -20,6 +20,7 @@ export interface ISalesLead {
   createdByName: string;
   createdAt: Date;
   updatedAt?: Date;
+  notes: ILeadNote[];
 }
 
 export interface ILeadServicesDTO {
@@ -56,7 +57,6 @@ export interface ICreateLeadService {
 
 export interface ICreateLeadNote {
   note: string;
-  createdById: string;
   leadId: number;
 }
 

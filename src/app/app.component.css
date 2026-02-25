@@ -2,30 +2,76 @@
   display: flex;
   height: 100vh;
   width: 100%;
+  overflow: hidden;
 }
 
 .sidebar-wrapper {
-  flex-shrink: 0;
+  position: fixed;
+  right: 0;
+  left: auto;
+  top: 0;
+  height: 100vh;
+  width: 260px;
   transition: width 0.3s ease;
-  width: 260px; /* Default width */
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 1000;
 }
 
 .sidebar-wrapper.collapsed {
-  width: 80px; /* Collapsed width - match header component */
+  width: 80px;
+}
+
+/* Sidebar scrollbar: narrow, no arrows, inside sidebar */
+.sidebar-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+
+.sidebar-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.sidebar-wrapper::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.sidebar-wrapper::-webkit-scrollbar-button:vertical:start,
+.sidebar-wrapper::-webkit-scrollbar-button:vertical:end {
+  display: none;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 
 .content-wrapper {
   flex: 1;
-  transition: margin-left 0.3s ease;
+  height: 100vh;
+  min-width: 0;
+  overflow-y: auto;
   overflow-x: auto;
-  min-width: 0; /* Prevent content from overflowing */
+  transition: margin-right 0.3s ease;
 }
 
-.content-wrapper.collapsed {
-  margin-left: 0;
+.content-wrapper.with-sidebar {
+  margin-right: 260px;
 }
 
-/* .container-fluid {
-  padding: 20px;
-  height: 100%;
-} */
+.content-wrapper.with-sidebar.collapsed {
+  margin-right: 80px;
+}

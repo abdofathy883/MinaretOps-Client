@@ -1,362 +1,581 @@
 <section class="container py-4">
   @if (isLoadingLead) {
-    <app-shimmer></app-shimmer>
+    <!-- <app-shimmer></app-shimmer> -->
+    <app-task-shimmer></app-task-shimmer>
   }
   @if (lead) {
-    <div class="card">
-      <div class="card-header form-header">
-        <div class="d-flex justify-content-between align-items-center">
-          <h3 class="mb-0">بيانات العميل</h3>
-          <button class="btn btn-danger" (click)="deleteLead()" [disabled]="isDeleting">
-            <i class="bi bi-trash"></i>
-          </button>
+    <div class="task-header d-flex align-items-center flex-wrap">
+      <div class="task-title-section">
+        <h1 class="task-title">{{ lead.businessName }}</h1>
+        <!-- @if (isTaskArchived) {
+      <h1 class="task-title">التاسك مؤرشف</h1>
+      } -->
+        <div class="task-meta">
+          <span class="task-id">#{{ lead.id }}</span>
         </div>
       </div>
-      <div class="card-body">
-        <!-- Notes from API -->
-        <div class="mb-4">
-          <h5 class="mb-3">الملاحظات</h5>
+      <div>
+        <div>
+          @if (!isEditMode) {
+            <button class="edit-btn" (click)="toggleEditMode()">
+              <i class="bi bi-pencil me-1"></i>
+              تعديل
+            </button>
+          }
+          @if (isEditMode) {
+            <button class="btn btn-danger me-2" (click)="cancelEdit()">
+              <i class="bi bi-x-circle me-1"></i>
+              إلغاء
+            </button>
+          }
+        </div>
+        <!-- @if (isUserAdmin || isUserAccountManager || isUserContentLeader ||
+      isUserDesignLeader) {
+
+      } -->
+      </div>
+    </div>
+
+    @if (!isEditMode) {
+      <!-- Read-only: lead details -->
+      <div class="lead-details-readonly mb-4">
+        <div class="row">
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">اسم العميل</label>
+            <p class="mb-0">{{ lead.businessName }}</p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">رقم الواتساب</label>
+            <p class="mb-0">{{ lead.whatsAppNumber }}</p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">البلد</label>
+            <p class="mb-0">{{ lead.country || "—" }}</p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">المجال</label>
+            <p class="mb-0">{{ lead.occupation || "—" }}</p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">حالة العميل الحالية</label>
+            <p class="mb-0">
+              {{ getCurrentLeadStatusLabel(lead.currentLeadStatus) }}
+            </p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">درجة الاهتمام</label>
+            <p class="mb-0">{{ getInterestLevelLabel(lead.interestLevel) }}</p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">حالة التواصل</label>
+            <p class="mb-0">{{ getContactStatusLabel(lead.contactStatus) }}</p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">المصدر</label>
+            <p class="mb-0">{{ getLeadSourceLabel(lead.leadSource) }}</p>
+          </div>
+          @if (
+            lead.leadSource === LeadSource.FreelancingPlatforms &&
+            lead.freelancePlatform != null
+          ) {
+            <div class="col-12 col-md-6 mb-3">
+              <label class="form-label text-muted">المنصة</label>
+              <p class="mb-0">
+                {{ getFreelancePlatformLabel(lead.freelancePlatform) }}
+              </p>
+            </div>
+          }
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">المسئولية</label>
+            <p class="mb-0">
+              {{ getResponsibilityLabel(lead.responsibility) }}
+            </p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">تاريخ الاجتماع</label>
+            <p class="mb-0">
+              {{ lead.meetingDate ? (lead.meetingDate | date: "short") : "—" }}
+            </p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">تاريخ المتابعة</label>
+            <p class="mb-0">
+              {{
+                lead.followUpTime ? (lead.followUpTime | date: "short") : "—"
+              }}
+            </p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">تعيين الى</label>
+            <p class="mb-0">{{ lead.salesRepName || "—" }}</p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">تم إرسال عرض سعر</label>
+            <p class="mb-0">{{ lead.quotationSent ? "نعم" : "لا" }}</p>
+          </div>
+          <div class="col-12 mb-3">
+            <label class="form-label text-muted">الخدمات المطلوبة</label>
+            <p class="mb-0">{{ getServicesInterestedInDisplay() }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes section (separate from update form): existing notes + add new -->
+      <div class="row mt-4">
+        <div class="lead-notes-card">
+          <div class="card-header mb-3">
+            <h5 class="mb-0">
+              <i class="bi bi-chat-left-text ms-2"></i>ملاحظات العميل
+            </h5>
+          </div>
+
+          <!-- Add new note(s) -->
+          <div class="new-notes-form" [formGroup]="newNotesForm">
+            <label class="form-label">إضافة ملاحظة أو أكثر</label>
+            <div formArrayName="notes" class="mb-2">
+              @for (ctrl of newNotesFormArray.controls; track $index) {
+                <div class="notes-editor-wrapper mb-3">
+                  <label class="form-label small text-muted"
+                    >ملاحظة {{ $index + 1 }}</label
+                  >
+                  <ngx-editor-menu
+                    [editor]="getNewNoteEditor($index)"
+                    [toolbar]="toolbar"
+                  ></ngx-editor-menu>
+                  <ngx-editor
+                    [editor]="getNewNoteEditor($index)"
+                    [placeholder]="'اكتب هنا...'"
+                    [formControlName]="$index"
+                  ></ngx-editor>
+                  @if (newNotesFormArray.length > 1) {
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger btn-sm mt-1"
+                      (click)="removeNewNoteSlot($index)"
+                    >
+                      حذف الملاحظة
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+            <div class="d-flex gap-2 flex-column">
+              <button
+                type="button"
+                class="btn btn-outline-success btn-sm"
+                (click)="addNewNoteSlot()"
+              >
+                <i class="bi bi-plus me-1"></i>إضافة سطر ملاحظة
+              </button>
+              <button
+                type="button"
+                class="add-btn"
+                (click)="submitNewNotes()"
+                [disabled]="isSubmittingNotes || !hasAnyNewNoteContent()"
+              >
+                @if (isSubmittingNotes) {
+                  <span
+                    class="spinner-border spinner-border-sm me-1"
+                    role="status"
+                  ></span>
+                  جاري الإضافة...
+                } @else {
+                  <i class="bi bi-plus-circle me-1"></i>
+                  إضافة الملاحظات
+                }
+              </button>
+            </div>
+          </div>
           @if (isLoadingNotes) {
             <p class="text-muted small">جارٍ تحميل الملاحظات...</p>
           } @else if (notes.length === 0) {
-            <p class="text-muted small">لا توجد ملاحظات.</p>
+            <div class="no-notes">
+              <i class="bi bi-chat-left-text"></i>
+              <p>لا توجد ملاحظات بعد</p>
+            </div>
           } @else {
-            <ul class="list-group list-group-flush">
-              @for (note of notes; track note.id) {
-                <li class="list-group-item px-0">
-                  <div class="d-flex justify-content-between align-items-start small text-muted mb-1">
-                    <span>{{ note.createdByName }}</span>
-                    <span>{{ note.createdAt | date : 'short' }}</span>
+            <div class="comments-list">
+              @for (
+                note of lead.notes;
+                track note.createdById + note.createdAt
+              ) {
+                <div class="comment-item">
+                  <div class="comment-header">
+                    <div class="comment-author">
+                      <i class="bi bi-person-circle"></i>
+                      <span class="author-name">{{
+                        note.createdByName || "غير معروف"
+                      }}</span>
+                    </div>
+                    <span class="comment-date">{{
+                      note.createdAt | date: "short"
+                    }}</span>
                   </div>
-                  <div class="note-content" [innerHTML]="note.note"></div>
-                </li>
+                  <div class="comment-content" [innerHTML]="note.note">
+                    <!-- {{ comment.comment }} -->
+                  </div>
+                </div>
               }
-            </ul>
+            </div>
           }
         </div>
+      </div>
+    }
 
-        <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
-          <div class="row">
-            <div class="col-12 col-md-6 mb-3">
-              <label for="businessName" class="form-label">اسم العميل</label>
-              <span class="text-danger me-2">*</span>
-              <input
-                id="businessName"
-                name="businessName"
-                class="form-control"
-                type="text"
-                formControlName="businessName"
-                [class.is-invalid]="hasError('businessName')"
-              />
-            </div>
-            <div class="col-12 col-md-6 mb-3">
-              <label for="whatsAppNumber" class="form-label">رقم الواتساب</label>
-              <span class="text-danger me-2">*</span>
-              <input
-                type="text"
-                id="whatsAppNumber"
-                name="whatsAppNumber"
-                class="form-control"
-                formControlName="whatsAppNumber"
-                [class.is-invalid]="hasError('whatsAppNumber')"
-              />
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-12 col-md-6 mb-3">
-              <label for="country" class="form-label">البلد</label>
-              <select
-                name="country"
-                id="country"
-                class="form-select"
-                formControlName="country"
-              >
-                <option value="">اختر البلد</option>
-                <option value="Egypt">مصر</option>
-                <option value="Saudi Arabia">السعودية</option>
-                <option value="UAE">الإمارات</option>
-              </select>
-            </div>
-            <div class="col-12 col-md-6 mb-3">
-              <label for="occupation" class="form-label">المجال</label>
-              <input
-                type="text"
-                id="occupation"
-                name="occupation"
-                class="form-control"
-                formControlName="occupation"
-                [class.is-invalid]="hasError('occupation')"
-              />
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-12 col-md-6 mb-3">
-              <label for="currentLeadStatus" class="form-label"
-                >حالة العميل الحالية</label
-              >
-              <select
-                id="currentLeadStatus"
-                class="form-select"
-                formControlName="currentLeadStatus"
-                [class.is-invalid]="hasError('currentLeadStatus')"
-              >
-                <option disabled selected>اختر الحالة</option>
-                <option [ngValue]="0">عميل جديد</option>
-                <option [ngValue]="1">اتصال أولي</option>
-                <option [ngValue]="2">مهتم</option>
-                <option [ngValue]="3">اجتماع</option>
-                <option [ngValue]="4">محتمل</option>
-                <option [ngValue]="5">Deal</option>
-                <option [ngValue]="6">غير محتمل</option>
-              </select>
-            </div>
-            <div class="col-12 col-md-6 mb-3">
-              <label for="interestLevel" class="form-label">درجة الاهتمام</label>
-              <select
-                name="interestLevel"
-                id="interestLevel"
-                class="form-select"
-                formControlName="interestLevel"
-                [class.is-invalid]="hasError('interestLevel')"
-              >
-                <option disabled selected>اختر درجة الاهتمام</option>
-                <option [ngValue]="0">منخفض</option>
-                <option [ngValue]="1">متوسط</option>
-                <option [ngValue]="2">مرتفع</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-12 col-md-6 mb-3">
-              <label for="contactStatus" class="form-label">حالة التواصل</label>
-              <select
-                name="contactStatus"
-                id="contactStatus"
-                class="form-select"
-                formControlName="contactStatus"
-                [class.is-invalid]="hasError('contactStatus')"
-              >
-                <option disabled selected>اختر الحالة</option>
-                <option [ngValue]="0">لم يتم التواصل بعد</option>
-                <option [ngValue]="1">تم التواصل بدون رد</option>
-                <option [ngValue]="2">تم الاتصال وتم الرد</option>
-                <option [ngValue]="3">الرقم غير صحيح</option>
-              </select>
-            </div>
-            <div class="col-12 col-md-6 mb-3">
-              <label for="leadSource" class="form-label">المصدر</label>
-              <select
-                id="leadSource"
-                class="form-select"
-                formControlName="leadSource"
-                [class.is-invalid]="hasError('leadSource')"
-              >
-                <option disabled [ngValue]="null">اختر المصدر</option>
-                <option [ngValue]="0">Facebook</option>
-                <option [ngValue]="1">Instagram</option>
-                <option [ngValue]="2">LinkedIn</option>
-                <option [ngValue]="3">Referral</option>
-                <option [ngValue]="4">Google Maps</option>
-                <option [ngValue]="5">Website</option>
-                <option [ngValue]="6">Freelance Platforms</option>
-              </select>
-            </div>
-          </div>
-
-          @if (isFreelancePlatforms) {
-            <div class="mb-3">
-              <label for="freelancePlatform" class="form-label">المنصة</label>
-              <select
-                id="freelancePlatform"
-                class="form-select"
-                formControlName="freelancePlatform"
-              >
-                <option [ngValue]="null" disabled>اختر المنصة</option>
-                <option [ngValue]="0">Bahr</option>
-                <option [ngValue]="1">Upwork</option>
-              </select>
-            </div>
-          }
-
-          <div class="row">
-            <div class="col-12 col-md-6 mb-3">
-              <label for="responsibility" class="form-label">المسئولية</label>
-              <select
-                name="responsibility"
-                id="responsibility"
-                class="form-select"
-                formControlName="responsibility"
-              >
-                <option [ngValue]="0">المسئول وصاحب القرار</option>
-                <option [ngValue]="1">المسئول وليس صاحب القرار</option>
-                <option [ngValue]="2">ليس المسئول</option>
-              </select>
-            </div>
-            <div class="col-12 col-md-6 mb-3">
-              <label for="budget" class="form-label">الميزانية</label>
-              <select
-                name="budget"
-                id="budget"
-                class="form-select"
-                formControlName="budget"
-              >
-                <option [ngValue]="0">أقل</option>
-                <option [ngValue]="1">مساوي</option>
-                <option [ngValue]="2">أكثر</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-12 col-md-6 mb-3">
-              <label for="timeline" class="form-label">مدة التنفيذ</label>
-              <select
-                name="timeline"
-                id="timeline"
-                class="form-select"
-                formControlName="timeline"
-              >
-                <option [ngValue]="0">أقل</option>
-                <option [ngValue]="1">مساوي</option>
-                <option [ngValue]="2">أكثر</option>
-              </select>
-            </div>
-            <div class="col-12 col-md-6 mb-3">
-              <label for="needsExpectation" class="form-label">المتطلبات</label>
-              <select
-                name="needsExpectation"
-                id="needsExpectation"
-                class="form-select"
-                formControlName="needsExpectation"
-              >
-                <option [ngValue]="0">أقل</option>
-                <option [ngValue]="1">مساوي</option>
-                <option [ngValue]="2">أكثر</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-12 col-md-6 mb-3">
-              <label for="meetingDate" class="form-label">تاريخ الاجتماع</label>
-              <input
-                type="datetime-local"
-                id="meetingDate"
-                class="form-control"
-                formControlName="meetingDate"
-                [class.is-invalid]="hasError('meetingDate')"
-              />
-            </div>
-            <div class="col-12 col-md-6 mb-3">
-              <label for="followUpTime" class="form-label">تاريخ المتابعة</label>
-              <input
-                type="datetime-local"
-                id="followUpTime"
-                class="form-control"
-                formControlName="followUpTime"
-                [class.is-invalid]="hasError('followUpTime')"
-              />
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label for="assignedTo" class="form-label">تعيين الى</label>
-            <select
-              id="assignedTo"
-              class="form-select"
-              formControlName="assignedTo"
-              [class.is-invalid]="hasError('assignedTo')"
-            >
-              <option disabled selected>اختر الموظف</option>
-              @for (user of employees; track user.id) {
-                <option [value]="user.id">
-                  {{ user.firstName + " " + user.lastName }}
-                </option>
+    @if (isEditMode) {
+      <div class="card">
+        <div class="card-header form-header">
+          <div
+            class="d-flex justify-content-between align-items-center flex-wrap"
+          >
+            <h3 class="mb-0 text-white">بيانات العميل</h3>
+            <button class="btn btn-danger" type="button"  data-bs-toggle="modal" data-bs-target="#deleteModal">
+              @if (!isDeleting) {
+                <i class="bi bi-trash text-white"></i>
+              } @if (isDeleting) {
+                <span
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
               }
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label for="servicesInterestedIn" class="form-label"
-              >الخدمات المطلوبة</label
-            >
-            <select
-              multiple
-              name="servicesInterestedIn"
-              id="servicesInterestedIn"
-              class="form-select"
-              formControlName="servicesInterestedIn"
-              [class.is-invalid]="hasError('servicesInterestedIn')"
-            >
-              <option disabled selected>اختر الخدمات المطلوبة</option>
-              @for (service of services; track service.id) {
-                <option [value]="service.id">{{ service.title }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="row">
-            <div class="col-6 mb-3">
-              <div class="form-check form-switch">
-                <label class="form-check-label" for="quotationSent"
-                  >تم إرسال عرض سعر
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    id="quotationSent"
-                    formControlName="quotationSent"
-                  />
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <!-- Notes -->
-          <div class="mb-3" formArrayName="notes">
-            <label class="form-label">الملاحظات</label>
-            @for (ctrl of notesFormArray.controls; track $index) {
-              <div class="notes-editor-wrapper mb-3">
-                <label class="form-label small text-muted">ملاحظة {{ $index + 1 }}</label>
-                <ngx-editor-menu [editor]="getNoteEditor($index)" [toolbar]="toolbar"></ngx-editor-menu>
-                <ngx-editor
-                  [editor]="getNoteEditor($index)"
-                  [placeholder]="'اكتب هنا...'"
-                  [formControlName]="$index"
-                ></ngx-editor>
-                @if (notesFormArray.length > 1) {
-                  <button type="button" class="btn btn-outline-danger btn-sm mt-1" (click)="removeNote($index)">
-                    حذف الملاحظة
-                  </button>
-                }
-              </div>
-            }
-            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="addNote()">
-              إضافة ملاحظة
             </button>
           </div>
+        </div>
+        <div class="card-body">
+          <!-- Edit mode: update lead form only (no notes in form) -->
+          <form [formGroup]="leadForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="businessName" class="form-label">اسم العميل</label>
+                <span class="text-danger me-2">*</span>
+                <input
+                  id="businessName"
+                  name="businessName"
+                  class="form-control"
+                  type="text"
+                  formControlName="businessName"
+                  [class.is-invalid]="hasError('businessName')"
+                />
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="whatsAppNumber" class="form-label"
+                  >رقم الواتساب</label
+                >
+                <span class="text-danger me-2">*</span>
+                <input
+                  type="text"
+                  id="whatsAppNumber"
+                  name="whatsAppNumber"
+                  class="form-control"
+                  formControlName="whatsAppNumber"
+                  [class.is-invalid]="hasError('whatsAppNumber')"
+                />
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            class="btn btn-primary w-100 mt-3"
-            [disabled]="isLoading"
-          >
-            @if (isLoading) {
-              <span
-                class="spinner-border spinner-border-sm"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              جارٍ الحفظ...
-            } @else {
-              حفظ التغييرات
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="country" class="form-label">البلد</label>
+                <select
+                  name="country"
+                  id="country"
+                  class="form-select"
+                  formControlName="country"
+                >
+                  <option value="">اختر البلد</option>
+                  <option value="Egypt">مصر</option>
+                  <option value="Saudi Arabia">السعودية</option>
+                  <option value="UAE">الإمارات</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="occupation" class="form-label">المجال</label>
+                <input
+                  type="text"
+                  id="occupation"
+                  name="occupation"
+                  class="form-control"
+                  formControlName="occupation"
+                  [class.is-invalid]="hasError('occupation')"
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="currentLeadStatus" class="form-label"
+                  >حالة العميل الحالية</label
+                >
+                <select
+                  id="currentLeadStatus"
+                  class="form-select"
+                  formControlName="currentLeadStatus"
+                  [class.is-invalid]="hasError('currentLeadStatus')"
+                >
+                  <option disabled selected>اختر الحالة</option>
+                  <option [ngValue]="0">عميل جديد</option>
+                  <option [ngValue]="1">اتصال أولي</option>
+                  <option [ngValue]="2">مهتم</option>
+                  <option [ngValue]="3">اجتماع</option>
+                  <option [ngValue]="4">محتمل</option>
+                  <option [ngValue]="5">Deal</option>
+                  <option [ngValue]="6">غير محتمل</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="interestLevel" class="form-label"
+                  >درجة الاهتمام</label
+                >
+                <select
+                  name="interestLevel"
+                  id="interestLevel"
+                  class="form-select"
+                  formControlName="interestLevel"
+                  [class.is-invalid]="hasError('interestLevel')"
+                >
+                  <option disabled selected>اختر درجة الاهتمام</option>
+                  <option [ngValue]="0">منخفض</option>
+                  <option [ngValue]="1">متوسط</option>
+                  <option [ngValue]="2">مرتفع</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="contactStatus" class="form-label"
+                  >حالة التواصل</label
+                >
+                <select
+                  name="contactStatus"
+                  id="contactStatus"
+                  class="form-select"
+                  formControlName="contactStatus"
+                  [class.is-invalid]="hasError('contactStatus')"
+                >
+                  <option disabled selected>اختر الحالة</option>
+                  <option [ngValue]="0">لم يتم التواصل بعد</option>
+                  <option [ngValue]="1">تم التواصل بدون رد</option>
+                  <option [ngValue]="2">تم الاتصال وتم الرد</option>
+                  <option [ngValue]="3">الرقم غير صحيح</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="leadSource" class="form-label">المصدر</label>
+                <select
+                  id="leadSource"
+                  class="form-select"
+                  formControlName="leadSource"
+                  [class.is-invalid]="hasError('leadSource')"
+                >
+                  <option disabled [ngValue]="null">اختر المصدر</option>
+                  <option [ngValue]="0">Facebook</option>
+                  <option [ngValue]="1">Instagram</option>
+                  <option [ngValue]="2">LinkedIn</option>
+                  <option [ngValue]="3">Referral</option>
+                  <option [ngValue]="4">Google Maps</option>
+                  <option [ngValue]="5">Website</option>
+                  <option [ngValue]="6">Freelance Platforms</option>
+                </select>
+              </div>
+            </div>
+
+            @if (isFreelancePlatforms) {
+              <div class="mb-3">
+                <label for="freelancePlatform" class="form-label">المنصة</label>
+                <select
+                  id="freelancePlatform"
+                  class="form-select"
+                  formControlName="freelancePlatform"
+                >
+                  <option [ngValue]="null" disabled>اختر المنصة</option>
+                  <option [ngValue]="0">Bahr</option>
+                  <option [ngValue]="1">Upwork</option>
+                </select>
+              </div>
             }
-          </button>
-        </form>
+
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="responsibility" class="form-label">المسئولية</label>
+                <select
+                  name="responsibility"
+                  id="responsibility"
+                  class="form-select"
+                  formControlName="responsibility"
+                >
+                  <option [ngValue]="0">المسئول وصاحب القرار</option>
+                  <option [ngValue]="1">المسئول وليس صاحب القرار</option>
+                  <option [ngValue]="2">ليس المسئول</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="budget" class="form-label">الميزانية</label>
+                <select
+                  name="budget"
+                  id="budget"
+                  class="form-select"
+                  formControlName="budget"
+                >
+                  <option [ngValue]="0">أقل</option>
+                  <option [ngValue]="1">مساوي</option>
+                  <option [ngValue]="2">أكثر</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="timeline" class="form-label">مدة التنفيذ</label>
+                <select
+                  name="timeline"
+                  id="timeline"
+                  class="form-select"
+                  formControlName="timeline"
+                >
+                  <option [ngValue]="0">أقل</option>
+                  <option [ngValue]="1">مساوي</option>
+                  <option [ngValue]="2">أكثر</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="needsExpectation" class="form-label"
+                  >المتطلبات</label
+                >
+                <select
+                  name="needsExpectation"
+                  id="needsExpectation"
+                  class="form-select"
+                  formControlName="needsExpectation"
+                >
+                  <option [ngValue]="0">أقل</option>
+                  <option [ngValue]="1">مساوي</option>
+                  <option [ngValue]="2">أكثر</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="meetingDate" class="form-label"
+                  >تاريخ الاجتماع</label
+                >
+                <input
+                  type="datetime-local"
+                  id="meetingDate"
+                  class="form-control"
+                  formControlName="meetingDate"
+                  [class.is-invalid]="hasError('meetingDate')"
+                />
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="followUpTime" class="form-label"
+                  >تاريخ المتابعة</label
+                >
+                <input
+                  type="datetime-local"
+                  id="followUpTime"
+                  class="form-control"
+                  formControlName="followUpTime"
+                  [class.is-invalid]="hasError('followUpTime')"
+                />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="assignedTo" class="form-label">تعيين الى</label>
+              <select
+                id="assignedTo"
+                class="form-select"
+                formControlName="assignedTo"
+                [class.is-invalid]="hasError('assignedTo')"
+              >
+                <option disabled selected>اختر الموظف</option>
+                @for (user of employees; track user.id) {
+                  <option [value]="user.id">
+                    {{ user.firstName + " " + user.lastName }}
+                  </option>
+                }
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="servicesInterestedIn" class="form-label"
+                >الخدمات المطلوبة</label
+              >
+              <select
+                multiple
+                name="servicesInterestedIn"
+                id="servicesInterestedIn"
+                class="form-select"
+                formControlName="servicesInterestedIn"
+                [class.is-invalid]="hasError('servicesInterestedIn')"
+              >
+                <option disabled selected>اختر الخدمات المطلوبة</option>
+                @for (service of services; track service.id) {
+                  <option [value]="service.id">{{ service.title }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="row">
+              <div class="col-6 mb-3">
+                <div class="form-check form-switch">
+                  <label class="form-check-label" for="quotationSent"
+                    >تم إرسال عرض سعر
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="quotationSent"
+                      formControlName="quotationSent"
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary w-100 mt-3"
+              [disabled]="isLoading"
+            >
+              @if (isLoading) {
+                <span
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                جارٍ الحفظ...
+              } @else {
+                حفظ التغييرات
+              }
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    }
   }
 </section>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">حذف العميل</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        هل أنت متأكد من حذف العميل؟
+        <br>
+        لا يمكن التراجع عن هذه الخطوة
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">تراجع</button>
+        <button type="button" class="btn btn-danger" (click)="deleteLead()">تأكيد الحذف</button>
+      </div>
+    </div>
+  </div>
+</div>
