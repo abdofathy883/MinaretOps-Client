@@ -67,6 +67,7 @@ import { IncidentsComponent } from './pages/kpis/incidents/incidents.component';
 import { SingleLeadComponent } from './pages/sales/single-lead/single-lead.component';
 import { AllEntriesComponent } from './pages/contact/all-entries/all-entries.component';
 import { SeoPagesComponent } from './pages/seo/seo-pages/seo-pages.component';
+import { CompletedComponent } from './pages/tasks/completed/completed.component';
 
 export const routes: Routes = [
   {
@@ -151,6 +152,11 @@ export const routes: Routes = [
     path: 'tasks/archive',
     component: ArchiveComponent,
     canActivate: [noauthGuard],
+  },
+  {
+    path: 'tasks/completed',
+    component: CompletedComponent,
+    canActivate: [noauthGuard]
   },
   {
     path: 'tasks/add',

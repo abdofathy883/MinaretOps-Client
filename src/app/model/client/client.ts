@@ -107,7 +107,7 @@ export interface IUpdateClient {
   commercialRegisterNumber?: string;
   taxCardNumber?: string;
   country?: string;
-  accountManagerId: string;
+  accountManagerId?: string;
   discordChannelId: string;
   status: ClientStatus;
   statusNotes: string;

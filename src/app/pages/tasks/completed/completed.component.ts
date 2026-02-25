@@ -1,26 +1,26 @@
 import { Component } from '@angular/core';
 import { CustomTaskStatus, ILightWieghtTask, ITask, TaskType } from '../../../model/task/task';
+import { Service } from '../../../model/service/service';
 import { User } from '../../../model/auth/user';
 import { LightWieghtClient } from '../../../model/client/client';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ServicesService } from '../../../services/services/services.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { ClientService } from '../../../services/clients/client.service';
 import { TaskService } from '../../../services/tasks/task.service';
 import { Router } from '@angular/router';
-import { Service } from '../../../model/service/service';
-import { CommonModule } from '@angular/common';
-import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
-import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
 import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
+import { MapTaskStatusPipe } from "../../../core/pipes/map-task-status/map-task-status.pipe";
+import { CommonModule } from '@angular/common';
+import { MapTaskStatusClassPipe } from "../../../core/pipes/map-task-status-class/map-task-status-class.pipe";
 
 @Component({
-  selector: 'app-archive',
-  imports: [CommonModule, ReactiveFormsModule, MapTaskStatusClassPipe, MapTaskStatusPipe, ShimmerComponent],
-  templateUrl: './archive.component.html',
-  styleUrl: './archive.component.css'
+  selector: 'app-completed',
+  imports: [ShimmerComponent, MapTaskStatusPipe, CommonModule, MapTaskStatusClassPipe],
+  templateUrl: './completed.component.html',
+  styleUrl: './completed.component.css'
 })
-export class ArchiveComponent {
+export class CompletedComponent {
   services: Service[] = [];
   employees: User[] = [];
   clients: LightWieghtClient[] = [];
@@ -78,7 +78,7 @@ export class ArchiveComponent {
 
   loadTasks() {
     this.isLoadingTasks = true;
-    this.taskService.getArchivedTasks().subscribe({
+    this.taskService.getCompletedTasks().subscribe({
       next: (response) => {
         this.isLoadingTasks = false;
         this.tasks = response;

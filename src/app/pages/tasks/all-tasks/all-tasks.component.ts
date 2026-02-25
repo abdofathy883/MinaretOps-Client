@@ -56,6 +56,7 @@ export class AllTasksComponent implements OnInit {
   isSearching: boolean = false;
   filterForm!: FormGroup;
   isLoadingTasks: boolean = false;
+  isShowingFilters: boolean = false;
 
   // Pagination properties
   currentPage: number = 1;
@@ -65,6 +66,13 @@ export class AllTasksComponent implements OnInit {
   loading: boolean = false;
 
   taskTeams = TASK_TEAM_MAPPINGS;
+
+  /** View mode: grid with 2 cols, grid with 3 cols, or list (1 col) */
+  viewMode: 'grid2' | 'grid3' | 'list' = 'grid3';
+
+  setViewMode(mode: 'grid2' | 'grid3' | 'list') {
+    this.viewMode = mode;
+  }
 
   constructor(
     private serviceService: ServicesService,
@@ -96,6 +104,10 @@ export class AllTasksComponent implements OnInit {
     this.filterForm.valueChanges.subscribe(() => {
       this.applyFilters();
     });
+  }
+
+  toggleFilters(){
+    this.isShowingFilters = !this.isShowingFilters;
   }
 
   loadServices() {
@@ -212,36 +224,26 @@ export class AllTasksComponent implements OnInit {
     });
   }
 
-  // Add day navigation methods
+  // Day navigation: reference is current form date, or today when empty
   loadPreviousDay(): void {
-    const fromDate = new Date();
-    fromDate.setDate(fromDate.getDate() - 1);
-
-    const toDate = new Date();
-    toDate.setDate(toDate.getDate() - 1);
-
-    this.filterForm.patchValue({
-      fromDate: fromDate.toISOString().split('T')[0],
-      toDate: toDate.toISOString().split('T')[0],
-    });
-
-    this.currentPage = 1; // Reset to first page
+    const ref = this.filterForm.value.fromDate
+      ? new Date(this.filterForm.value.fromDate)
+      : new Date();
+    ref.setDate(ref.getDate() - 1);
+    const dayStr = ref.toISOString().split('T')[0];
+    this.filterForm.patchValue({ fromDate: dayStr, toDate: dayStr });
+    this.currentPage = 1;
     this.loadTasks();
   }
 
   loadNextDay(): void {
-    const fromDate = new Date();
-    fromDate.setDate(fromDate.getDate() + 1);
-
-    const toDate = new Date();
-    toDate.setDate(toDate.getDate() + 1);
-
-    this.filterForm.patchValue({
-      fromDate: fromDate.toISOString().split('T')[0],
-      toDate: toDate.toISOString().split('T')[0],
-    });
-
-    this.currentPage = 1; // Reset to first page
+    const ref = this.filterForm.value.fromDate
+      ? new Date(this.filterForm.value.fromDate)
+      : new Date();
+    ref.setDate(ref.getDate() + 1);
+    const dayStr = ref.toISOString().split('T')[0];
+    this.filterForm.patchValue({ fromDate: dayStr, toDate: dayStr });
+    this.currentPage = 1;
     this.loadTasks();
   }
 

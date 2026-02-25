@@ -226,7 +226,8 @@ export class ClientInfoComponent implements OnInit, OnChanges {
           // this.clientUpdated.emit(response);
           this.isLoading = false;
         },
-        error: () => {
+        error: (error) => {
+          console.log(error)
           this.showAlert('فشل في تحديث بيانات العميل, حاول مرة اخرى', 'error');
           this.isLoading = false;
         },
@@ -243,6 +244,7 @@ export class ClientInfoComponent implements OnInit, OnChanges {
       },
       error: (error) => {
         this.isDeleteLoading = false;
+        console.log(error)
         this.showAlert('فشل في حذف العميل, حاول مرة اخرى', 'error');
       },
     });

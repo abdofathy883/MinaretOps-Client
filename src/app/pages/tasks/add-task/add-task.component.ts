@@ -30,7 +30,7 @@ export class AddTaskComponent implements OnInit {
   }
 
   loadClients() {
-    this.clientService.getAll().subscribe({
+    this.clientService.getAllActive().subscribe({
       next: (response) => {
         this.clients = response;
       },

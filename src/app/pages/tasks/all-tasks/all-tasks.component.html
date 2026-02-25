@@ -38,145 +38,155 @@
   </div>
 
   <!-- Filters Section -->
-  <div>
-    <form [formGroup]="filterForm">
-      <p>تصفية حسب:</p>
-      <div class="row">
-        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
-          <label for="fromDate" class="form-label">من</label>
-          <input
-            type="date"
-            name="fromDate"
-            id="fromDate"
-            class="form-control"
-            formControlName="fromDate"
-          />
-        </div>
-        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
-          <label for="service" class="form-label">الى</label>
-          <input
-            type="date"
-            name="toDate"
-            id="toDate"
-            class="form-control"
-            formControlName="toDate"
-          />
-        </div>
-        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
-          <label for="service" class="form-label">الحالة</label>
-          <select name="" id="" class="form-select" formControlName="status">
-            <option value="">جميع الحالات</option>
-            <option value="0">لم يبدأ</option>
-            <option value="1">تم الإقرار</option>
-            <option value="2">قيد التنفيذ</option>
-            <option value="3">قيد المراجعة</option>
-            <option value="4">تحتاج تعديلات</option>
-            <option value="5">مكتمل</option>
-            <option value="6">مرفوضة</option>
-          </select>
-        </div>
-        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
-          <label for="client" class="form-label">العميل</label>
-          <select
-            name="client"
-            id="client"
-            class="form-select"
-            formControlName="clientId"
-          >
-            <option value="">جميع العملاء</option>
-            @for (client of clients; track $index) {
-            <option [value]="client.id">{{ client.name }}</option>
-            }
-          </select>
-        </div>
-        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
-          <label for="employee" class="form-label">الموظف</label>
-          <select
-            name="employee"
-            id="employee"
-            class="form-select"
-            formControlName="employeeId"
-          >
-            <option value="">جميع الموظفين</option>
-            @for (emp of employees; track $index) {
-            <option [value]="emp.id">
-              {{ emp.firstName + " " + emp.lastName }}
-            </option>
-            }
-          </select>
-        </div>
-        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
-          <label for="priority" class="form-label">الاولوية</label>
-          <select
-            name="priority"
-            id="priority"
-            class="form-select"
-            formControlName="priority"
-          >
-            <option value="">جميع الأولويات</option>
-            <option value="عادي">عادي</option>
-            <option value="مهم">مهم</option>
-            <option value="مستعجل">مستعجل</option>
-          </select>
-        </div>
-        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
-          <label for="" class="form-label">الاكتمال في الموعد</label>
-          <select
-            name="onDeadline"
-            id="onDeadline"
-            class="form-select"
-            formControlName="onDeadline"
-          >
-            <option value="">جميع المهام</option>
-            <option value="yes">مكتمل في الموعد</option>
-            <option value="no">غير مكتمل في الموعد</option>
-            <option value="not-yet">لم يحن الموعد</option>
-          </select>
-        </div>
-        <!-- Add the team filter back to the filters section -->
-        <div class="col-6 col-lg-2 mb-2 mb-lg-0">
-          <label for="team" class="form-label">الفريق</label>
-          <select
-            name="team"
-            id="team"
-            class="form-select"
-            formControlName="team"
-          >
-            <option value="">جميع الفرق</option>
-            @for (teamMapping of taskTeams; track teamMapping.team) {
-            <option [value]="teamMapping.team">{{ teamMapping.name }}</option>
-            }
-          </select>
-        </div>
-        <div class="col">
-          <br />
-          <button class="add-btn w-100 mt-1" (click)="clearSearch()">
-            مسح البحث
-          </button>
-        </div>
-      </div>
-    </form>
-
-    <!-- Quick navigation -->
-    <div class="row mt-3">
-      <div class="col-12 d-flex gap-2">
-        <button
-          class="btn btn-sm btn-outline-primary"
-          (click)="loadPreviousDay()"
-          [disabled]="loading"
-        >
-          اليوم السابق
-        </button>
-        <button
-          class="btn btn-sm btn-outline-primary"
-          (click)="loadNextDay()"
-          [disabled]="loading"
-        >
-          اليوم التالي
-        </button>
-      </div>
-    </div>
-  </div>
+   <button class="btn btn-outline-primary" (click)="toggleFilters()">
+    <i class="bi bi-funnel-fill ms-2"></i>
+    @if (isShowingFilters) {
+      <span>اخفاء الفلاتر</span>
+    } @if (!isShowingFilters) {
+      إظهار الفلاتر
+    }
+   </button>
+   @if (isShowingFilters) {
+     <div>
+       <form [formGroup]="filterForm">
+         <p>تصفية حسب:</p>
+         <div class="row">
+           <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+             <label for="fromDate" class="form-label">من</label>
+             <input
+               type="date"
+               name="fromDate"
+               id="fromDate"
+               class="form-control"
+               formControlName="fromDate"
+             />
+           </div>
+           <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+             <label for="service" class="form-label">الى</label>
+             <input
+               type="date"
+               name="toDate"
+               id="toDate"
+               class="form-control"
+               formControlName="toDate"
+             />
+           </div>
+           <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+             <label for="service" class="form-label">الحالة</label>
+             <select name="" id="" class="form-select" formControlName="status">
+               <option value="">جميع الحالات</option>
+               <option value="0">لم يبدأ</option>
+               <option value="1">تم الإقرار</option>
+               <option value="2">قيد التنفيذ</option>
+               <option value="3">قيد المراجعة</option>
+               <option value="4">تحتاج تعديلات</option>
+               <option value="5">مكتمل</option>
+               <option value="6">مرفوضة</option>
+             </select>
+           </div>
+           <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+             <label for="client" class="form-label">العميل</label>
+             <select
+               name="client"
+               id="client"
+               class="form-select"
+               formControlName="clientId"
+             >
+               <option value="">جميع العملاء</option>
+               @for (client of clients; track $index) {
+               <option [value]="client.id">{{ client.name }}</option>
+               }
+             </select>
+           </div>
+           <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+             <label for="employee" class="form-label">الموظف</label>
+             <select
+               name="employee"
+               id="employee"
+               class="form-select"
+               formControlName="employeeId"
+             >
+               <option value="">جميع الموظفين</option>
+               @for (emp of employees; track $index) {
+               <option [value]="emp.id">
+                 {{ emp.firstName + " " + emp.lastName }}
+               </option>
+               }
+             </select>
+           </div>
+           <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+             <label for="priority" class="form-label">الاولوية</label>
+             <select
+               name="priority"
+               id="priority"
+               class="form-select"
+               formControlName="priority"
+             >
+               <option value="">جميع الأولويات</option>
+               <option value="عادي">عادي</option>
+               <option value="مهم">مهم</option>
+               <option value="مستعجل">مستعجل</option>
+             </select>
+           </div>
+           <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+             <label for="" class="form-label">الاكتمال في الموعد</label>
+             <select
+               name="onDeadline"
+               id="onDeadline"
+               class="form-select"
+               formControlName="onDeadline"
+             >
+               <option value="">جميع المهام</option>
+               <option value="yes">مكتمل في الموعد</option>
+               <option value="no">غير مكتمل في الموعد</option>
+               <option value="not-yet">لم يحن الموعد</option>
+             </select>
+           </div>
+           <!-- Add the team filter back to the filters section -->
+           <div class="col-6 col-lg-2 mb-2 mb-lg-0">
+             <label for="team" class="form-label">الفريق</label>
+             <select
+               name="team"
+               id="team"
+               class="form-select"
+               formControlName="team"
+             >
+               <option value="">جميع الفرق</option>
+               @for (teamMapping of taskTeams; track teamMapping.team) {
+               <option [value]="teamMapping.team">{{ teamMapping.name }}</option>
+               }
+             </select>
+           </div>
+           <div class="col">
+             <br />
+             <button class="add-btn w-100 mt-1" (click)="clearSearch()">
+               مسح البحث
+             </button>
+           </div>
+         </div>
+       </form>
+   
+       <!-- Quick navigation -->
+       <div class="row mt-3">
+         <div class="col-12 d-flex gap-2">
+           <button
+             class="btn btn-sm btn-outline-primary"
+             (click)="loadPreviousDay()"
+             [disabled]="loading"
+           >
+             اليوم السابق
+           </button>
+           <button
+             class="btn btn-sm btn-outline-primary"
+             (click)="loadNextDay()"
+             [disabled]="loading"
+           >
+             اليوم التالي
+           </button>
+         </div>
+       </div>
+     </div>
+   }
 
   <!-- Loading indicator -->
   @if (loading) {
@@ -188,11 +198,42 @@
   }
 
   <!-- Results info -->
-  <div class="mb-3">
+  <div class="my-3">
     <p class="text-muted">
       عرض {{ filteredTasks.length }} من أصل {{ totalRecords }} مهمة
     </p>
   </div>
+
+  <!-- Grid/List View -->
+   <div class="view-toggle d-flex gap-1 mb-3">
+     <button
+       type="button"
+       class="btn btn-sm btn-outline-secondary"
+       [class.active]="viewMode === 'grid3'"
+       (click)="setViewMode('grid3')"
+       title="شبكة 3 أعمدة"
+     >
+       <i class="bi bi-grid-3x2-gap"></i>
+     </button>
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary"
+      [class.active]="viewMode === 'grid2'"
+      (click)="setViewMode('grid2')"
+      title="شبكة عمودين"
+    >
+      <i class="bi bi-grid"></i>
+    </button>
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-secondary"
+      [class.active]="viewMode === 'list'"
+      (click)="setViewMode('list')"
+      title="قائمة"
+    >
+      <i class="bi bi-list-ul"></i>
+    </button>
+   </div>
 </section>
 
 @if (isLoadingTasks) {
@@ -202,7 +243,14 @@
 }
 
 <section class="container mb-4">
-  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+  <div
+    class="row g-4"
+    [ngClass]="{
+      'row-cols-1 row-cols-md-2': viewMode === 'grid2',
+      'row-cols-1 row-cols-md-2 row-cols-lg-3': viewMode === 'grid3',
+      'row-cols-1': viewMode === 'list'
+    }"
+  >
     @if (filteredTasks) { @for (task of filteredTasks; track $index) {
     <div class="col">
       <div

@@ -10,8 +10,12 @@ export class ClientService {
   private endpoint = 'client'
   constructor(private api: ApiService) { }
 
+  getAllActive(): Observable<LightWieghtClient[]> {
+    return this.api.get<LightWieghtClient[]>(`${this.endpoint}/active`)
+  }
+  
   getAll(): Observable<LightWieghtClient[]> {
-    return this.api.get<LightWieghtClient[]>(`${this.endpoint}`)
+    return this.api.get<LightWieghtClient[]>(`${this.endpoint}/all`)
   }
 
   getById(id: number): Observable<IClient> {

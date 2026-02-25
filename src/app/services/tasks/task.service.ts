@@ -30,6 +30,10 @@ export class TaskService {
   getArchivedTasks(): Observable<ITask[]> {
     return this.api.get<ITask[]>(`${this.endpoint}/archived-tasks`);
   }
+  
+  getCompletedTasks(): Observable<ITask[]> {
+    return this.api.get<ITask[]>(`${this.endpoint}/completed-tasks`);
+  }
 
   getTasksByEmployee(): Observable<ILightWieghtTask[]> {
     return this.api.get<ILightWieghtTask[]>(`${this.endpoint}/emp-tasks`);

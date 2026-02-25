@@ -1,11 +1,4 @@
-/* View toggle buttons */
-.view-toggle .btn.active {
-  background-color: var(--bs-primary);
-  color: var(--bs-white);
-  border-color: var(--bs-primary);
-}
-
-.task-card {
+task-card {
   transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
   border-color: transparent;
   background-color: #ececec50;
@@ -31,38 +24,14 @@
 }
 
 /* Color logic for status ribbon (matches mapTaskStatusClass) */
-.status-ribbon.status-not-started { 
-  background: #6c757d; 
-  color: #fff; 
-}
-.status-ribbon.status-acknowledged { 
-  background: #0aa2c0; 
-  color: #fff; 
-}
-.status-ribbon.status-in-progress { 
-  background: #0d6efd; 
-  color: #fff; 
-}
-.status-ribbon.status-under-review { 
-  background: #ffc107; 
-  color: #212529; 
-}
-.status-ribbon.status-needs-edits { 
-  background: #dc3545; 
-  color: #fff; 
-}
-.status-ribbon.status-completed { 
-  background: #198754; 
-  color: #fff; 
-}
-.status-ribbon.status-rejected { 
-  background: #dc3545; 
-  color: #fff; 
-}
-.status-ribbon.status-unknown { 
-  background: #6c757d; 
-  color: #fff; 
-}
+.status-ribbon.status-not-started { background: #6c757d; color: #fff; }     /* secondary */
+.status-ribbon.status-acknowledged { background: #0aa2c0; color: #fff; }    /* info-ish, darker for contrast */
+.status-ribbon.status-in-progress { background: #0d6efd; color: #fff; }     /* primary */
+.status-ribbon.status-under-review { background: #ffc107; color: #212529; } /* warning */
+.status-ribbon.status-needs-edits { background: #dc3545; color: #fff; }     /* danger */
+.status-ribbon.status-completed { background: #198754; color: #fff; }       /* success */
+.status-ribbon.status-rejected { background: #dc3545; color: #fff; }         /* danger */
+.status-ribbon.status-unknown { background: #6c757d; color: #fff; }         /* fallback */
 
 
 /* Priority chip colors (re-use getPriorityClass) */
