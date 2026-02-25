@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { CustomTaskStatus, ILightWieghtTask, ITask, TaskType } from '../../../model/task/task';
+import {
+  CustomTaskStatus,
+  ILightWieghtTask,
+  ITask,
+  TaskType,
+} from '../../../model/task/task';
 import { Service } from '../../../model/service/service';
 import { User } from '../../../model/auth/user';
 import { LightWieghtClient } from '../../../model/client/client';
@@ -9,16 +14,21 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { ClientService } from '../../../services/clients/client.service';
 import { TaskService } from '../../../services/tasks/task.service';
 import { Router } from '@angular/router';
-import { ShimmerComponent } from "../../../shared/shimmer/shimmer.component";
-import { MapTaskStatusPipe } from "../../../core/pipes/map-task-status/map-task-status.pipe";
+import { ShimmerComponent } from '../../../shared/shimmer/shimmer.component';
+import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
 import { CommonModule } from '@angular/common';
-import { MapTaskStatusClassPipe } from "../../../core/pipes/map-task-status-class/map-task-status-class.pipe";
+import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
 
 @Component({
   selector: 'app-completed',
-  imports: [ShimmerComponent, MapTaskStatusPipe, CommonModule, MapTaskStatusClassPipe],
+  imports: [
+    ShimmerComponent,
+    MapTaskStatusPipe,
+    CommonModule,
+    MapTaskStatusClassPipe,
+  ],
   templateUrl: './completed.component.html',
-  styleUrl: './completed.component.css'
+  styleUrl: './completed.component.css',
 })
 export class CompletedComponent {
   services: Service[] = [];
@@ -35,7 +45,7 @@ export class CompletedComponent {
     private clientService: ClientService,
     private taskService: TaskService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     this.filterForm = this.fb.group({
       serviceId: [],
@@ -81,9 +91,13 @@ export class CompletedComponent {
     this.taskService.getCompletedTasks().subscribe({
       next: (response) => {
         this.isLoadingTasks = false;
+        console.log(response)
         this.tasks = response;
         this.filteredTasks = [...this.tasks];
       },
+      error: (error) => {
+        console.log(error)
+      }
     });
   }
 
@@ -139,8 +153,8 @@ export class CompletedComponent {
   }
 
   goToTask(taskId: number) {
-  this.router.navigate(['/tasks', taskId], { queryParams: { isArchived: true } });
-}
+    this.router.navigate(['/tasks', taskId]);
+  }
 
   getTypeLabel(type: TaskType): string {
     switch (type) {
@@ -198,8 +212,10 @@ export class CompletedComponent {
   }
 
   isCompletedAfterDeadline(task: ILightWieghtTask): boolean {
-    return task.status === CustomTaskStatus.Completed &&
-           task.completedAt != null &&
-           new Date(task.completedAt) > new Date(task.deadline);
+    return (
+      task.status === CustomTaskStatus.Completed &&
+      task.completedAt != null &&
+      new Date(task.completedAt) > new Date(task.deadline)
+    );
   }
 }
