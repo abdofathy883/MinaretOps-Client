@@ -324,18 +324,18 @@
             </div>
 
             <!-- Comment Form -->
-            <div class="comment-form mb-4">
-              <textarea
-                class="form-control mb-2"
-                [(ngModel)]="newComment"
-                placeholder="أدخل تعليقك هنا..."
-                rows="3"
-                [disabled]="isSubmittingComment"
-              ></textarea>
+            <div class="comment-form mb-4" [formGroup]="commentForm">
+              <ngx-editor-menu [editor]="commentEditor" [toolbar]="toolbar">
+              </ngx-editor-menu>
+              <ngx-editor
+                [editor]="commentEditor"
+                [placeholder]="'أدخل تعليقك هنا...'"
+                formControlName="comment"
+              ></ngx-editor>
               <button
                 class="add-btn"
                 (click)="addComment()"
-                [disabled]="!newComment || isSubmittingComment"
+                [disabled]="!commentForm.get('comment')?.value?.trim() || isSubmittingComment"
               >
                 @if (isSubmittingComment) {
                   <span

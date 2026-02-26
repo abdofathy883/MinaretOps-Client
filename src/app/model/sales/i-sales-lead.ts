@@ -21,6 +21,7 @@ export interface ISalesLead {
   createdAt: Date;
   updatedAt?: Date;
   notes: ILeadNote[];
+  leadHistory: ILeadHistory[];
 }
 
 export interface ILeadServicesDTO {
@@ -154,4 +155,16 @@ export interface ILeadNote {
   createdByName: string;
   leadId: number;
   createdAt: Date;
+}
+
+/** Lead history entry (same shape as LeadHistoryDTO) */
+export interface ILeadHistory {
+  id: number;
+  salesLeadId: number;
+  propertyName: string;
+  oldValue: string | null;
+  newValue: string | null;
+  updatedById: string | null;
+  updatedByName: string;
+  updatedAt: Date;
 }

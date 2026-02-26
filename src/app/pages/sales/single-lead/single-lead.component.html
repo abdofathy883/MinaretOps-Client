@@ -120,6 +120,47 @@
         </div>
       </div>
 
+      <!-- Lead history (read-only) -->
+      <div class="lead-history-card mt-4">
+        <div class="card-header mb-2">
+          <h3><i class="bi bi-clock-history"></i> سجل التغييرات</h3>
+        </div>
+        @if (lead.leadHistory && lead.leadHistory.length > 0) {
+          <ul class="timeline">
+            @for (h of lead.leadHistory; track h.id) {
+              <li class="timeline-item">
+                <div class="timeline-time">
+                  {{ h.updatedAt | date: "short" }}
+                </div>
+                <div class="timeline-content">
+                  <div class="change-summary">
+                    <span class="prop">{{ h.propertyName }}</span>
+                    <span class="arrow">←</span>
+                    @if (isDateProperty(h.propertyName)) {
+                      <span class="old">{{ h.oldValue | date: "short" }}</span>
+                    } @else {
+                      <span class="old" [innerHTML]="h.oldValue || '—'"></span>
+                    }
+                    <span class="to">إلى</span>
+                    @if (isDateProperty(h.propertyName)) {
+                      <span class="new">{{ h.newValue | date: "short" }}</span>
+                    } @else {
+                      <span class="new" [innerHTML]="h.newValue || '—'"></span>
+                    }
+                  </div>
+                  <div class="byline">
+                    <i class="bi bi-person"></i>
+                    <span>تم التعديل بواسطة: {{ h.updatedByName }}</span>
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="text-muted small mb-0">لا يوجد سجل تغييرات حتى الآن.</p>
+        }
+      </div>
+
       <!-- Notes section (separate from update form): existing notes + add new -->
       <div class="row mt-4">
         <div class="lead-notes-card">

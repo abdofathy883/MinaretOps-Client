@@ -24,7 +24,6 @@ import {
 import { User } from '../../../model/auth/user';
 import { MapTaskStatusPipe } from '../../../core/pipes/map-task-status/map-task-status.pipe';
 import { MapTaskStatusClassPipe } from '../../../core/pipes/map-task-status-class/map-task-status-class.pipe';
-import { AlertService } from '../../../services/helper-services/alert.service';
 import { hasError } from '../../../services/helper-services/utils';
 import { MapTaskTypePipe } from '../../../core/pipes/task-type/map-task-type.pipe';
 import { TaskShimmerComponent } from '../../../shared/task-shimmer/task-shimmer.component';
@@ -75,10 +74,11 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
   completeTaskForm!: FormGroup;
   isCompletingTask: boolean = false;
 
-  newComment: string = '';
   isSubmittingComment: boolean = false;
 
   editor!: Editor;
+  commentEditor!: Editor;
+  commentForm!: FormGroup;
   toolbar: Toolbar = [
     // default value
     ['bold', 'italic'],
@@ -156,10 +156,15 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
       urls: this.fb.array([]),
       completionNotes: [''],
     });
+
+    this.commentForm = this.fb.group({
+      comment: [''],
+    });
   }
 
   ngOnInit(): void {
     this.editor = new Editor();
+    this.commentEditor = new Editor();
     this.isLoadingTask = true;
     const taskIdParam = this.route.snapshot.paramMap.get('id');
     const isArchivedParam = this.route.snapshot.queryParamMap.get('isArchived'); // Changed from queryParamMap to paramMap
@@ -173,6 +178,7 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.editor.destroy();
+    this.commentEditor.destroy();
   }
 
   private loadTaskUnified(taskId: number, isArchived?: boolean): void {
@@ -540,7 +546,8 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
   }
 
   addComment() {
-    if (!this.newComment || this.newComment.trim() === '') {
+    const commentValue = this.commentForm.get('comment')?.value?.trim() ?? '';
+    if (!commentValue) {
       return;
     }
 
@@ -549,7 +556,7 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
     const commentData: ICreateTaskComment = {
       taskId: this.task.id,
       employeeId: this.currentUserId,
-      comment: this.newComment.trim(),
+      comment: commentValue,
     };
 
     this.taskService.addComment(commentData).subscribe({
@@ -569,7 +576,7 @@ export class SingleTaskComponent implements OnInit, OnDestroy {
         };
 
         this.task.taskComments.push(newComment);
-        this.newComment = '';
+        this.commentForm.patchValue({ comment: '' });
         this.isSubmittingComment = false;
         this.showAlert('تم إضافة التعليق بنجاح', 'success');
       },

@@ -441,4 +441,9 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
       (c) => (c.value || '').toString().trim().length > 0
     );
   }
+
+  /** Whether the history property is a date (for formatting in template) */
+  isDateProperty(propertyName: string): boolean {
+    return propertyName === 'تاريخ الاجتماع' || propertyName === 'تاريخ المتابعة';
+  }
 }
