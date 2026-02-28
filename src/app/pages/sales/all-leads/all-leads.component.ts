@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { User } from '../../../model/auth/user';
 import { LeadsOpsService } from '../../../services/sales/sales-ops/leads-ops.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-all-leads',
@@ -125,20 +126,24 @@ export class AllLeadsComponent implements OnInit {
 
   onExport() {
     this.isExporting = true;
-    this.leadOpsService.exportLeads().subscribe({
+    this.leadOpsService.exportLeads().pipe(
+      finalize(() => this.isExporting = false)
+    ).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         // a.download = 'Leads.xlsx';
         a.download = `Leads-${new Date().toISOString().split('T')[0]}.xlsx`;
+        
+        document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
-        this.isExporting = false;
+        // this.isExporting = false;
       },
       error: (err) => {
-        this.isExporting = false;
+        // this.isExporting = false;
         console.error('Export failed', err);
       },
     });
