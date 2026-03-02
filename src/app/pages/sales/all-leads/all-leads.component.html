@@ -113,6 +113,7 @@
           <tr>
             <th></th>
             <th>اسم العميل</th>
+            <th>التأهيل</th>
             <th>واتساب</th>
             <th>الموظف</th>
             <th>حالة الاتصال</th>
@@ -136,6 +137,16 @@
                 </button>
               </td>
               <td data-cell="اسم العميل">{{ lead.businessName }}</td>
+              <td data-cell="التأهيل">
+                <span
+                  class="badge qualification-badge"
+                  [class.bg-danger]="lead.qualificationScore <= 3"
+                  [class.bg-warning]="lead.qualificationScore > 3 && lead.qualificationScore <= 6"
+                  [class.bg-success]="lead.qualificationScore > 6"
+                >
+                  {{ lead.qualificationScore }}/10
+                </span>
+              </td>
               <td data-cell="واتساب">
                 <a href="https://wa.me/{{ lead.whatsAppNumber }}">{{
                   lead.whatsAppNumber

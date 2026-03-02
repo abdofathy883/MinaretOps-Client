@@ -37,6 +37,63 @@
     </div>
 
     @if (!isEditMode) {
+      <!-- Qualification Score -->
+      <div class="qualification-card mb-4">
+        <div class="qualification-header">
+          <i class="bi bi-speedometer2"></i>
+          <span>تأهيل العميل</span>
+        </div>
+        <div class="qualification-body">
+          <div class="qualification-score-circle"
+            [class.score-low]="lead.qualificationScore <= 3"
+            [class.score-medium]="lead.qualificationScore > 3 && lead.qualificationScore <= 6"
+            [class.score-high]="lead.qualificationScore > 6">
+            <span class="score-value">{{ lead.qualificationScore }}</span>
+            <span class="score-max">/ 10</span>
+          </div>
+          <div class="qualification-label">
+            {{ getQualificationLabel(lead.qualificationScore) }}
+          </div>
+          <div class="qualification-breakdown">
+            <div class="breakdown-item">
+              <span class="breakdown-label">الميزانية</span>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" [style.width.%]="getBudgetScorePercent()"></div>
+              </div>
+              <span class="breakdown-score">{{ getBudgetScore() }}/4</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="breakdown-label">المسئولية</span>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" [style.width.%]="getResponsibilityScorePercent()"></div>
+              </div>
+              <span class="breakdown-score">{{ getResponsibilityScore() }}/2</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="breakdown-label">درجة الاهتمام</span>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" [style.width.%]="getInterestScorePercent()"></div>
+              </div>
+              <span class="breakdown-score">{{ getInterestScore() }}/2</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="breakdown-label">مدة التنفيذ</span>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" [style.width.%]="getTimelineScorePercent()"></div>
+              </div>
+              <span class="breakdown-score">{{ getTimelineScore() }}/1</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="breakdown-label">المتطلبات</span>
+              <div class="breakdown-bar">
+                <div class="breakdown-fill" [style.width.%]="getNeedsScorePercent()"></div>
+              </div>
+              <span class="breakdown-score">{{ getNeedsScore() }}/1</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Read-only: lead details -->
       <div class="lead-details-readonly mb-4">
         <div class="row">

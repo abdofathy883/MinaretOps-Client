@@ -6,7 +6,7 @@ import {
   ContactStatus,
   CurrentLeadStatus,
   InterestLevel,
-  ISalesLead
+  ISalesLead,
 } from '../../../model/sales/i-sales-lead';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -40,9 +40,8 @@ export class AllLeadsComponent implements OnInit {
     (value) => typeof value === 'number',
   );
   leadStatuses = Object.values(CurrentLeadStatus).filter(
-    (value) =>typeof value === 'number'
+    (value) => typeof value === 'number',
   );
-
 
   ContactStatus = ContactStatus;
   InterestLevel = InterestLevel;
@@ -73,8 +72,10 @@ export class AllLeadsComponent implements OnInit {
     });
   }
 
-  loadEmployees(){
-    this.authService.getAll().subscribe((response) => this.employees = response);
+  loadEmployees() {
+    this.authService
+      .getAll()
+      .subscribe((response) => (this.employees = response));
   }
 
   updateField(lead: ISalesLead, field: string, value: any) {
@@ -126,27 +127,26 @@ export class AllLeadsComponent implements OnInit {
 
   onExport() {
     this.isExporting = true;
-    this.leadOpsService.exportLeads().pipe(
-      finalize(() => this.isExporting = false)
-    ).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        // a.download = 'Leads.xlsx';
-        a.download = `Leads-${new Date().toISOString().split('T')[0]}.xlsx`;
-        
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-        // this.isExporting = false;
-      },
-      error: (err) => {
-        // this.isExporting = false;
-        console.error('Export failed', err);
-      },
-    });
+    this.leadOpsService
+      .exportLeads()
+      .pipe(finalize(() => (this.isExporting = false)))
+      .subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          // a.download = 'Leads.xlsx';
+          a.download = `Leads-${new Date().toISOString().split('T')[0]}.xlsx`;
+
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        },
+        error: (err) => {
+          console.error('Export failed', err);
+        },
+      });
   }
 
   onDownloadTemplate() {

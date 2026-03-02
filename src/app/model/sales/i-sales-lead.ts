@@ -10,6 +10,9 @@ export interface ISalesLead {
   interestLevel: InterestLevel;
   freelancePlatform?: FreelancePlatform;
   responsibility: LeadResponsibility;
+  timeline: LeadTimeline;
+  needsExpectation: NeedsExpectation;
+  budget: LeadBudget;
   servicesInterestedIn: ILeadServicesDTO[];
   meetingDate?: Date;
   quotationSent: boolean;
@@ -20,6 +23,7 @@ export interface ISalesLead {
   createdByName: string;
   createdAt: Date;
   updatedAt?: Date;
+  qualificationScore: number;
   notes: ILeadNote[];
   leadHistory: ILeadHistory[];
 }

@@ -15,7 +15,10 @@ import {
   ILeadNote,
   ISalesLead,
   IUpdateLead,
+  LeadBudget,
   LeadSource,
+  LeadTimeline,
+  NeedsExpectation,
   InterestLevel,
   LeadResponsibility,
 } from '../../../model/sales/i-sales-lead';
@@ -446,4 +449,44 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
   isDateProperty(propertyName: string): boolean {
     return propertyName === 'تاريخ الاجتماع' || propertyName === 'تاريخ المتابعة';
   }
+
+  getQualificationLabel(score: number): string {
+    if (score <= 3) return 'ضعيف';
+    if (score <= 6) return 'متوسط';
+    return 'مرتفع';
+  }
+
+  getBudgetScore(): number {
+    const m: Record<number, number> = { [LeadBudget.Below]: 0, [LeadBudget.Equal]: 2, [LeadBudget.Higher]: 4 };
+    return m[this.lead?.budget] ?? 0;
+  }
+  getBudgetScorePercent(): number { return (this.getBudgetScore() / 4) * 100; }
+
+  getResponsibilityScore(): number {
+    const m: Record<number, number> = {
+      [LeadResponsibility.NotResponsible]: 0,
+      [LeadResponsibility.Responsible_NOT_DecisionMaker]: 1,
+      [LeadResponsibility.Responsible_DecisionMaker]: 2
+    };
+    return m[this.lead?.responsibility] ?? 0;
+  }
+  getResponsibilityScorePercent(): number { return (this.getResponsibilityScore() / 2) * 100; }
+
+  getInterestScore(): number {
+    const m: Record<number, number> = { [InterestLevel.Cold]: 0, [InterestLevel.Warm]: 1, [InterestLevel.Hot]: 2 };
+    return m[this.lead?.interestLevel] ?? 0;
+  }
+  getInterestScorePercent(): number { return (this.getInterestScore() / 2) * 100; }
+
+  getTimelineScore(): number {
+    const m: Record<number, number> = { [LeadTimeline.Below]: 0, [LeadTimeline.Equal]: 0.5, [LeadTimeline.Higher]: 1 };
+    return m[this.lead?.timeline] ?? 0;
+  }
+  getTimelineScorePercent(): number { return (this.getTimelineScore() / 1) * 100; }
+
+  getNeedsScore(): number {
+    const m: Record<number, number> = { [NeedsExpectation.Below]: 0, [NeedsExpectation.Equal]: 0.5, [NeedsExpectation.Higher]: 1 };
+    return m[this.lead?.needsExpectation] ?? 0;
+  }
+  getNeedsScorePercent(): number { return (this.getNeedsScore() / 1) * 100; }
 }
