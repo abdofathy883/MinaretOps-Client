@@ -151,6 +151,10 @@ export class AddUserComponent implements OnInit {
     return /[^A-Za-z0-9]/.test(this.passwordValue);
   }
 
+  get passHasNumbers(): boolean {
+    return /[0-9]/.test(this.passwordValue);
+  }
+
   requirementClass(ok: boolean): string {
     return ok ? 'text-success' : 'text-danger';
   }
