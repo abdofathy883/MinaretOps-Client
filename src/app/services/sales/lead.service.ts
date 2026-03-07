@@ -3,6 +3,7 @@ import { ApiService } from '../api-service/api.service';
 import { Observable } from 'rxjs';
 import {
   ICreateLead,
+  IPaginatedLeadResult,
   ISalesLead,
   IUpdateLead,
 } from '../../model/sales/i-sales-lead';
@@ -15,8 +16,13 @@ export class LeadService {
 
   constructor(private api: ApiService) {}
 
-  getAll(): Observable<ISalesLead[]> {
-    return this.api.get<ISalesLead[]>(this.endpoint);
+  getAll(
+    pageNumber: number = 1,
+    pageSize: number = 30,
+  ): Observable<IPaginatedLeadResult> {
+    return this.api.get<IPaginatedLeadResult>(
+      `${this.endpoint}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+    );
   }
 
   getById(id: number): Observable<ISalesLead> {

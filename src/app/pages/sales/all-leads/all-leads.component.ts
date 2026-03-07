@@ -6,12 +6,14 @@ import {
   ContactStatus,
   CurrentLeadStatus,
   InterestLevel,
+  IPaginatedLeadResult,
   ISalesLead,
 } from '../../../model/sales/i-sales-lead';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { User } from '../../../model/auth/user';
 import { LeadsOpsService } from '../../../services/sales/sales-ops/leads-ops.service';
+import { LeadImportResult } from '../../../model/sales/i-lead-import-result';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -32,7 +34,14 @@ export class AllLeadsComponent implements OnInit {
   isSearching: boolean = false;
   searchQuery: string = '';
 
-  // Enum Helpers
+  currentPage: number = 1;
+  pageSize: number = 30;
+  totalRecords: number = 0;
+  totalPages: number = 0;
+
+  importResult: LeadImportResult | null = null;
+  importError: string | null = null;
+
   contactStatuses = Object.values(ContactStatus).filter(
     (value) => typeof value === 'number',
   );
@@ -60,9 +69,12 @@ export class AllLeadsComponent implements OnInit {
 
   loadLeads() {
     this.isLoadingLeads = true;
-    this.leadService.getAll().subscribe({
-      next: (data) => {
-        this.leads = data;
+    this.leadService.getAll(this.currentPage, this.pageSize).subscribe({
+      next: (result) => {
+        this.leads = result.records;
+        this.totalRecords = result.totalRecords;
+        this.totalPages = result.totalPages;
+        this.currentPage = result.pageNumber;
         this.isLoadingLeads = false;
       },
       error: (err) => {
@@ -72,6 +84,12 @@ export class AllLeadsComponent implements OnInit {
     });
   }
 
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages || page === this.currentPage) return;
+    this.currentPage = page;
+    this.loadLeads();
+  }
+
   loadEmployees() {
     this.authService
       .getAll()
@@ -79,17 +97,8 @@ export class AllLeadsComponent implements OnInit {
   }
 
   updateField(lead: ISalesLead, field: string, value: any) {
-    // Optimistic Update? Or wait?
-    // The model is already updated via ngModel.
-    // Ensure value is correct type (e.g. number for Enum)
-
-    // For Enums in select, Angular usually binds string if using value="0".
-    // Need to ensure type casting if backend expects strict int.
-    // The <option [ngValue]="s"> handles types better than value="{{s}}".
-
     this.leadService.updateField(lead.id, field, value).subscribe({
       next: (updatedLead) => {
-        // Optional: Replace object with server response to sync details like UpdatedAt
         Object.assign(lead, updatedLead);
       },
       error: (err) => {
@@ -108,21 +117,30 @@ export class AllLeadsComponent implements OnInit {
 
   onImport(event: any) {
     this.isImporting = true;
+    this.importResult = null;
+    this.importError = null;
     const file = event.target.files[0];
     if (file) {
       this.leadOpsService.importLeads(file).subscribe({
-        next: () => {
+        next: (result) => {
           this.isImporting = false;
+          this.importResult = result;
           this.loadLeads();
-          alert('Leads imported successfully');
         },
         error: (err) => {
           this.isImporting = false;
+          this.importError =
+            err.error?.message || err.error || 'Import failed unexpectedly.';
           console.error('Import failed', err);
-          alert('Import failed');
         },
       });
     }
+    event.target.value = '';
+  }
+
+  dismissImportResult() {
+    this.importResult = null;
+    this.importError = null;
   }
 
   onExport() {
@@ -135,9 +153,7 @@ export class AllLeadsComponent implements OnInit {
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          // a.download = 'Leads.xlsx';
           a.download = `Leads-${new Date().toISOString().split('T')[0]}.xlsx`;
-
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
@@ -150,12 +166,25 @@ export class AllLeadsComponent implements OnInit {
   }
 
   onDownloadTemplate() {
-    const link = document.createElement('a');
-    link.href = 'assets/Leads Template.xlsx';
-    link.download = 'Leads Template.xlsx';
-    link.target = '_blank';
-    link.click();
-    link.remove();
+    this.isLoadingTemplates = true;
+    this.leadOpsService
+      .downloadTemplate()
+      .pipe(finalize(() => (this.isLoadingTemplates = false)))
+      .subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'Leads Template.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        },
+        error: (err) => {
+          console.error('Template download failed', err);
+        },
+      });
   }
 
   onSearchInput() {
@@ -189,25 +218,7 @@ export class AllLeadsComponent implements OnInit {
     this.searchQuery = '';
     this.searchResults = [];
     this.isSearching = false;
-
-    // Reset to first day of current month
-    const today = new Date();
-    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const firstDayStr = firstDayOfMonth.toISOString().split('T')[0];
-    const todayStr = today.toISOString().split('T')[0];
-
-    // this.filterForm.patchValue({
-    //   clientId: null,
-    //   employeeId: null,
-    //   priority: null,
-    //   fromDate: firstDayStr,
-    //   toDate: todayStr,
-    //   status: null,
-    //   onDeadline: null,
-    //   team: null,
-    // });
-
-    // this.currentPage = 1;
+    this.currentPage = 1;
     this.loadLeads();
   }
 }

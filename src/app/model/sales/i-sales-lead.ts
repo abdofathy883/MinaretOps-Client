@@ -1,3 +1,11 @@
+export interface IPaginatedLeadResult {
+  records: ISalesLead[];
+  totalRecords: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 export interface ISalesLead {
   id: number;
   businessName: string;
@@ -139,6 +147,9 @@ export interface IUpdateLead {
   interestLevel?: InterestLevel;
   freelancePlatform?: FreelancePlatform;
   responsibility?: LeadResponsibility;
+  budget?: LeadBudget;
+  timeLine?: LeadTimeline;
+  needsExpectations?: NeedsExpectation;
   servicesInterestedIn?: number[];
   meetingDate?: Date;
   quotationSent?: boolean;

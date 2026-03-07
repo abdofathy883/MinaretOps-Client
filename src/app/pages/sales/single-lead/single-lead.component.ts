@@ -233,6 +233,9 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
       interestLevel: this.lead.interestLevel,
       freelancePlatform: this.lead.freelancePlatform ?? null,
       responsibility: this.lead.responsibility ?? 0,
+      budget: this.lead.budget,
+      timeline: this.lead.timeline,
+      needsExpectation: this.lead.needsExpectation,
       servicesInterestedIn: this.lead.servicesInterestedIn?.map((s) => s.serviceId) ?? [],
       meetingDate: this.lead.meetingDate,
       followUpTime: this.lead.followUpTime,
@@ -317,12 +320,17 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
           ? Number(formValue.freelancePlatform)
           : undefined,
       responsibility: Number(formValue.responsibility),
+      budget: Number(formValue.budget),
+      timeLine: Number(formValue.timeLine),
+      needsExpectations: Number(formValue.needsExpectation),
       servicesInterestedIn: serviceIds,
       meetingDate: formValue.meetingDate ? new Date(formValue.meetingDate) : undefined,
       followUpTime: formValue.followUpTime ? new Date(formValue.followUpTime) : undefined,
       quotationSent: Boolean(formValue.quotationSent),
       salesRepId: formValue.assignedTo || undefined,
     };
+
+    console.log(payload)
 
     this.leadService.update(payload).subscribe({
       next: (response) => {
