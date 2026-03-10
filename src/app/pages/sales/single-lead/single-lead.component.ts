@@ -321,7 +321,7 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
           : undefined,
       responsibility: Number(formValue.responsibility),
       budget: Number(formValue.budget),
-      timeLine: Number(formValue.timeLine),
+      timeLine: Number(formValue.timeline),
       needsExpectations: Number(formValue.needsExpectation),
       servicesInterestedIn: serviceIds,
       meetingDate: formValue.meetingDate ? new Date(formValue.meetingDate) : undefined,
