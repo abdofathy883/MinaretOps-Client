@@ -32,6 +32,15 @@ import { hasError } from '../../../services/helper-services/utils';
 import { Editor, NgxEditorComponent, NgxEditorMenuComponent, Toolbar } from 'ngx-editor';
 import { LeadsOpsService } from '../../../services/sales/sales-ops/leads-ops.service';
 import { TaskShimmerComponent } from "../../../shared/task-shimmer/task-shimmer.component";
+import { MapLeadContactStatusPipe } from '../../../core/pipes/lead-contact-status/map-lead-contact-status.pipe';
+import { MapLeadCurrentStatusPipe } from '../../../core/pipes/lead-current-status/map-lead-current-status.pipe';
+import { MapLeadFreelancePlatformPipe } from '../../../core/pipes/lead-freelance-platform/map-lead-freelance-platform.pipe';
+import { MapLeadInterestLevelPipe } from '../../../core/pipes/lead-interest-level/map-lead-interest-level.pipe';
+import { MapLeadResponsibilityPipe } from '../../../core/pipes/lead-responsibility/map-lead-responsibility.pipe';
+import { MapLeadSourcePipe } from '../../../core/pipes/lead-source/map-lead-source.pipe';
+import { MapLeadBudgetPipe } from '../../../core/pipes/lead-budget/map-lead-budget.pipe';
+import { MapLeadNeedsPipe } from '../../../core/pipes/lead-needs/map-lead-needs.pipe';
+import { MapLeadTimelinePipe } from '../../../core/pipes/lead-timeline/map-lead-timeline.pipe';
 
 @Component({
   selector: 'app-single-lead',
@@ -41,7 +50,16 @@ import { TaskShimmerComponent } from "../../../shared/task-shimmer/task-shimmer.
     ReactiveFormsModule,
     NgxEditorComponent,
     NgxEditorMenuComponent,
-    TaskShimmerComponent
+    TaskShimmerComponent,
+    MapLeadContactStatusPipe,
+    MapLeadCurrentStatusPipe,
+    MapLeadFreelancePlatformPipe,
+    MapLeadInterestLevelPipe,
+    MapLeadResponsibilityPipe,
+    MapLeadSourcePipe,
+    MapLeadBudgetPipe,
+    MapLeadNeedsPipe,
+    MapLeadTimelinePipe
 ],
   templateUrl: './single-lead.component.html',
   styleUrl: './single-lead.component.css',
@@ -322,7 +340,7 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
       responsibility: Number(formValue.responsibility),
       budget: Number(formValue.budget),
       timeLine: Number(formValue.timeline),
-      needsExpectations: Number(formValue.needsExpectation),
+      needsExpectation: Number(formValue.needsExpectation),
       servicesInterestedIn: serviceIds,
       meetingDate: formValue.meetingDate ? new Date(formValue.meetingDate) : undefined,
       followUpTime: formValue.followUpTime ? new Date(formValue.followUpTime) : undefined,
@@ -378,68 +396,6 @@ export class SingleLeadComponent implements OnInit, OnDestroy {
       }
     }
     this.router.navigate(['/leads']);
-  }
-
-  getContactStatusLabel(v: ContactStatus): string {
-    const m: Record<ContactStatus, string> = {
-      [ContactStatus.NotContactedYet]: 'لم يتم التواصل بعد',
-      [ContactStatus.ContactedWithNoReply]: 'تم التواصل بدون رد',
-      [ContactStatus.ContactedAndReplied]: 'تم الاتصال وتم الرد',
-      [ContactStatus.WrongNumber]: 'الرقم غير صحيح',
-    };
-    return m[v] ?? '';
-  }
-
-  getCurrentLeadStatusLabel(v: CurrentLeadStatus): string {
-    const m: Record<CurrentLeadStatus, string> = {
-      [CurrentLeadStatus.NewLead]: 'عميل جديد',
-      [CurrentLeadStatus.FirstCall]: 'اتصال أولي',
-      [CurrentLeadStatus.Interested]: 'مهتم',
-      [CurrentLeadStatus.MeetingAgreed]: 'اجتماع',
-      [CurrentLeadStatus.Potential]: 'محتمل',
-      [CurrentLeadStatus.Deal]: 'Deal',
-      [CurrentLeadStatus.NotPotential]: 'غير محتمل',
-    };
-    return m[v] ?? '';
-  }
-
-  getLeadSourceLabel(v: LeadSource): string {
-    const m: Record<LeadSource, string> = {
-      [LeadSource.Facebook]: 'Facebook',
-      [LeadSource.Instagram]: 'Instagram',
-      [LeadSource.LinkedIn]: 'LinkedIn',
-      [LeadSource.Referral]: 'Referral',
-      [LeadSource.GoogleMaps]: 'Google Maps',
-      [LeadSource.Website]: 'Website',
-      [LeadSource.FreelancingPlatforms]: 'Freelance Platforms',
-    };
-    return m[v] ?? '';
-  }
-
-  getInterestLevelLabel(v: InterestLevel): string {
-    const m: Record<InterestLevel, string> = {
-      [InterestLevel.Cold]: 'منخفض',
-      [InterestLevel.Warm]: 'متوسط',
-      [InterestLevel.Hot]: 'مرتفع',
-    };
-    return m[v] ?? '';
-  }
-
-  getFreelancePlatformLabel(v: FreelancePlatform): string {
-    const m: Record<FreelancePlatform, string> = {
-      [FreelancePlatform.Bahr]: 'Bahr',
-      [FreelancePlatform.Upwork]: 'Upwork',
-    };
-    return m[v] ?? '';
-  }
-
-  getResponsibilityLabel(v: LeadResponsibility): string {
-    const m: Record<LeadResponsibility, string> = {
-      [LeadResponsibility.Responsible_DecisionMaker]: 'المسئول وصاحب القرار',
-      [LeadResponsibility.Responsible_NOT_DecisionMaker]: 'المسئول وليس صاحب القرار',
-      [LeadResponsibility.NotResponsible]: 'ليس المسئول',
-    };
-    return m[v] ?? '';
   }
 
   getServicesInterestedInDisplay(): string {

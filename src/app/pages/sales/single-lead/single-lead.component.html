@@ -116,20 +116,20 @@
           <div class="col-12 col-md-6 mb-3">
             <label class="form-label text-muted">حالة العميل الحالية</label>
             <p class="mb-0">
-              {{ getCurrentLeadStatusLabel(lead.currentLeadStatus) }}
+              {{ lead.currentLeadStatus | mapLeadCurrentStatus }}
             </p>
           </div>
           <div class="col-12 col-md-6 mb-3">
             <label class="form-label text-muted">درجة الاهتمام</label>
-            <p class="mb-0">{{ getInterestLevelLabel(lead.interestLevel) }}</p>
+            <p class="mb-0">{{ lead.interestLevel | mapLeadInterestLevel }}</p>
           </div>
           <div class="col-12 col-md-6 mb-3">
             <label class="form-label text-muted">حالة التواصل</label>
-            <p class="mb-0">{{ getContactStatusLabel(lead.contactStatus) }}</p>
+            <p class="mb-0">{{ lead.contactStatus | mapLeadContactStatus }}</p>
           </div>
           <div class="col-12 col-md-6 mb-3">
             <label class="form-label text-muted">المصدر</label>
-            <p class="mb-0">{{ getLeadSourceLabel(lead.leadSource) }}</p>
+            <p class="mb-0">{{ lead.leadSource | mapLeadSource }}</p>
           </div>
           @if (
             lead.leadSource === LeadSource.FreelancingPlatforms &&
@@ -138,14 +138,32 @@
             <div class="col-12 col-md-6 mb-3">
               <label class="form-label text-muted">المنصة</label>
               <p class="mb-0">
-                {{ getFreelancePlatformLabel(lead.freelancePlatform) }}
+                {{ lead.freelancePlatform | mapLeadFreelancePlatform }}
               </p>
             </div>
           }
           <div class="col-12 col-md-6 mb-3">
             <label class="form-label text-muted">المسئولية</label>
             <p class="mb-0">
-              {{ getResponsibilityLabel(lead.responsibility) }}
+              {{ lead.responsibility | mapLeadResponsibility }}
+            </p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">المتطلبات</label>
+            <p class="mb-0">
+              {{ lead.needsExpectation | mapLeadNeeds }}
+            </p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">الميزانية</label>
+            <p class="mb-0">
+              {{ lead.budget | mapLeadBudget }}
+            </p>
+          </div>
+          <div class="col-12 col-md-6 mb-3">
+            <label class="form-label text-muted">المدة الزمنية</label>
+            <p class="mb-0">
+              {{ lead.timeline | mapLeadTimeline }}
             </p>
           </div>
           <div class="col-12 col-md-6 mb-3">

@@ -149,7 +149,7 @@ export interface IUpdateLead {
   responsibility?: LeadResponsibility;
   budget?: LeadBudget;
   timeLine?: LeadTimeline;
-  needsExpectations?: NeedsExpectation;
+  needsExpectation?: NeedsExpectation;
   servicesInterestedIn?: number[];
   meetingDate?: Date;
   quotationSent?: boolean;
