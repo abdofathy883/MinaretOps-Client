@@ -1,0 +1,177 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">تقرير العملاء المحتملين</h2>
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" (click)="loadReport()" [disabled]="loading">
+        <i class="bi bi-arrow-clockwise"></i> تحديث
+        </button>
+    </div>
+  </div>
+
+  <div class="filter-section mb-4">
+    <h4>تصفية حسب تاريخ المعاملة:</h4>
+    <form [formGroup]="filterForm">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label for="fromDate" class="form-label">من تاريخ</label>
+          <input type="date" class="form-control" formControlName="fromDate" id="fromDate" />
+        </div>
+        <div class="col-md-3">
+          <label for="toDate" class="form-label">إلى تاريخ</label>
+          <input type="date" class="form-control" formControlName="toDate" id="toDate" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end gap-2">
+          <button class="btn btn-primary" (click)="applyFilters()" [disabled]="loading">
+            تصفية
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div class="row mt-3">
+      <div class="col-12 d-flex gap-2">
+        <button class="btn btn-sm btn-outline-primary" (click)="loadPreviousDay()" [disabled]="loading">
+          اليوم السابق
+        </button>
+        <button class="btn btn-sm btn-outline-primary" (click)="loadNextDay()" [disabled]="loading">
+          اليوم التالي
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <span class="ms-2">جاري التحميل...</span>
+    </div>
+  }
+
+  @if (error && !loading) {
+    <div class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+  }
+
+  @if (!loading && !error) {
+    <div class="row g-4">
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-people-fill"></i> الإحصائيات لمسئولي المبيعات
+              <span class="badge bg-light text-dark ms-2">{{ employeeReports.length }}</span>
+            </h5>
+          </div>
+          <div class="card-body bg-light">
+            @if (employeeReports.length === 0) {
+              <div class="text-center text-muted py-3">
+                لا يوجد عملاء تم اضافتهم في هذا التاريخ
+              </div>
+            }
+            @for (report of employeeReports; track trackByEmployeeId($index, report)) {
+              <div class="employee-card mb-4 border rounded bg-white shadow-sm">
+                <div 
+                  class="employee-header p-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center cursor-pointer"
+                  (click)="toggleEmployee(report.employeeId)"
+                  [class.bg-light]="isExpanded(report.employeeId)"
+                >
+                  <div class="d-flex align-items-center mb-3 mb-md-0">
+                    <span class="status-circle status-working me-3"></span>
+                    <div class="fw-bold fs-5">{{ report.employeeName }}</div>
+                  </div>
+                  
+                  <!-- Statistics tracking -->
+                  <div class="d-flex flex-wrap gap-3 align-items-center">
+                    <div class="stat-box text-center px-3 border-end">
+                        <small class="text-muted d-block text-uppercase">الكل</small>
+                        <span class="fw-bold fs-5">{{ report.totalAssignedLeads }}</span>
+                    </div>
+                    <div class="stat-box text-center px-3 border-end">
+                        <small class="text-warning d-block text-uppercase">تم الاتفاق</small>
+                        <span class="fw-bold fs-5">{{ report.meetingAgreedCount }}</span>
+                    </div>
+                    <div class="stat-box text-center px-3 border-end">
+                        <small class="text-info d-block text-uppercase">عروض مرسلة</small>
+                        <span class="fw-bold fs-5">{{ report.quotationSentCount }}</span>
+                    </div>
+                    <div class="stat-box text-center px-3">
+                        <small class="text-success d-block text-uppercase">التعاقدات</small>
+                        <span class="fw-bold fs-5">{{ report.dealCount }}</span>
+                    </div>
+
+                    <i 
+                      class="bi ms-3 fs-5"
+                      [class.bi-chevron-down]="!isExpanded(report.employeeId)"
+                      [class.bi-chevron-up]="isExpanded(report.employeeId)"
+                    ></i>
+                  </div>
+                </div>
+
+                @if (isExpanded(report.employeeId)) {
+                  <div class="employee-tasks p-3 border-top">
+                    @if (report.leads.length === 0) {
+                      <div class="text-center text-muted py-3">
+                        لا توجد عملاء لهذا الموظف
+                      </div>
+                    }
+                    @if (report.leads.length > 0) {
+                      <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                          <thead class="table-light">
+                            <tr>
+                              <th>رقم واسم العميل</th>
+                              <th>مجال العمل</th>
+                              <th>المنصة / المصدر</th>
+                              <th>تاريخ الإنشاء</th>
+                              <th>الحالة</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @for (lead of report.leads; track trackByLeadId($index, lead)) {
+                              <tr (click)="goToLead(lead.id)" style="cursor: pointer;">
+                                <td>
+                                  <div class="fw-bold text-primary">{{ lead.businessName }}</div>
+                                  <small class="text-muted"><i class="bi bi-whatsapp"></i> {{ lead.whatsAppNumber }}</small>
+                                </td>
+                                <td>{{ lead.occupation || 'غير محدد' }}</td>
+                                <td>
+                                   <div>
+                                       @if (lead.leadSource === 1) { 
+                                         <span class="badge bg-dark">رسائل الواتسآب</span>
+                                       }
+                                       @if (lead.leadSource === 5) { 
+                                         <span class="badge bg-secondary">انستقرام</span>
+                                       }
+                                       @if (lead.leadSource === 4 && lead.freelancePlatform) {
+                                         <span class="badge bg-info">{{ lead.freelancePlatform }}</span>
+                                       }
+                                   </div>
+                                </td>
+                                <td>
+                                  {{ formatDate(lead.createdAt) }}
+                                </td>
+                                <td>
+                                  <span [ngClass]="getLeadStatusClass(lead.currentLeadStatus)">
+                                    {{ getLeadStatusText(lead.currentLeadStatus) }}
+                                  </span>
+                                  @if (lead.quotationSent) {
+                                    <span class="badge bg-success ms-1"><i class="bi bi-receipt"></i> مرسل</span>
+                                  }
+                                </td>
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

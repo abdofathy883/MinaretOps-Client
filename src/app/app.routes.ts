@@ -42,6 +42,7 @@ import { UpdateProfileComponent } from './pages/users/update-profile/update-prof
 import { TaskDashboardComponent } from './pages/reports/task-dashboard/task-dashboard.component';
 import { JdForEmpComponent } from './pages/jds/jd-for-emp/jd-for-emp.component';
 import { TaskEmpReportComponent } from './pages/reports/task-emp-report/task-emp-report.component';
+import { LeadEmpReportComponent } from './pages/reports/lead-emp-report/lead-emp-report.component';
 import { CreateInvitationComponent } from './pages/emp-invitations/create-invitation/create-invitation.component';
 import { PendingInvitationsComponent } from './pages/emp-invitations/pending-invitations/pending-invitations.component';
 import { CompleteInvitationComponent } from './pages/emp-invitations/complete-invitation/complete-invitation.component';
@@ -253,6 +254,7 @@ export const routes: Routes = [
       // { path: 'task-report', component: TaskDashboardComponent },
       { path: 'task-emp-report', component: TaskEmpReportComponent },
       { path: 'attendance-report', component: AttendanceReportComponent },
+      { path: 'lead-emp-report', component: LeadEmpReportComponent },
     ],
   },
   {
