@@ -1,0 +1,27 @@
+<section class="container py-4">
+    <h2>سجل تسجيلات الدخول</h2>
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Timestamp</th>
+                <!-- <th>IpAddress</th> -->
+                <!-- <th>User Agent</th> -->
+                <th>Is Success</th>
+                <!-- <th>Failure Reason</th> -->
+            </tr>
+        </thead>
+        <tbody>
+            @for (log of logs; track $index) {
+                <tr>
+                    <td>{{ log.userName }}</td>
+                    <td>{{ log.timestamp | date: 'short'}}</td>
+                    <!-- <td>{{ log.ipAddress }}</td> -->
+                    <!-- <td>{{ log.userAgent }}</td> -->
+                    <td>{{ log.isSuccess }}</td>
+                    <!-- <td>{{ log.failureReason }}</td> -->
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

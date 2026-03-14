@@ -1,12 +1,27 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api-service/api.service';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
-import { ChangePassword, IResetPassword, LoginUser, RegisterUser, TokenPayload, UpdateUser, User } from '../../model/auth/user';
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  Observable,
+  tap,
+  throwError,
+} from 'rxjs';
+import {
+  ChangePassword,
+  IResetPassword,
+  LoginUser,
+  RegisterUser,
+  TokenPayload,
+  UpdateUser,
+  User,
+} from '../../model/auth/user';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private endpoint = 'auth';
@@ -14,21 +29,21 @@ export class AuthService {
   private readonly userIdKey = 'user_Id';
   constructor(
     private api: ApiService,
-    private router: Router
+    private router: Router,
   ) {
     this.initializeAuthState();
-   }
+  }
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
-    public readonly currentUser$ = this.currentUserSubject.asObservable();
+  public readonly currentUser$ = this.currentUserSubject.asObservable();
 
-    private loggedInSubject = new BehaviorSubject<boolean>(false);
-    public readonly isLoggedIn$ = this.loggedInSubject.asObservable();
+  private loggedInSubject = new BehaviorSubject<boolean>(false);
+  public readonly isLoggedIn$ = this.loggedInSubject.asObservable();
 
-    private initializeAuthState(): void {
+  private initializeAuthState(): void {
     const token = this.getStoredToken();
     const userId = this.getStoredUserId();
-    
+
     if (token && userId && this.isTokenValid(token)) {
       this.loggedInSubject.next(true);
     } else {
@@ -38,14 +53,16 @@ export class AuthService {
 
   hasRole(role: string): Observable<boolean> {
     const userId = this.getCurrentUserId();
-  if (!userId) {
-    return new Observable(observer => observer.next(false));
-  }
-  
-  return this.getById(userId).pipe(
-    map(user => user.roles.includes(role)),
-    catchError(() => new Observable<boolean>(observer => observer.next(false)))
-  );
+    if (!userId) {
+      return new Observable((observer) => observer.next(false));
+    }
+
+    return this.getById(userId).pipe(
+      map((user) => user.roles.includes(role)),
+      catchError(
+        () => new Observable<boolean>((observer) => observer.next(false)),
+      ),
+    );
   }
 
   isAdmin(): Observable<boolean> {
@@ -57,53 +74,58 @@ export class AuthService {
   }
 
   isDesignerLeader(): Observable<boolean> {
-    return this.hasRole('GraphicDesignerTeamLeader')
+    return this.hasRole('GraphicDesignerTeamLeader');
   }
 
   isContentLeader(): Observable<boolean> {
-    return this.hasRole('ContentCreatorTeamLeader')
+    return this.hasRole('ContentCreatorTeamLeader');
   }
 
   isFinance(): Observable<boolean> {
-    return this.hasRole('Finance')
+    return this.hasRole('Finance');
   }
 
   isSales(): Observable<boolean> {
     return this.hasRole('SalesRep');
   }
+
   login(user: LoginUser): Observable<User> {
-    return this.api.post<User>(`${this.endpoint}/login`, user)
-    .pipe(
-      tap(response => this.handleSuccessfulAuth(response)),
-      catchError(this.handleError)
-    )
+    return this.api.post<User>(`${this.endpoint}/login`, user).pipe(
+      tap((response) => this.handleSuccessfulAuth(response)),
+      catchError(this.handleError),
+    );
   }
 
   registerUser(user: RegisterUser) {
-    return this.api.post(`${this.endpoint}/register`, user)
-    .pipe(
-      catchError(this.handleError)
-    )
+    return this.api
+      .post(`${this.endpoint}/register`, user)
+      .pipe(catchError(this.handleError));
   }
 
-  getAll(): Observable<User[]>{
+  getAll(): Observable<User[]> {
     return this.api.get<User[]>(`${this.endpoint}/users`);
   }
 
-  getById(userId: string): Observable<User>{
+  getById(userId: string): Observable<User> {
     return this.api.get<User>(`${this.endpoint}/user/${userId}`);
   }
 
   update(updatedUser: UpdateUser): Observable<User> {
-    return this.api.patch<User>(`${this.endpoint}/update-user`, updatedUser)
+    return this.api.patch<User>(`${this.endpoint}/update-user`, updatedUser);
   }
 
   changePassword(changePassword: ChangePassword): Observable<User> {
-    return this.api.patch<User>(`${this.endpoint}/set-password`, changePassword);
+    return this.api.patch<User>(
+      `${this.endpoint}/set-password`,
+      changePassword,
+    );
   }
 
   requestPasswordReset(userId: string): Observable<string> {
-    return this.api.post<string>(`${this.endpoint}/send-reset-link/${userId}`, {});
+    return this.api.post<string>(
+      `${this.endpoint}/send-reset-link/${userId}`,
+      {},
+    );
   }
 
   resetPassword(request: IResetPassword): Observable<void> {
@@ -118,7 +140,7 @@ export class AuthService {
     return this.getStoredToken();
   }
 
-  getCurrentUserId(): string{
+  getCurrentUserId(): string {
     let userId = localStorage.getItem('user_Id');
     if (!userId) {
       return '';
@@ -135,11 +157,11 @@ export class AuthService {
   private handleSuccessfulAuth(user: User): void {
     if (user.token) {
       this.storeToken(user.token);
-      this.storeUserId(user.id)
+      this.storeUserId(user.id);
       if (user.refreshToken) {
         this.storeRefreshToken(user.refreshToken);
       }
-        this.setCurrentStatus(user);
+      this.setCurrentStatus(user);
     }
   }
 
@@ -193,8 +215,8 @@ export class AuthService {
     const jsonPayload = decodeURIComponent(
       atob(base64)
         .split('')
-        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join(''),
     );
     return JSON.parse(jsonPayload);
   }
@@ -202,7 +224,7 @@ export class AuthService {
   private handleError = (error: HttpErrorResponse): Observable<never> => {
     console.log('error: ', error);
     let errorMessage = 'An unknown error occurred';
-    
+
     if (error.error instanceof ErrorEvent) {
       // Client-side error
       errorMessage = `Error: ${error.error.message}`;
@@ -226,7 +248,7 @@ export class AuthService {
           errorMessage = error.error?.message || `Error Code: ${error.status}`;
       }
     }
-    
+
     return throwError(() => new Error(errorMessage));
   };
 

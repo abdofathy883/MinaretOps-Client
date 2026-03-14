@@ -69,6 +69,7 @@ import { SingleLeadComponent } from './pages/sales/single-lead/single-lead.compo
 import { AllEntriesComponent } from './pages/contact/all-entries/all-entries.component';
 import { SeoPagesComponent } from './pages/seo/seo-pages/seo-pages.component';
 import { CompletedComponent } from './pages/tasks/completed/completed.component';
+import { AllLogsComponent } from './features/login-log/components/all-logs/all-logs.component';
 
 export const routes: Routes = [
   {
@@ -395,6 +396,11 @@ export const routes: Routes = [
   {
     path: 'seo',
     component: SeoPagesComponent,
+    canActivate: [noauthGuard]
+  },
+  {
+    path: 'login-logs',
+    component: AllLogsComponent,
     canActivate: [noauthGuard]
   },
   {

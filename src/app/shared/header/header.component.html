@@ -324,6 +324,14 @@
               >
             </a>
           </li>
+          <li [ngClass]="{ 'nav-item': true, 'me-2': !isCollapsed }">
+            <a routerLink="/login-logs" class="nav-link">
+              <i class="bi bi-graph-up-arrow ms-3"></i>
+              <span class="nav-text" [class.hidden]="isCollapsed"
+                >Login Logs</span
+              >
+            </a>
+          </li>
         </ul>
       }
       @else if (isUserAccountManager) {
